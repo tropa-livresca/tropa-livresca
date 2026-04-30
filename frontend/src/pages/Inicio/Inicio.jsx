@@ -1,7 +1,7 @@
 import styles from "./Inicio.module.css";
 
 import LinkButton from "../../components/layout/LinkButton/LinkButton";
-import Cadastro from "../cadastro/Cadastro";
+import Cadastro from "../Cadastro/Cadastro";
 
 import { useUsuarios } from "../../hooks/useUsuarios";
 
