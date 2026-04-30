@@ -51,6 +51,9 @@ const RoutesApp = () => {
             <Route path="orcamento" element={<Private Item = {Orcamento} />} />
             <Route path="conteudo" element={<Private Item ={Conteudo} />} />
           </Route>
+
+                  <Route path = "/perfil" element = {<Private Item = {Perfil}/>}/>
+      
         </Route>
 
         {/* Rotas de Autenticação */}
@@ -58,7 +61,6 @@ const RoutesApp = () => {
         <Route path="login" element={<Login />} />
         <Route path="confirmacao-email" element={<ConfirmacaoEmail />} /> 
 
-        <Route path = "/perfil" element = {<Private Item = {Perfil}/>}/>
       </Routes>
     </BrowserRouter>
   );
