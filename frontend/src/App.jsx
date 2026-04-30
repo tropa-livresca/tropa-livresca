@@ -4,7 +4,7 @@ import Inicio from "./pages/Inicio/Inicio";
 import Container from "./components/layout/Container/Container";
 import NavBar from "./components/layout/NavBar/NavBar";
 import Footer from "./components/layout/Footer/Footer";
-
+//gffgdgwdrhgw
 function App() {
   return (
     <BrowserRouter>
