@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { apiFetch } from "../../services/api";
 
-const PerfilContext = createContext();
+export const PerfilContext = createContext();
 
 export const PerfilProvider = ({ children }) => {
   const [perfil, setPerfil] = useState(null);
@@ -14,12 +14,25 @@ export const PerfilProvider = ({ children }) => {
       const response = await apiFetch("/api/perfil");
       const data = await response.json();
 
+      console.log("1. O que veio do backend?", data);
+
       if (!response.ok) {
+        if (response.status === 404) {
+          setPerfil(null);
+          setNome("");
+
+          setTelefone("");
+          setImagem("");
+          return;
+        }
         throw new Error(data.error || "Erro ao buscar perfil");
       }
 
       setPerfil(data);
       setNome(data.nome || "");
+
+      console.log("2. O estado nome recebeu:", data.nome);
+
       setTelefone(data.telefone || "");
       setImagem(data.imagem || "");
     } catch (error) {
@@ -31,8 +44,8 @@ export const PerfilProvider = ({ children }) => {
     try {
       const formData = new FormData();
 
-      formData.append("nome", dados.nome);
-      formData.append("telefone", dados.telefone);
+      formData.append("nome", dados.nome || "");
+      formData.append("telefone", dados.telefone || "");
 
       if (dados.descricao) {
         formData.append("descricao", dados.descricao);
@@ -42,7 +55,7 @@ export const PerfilProvider = ({ children }) => {
         formData.append("imagem", dados.imagem);
       }
 
-      const response = await apiFetch("/api/perfil/putPerfil", {
+      const response = await apiFetch("/api/perfil", {
         method: "PUT",
         body: formData,
       });
@@ -54,8 +67,14 @@ export const PerfilProvider = ({ children }) => {
       }
 
       setPerfil(data);
+      setNome(data.nome || "");
+      setTelefone(data.telefone || "");
+      setImagem(data.imagem || "");
+
+      return { sucess: true };
     } catch (error) {
       console.error("Error ao atualizar perfil", error);
+      return { sucess: false, error: error.message || "Erro ao atualizar perfil" };
     }
   };
 

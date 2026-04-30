@@ -38,9 +38,9 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 
-app.use("/api/auth", authRoutes);
-app.use("/api/livros", livrosRoutes);
-app.use("/api/perfil", perfilRoutes);  
+app.use("/api", authRoutes);
+app.use("/api", livrosRoutes);
+app.use("/api", perfilRoutes);  
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
 });
