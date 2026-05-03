@@ -2,23 +2,19 @@ import { supabase } from "./lib/supabaseClient"; // ajuste o caminho
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Inicio from "./pages/Inicio/Inicio";
 import Container from "./components/layout/Container/Container";
-import NavBar from "./components/layout/NavBar/NavBar";
-import Footer from "./components/layout/Footer/Footer";
+import Cadastro from "./pages/Cadastro/Cadastro";
+import MainLayout from "./components/layout/MainLayout/MainLayout";
 //gffgdgwdrhgw
 function App() {
   return (
     <BrowserRouter>
-      <NavBar />
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Inicio />} />
+        </Route>
 
-      <main>
-        <Container>
-          <Routes>
-            <Route path="/" element={<Inicio />} />
-          </Routes>
-        </Container>
-      </main>
-
-      <Footer />
+        <Route path="/cadastro" element={<Cadastro />} />
+      </Routes>
     </BrowserRouter>
   );
 }
