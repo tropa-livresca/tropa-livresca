@@ -21,7 +21,7 @@ export default function Cadastro() {
 
     e.preventDefault();
 
-    if(!email || !senha){
+    if(!email || !senha || !confSenha || !telefone || !nome){
       setError("Preencha todos os campos.");
       return;
     }
@@ -31,7 +31,7 @@ export default function Cadastro() {
       return;
     }
 
-    const res = await signup(email, senha);
+    const res = await signup(email, senha, telefone, nome);
 
     if(res){
       setError(res);
