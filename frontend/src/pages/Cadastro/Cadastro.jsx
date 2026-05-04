@@ -1,30 +1,45 @@
 import { useState, useEffect } from "react";
 import Input from "../../components/form/Input/Input";
 import SubmitButton from "../../components/form/Submit/SubmitButton";
-import { createUsuarios } from "../../services/usuarios/createUsuarios";
-import { useUsuarios } from "../../hooks/useUsuarios";
 import logo from "../../components/images/cad.png";
 import styles from "./Cadastro.module.css";
+import useAuth from "../../hooks/useAuth";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function Cadastro() {
-  const [usuarios, setUsuarios] = useState([]);
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
+  const [confSenha, setConfSenha] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  async function handleSubmit(e) {
+  const {signup} = useAuth();
+
+  const handleSignup = async(e) =>{
+
     e.preventDefault();
 
-    const novoUsuario = await createUsuarios({ nome, senha, email, telefone });
-
-    if (novoUsuario) {
-      setUsuarios((prev) => [...prev, novoUsuario]);
-      setNome("");
-      setSenha("");
-      setTelefone("");
-      setEmail("");
+    if(!email || !senha){
+      setError("Preencha todos os campos.");
+      return;
     }
+    
+    if(senha !== confSenha){
+      setError("As senhas não são iguais.");
+      return;
+    }
+
+    const res = await signup(email, senha);
+
+    if(res){
+      setError(res);
+      return;
+    }
+
+    alert("Usuário cadastrado com sucesso!");
+    navigate("/");
   }
 
   return (
@@ -35,7 +50,7 @@ export default function Cadastro() {
 
       <div className={styles.ldireito}>
         <div className={styles.formulario}>
-          <form onSubmit={handleSubmit} method="POST">
+          <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
 
             <label>Usuário</label>
@@ -47,15 +62,6 @@ export default function Cadastro() {
               value={nome}
             />
 
-            <label>Senha</label>
-            <Input
-              type="password"
-              name="senha"
-              placeholder="Digite a senha"
-              handleOnChange={(e) => setSenha(e.target.value)}
-              value={senha}
-            />
-
             <label>E-mail</label>
             <Input
               type="email"
@@ -65,6 +71,25 @@ export default function Cadastro() {
               value={email}
             />
 
+            
+            <label>Senha</label>
+            <Input
+              type="password"
+              name="senha"
+              placeholder="Digite a senha"
+              handleOnChange={(e) => setSenha(e.target.value)}
+              value={senha}
+            />
+
+            <label>Senha de Confirmação</label>
+            <Input
+              type="password"
+              name="confSenha"
+              placeholder="Confirme a senha"
+              handleOnChange={(e) => setConfSenha(e.target.value)}
+              value={confSenha}
+            />
+            
             <label>Telefone</label>
             <Input
               type="phone"
