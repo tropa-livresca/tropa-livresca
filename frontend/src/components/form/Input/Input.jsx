@@ -15,3 +15,5 @@ export default function Input({type, text, name, placeholder, handleOnChange, va
         </div>
     );
 }
+
+//llkjlk
