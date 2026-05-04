@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { createUsuarios } from "../../services/usuarios/createUsuarios";
 import Input from "../../components/form/Input/Input";
 import SubmitButton from "../../components/form/Submit/SubmitButton";
-import { useUsuarios } from "../../hooks/useUsuarios";
+import { createUsuarios } from "../../services/usuarios/createUsuarios";
 
 export default function Cadastro() {
-  const usuarios = useUsuarios;
+  const [usuarios, setUsuarios ] = useState([]);
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
   const [email, setEmail] = useState("");
