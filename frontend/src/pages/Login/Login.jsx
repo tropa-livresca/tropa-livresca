@@ -1,6 +1,5 @@
-import Input from "../../components/form/Input";
-import SubmitButton from "../../components/form/SubmitButton";
-import useUsuario from "../../hooks/useUsuarios";
+import Input from "../../components/form/Input/Input";
+import SubmitButton from "../../components/form/Submit/SubmitButton";
 
 export default function Login() {
   return (

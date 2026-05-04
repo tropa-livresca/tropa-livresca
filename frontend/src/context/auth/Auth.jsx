@@ -7,7 +7,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const getuser = async () => {
+    const getUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data?.user ?? null);
     };
@@ -34,13 +34,37 @@ export const AuthProvider = ({ children }) => {
     if (error) return error.message;
   };
 
-  const signup = async (email, password) => {
+  const signup = async (email, password, telefone, nome) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
+      options:{
+        data:{
+            nome,
+            telefone,
+        },
+      },
     });
 
     if (error) return error.message;
+
+
+
+/*    const user = data.user;
+
+    if (user) {
+      const { error: errorProfile } = await supabase
+        .from("users_profile")
+        .insert([
+          {
+            id: user.id,
+            nome,
+            telefone,
+          },
+        ]);
+
+      if (errorProfile) return errorProfile.message;
+}*/    
   };
 
   const signout = async () => {

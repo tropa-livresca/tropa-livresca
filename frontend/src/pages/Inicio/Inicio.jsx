@@ -2,10 +2,7 @@ import styles from "./Inicio.module.css";
 
 import LinkButton from "../../components/layout/LinkButton/LinkButton";
 
-import { useUsuarios } from "../../hooks/useUsuarios";
-
 export default function Inicio() {
-  const usuarios = useUsuarios();
 
   return (
     <section className={styles.inicio_container}>
@@ -16,11 +13,6 @@ export default function Inicio() {
       <p>Comece a gerenciar os seus projetos agora mesmo!</p>
 
       <LinkButton to="/seautopublique" text="Se Autopublique" />
-      <ul>
-        {usuarios.map((u) => (
-          <li key={u.id}>{u.nome}</li>
-        ))}
-      </ul>
     </section>
   );
 }
