@@ -24,6 +24,9 @@ const RoutesApp = () => {
         </Route>
 
         <Route path="/cadastro" element={<Cadastro />} />
+
+        <Route path = "/login" element = {<Login/>}/>  
+        
       </Routes>
     </BrowserRouter>
   );

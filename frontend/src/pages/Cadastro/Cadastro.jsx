@@ -26,6 +26,8 @@ export default function Cadastro() {
       return;
     }
     
+    if(senha){}
+
     if(senha !== confSenha){
       setError("As senhas não são iguais.");
       return;
@@ -39,7 +41,7 @@ export default function Cadastro() {
     }
 
     alert("Usuário cadastrado com sucesso!");
-    navigate("/");
+    navigate("/login");
   }
 
   return (
@@ -71,7 +73,6 @@ export default function Cadastro() {
               value={email}
             />
 
-            
             <label>Senha</label>
             <Input
               type="password"
@@ -100,6 +101,10 @@ export default function Cadastro() {
             />
 
             <SubmitButton text="Realizar Cadastro" />
+
+            <span>
+              Já tem cadastro? <Link to = "/login">Clique aqui.</Link>
+            </span>
           </form>
         </div>
       </div>

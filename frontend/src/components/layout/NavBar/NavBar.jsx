@@ -40,7 +40,8 @@ export default function NavBar() {
           </li>
           {/*coloquei apenas pra facilitar pra eu ver a tela de cadastro ass:Luis*/}
           <button>
-            <Link to="/Cadastro">Cadastrar</Link>
+            <Link to="/cadastro">Cadastrar</Link>
+            <Link to ="/login">Login</Link>
           </button>
         </ul>
       </Container>
