@@ -1,3 +1,6 @@
+/**
+ * Página de cadastro 
+ */
 import { useState, useEffect } from "react";
 import Input from "../../components/form/Input/Input";
 import SubmitButton from "../../components/form/Submit/SubmitButton";
