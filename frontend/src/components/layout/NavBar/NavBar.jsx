@@ -10,9 +10,12 @@ export default function NavBar() {
   return ( 
     <nav className={styles.navbar}>
       <Container>
+        <div className={styles.lesquerdo}>
         <Link to="/">
           <img src={logo} alt="Tropa Livresca" width="100" />
         </Link>
+        </div>
+        <div className={styles.ldireito}>
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
@@ -44,6 +47,7 @@ export default function NavBar() {
             <Link to ="/login">Login</Link>
           </button>
         </ul>
+        </div>
       </Container>
     </nav>
   );
