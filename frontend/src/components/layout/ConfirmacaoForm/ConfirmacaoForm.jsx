@@ -1,14 +1,21 @@
 import { useState } from "react";
 import Input from "../../form/Input/Input";
 import SubmitButton from "../../form/Submit/SubmitButton";
-
-export default function ConfirmacaoForm() {
+import Auth from "../../../context/auth/Auth";
+import {useNavigate} from "react-router-dom";
+ 
+export default function ConfirmacaoForm({text}) {
   
     const [codigo, setCodigo] = useState("");
 
+    const handleonSubmit = () =>{
+        
+    }
+
     return (
     <>
-      <form onSubmit={onSubmit}>
+    <h1>Digite o seu código de verificação mandado no seu {text}</h1>
+      <form onSubmit={handleonSubmit}>
         <Input
         type = "text"
         text = "Código de verificação"
@@ -19,7 +26,7 @@ export default function ConfirmacaoForm() {
         />
 
         <SubmitButton text = "Submeter Código"/>
-        
+
       </form>
     </>
   );
