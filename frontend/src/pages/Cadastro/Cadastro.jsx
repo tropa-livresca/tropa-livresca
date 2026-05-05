@@ -1,6 +1,3 @@
-/**
- * Página de cadastro 
- */
 import { useState, useEffect } from "react";
 import Input from "../../components/form/Input/Input";
 import SubmitButton from "../../components/form/Submit/SubmitButton";
@@ -9,6 +6,13 @@ import styles from "./Cadastro.module.css";
 import useAuth from "../../hooks/useAuth";
 import {Link, useNavigate} from "react-router-dom";
 
+/**
+ * Página de Cadastro de Usuários
+ * Gerencia o estado do formulário, validações básicas de senha e integração com o hook de autenticação
+ * 
+ * @component
+ * @returns {JSX.element}
+ */
 export default function Cadastro() {
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
@@ -20,9 +24,16 @@ export default function Cadastro() {
 
   const {signup} = useAuth();
 
+  /**
+   * Trata o envio de formulário de cadastro
+   * Realiza validações de campos vazios e igualdade de senhas antes de chamar o servidor
+   * 
+   * @param {React.FormEvent<HTMLFormElement>} e 
+   * @returns {Promise<void>}
+   */
   const handleSignup = async(e) =>{
-
     e.preventDefault();
+    setError("");//Limpa erros prévios
 
     if(!email || !senha || !confSenha || !telefone || !nome){
       setError("Preencha todos os campos.");
@@ -39,12 +50,14 @@ export default function Cadastro() {
     const res = await signup(email, senha, telefone, nome);
 
     if(res){
+      //Assume que 'res' contém a mensagem de erro vinda do Supabase/AuthContext
+
       setError(res);
       return;
     }
 
     alert("Usuário cadastrado com sucesso!");
-    navigate("/login");
+    navigate("/login");//Envia o usuário à tela de login caso funcione até que a tela de confirmação de e-mail ser criada
   }
 
   return (
