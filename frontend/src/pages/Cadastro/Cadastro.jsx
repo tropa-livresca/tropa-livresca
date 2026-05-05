@@ -100,6 +100,8 @@ export default function Cadastro() {
               value={telefone}
             />
 
+            <span>{error}</span>
+
             <SubmitButton text="Realizar Cadastro" />
 
             <span>
