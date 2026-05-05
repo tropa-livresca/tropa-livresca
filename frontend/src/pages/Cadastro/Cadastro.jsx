@@ -82,7 +82,7 @@ export default function Cadastro() {
               value={senha}
             />
 
-            <label>Senha de Confirmação</label>
+            <label>Confirmar Senha</label>
             <Input
               type="password"
               name="confSenha"
@@ -100,11 +100,12 @@ export default function Cadastro() {
               value={telefone}
             />
 
-            <SubmitButton text="Realizar Cadastro" />
-
             <span>
               Já tem cadastro? <Link to = "/login">Clique aqui.</Link>
             </span>
+            
+            <SubmitButton text="Realizar Cadastro" />
+        
           </form>
         </div>
       </div>

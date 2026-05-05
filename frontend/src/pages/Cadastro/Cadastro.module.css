@@ -28,13 +28,14 @@
 
 .formulario {
   width: 100%;
-  max-width: 32em;
+  max-width: 40em;
+  height: auto;
 }
 
 .formulario h1 {
   color: #67170c;
   font-size: 3em;
-  margin-top: 5%;
+  margin-top: 8%;
   margin-bottom: 5%;
   text-align: center;
 }
@@ -46,7 +47,7 @@
 
 form {
   background-color: white;
-  border-radius: 1em;
+  border-radius: 3em;
   display: flex;
   flex-direction: column;
   margin: 0;
@@ -54,4 +55,9 @@ form {
 
 form input {
   border: 1px solid red;
+}
+
+span{
+  text-align: center;
+  margin-top: 3%;
 }

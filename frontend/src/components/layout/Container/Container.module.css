@@ -1,9 +1,6 @@
 .container {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  margin: 0 auto;
-  flex-wrap: wrap;
+  display:grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .min-height {
