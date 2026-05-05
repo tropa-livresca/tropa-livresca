@@ -7,7 +7,7 @@ import styles from "./NavBar.module.css";
 import logo from "../../images/logo.png";
 
 export default function NavBar() {
-  return (
+  return ( 
     <nav className={styles.navbar}>
       <Container>
         <Link to="/">
