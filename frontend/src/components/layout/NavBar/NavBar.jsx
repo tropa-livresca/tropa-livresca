@@ -6,6 +6,13 @@ import styles from "./NavBar.module.css";
 
 import logo from "../../images/logo.png";
 
+/**
+ * Componente que corresponde à barra de navegação (navBar)
+ * Cada um dos links corresponde a uma das páginas criadas em Routes
+ * 
+ * @component
+ * @returns {JSX.element}
+ */
 export default function NavBar() {
   return ( 
     <nav className={styles.navbar}>
