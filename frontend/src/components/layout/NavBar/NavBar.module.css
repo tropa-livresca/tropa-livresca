@@ -1,7 +1,7 @@
 .navbar{
     display:flex;
     justify-content: space-between;
-    background-color: #222;
+    background-color: #EDE6B3;
     padding: 1em;
 }
 
@@ -16,7 +16,7 @@
 }
 
 .item a{
-    /*color: #FFF;*/
+    color: #67170C;
     text-decoration: none;
 }
 
