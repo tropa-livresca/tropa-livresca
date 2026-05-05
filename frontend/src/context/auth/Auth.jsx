@@ -1,9 +1,18 @@
 import { supabase } from "../../lib/supabaseClient";
 import { createContext, useState, useEffect } from "react";
 
+/** @type {import('react').Context<any>} */
 export const AuthContext = createContext({});
 
+/**
+ * Provedor de Autenticação Supabase
+ *
+ * @param {object} props
+ * @param {React.ReactNode} props.children - Elementos filhos que terão acesso ao contexto
+ * @returns {JSX.Element}
+ */
 export const AuthProvider = ({ children }) => {
+  const [tempEmail, setTempEmail] = useState("");
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -25,48 +34,54 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+  /**
+   * Realiza o login com email e senha
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<string|undefined>} Retorna a mensagem de erro se falhar
+   */
   const signin = async (email, password) => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
-
     if (error) return error.message;
   };
 
+  /**
+   * Cria uma nova conta
+   * @param {string} email
+   * @param {string} password
+   * @param {string} telefone
+   * @param {string} nome
+   */
   const signup = async (email, password, telefone, nome) => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options:{
-        data:{
-            nome,
-            telefone,
-        },
-      },
+      options: { data: { nome, telefone } },
+    });
+
+    if (!error) setTempEmail(email);
+    return error;
+  };
+
+  /**
+   * Confirma o cadastro via OTP (Token)
+   * @param {string} token
+   */
+  const confirmsignup = async (token) => {
+    const { data, error } = await supabase.auth.verifyOtp({
+      email: tempEmail,
+      token,
+      type: "signup",
     });
 
     if (error) return error.message;
-
-
-
-/*    const user = data.user;
-
-    if (user) {
-      const { error: errorProfile } = await supabase
-        .from("users_profile")
-        .insert([
-          {
-            id: user.id,
-            nome,
-            telefone,
-          },
-        ]);
-
-      if (errorProfile) return errorProfile.message;
-}*/    
+    return data;
   };
 
+  /** Encerra a sessão do usuário */
   const signout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -74,7 +89,16 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, signed: !!user, signin, signup, signout }}
+      value={{
+        user,
+        signed: !!user,
+        signin,
+        signup,
+        confirmsignup, // Adicionado para documentação
+        signout,
+        tempEmail,
+        setTempEmail,
+      }}
     >
       {children}
     </AuthContext.Provider>
