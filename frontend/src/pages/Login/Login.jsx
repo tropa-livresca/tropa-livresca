@@ -4,30 +4,35 @@ import SubmitButton from "../../components/form/Submit/SubmitButton";
 import useAuth from "../../hooks/useAuth";
 
 import { useState, useEffect } from "react";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
+/**
+ * Página responsável pelo Login dos Usuários
+ * Gerencia o estado do formulário, validações de e-mail e senha e integração com hook de autenticação
+ *
+ * @component
+ * @returns {JSX.element}
+ */
 export default function Login() {
-
-  const {signin} = useAuth();
+  const { signin } = useAuth();
 
   const navigate = useNavigate();
-  const handleSignin = async(e) =>{
-        e.preventDefault();
+  const handleSignin = async (e) => {
+    e.preventDefault();
 
-    if(!email || !senha){
+    if (!email || !senha) {
       setError("Preencha todos os campos.");
       return;
     }
-    
+
     const res = await signin(email, senha);
 
-    if(res){
+    if (res) {
       setError(res);
       return;
     }
     navigate("/");
-
-  }
+  };
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
@@ -54,11 +59,9 @@ export default function Login() {
       />
       <SubmitButton text="Entrar" />
 
-       <span>
-              Não tem cadastro? <Link to = "/cadastro">Clique aqui.</Link>
-        </span>
-
-        
+      <span>
+        Não tem cadastro? <Link to="/cadastro">Clique aqui.</Link>
+      </span>
     </form>
   );
 }
