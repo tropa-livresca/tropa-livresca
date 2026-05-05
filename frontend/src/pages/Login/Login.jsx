@@ -57,6 +57,8 @@ export default function Login() {
        <span>
               Não tem cadastro? <Link to = "/cadastro">Clique aqui.</Link>
         </span>
+
+        
     </form>
   );
 }
