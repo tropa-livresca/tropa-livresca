@@ -40,7 +40,7 @@ export default function Cadastro() {
       return;
     }
     
-    if(senha){}
+    if(senha){}//Aguardando outras verificações de senha para tratamento de erros
 
     if(senha !== confSenha){
       setError("As senhas não são iguais.");
