@@ -4,12 +4,12 @@ import SubmitButton from "../../components/form/Submit/SubmitButton";
 import logo from "../../components/images/cad.png";
 import styles from "./Cadastro.module.css";
 import useAuth from "../../hooks/useAuth";
-import {Link, useNavigate} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 /**
  * Página de Cadastro de Usuários
  * Gerencia o estado do formulário, validações básicas de senha e integração com o hook de autenticação
- * 
+ *
  * @component
  * @returns {JSX.element}
  */
@@ -19,37 +19,47 @@ export default function Cadastro() {
   const [confSenha, setConfSenha] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError] = useState([]); //Trata os erros como vetor
   const navigate = useNavigate();
 
-  const {signup} = useAuth();
+  const { signup } = useAuth();
 
   /**
    * Trata o envio de formulário de cadastro
    * Realiza validações de campos vazios e igualdade de senhas antes de chamar o servidor
-   * 
-   * @param {React.FormEvent<HTMLFormElement>} e 
+   *
+   * @param {React.FormEvent<HTMLFormElement>} e
    * @returns {Promise<void>}
    */
-  const handleSignup = async(e) =>{
+  const handleSignup = async (e) => {
     e.preventDefault();
-    setError("");//Limpa erros prévios
 
-    if(!email || !senha || !confSenha || !telefone || !nome){
-      setError("Preencha todos os campos.");
-      return;
+    let novosErros = []; //Cria array de erros
+
+    if (!email || !senha || !confSenha || !telefone || !nome) {
+      novosErros.push("Preencha todos os campos.");
     }
-    
-    if(senha){}//Aguardando outras verificações de senha para tratamento de erros
 
-    if(senha !== confSenha){
-      setError("As senhas não são iguais.");
+    if (senha.length < 8) {
+      novosErros.push("A senha precisa ter, no mínimo, 8 caracteres");
+    }
+
+    /**
+     * Falta verificar os caracteres da senha
+     */
+
+    if (senha !== confSenha) {
+      novosErros.push("As senhas não são iguais.");
+    }
+
+    if (novosErros.length == 0) {
+      setError(novosErros);
       return;
     }
 
     const res = await signup(email, senha, telefone, nome);
 
-    if(res){
+    if (res) {
       //Assume que 'res' contém a mensagem de erro vinda do Supabase/AuthContext
 
       setError(res);
@@ -58,8 +68,8 @@ export default function Cadastro() {
 
     alert("Usuário cadastrado com sucesso!");
 
-    navigate("/confirmacaoemail");//Envia o usuário à tela de login caso funcione até que a tela de confirmação de e-mail ser criada
-  }
+    navigate("/confirmacaoemail"); //Envia o usuário à tela de login caso funcione até que a tela de confirmação de e-mail ser criada
+  };
 
   return (
     <div className={styles.container}>
@@ -107,7 +117,7 @@ export default function Cadastro() {
               handleOnChange={(e) => setConfSenha(e.target.value)}
               value={confSenha}
             />
-            
+
             <label>Telefone</label>
             <Input
               type="phone"
@@ -119,10 +129,17 @@ export default function Cadastro() {
 
             <SubmitButton text="Realizar Cadastro" />
 
+            {error.length > 0 && (
+              <ul>
+                {error.map((erro, i) => (
+                  <li key={i}>{erro}</li>
+                ))}
+              </ul>
+            )}
+
             <span>
-              Já tem cadastro? <Link to = "/login">Clique aqui.</Link>
+              Já tem cadastro? <Link to="/login">Clique aqui.</Link>
             </span>
-            
           </form>
         </div>
       </div>

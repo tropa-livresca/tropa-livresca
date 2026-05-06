@@ -28,13 +28,18 @@ export default function ConfirmacaoEmail() {
     e.preventDefault();
     setError("");//Limpa erros prévios
 
+    if(!token){
+      setError("Preencha o campo com o código de confirmação enviado no seu e-mail.");
+      return;
+    }
+
     const res = await confirmsignup(token);
     
     /**
      * Assume que 'res' contem a mensagem de erro de Supabase/AuthContext
      */
     if (res) {
-      setError(res);
+      setError("O código de verificação não confere.");
       return;
     }
 
@@ -55,6 +60,11 @@ export default function ConfirmacaoEmail() {
         />
 
         <SubmitButton text="Submeter Código" />
+
+        {error.length > 0 && (
+          <p>{error}</p>
+        )}
+        
       </form>
     </>
   );

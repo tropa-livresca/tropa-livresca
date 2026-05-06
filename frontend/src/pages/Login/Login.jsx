@@ -30,7 +30,7 @@ export default function Login() {
    */
   const handleSignin = async (e) => {
     e.preventDefault();
-    setError("");//Limpa erros prévios
+    setError(""); //Limpa erros prévios
 
     if (!email || !senha) {
       setError("Preencha todos os campos.");
@@ -43,7 +43,7 @@ export default function Login() {
      * Assume que 'res' contem a mensagem de erro de Supabase/AuthContext
      */
     if (res) {
-      setError(res);
+      setError("Senha ou e-mail não conferem");
       return;
     }
 
@@ -72,6 +72,8 @@ export default function Login() {
       />
       <SubmitButton text="Entrar" />
 
+      {error.length > 0 && <p>{error}</p>}
+      
       <span>
         Não tem cadastro? <Link to="/cadastro">Clique aqui.</Link>
       </span>
