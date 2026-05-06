@@ -1,21 +1,27 @@
-import styles from './Select.module.css';
+import styles from "./Select.module.css";
 
-export default function Select({
-  text,
-  name,
-  options,
-  handleOnChange,
-  value,
-}) {
+/**
+ * Componente de Select reutilizável com Label integrado
+ *
+ * @component
+ * @param {object} props
+ * @param {string} props.text - O texto do label
+ * @param {string} props.name - O atributo name e id do input
+ * @param {array} props.options - As opções do select
+ * @param {(event: React.ChangeEvent<HTMLSelectElement>) => void} props.handleOnChange - O atributo que evoca a função de atualizar o estado do value
+ * @param {string|number} props.value - O valor atual do campo (controlado)
+ * @returns {JSX.Element}
+ */
+export default function Select({ text, name, options, handleOnChange, value }) {
   return (
     <div className={styles.form_control}>
       <label htmlFor={name}>{text}</label>
-      
+
       <select
         id={name}
         name={name}
         onChange={handleOnChange}
-        value={value||''}
+        value={value || ""}
       >
         <option value="">Selecione uma opção</option>
 
@@ -24,7 +30,6 @@ export default function Select({
             {option.name}
           </option>
         ))}
-
       </select>
     </div>
   );

@@ -14,11 +14,23 @@ import { Link, useNavigate } from "react-router-dom";
  * @returns {JSX.element}
  */
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [error, setError] = useState("");
+
   const { signin } = useAuth();
 
   const navigate = useNavigate();
+  /**
+   * Trata o envio do formulário de Login
+   * Realiza validações de campos vazios, antes de chamar o servidor
+   *
+   * @param {React.FormEvent<HTMLFormElement>}
+   * @returns {Promise<Void>}
+   */
   const handleSignin = async (e) => {
     e.preventDefault();
+    setError("");//Limpa erros prévios
 
     if (!email || !senha) {
       setError("Preencha todos os campos.");
@@ -27,15 +39,16 @@ export default function Login() {
 
     const res = await signin(email, senha);
 
+    /**
+     * Assume que 'res' contem a mensagem de erro de Supabase/AuthContext
+     */
     if (res) {
       setError(res);
       return;
     }
-    navigate("/");
+
+    navigate("/"); //Navega até a tela de confirmação de e-mail
   };
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [error, setError] = useState("");
 
   return (
     <form onSubmit={handleSignin}>
