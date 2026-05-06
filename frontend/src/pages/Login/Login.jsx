@@ -47,7 +47,7 @@ export default function Login() {
       return;
     }
 
-    navigate("/"); //Navega até a tela de confirmação de e-mail
+    navigate("/"); //Navega até a tela de Início
   };
 
   return (
