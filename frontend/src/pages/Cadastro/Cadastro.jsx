@@ -57,7 +57,8 @@ export default function Cadastro() {
     }
 
     alert("Usuário cadastrado com sucesso!");
-    navigate("/login");//Envia o usuário à tela de login caso funcione até que a tela de confirmação de e-mail ser criada
+
+    navigate("/confirmacaoemail");//Envia o usuário à tela de login caso funcione até que a tela de confirmação de e-mail ser criada
   }
 
   return (
@@ -116,17 +117,12 @@ export default function Cadastro() {
               value={telefone}
             />
 
-
-            <span>{error}</span>
-
             <SubmitButton text="Realizar Cadastro" />
 
             <span>
               Já tem cadastro? <Link to = "/login">Clique aqui.</Link>
             </span>
             
-            <SubmitButton text="Realizar Cadastro" />
-        
           </form>
         </div>
       </div>

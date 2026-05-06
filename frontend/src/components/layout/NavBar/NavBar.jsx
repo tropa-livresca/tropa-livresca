@@ -7,11 +7,11 @@ import styles from "./NavBar.module.css";
 import logo from "../../images/logo.png";
 
 /**
- * Componente que corresponde à barra de navegação (navBar)
- * Cada um dos links corresponde a uma das páginas criadas em Routes
+ * Componente de Barra de Navegação Superior
+ * Contém o logotipo e os links principais de navegação do sistema
  * 
  * @component
- * @returns {JSX.element}
+ * @returns {JSX.Element} 
  */
 export default function NavBar() {
   return ( 

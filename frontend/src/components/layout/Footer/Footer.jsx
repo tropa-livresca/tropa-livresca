@@ -2,6 +2,12 @@ import {FaFacebook, FaInstagram, FaLinkedin} from 'react-icons/fa';
 
 import styles from './Footer.module.css';
 
+/**
+ * Componente de rodapé
+ * 
+ * @component
+ * @returns {JSX.Element}
+ */
 export default function Footer(){
     return (
     <footer className = {styles.footer}>

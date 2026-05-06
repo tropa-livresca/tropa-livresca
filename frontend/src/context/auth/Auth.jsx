@@ -12,7 +12,9 @@ export const AuthContext = createContext({});
  * @returns {JSX.Element}
  */
 export const AuthProvider = ({ children }) => {
-  const [tempEmail, setTempEmail] = useState("");
+  const [tempEmail, setTempEmail] = useState(() => {
+    return sessionStorage.getItem("temp_email") || "";
+  });//TempEmail grava o e-mail do usuário e o salva no sessionStorage
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -62,7 +64,10 @@ export const AuthProvider = ({ children }) => {
       options: { data: { nome, telefone } },
     });
 
-    if (!error) setTempEmail(email);
+    if (!error) {
+      setTempEmail(email);
+      sessionStorage.setItem("temp_email", email);
+    }
     return error;
   };
 
