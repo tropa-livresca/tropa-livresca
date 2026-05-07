@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import Input from "../../components/form/Input/Input";
-import SubmitButton from "../../components/form/Submit/SubmitButton";
+import Input from "../../../components/form/Input/Input";
+import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import logo from "../../components/images/cad.png";
 import styles from "./Cadastro.module.css";
-import useAuth from "../../hooks/useAuth";
-import { supabase } from "../../lib/supabaseClient";
+import useAuth from "../../../hooks/useAuth";
+import { supabase } from "../../../lib/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 
 /**

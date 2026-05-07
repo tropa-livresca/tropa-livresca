@@ -1,6 +1,6 @@
 import styles from "./Inicio.module.css";
 
-import LinkButton from "../../components/layout/LinkButton/LinkButton";
+import LinkButton from "../../../components/layout/LinkButton/LinkButton";
 
 /**
  * Página de Início em que se mostram as informações gerais da empresa 
@@ -17,7 +17,8 @@ export default function Inicio() {
       <h2>
         Bem-vindo à <span>Tropa Livresca</span>
       </h2>
-      <p>Comece a gerenciar os seus projetos agora mesmo!</p>
+      <p>Publique seu projeto conosco!</p>
+
 
       <LinkButton to="/seautopublique" text="Se Autopublique" />
     </section>
