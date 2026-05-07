@@ -47,6 +47,7 @@ const RoutesApp = () => {
         {/* Exemplo de como usar a rota privada no futuro:
             <Route path="/perfil" element={<Private Item={Perfil} />} /> 
         */}
+        
       </Routes>
     </BrowserRouter>
   );
