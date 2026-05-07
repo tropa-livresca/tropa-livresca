@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Input from "../../components/form/Input/Input";
 import SubmitButton from "../../components/form/Submit/SubmitButton";
 import {AuthContext} from "../../context/auth/Auth";
@@ -14,8 +14,9 @@ import { useNavigate } from "react-router-dom";
 export default function ConfirmacaoEmail() {
   const navigate = useNavigate();
   const [token, setToken] = useState("");
+  const [error, setError] = useState("");
 
-  const { confirmsignup } = useAuth();
+  const { confirmsignup, tempEmail } = useContext(AuthContext);
 
   /**
    * Trata o envio do token segundo o e-mail inicializado em AuthProvider
@@ -43,12 +44,14 @@ export default function ConfirmacaoEmail() {
       return;
     }
 
+    alert ("E-mail confirmado com sucesso");
+
     navigate("/");//Navega até a tela de início
   };
 
   return (
     <>
-      <h1>Digite o seu código de verificação mandado no seu {text}</h1>
+      <h1>Digite o seu código de verificação mandado no seu e-mail para <strong>{tempEmail}</strong></h1>
       <form onSubmit={handleConfirmSignUp}>
         <Input
           type="text"
@@ -61,7 +64,7 @@ export default function ConfirmacaoEmail() {
 
         <SubmitButton text="Submeter Código" />
 
-        {error.length > 0 && (
+        {error && (
           <p>{error}</p>
         )}
         
