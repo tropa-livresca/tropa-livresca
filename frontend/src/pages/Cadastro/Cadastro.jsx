@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import Input from "../../components/form/Input/Input";
+import Input, { InputTelefone } from "../../components/form/Input/Input";
 import SubmitButton from "../../components/form/Submit/SubmitButton";
 import logo from "../../components/images/cad.png";
 import styles from "./Cadastro.module.css";
 import useAuth from "../../hooks/useAuth";
 import {Link, useNavigate} from "react-router-dom";
-import InputMask from 'react-input-mask';
+
+
+
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
@@ -44,6 +46,8 @@ export default function Cadastro() {
     alert("Usuário cadastrado com sucesso!");
     navigate("/login");
   }
+
+
 
   return (
     <div className={styles.container}>
@@ -93,13 +97,14 @@ export default function Cadastro() {
             />
             
             <label>Telefone</label>
-            <Input
-              type="phone"
-              name="tel"
-              mask="9"
-              placeholder="Digite o telefone"
+            <InputTelefone
+              type="text"
+              name="telefone"
+              placeholder="Confirme a senha"
               handleOnChange={(e) => setTelefone(e.target.value)}
               value={telefone}
+            
+            
             />
 
 
@@ -119,3 +124,6 @@ export default function Cadastro() {
     </div>
   );
 }
+
+  
+

@@ -1,5 +1,6 @@
 import React from "react";
 import styles from "./Input.module.css";
+import { useMask } from '@react-input/mask';
 
 /**
  * Componente de Input reutilizável com Label integrado
@@ -14,6 +15,33 @@ import styles from "./Input.module.css";
  * @param {string|number} props.value - O valor atual do campo (controlado)
  * @returns {JSX.Element}
  */
+
+
+const formataçãoTelefone = 
+{
+    mask: '_____-____',
+    replacement: { _: /\d/ },
+}
+
+export function InputTelefone({type, text, name, placeholder, handleOnChange, value}){
+    const inputRef = useMask(formataçãoTelefone)
+
+    return(
+        <div className = {styles.form_control}>
+            <label htmlFor = {name}> {text} </label>
+            <input
+                ref = {inputRef}
+                type = {type}
+                id = {name}
+                name = {name}
+                placeholder = {placeholder}
+                onChange = {handleOnChange}
+                value = {value||''}
+            />
+        </div>
+    );
+}
+
 export default function Input({type, text, name, placeholder, handleOnChange, value}){
     return(
         <div className = {styles.form_control}>
