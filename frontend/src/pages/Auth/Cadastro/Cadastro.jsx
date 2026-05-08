@@ -1,23 +1,11 @@
 import { useState, useEffect } from "react";
-<<<<<<< HEAD:frontend/src/pages/Cadastro/Cadastro.jsx
-import Input, { InputTelefone } from "../../components/form/Input/Input";
-import SubmitButton from "../../components/form/Submit/SubmitButton";
-import logo from "../../components/images/cad.png";
-import styles from "./Cadastro.module.css";
-import useAuth from "../../hooks/useAuth";
-import {Link, useNavigate} from "react-router-dom";
-
-
-
-=======
-import Input from "../../../components/form/Input/Input";
+import Input, { InputTelefone } from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
-import logo from "../../components/images/cad.png";
+import logo from "../../../components/images/cad.png";
 import styles from "./Cadastro.module.css";
 import useAuth from "../../../hooks/useAuth";
+import {Link, useNavigate} from "react-router-dom";
 import { supabase } from "../../../lib/supabaseClient";
-import { Link, useNavigate } from "react-router-dom";
->>>>>>> refs/remotes/origin/main:frontend/src/pages/Auth/Cadastro/Cadastro.jsx
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
@@ -32,6 +20,10 @@ export default function Cadastro() {
 
   const handleSignup = async(e) =>{
 
+    alert(telefone.length);
+
+    let novosErros = [];
+
     e.preventDefault();
 
     if(!email || !senha || !confSenha || !telefone || !nome){
@@ -39,7 +31,50 @@ export default function Cadastro() {
       return;
     }
     
-    if(senha){}
+
+    if (senha.length < 8 && senha.length != "") {
+      novosErros.push("A senha precisa ter, no mínimo, 8 caracteres");
+    }
+
+    const regexSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
+
+    if (senha && !regexSenha.test(senha)) {
+      novosErros.push(
+        "A senha deve contar letras maiúsculas, minúsculas, números e caracteres especiais ",
+      );
+    }
+
+    if (senha !== confSenha) {
+      novosErros.push("As senhas não são iguais.");
+    }
+
+    if(telefone.length != 10){
+      novosErros.push("Numero de telefone incorreto");
+    }
+
+    if (novosErros.length > 0) {
+      setError(novosErros);
+      return;
+    }
+
+    //Validação do Banco se há usuários a partir da função criada check_user_exists
+    try {
+      const { data: exists, error: rpcError } = await supabase.rpc(
+        "check_user_exists",
+        {
+          email_to_check: email,
+        },
+      );
+
+      if (rpcError) throw rpcError;
+
+      if (exists) {
+        setError(["Este e-mail já está cadastrado."]);
+        return; //Interrompe o cadastro
+      }
+    } catch (err) {
+      console.error("Erro RPC:", err);
+    }
 
     if(senha !== confSenha){
       setError("As senhas não são iguais.");
