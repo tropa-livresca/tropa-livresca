@@ -1,6 +1,11 @@
 import Input from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import styles from "./Login.module.css";
+<<<<<<< HEAD
+=======
+import logo from "../../../components/images/image 1.png";
+
+>>>>>>> 65cd21b (att)
 import useAuth from "../../../hooks/useAuth";
 import logo from "../../../components/images/image 1.png";
 import logo2 from "../../../components/images/logo.png";
@@ -52,6 +57,7 @@ export default function Login() {
   };
 
   return (
+<<<<<<< HEAD
      <div className={styles.container}>
       <div className={styles.lesquerdo}>
       <div className={styles.formulario}>
@@ -60,6 +66,13 @@ export default function Login() {
       <h1>LOGIN</h1>
       <h2>Bem-vindo de volta</h2>
       <h3>Insira seus dados para acessar sua conta</h3>
+=======
+    <div className={styles.container}>
+      <div className={styles.lesquerdo}>
+      <div className={styles.formulario}>
+    <form onSubmit={handleSignin}>
+      <h1>Login</h1>
+>>>>>>> 65cd21b (att)
       <label>E-mail</label>
       <Input
         type="email"
@@ -69,7 +82,10 @@ export default function Login() {
         }}
         value={email}
       />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 65cd21b (att)
       <label>Senha</label>
       <Input
         type="password"
@@ -79,6 +95,7 @@ export default function Login() {
         }}
         value={senha}
       />
+<<<<<<< HEAD
       
       <div id={styles.checkbox}>
         <input type="checkbox"/>
@@ -104,12 +121,32 @@ export default function Login() {
         </div>
       </div>
 
+=======
+      <SubmitButton text="Login" />
+
+      {error.length > 0 && <p>{error}</p>}
+      
+      <span>
+        <Link to="/cadastro">Esqueceu a Senha?</Link>
+      </span>
+
+      <span id={styles.oi}>
+      Já tem cadastro? <Link to="/login">Clique aqui.</Link><br />
+      É funcionário? <Link to="/login">Clique aqui.</Link>
+      </span>
+     
+>>>>>>> 65cd21b (att)
     </form>
     </div>
     </div>
     <div className={styles.ldireito}>
+<<<<<<< HEAD
             <img src={logo} alt="Tropa Livresca" width="100" />
     </div>
+=======
+        <img src={logo} alt="Tropa Livresca" width="100" />
+      </div>
+>>>>>>> 65cd21b (att)
     </div>
   );
 }

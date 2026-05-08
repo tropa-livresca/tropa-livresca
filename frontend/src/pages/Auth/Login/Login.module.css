@@ -5,24 +5,42 @@
 }
 
 .ldireito {
+<<<<<<< HEAD
+=======
+  display: flex;
+  justify-content: center;
+  align-items: center;
+>>>>>>> 65cd21b (att)
   overflow: hidden;
 }
 
 .ldireito img {
   width: 100%;
   height: 100%;
+<<<<<<< HEAD
   object-fit: cover;
+=======
+  display: block;
+>>>>>>> 65cd21b (att)
 }
 
 .lesquerdo {
   background-color: #ede6b3;
+<<<<<<< HEAD
   display: grid;
   place-items: center;
   padding: 2rem;
+=======
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+>>>>>>> 65cd21b (att)
 }
 
 .formulario {
   width: 100%;
+<<<<<<< HEAD
   max-width: 40rem;
   display: grid;
   grid-template-rows: auto 1fr;
@@ -47,15 +65,32 @@
   font-size: 1rem;
   text-align: center;
   margin-bottom: 2rem;
+=======
+  max-width: 40em;
+  height: auto;
+}
+
+.formulario h1 {
+  color: #67170c;
+  font-size: 3em;
+  margin-top: 8%;
+  margin-bottom: 5%;
+  text-align: center;
+>>>>>>> 65cd21b (att)
 }
 
 .formulario label {
   color: #67170c;
+<<<<<<< HEAD
   padding-left: 2rem;
+=======
+  margin-left: 5%;
+>>>>>>> 65cd21b (att)
 }
 
 form {
   background-color: white;
+<<<<<<< HEAD
   border-radius: 3rem;
   padding: 2rem 1rem;
   display: grid;
@@ -165,3 +200,23 @@ a {
     padding-left: 0;
   }
 }
+=======
+  border-radius: 3em;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+
+span{
+  text-align: center;
+}
+
+span a{
+  text-decoration: none; 
+}
+
+#oi a{
+ text-decoration: underline; 
+}
+>>>>>>> 65cd21b (att)
