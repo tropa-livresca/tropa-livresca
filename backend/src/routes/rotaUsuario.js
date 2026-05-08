@@ -14,7 +14,7 @@ const router = Router();
  * @path {POST} /register
  * @auth Nenhuma
  */
-router.post('/register', registerUser);
+router.post('/cadastro', registerUser);
 
 /**
  * O objeto router do Express contendo as definições de rotas do usuário.

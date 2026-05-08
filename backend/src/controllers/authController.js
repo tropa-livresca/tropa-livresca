@@ -19,13 +19,13 @@ export const registerUser = async (req, res) => {
   /**
    * @type {{email: string, password: string}}
    */
-  const { email, password } = req.body;
+  const { email, password, telefone, nome } = req.body;
   const erros = [];
 
   try {
-    if (!email) erros.push("O e-mail é obrigatório.");
-    if (!password || password.length < 6)
-      erros.push("A senha deve ter 6+ caracteres.");
+    if (!email ) erros.push("O e-mail é obrigatório.");
+    if (!password || password.length < 8)
+      erros.push("A senha deve ter mais de 8 caracteres.");
 
     /**
      * Busca a lista de usuários para validar duplicidade
@@ -34,7 +34,7 @@ export const registerUser = async (req, res) => {
       data: { users },
       error: listError,
     } = await supabaseAdmin.auth.admin.listUsers();
-
+ 
     if (users.some((u) => u.email === email)) {
       erros.push("Este usuário já está cadastrado.");
     }
@@ -47,6 +47,7 @@ export const registerUser = async (req, res) => {
       await supabaseAdmin.auth.admin.createUser({
         email,
         password,
+        options: {data: {nome, telefone}},
         email_confirm: true,
       });
 

@@ -1,13 +1,15 @@
 import { supabase } from "../lib/supabaseClient";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Inicio from "../pages/Inicio/Inicio";
-import Container from "../components/layout/Container/Container";
-import Cadastro from "../pages/Cadastro/Cadastro";
-import MainLayout from "../components/layout/MainLayout/MainLayout";
-import Login from "../pages/Login/Login";
 import useAuth from "../hooks/useAuth";
-import ConfirmacaoEmail from "../pages/ConfirmacaoEmail/ConfirmacaoEmail";
+
+import Container from "../components/layout/Container/Container";
+import MainLayout from "../components/layout/MainLayout/MainLayout";
+
+import Inicio from "../pages/Public/Inicio/Inicio";
+import Cadastro from "../pages/Auth/Cadastro/Cadastro";
+import Login from "../pages/Auth/Login/Login";
+import Historia from "../pages/Public/Historia/Historia";
 
 /**
  * Componente de Rota Privada
@@ -37,16 +39,17 @@ const RoutesApp = () => {
         {/* Rotas com Layout Principal (Navbar, Footer) */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Inicio />} />
+          <Route path = "/historia" element = {<Historia/>}/>
         </Route>
 
         {/* Rotas de Autenticação */}
         <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/login" element={<Login />} />  
-        <Route path="/confirmacaoemail" element={<ConfirmacaoEmail />} />
+        <Route path="/login" element={<Login />} />
         
         {/* Exemplo de como usar a rota privada no futuro:
             <Route path="/perfil" element={<Private Item={Perfil} />} /> 
         */}
+        
       </Routes>
     </BrowserRouter>
   );
