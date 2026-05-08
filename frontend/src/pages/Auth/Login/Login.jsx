@@ -1,7 +1,7 @@
-import Input from "../../components/form/Input/Input";
-import SubmitButton from "../../components/form/Submit/SubmitButton";
+import Input from "../../../components/form/Input/Input";
+import SubmitButton from "../../../components/form/Submit/SubmitButton";
 
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";

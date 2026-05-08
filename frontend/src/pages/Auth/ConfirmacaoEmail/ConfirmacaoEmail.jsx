@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
-import Input from "../../components/form/Input/Input";
-import SubmitButton from "../../components/form/Submit/SubmitButton";
-import {AuthContext} from "../../context/auth/Auth";
+import Input from "../../../components/form/Input/Input";
+import SubmitButton from "../../../components/form/Submit/SubmitButton";
+import {AuthContext} from "../../../context/auth/Auth";
 import { useNavigate } from "react-router-dom";
 
 /**
