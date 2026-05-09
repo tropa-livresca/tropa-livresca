@@ -54,7 +54,11 @@ form {
 }
 
 form input {
-  border: 1px solid red;
+  background-color: #ede6b3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
 }
 
 span{
