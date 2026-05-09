@@ -1,4 +1,3 @@
-import supabase from "../../../lib/supabaseClient";
 
 import styles from "./Inicio.module.css";
 
