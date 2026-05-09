@@ -1,9 +1,5 @@
-
 import styles from "./Inicio.module.css";
 
-import { useState } from "react";
-
-import LinkButton from "../../../components/layout/LinkButton/LinkButton";
 
 /**
  * Página de Início em que se mostram as informações gerais da empresa
