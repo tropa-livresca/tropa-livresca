@@ -1,5 +1,4 @@
 # React + Vite
-# React + Vite
 
 Este template fornece uma configuração mínima para iniciar um projeto React com Vite, incluindo HMR e algumas regras do ESLint.
 
