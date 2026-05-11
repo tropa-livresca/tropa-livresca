@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/auth/Auth";
  * Componente Raiz da Aplicação
  * Centraliza os provedores de contexto globais e a renderização das rotas
  * 
+ * 
  * @component
  * @returns  {JSX.Element} A árvore de componentes principal envolvida pelo AuthProvider
  */
