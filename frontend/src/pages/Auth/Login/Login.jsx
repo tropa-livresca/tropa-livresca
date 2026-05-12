@@ -1,8 +1,9 @@
 import Input from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
-
+import styles from "./Login.module.css";
 import useAuth from "../../../hooks/useAuth";
-
+import logo from "../../../components/images/image 1.png";
+import logo2 from "../../../components/images/logo.png";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -51,19 +52,25 @@ export default function Login() {
   };
 
   return (
+     <div className={styles.container}>
+      <div className={styles.lesquerdo}>
+      <div className={styles.formulario}>
+         <img src={logo2} alt="Tropa Livresca" width="100" />
     <form onSubmit={handleSignin}>
+      <h1>Login</h1>
+      <label>E-mail</label>
       <Input
         type="email"
-        text="E-mail"
         placeholder="Digite seu e-mail"
         handleOnChange={(e) => {
           setEmail(e.target.value);
         }}
         value={email}
       />
+
+      <label>Senha</label>
       <Input
         type="password"
-        text="Senha"
         placeholder="Digite sua senha"
         handleOnChange={(e) => {
           setSenha(e.target.value);
@@ -73,10 +80,26 @@ export default function Login() {
       <SubmitButton text="Entrar" />
 
       {error.length > 0 && <p>{error}</p>}
-      
-      <span>
-        Não tem cadastro? <Link to="/cadastro">Clique aqui.</Link>
-      </span>
+
+      <p>
+        <Link to="/cadastro">Esqueceu a senha?</Link>
+      </p>
+
+      <div className={styles.informacoes}>
+        <p>
+        Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
+        </p>
+        <p>
+        É funcionário? <Link to="/cadastro">Clique aqui.</Link>
+        </p>
+      </div>
+
     </form>
+    </div>
+    </div>
+    <div className={styles.ldireito}>
+            <img src={logo} alt="Tropa Livresca" width="100" />
+    </div>
+    </div>
   );
 }
