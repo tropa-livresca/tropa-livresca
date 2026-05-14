@@ -77,6 +77,12 @@ export default function Login() {
         }}
         value={senha}
       />
+      
+      <div id={styles.checkbox}>
+        <input type="checkbox"/>
+        <label>Lembrar por 30 dias</label>
+      </div>
+
       <SubmitButton text="Entrar" />
 
       {error.length > 0 && <p>{error}</p>}
@@ -86,12 +92,14 @@ export default function Login() {
       </p>
 
       <div className={styles.informacoes}>
+        <div className={styles.para}>
         <p>
         Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
         </p>
         <p>
         É funcionário? <Link to="/cadastro">Clique aqui.</Link>
         </p>
+        </div>
       </div>
 
     </form>
