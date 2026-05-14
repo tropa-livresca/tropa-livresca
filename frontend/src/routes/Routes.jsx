@@ -10,9 +10,15 @@ import Inicio from "../pages/Public/Inicio/Inicio";
 import Cadastro from "../pages/Auth/Cadastro/Cadastro";
 import Login from "../pages/Auth/Login/Login";
 import Historia from "../pages/Public/Historia/Historia";
+
+//Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
 import Confirmacao from "../pages/Private/NovoLivro/Confirmacao";
 import Conteudo from "../pages/Private/NovoLivro/Conteudo";
+import Detalhes from "../pages/Private/NovoLivro/Detalhes";
+import Formato from "../pages/Private/NovoLivro/Formato";
+import Orcamento from "../pages/Private/NovoLivro/Orcamento";
+import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
 
 /**
  * Componente de Rota Privada
@@ -43,13 +49,22 @@ const RoutesApp = () => {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Inicio />} />
 
+          {/*
+          <Route path = "sobre" element = {<SobreNos/>}>
+            <Route index element = ""/>
+          <Route/>
+           */}
           <Route path="historia" element={<Historia />} />
-          
-          <Route path="novolivro" element={<NovoLivro />}>
-            <Route index element={<Confirmacao />} />
-            <Route path="conteudo" element={<Conteudo />} />
+
+          <Route path="seautopublique" element={<SeAutopublique />}>
+            <Route index element={<SeAutopublique />} />
+            <Route path="novolivro" element={<NovoLivro/>} />
+            <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />
+            <Route path="detalhes" element={<Private Item ={Detalhes} />} />
+            <Route path="formato" element={<Private Item = {Formato} />} />
+            <Route path="orcamento" element={<Private Item = {Orcamento} />} />
+            <Route path="conteudo" element={<Private Item ={Conteudo} />} />
           </Route>
-          
         </Route>
 
         {/* Rotas de Autenticação */}
