@@ -1,7 +1,9 @@
 export default function Conteudo() {
   return (
     <main>
-      <form></form>
+      <form>
+        Viva essa jossa!
+      </form>
     </main>
   );
 }
