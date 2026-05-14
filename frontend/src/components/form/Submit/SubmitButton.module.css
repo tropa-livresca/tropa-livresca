@@ -10,3 +10,7 @@
   display: block;
   margin: 5% auto;
 }
+
+.btn:hover{
+  background-color: #b32512;
+}
