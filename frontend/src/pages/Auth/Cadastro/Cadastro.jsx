@@ -20,8 +20,6 @@ export default function Cadastro() {
 
   const handleSignup = async(e) =>{
 
-    alert(telefone.length);
-
     let novosErros = [];
 
     e.preventDefault();
@@ -48,7 +46,7 @@ export default function Cadastro() {
       novosErros.push("As senhas não são iguais.");
     }
 
-    if(telefone.length != 10){
+    if(telefone.length != 15){
       novosErros.push("Numero de telefone incorreto");
     }
 
@@ -105,7 +103,7 @@ export default function Cadastro() {
           <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
 
-            <label>Usuário</label>
+            <label>Nome de Usuário*</label>
             <Input
               type="text"
               name="nome"
@@ -114,7 +112,7 @@ export default function Cadastro() {
               value={nome}
             />
 
-            <label>E-mail</label>
+            <label>E-mail*</label>
             <Input
               type="email"
               name="email"
@@ -123,7 +121,7 @@ export default function Cadastro() {
               value={email}
             />
 
-            <label>Senha</label>
+            <label>Senha*</label>
             <Input
               type="password"
               name="senha"
@@ -132,7 +130,7 @@ export default function Cadastro() {
               value={senha}
             />
 
-            <label>Confirmar Senha</label>
+            <label>Confirmar Senha*</label>
             <Input
               type="password"
               name="confSenha"
@@ -141,7 +139,7 @@ export default function Cadastro() {
               value={confSenha}
             />
             
-            <label>Telefone</label>
+            <label>Telefone*</label>
             <InputTelefone
               type="text"
               name="telefone"
@@ -161,8 +159,6 @@ export default function Cadastro() {
               Já tem cadastro? <Link to = "/login">Clique aqui.</Link>
             </span>
             
-            <SubmitButton text="Realizar Cadastro" />
-        
           </form>
         </div>
       </div>
