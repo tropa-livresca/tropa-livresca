@@ -19,7 +19,7 @@ import { useMask } from '@react-input/mask';
 
 const formataçãoTelefone = 
 {
-    mask: '_____-____',
+    mask: '(__) _____-____',
     replacement: { _: /\d/ },
 }
 
