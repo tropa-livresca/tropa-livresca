@@ -5,7 +5,6 @@ export default function NovoLivro() {
     <main>
       Novo livro! 
       Queria publicar, mas é melhor vomitar.
-      <Outlet />
     </main>
   );
 }
