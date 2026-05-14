@@ -37,7 +37,7 @@ export default function NavBar() {
             <Link to="/">Blog</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/">Se Autopublique</Link>
+            <Link to="/novolivro">Se Autopublique</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Resenha</Link>

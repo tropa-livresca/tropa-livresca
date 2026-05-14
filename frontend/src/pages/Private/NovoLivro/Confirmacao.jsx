@@ -1,7 +1,7 @@
 export default function Confirmacao() {
   return (
     <main>
-      <form></form>
+      <form>Viva a América!</form>
     </main>
   );
 }

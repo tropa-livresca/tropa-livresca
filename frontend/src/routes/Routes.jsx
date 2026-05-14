@@ -10,11 +10,14 @@ import Inicio from "../pages/Public/Inicio/Inicio";
 import Cadastro from "../pages/Auth/Cadastro/Cadastro";
 import Login from "../pages/Auth/Login/Login";
 import Historia from "../pages/Public/Historia/Historia";
+import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
+import Confirmacao from "../pages/Private/NovoLivro/Confirmacao";
+import Conteudo from "../pages/Private/NovoLivro/Conteudo";
 
 /**
  * Componente de Rota Privada
  * Verifica se o usuário está autenticado antes de renderizar o componente solicitado
- * 
+ *
  * @param {object} props
  * @param {React.ComponentType} props.Item - O componente que deve ser renderizado se autenticado
  * @returns {JSX.Element}
@@ -28,7 +31,7 @@ const Private = ({ Item }) => {
 /**
  * Gerenciador de Rotas Principal da Aplicação.
  * Define a estrutura de navegação, layouts e proteções de rota.
- * 
+ *
  * @component
  * @returns {JSX.Element}
  */
@@ -39,17 +42,23 @@ const RoutesApp = () => {
         {/* Rotas com Layout Principal (Navbar, Footer) */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Inicio />} />
-          <Route path = "/historia" element = {<Historia/>}/>
+
+          <Route path="historia" element={<Historia />} />
+          
+          <Route path="novolivro" element={<NovoLivro />}>
+            <Route index element={<Confirmacao />} />
+            <Route path="conteudo" element={<Conteudo />} />
+          </Route>
+          
         </Route>
 
         {/* Rotas de Autenticação */}
-        <Route path="/cadastro" element={<Cadastro />} />
-        <Route path="/login" element={<Login />} />
-        
+        <Route path="cadastro" element={<Cadastro />} />
+        <Route path="login" element={<Login />} />
+
         {/* Exemplo de como usar a rota privada no futuro:
             <Route path="/perfil" element={<Private Item={Perfil} />} /> 
         */}
-        
       </Routes>
     </BrowserRouter>
   );
