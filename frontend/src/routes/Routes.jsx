@@ -28,7 +28,7 @@ import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
  * @param {React.ComponentType} props.Item - O componente que deve ser renderizado se autenticado
  * @returns {JSX.Element}
  */
-const Private = ({ Item }) => {
+const Private = ({  Item }) => {
   const { signed } = useAuth();
 
   return signed ? <Item /> : <Login />;
