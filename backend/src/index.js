@@ -1,41 +1,29 @@
-/**
- * Configuração e inicialização do servidor Express.
- * @module Server
- */
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import supabaseAdmin from "./config/supabase.js";
 
-const result = require('dotenv').config(); 
-const express = require('express');
-const path = require('node:path');
-const cors = require('cors');
-
-const { supabaseAdmin } = require('./config/supabase'); 
-
-/** @type {import('express').Express} */
 const app = express();
 
-app.use(cors());
+// Configuração corrigida do CORS
+app.use(cors({
+    origin: "http://localhost:5173" 
+}));
+
 app.use(express.json());
 
-/** @type {string|number} Porto onde o servidor será executado. */
 const PORT = process.env.PORT || 3000;
 
-/**
- * Endpoint de verificação de saúde do sistema e conexão com o banco.
- * @name HealthCheck
- * @path {GET} /health
- * @response {Object} 200 - Objeto contendo o status da conexão.
- * @response {Object} 500 - Objeto contendo detalhes do erro.
- */
+// Rota atualizada para /health se preferir o padrão, ou mantenha /ver
 app.get('/health', async (req, res) => {
     try {
-        // Nota: No seu código estava 'supabase', mudei para 'supabaseAdmin' para manter a consistência
-        const { data, error } = await supabaseAdmin.from('usuarios').select('count', { count: 'exact', head: true });
-        
-        if (error) throw error;
-        
-        res.json({ status: "Conectado ao Supabase!", info: data });
-    } catch (err) {
-        res.status(500).json({ status: "Erro na conexão", erro: err.message });
+        const { data, error } = await supabaseAdmin.from('users_profile').select('*').limit(1);
+        if (error) {
+            throw error;
+        }
+        res.status(200).json({ status: 'ok', data });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
     }
 });
 
