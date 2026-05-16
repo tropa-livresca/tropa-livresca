@@ -4,7 +4,7 @@
   "description": "Banco de dados para a editora Tropa Livresca.",
   "license": "ISC",
   "author": "Gabriel",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
