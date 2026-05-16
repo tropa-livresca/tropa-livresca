@@ -1,4 +1,4 @@
-import {supabaseAdmin} from '../config/supabase.js';
+import supabase from '../config/supabase.js';
 
 export const checkAuth = async(req, res, next) =>{
     const token = req.cookies['auth-token'];
@@ -8,7 +8,7 @@ export const checkAuth = async(req, res, next) =>{
     }
 
     try {
-        const { data, error } = await supabaseAdmin.auth.getUser(token);
+        const { data, error } = await supabase.auth.getUser(token);
         if (error) {
             return res.status(401).json({error: 'Token de autenticação inválido.'});
         }
