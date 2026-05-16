@@ -5,9 +5,10 @@
   "license": "ISC",
   "author": "Gabriel",
   "type": "module",
-  "main": "index.js",
+  "main": "api.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon --env-file=.env.development src/api.js",
+    "start": "node --env-file=.env.production src/api.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
