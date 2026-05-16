@@ -1,31 +1,22 @@
 import "dotenv/config";
+import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
-import supabaseAdmin from "./config/supabase.js";
-
+import authRoutes from "./routes/auth.route.js";
 const app = express();
 
 // Configuração corrigida do CORS
 app.use(cors({
-    origin: "http://localhost:5173" 
+    origin: "http://localhost:5173", credentials: true 
 }));
 
 app.use(express.json());
 
+app.use(cookieParser());
+
 const PORT = process.env.PORT || 3000;
 
-// Rota atualizada para /health se preferir o padrão, ou mantenha /ver
-app.get('/health', async (req, res) => {
-    try {
-        const { data, error } = await supabaseAdmin.from('users_profile').select('*').limit(1);
-        if (error) {
-            throw error;
-        }
-        res.status(200).json({ status: 'ok', data });
-    } catch (error) {
-        res.status(500).json({ status: 'error', message: error.message });
-    }
-});
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta: ${PORT}`);
