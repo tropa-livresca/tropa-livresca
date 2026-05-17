@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if(!res.ok){
-        return data.error || "Erroo ao fazer login";
+        return data.error || "Erro ao fazer login";
       }
 
       setUser(data.user);
@@ -93,17 +93,6 @@ export const AuthProvider = ({ children }) => {
       return "Erro de conexão com o servidor.";
     }
   };
-/*
-  const confirmsignup = async (token) => {
-    const { data, error } = await supabase.auth.verifyOtp({
-      email: tempEmail,
-      token,
-      type: "signup",
-    });
-
-    if (error) return error.message;
-    return data;
-  };*/
   
   /** Encerra a sessão do usuário */
   const signout = async () => {

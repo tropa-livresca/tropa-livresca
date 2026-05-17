@@ -70,15 +70,7 @@ export const signup = async (req, res) => {
   const { email, password, telefone, nome } = req.body;
   //Falta verificar o número de usuários
   try {
-    const { data: listData, erro: listError } = await supabaseAdmin.auth.signUp;
-
-    if(listError) throw listError;
-
-    const userExists = listData.users.some (u => u.email === email);
-    if(userExists){
-      return res.status(400).json({error: "Este e-mail já está cadastrado."});
-    }
-
+    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -89,10 +81,14 @@ export const signup = async (req, res) => {
     });
 
     if (error) {
+      if(error.message.includes("already registered" || error.status === 422)){
+        return res.status(400).json({ error: "Email já cadastrado." });
+      }
+      
       return res.status(400).json({ error: error.message });
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       user: data.user,
       message:
         "Cadastro Realizado! Por favor, verifique seu email para confirmar a conta.",
