@@ -106,6 +106,7 @@ export default function Cadastro() {
         <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
+            <h3>Insira seus dados para criar sua conta</h3>
 
             <label>Usuário</label>
             <Input

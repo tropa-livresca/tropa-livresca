@@ -16,10 +16,10 @@ import logo from "../../images/logo.png";
 export default function NavBar() {
   return ( 
     <nav className={styles.navbar}>
-      <Container>
         <Link to="/">
           <img src={logo} alt="Tropa Livresca" width="100" />
         </Link>
+        
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
@@ -45,13 +45,13 @@ export default function NavBar() {
           <li className={styles.item}>
             <Link to="/">Ajuda</Link>
           </li>
-          {/*coloquei apenas pra facilitar pra eu ver a tela de cadastro ass:Luis*/}
-          <button>
+
+          <div>
             <Link to="/cadastro">Cadastrar</Link>
             <Link to ="/login">Login</Link>
-          </button>
+          </div>
+
         </ul>
-      </Container>
     </nav>
   );
 }
