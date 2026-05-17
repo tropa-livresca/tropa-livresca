@@ -1,4 +1,3 @@
-import { supabase } from "../lib/supabaseClient";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
