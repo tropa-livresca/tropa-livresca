@@ -10,4 +10,8 @@ router.post("/signout", signout);
 router.post("/refresh", refreshSession);
 router.post("/session", setSession);
 
+router.get("/perfil", checkAuth, (req, res) => {
+  res.json({message: "Rota privada",  user: req.user });
+});
+
 export default router;

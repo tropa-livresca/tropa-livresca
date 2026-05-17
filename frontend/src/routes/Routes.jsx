@@ -9,6 +9,8 @@ import MainLayout from "../components/layout/MainLayout/MainLayout";
 import Inicio from "../pages/Public/Inicio/Inicio";
 import Cadastro from "../pages/Auth/Cadastro/Cadastro";
 import Login from "../pages/Auth/Login/Login";
+import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
+
 import Historia from "../pages/Public/Historia/Historia";
 
 //Se Autopublique
@@ -69,6 +71,7 @@ const RoutesApp = () => {
         {/* Rotas de Autenticação */}
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="login" element={<Login />} />
+        <Route path="confirmacao-email" element={<ConfirmacaoEmail />} /> 
 
         {/* Exemplo de como usar a rota privada no futuro:
             <Route path="/perfil" element={<Private Item={Perfil} />} /> 

@@ -1,4 +1,4 @@
-import supabase from "../config/supabase.js";
+import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -42,7 +42,9 @@ export const refreshSession = async (req, res) => {
   }
 
   try {
-    const { data, error } = await supabase.auth.refreshSession(refreshToken);
+    const { data, error } = await supabase.auth.refreshSession({
+      refresh_token: refreshToken,
+    });
 
     if (error || !data.session) {
       return res.status(401).json({ error: "Token de atualização inválido." });
@@ -59,21 +61,22 @@ export const refreshSession = async (req, res) => {
     res.cookie("refresh-token", data.session.refresh_token, COOKIE_OPTIONS);
 
     return res.status(200).json({ message: "Sessão renovada com sucesso." });
-
   } catch (err) {
     res.status(500).json({ error: "Erro ao atualizar sessão." });
   }
 };
 
 export const signup = async (req, res) => {
-  const { email, password } = req.body;
-
+  const { email, password, telefone, nome } = req.body;
+  //Falta verificar o número de usuários
   try {
+    const { data: listData, erro: listError } = await supabaseAdmin;
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: "http://localhost:5173/confirmacao-email",
+        data: { nome, telefone },
       },
     });
 
@@ -95,6 +98,7 @@ export const signout = async (req, res) => {
   try {
     await supabase.auth.signOut();
     res.clearCookie("auth-token", COOKIE_OPTIONS);
+    res.clearCookie("refresh-token", COOKIE_OPTIONS);
     res.json({ message: "Desconectado com sucesso." });
   } catch (err) {
     res.status(500).json({ error: "Erro ao desconectar usuário." });
