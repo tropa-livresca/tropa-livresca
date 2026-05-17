@@ -68,7 +68,7 @@ export default function Cadastro() {
       "Cadastro realizado! Verifique sua caixa de entrada para confirmar o e-mail.",
     );
 
-    navigate("/confirmacao-email");
+    navigate("/login");
   };
 
   return (
