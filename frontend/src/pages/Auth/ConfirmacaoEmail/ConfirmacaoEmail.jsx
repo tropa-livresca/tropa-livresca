@@ -14,13 +14,13 @@ export default function ConfirmacaoEmail (){
         const hash = window.location.hash.substring(1);
         const params = new URLSearchParams(hash);
 
-        const acessToken = params.get("acess_token");
+        const accessToken = params.get("access_token");
         const refreshToken = params.get("refresh_token");
 
-        if(acessToken && refreshToken){
-         apiFetch("/api/auth/confirmacao-email", {
+        if(accessToken && refreshToken){
+         apiFetch("/api/auth/session", {
             method: "POST",
-            body: JSON.stringify({ acessToken, refreshToken }),
+            body: JSON.stringify({ accessToken, refreshToken }),
         })
         .then(async (res) =>{
             const data = await res.json();
