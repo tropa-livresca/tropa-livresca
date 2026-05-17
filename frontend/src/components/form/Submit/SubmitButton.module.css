@@ -7,10 +7,15 @@
   cursor: pointer;
   border: none;
   border-radius: 0.7em;
-  display: block;
-  margin: 5% auto;
+  display: grid;
+  justify-self: center;
+  margin-top: 1.5rem;
 }
 
-.btn:hover{
+.btn:hover {
   background-color: #b32512;
+}
+
+.btn_login {
+  margin-bottom: 2rem;
 }
