@@ -40,7 +40,7 @@ export default function ConfirmacaoEmail() {
                 }
 
                 setStatus("E-mail confirmado com sucesso! Redirecionando para página inicial...");
-                setTimeout(() => navigate("/"), 2000);
+                setTimeout(() => navigate("/login"), 2000);
             })
             .catch((err) => {
                 setStatus(`Falha na validação com o servidor: ${err.message}`);
