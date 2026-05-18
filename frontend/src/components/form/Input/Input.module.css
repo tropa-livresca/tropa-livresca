@@ -1,19 +1,19 @@
 .form_control {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 0.8rem;
   margin-bottom: 1rem;
 }
 
 .form_control label {
-  margin-bottom: 0.6em;
   font-weight: bold;
 }
 
 .form_control input {
-  padding: 0.7em;
-  margin-left: 5%;
-  margin-right: 5%;
-  border-radius: 0.7em;
+  background-color: #ede6b3;
+  width: 90%;
+  justify-self: center;
+  padding: 0.7rem;
+  border-radius: 0.7rem;
   border: 0.2em solid beige;
 }
 
