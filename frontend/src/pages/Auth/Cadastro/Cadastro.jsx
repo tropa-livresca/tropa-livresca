@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Input, { InputTelefone } from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import logo from "../../../components/images/cad.png";
+import logo2 from "../../../components/images/logo.png";
 import styles from "./Cadastro.module.css";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
@@ -79,8 +80,10 @@ export default function Cadastro() {
 
       <div className={styles.ldireito}>
         <div className={styles.formulario}>
+        <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
+            <h3>Insira seus dados para criar sua conta</h3>
 
             <label>Nome de Usuário*</label>
             <Input
@@ -122,18 +125,19 @@ export default function Cadastro() {
             <InputTelefone
               type="text"
               name="telefone"
-              placeholder="Confirme a senha"
+              placeholder="Digite o telefone"
               handleOnChange={(e) => setTelefone(e.target.value)}
               value={telefone}
             />
 
             <span>{error}</span>
 
-            <SubmitButton text="Realizar Cadastro" />
-
             <span>
               Já tem cadastro? <Link to="/login">Clique aqui.</Link>
             </span>
+
+            <SubmitButton text="CADASTRAR" />
+        
           </form>
         </div>
       </div>
