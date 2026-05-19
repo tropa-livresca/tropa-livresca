@@ -38,21 +38,22 @@
   place-items:center;
 }
 
-.navbutton{
-  display:flex;
-  gap:0.5rem;
+.navbutton {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  place-items:center;
 }
 
 .buttoncad{
   background-color:#67170c;
   color:#EDE6B3;
   padding:0.7rem;
-  height:3rem;
   align-items: center;
   border-radius:0.4rem;
 }
 
 .buttonlog{
+  
   background-color:#67170c;
   color:#EDE6B3;
   padding:0.7rem;
