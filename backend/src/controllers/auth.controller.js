@@ -75,7 +75,7 @@ export const signup = async (req, res) => {
       email,
       password,
       options: {
-        emailRedirectTo: "http://localhost:5173/confirmacao-email",
+        //emailRedirectTo: "http://localhost:5173/confirmacao-email",
         data: { nome, telefone },
       },
     });
