@@ -15,11 +15,13 @@ import logo from "../../images/logo.png";
  */
 export default function NavBar() {
   return ( 
-    <nav className={styles.navbar}>
+    <div className={styles.containernav}>
+      <div className={styles.logonav}>
         <Link to="/">
           <img src={logo} alt="Tropa Livresca" width="100" />
         </Link>
-        
+      </div>
+    <nav className={styles.navbar}>
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
@@ -37,21 +39,20 @@ export default function NavBar() {
             <Link to="/">Blog</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/novolivro">Se Autopublique</Link>
+            <Link to="/novolivro">Ajuda</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Resenha</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/">Ajuda</Link>
+            <Link to="/">Se Autopublique</Link>
           </li>
-
-          <div>
-            <Link to="/cadastro">Cadastrar</Link>
-            <Link to ="/login">Login</Link>
-          </div>
-
         </ul>
     </nav>
+      <div className={styles.navbutton}>
+        <Link to="/cadastro" className={styles.buttoncad}>Cadastrar</Link>
+        <Link to="/login" className={styles.buttonlog}>Login</Link>
+      </div>
+    </div>
   );
 }
