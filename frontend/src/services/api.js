@@ -1,4 +1,4 @@
-const BASE_URL = ["http://localhost:5173","https://ominous-waddle-7v5xpwvw7qwg2pg9v-3000.app.github.dev", "https://solid-space-eureka-r46pqvxg4666hw5.app.github.dev", "https://organic-orbit-x5x6v4wwjrxrh6jg.app.github.dev/"];
+const BASE_URL = ["http://localhost:5173","https://ominous-waddle-7v5xpwvw7qwg2pg9v-3000.app.github.dev", "https://solid-space-eureka-r46pqvxg4666hw5.app.github.dev", "https://organic-orbit-x5x6v4wwjrxrh6jg.app.github.dev"];
 
 export const apiFetch = async (endpoint, options = {}) => {
   options.credentials = "include"; 
