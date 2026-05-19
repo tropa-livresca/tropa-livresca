@@ -118,6 +118,11 @@ a {
     margin-bottom: 2rem;
   }
 
+    .formulario img {
+    justify-self: center;
+    z-index: 2;
+  }
+
   form {
     border-radius: 2rem;
     padding: 2rem 0.8rem;
