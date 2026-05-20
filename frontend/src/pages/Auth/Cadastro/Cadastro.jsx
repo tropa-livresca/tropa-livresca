@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import Input, { InputTelefone } from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import logo from "../../../components/images/cad.png";
+import logo2 from "../../../components/images/logo.png";
 import styles from "./Cadastro.module.css";
 import useAuth from "../../../hooks/useAuth";
-import {Link, useNavigate} from "react-router-dom";
-import { supabase } from "../../../lib/supabaseClient";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
@@ -16,19 +16,17 @@ export default function Cadastro() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const {signup} = useAuth();
+  const { signup } = useAuth();
 
-  const handleSignup = async(e) =>{
-
+  const handleSignup = async (e) => {
     let novosErros = [];
 
     e.preventDefault();
 
-    if(!email || !senha || !confSenha || !telefone || !nome){
+    if (!email || !senha || !confSenha || !telefone || !nome) {
       setError("Preencha todos os campos.");
       return;
     }
-    
 
     if (senha.length < 8 && senha.length != "") {
       novosErros.push("A senha precisa ter, no mínimo, 8 caracteres");
@@ -46,7 +44,7 @@ export default function Cadastro() {
       novosErros.push("As senhas não são iguais.");
     }
 
-    if(telefone.length != 15){
+    if (telefone.length != 15) {
       novosErros.push("Numero de telefone incorreto");
     }
 
@@ -55,42 +53,24 @@ export default function Cadastro() {
       return;
     }
 
-    //Validação do Banco se há usuários a partir da função criada check_user_exists
-    try {
-      const { data: exists, error: rpcError } = await supabase.rpc(
-        "check_user_exists",
-        {
-          email_to_check: email,
-        },
-      );
-
-      if (rpcError) throw rpcError;
-
-      if (exists) {
-        setError(["Este e-mail já está cadastrado."]);
-        return; //Interrompe o cadastro
-      }
-    } catch (err) {
-      console.error("Erro RPC:", err);
-    }
-
-    if(senha !== confSenha){
+    if (senha !== confSenha) {
       setError("As senhas não são iguais.");
       return;
     }
 
-    const res = await signup(email, senha, telefone, nome);
+    const resError = await signup(email, senha, telefone, nome);
 
-    if(res){
-      setError(res);
+    if (resError) {
+      setError(resError);
       return;
     }
 
-    alert("Usuário cadastrado com sucesso!");
+    alert(
+      "Cadastro realizado! Verifique sua caixa de entrada para confirmar o e-mail.",
+    );
+
     navigate("/login");
-  }
-
-
+  };
 
   return (
     <div className={styles.container}>
@@ -100,8 +80,10 @@ export default function Cadastro() {
 
       <div className={styles.ldireito}>
         <div className={styles.formulario}>
+        <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
+            <h3>Insira seus dados para criar sua conta</h3>
 
             <label>Nome de Usuário*</label>
             <Input
@@ -138,33 +120,27 @@ export default function Cadastro() {
               handleOnChange={(e) => setConfSenha(e.target.value)}
               value={confSenha}
             />
-            
+
             <label>Telefone*</label>
             <InputTelefone
               type="text"
               name="telefone"
-              placeholder="Confirme a senha"
+              placeholder="Digite o telefone"
               handleOnChange={(e) => setTelefone(e.target.value)}
               value={telefone}
-            
-            
             />
-
 
             <span>{error}</span>
 
-            <SubmitButton text="Realizar Cadastro" />
-
             <span>
-              Já tem cadastro? <Link to = "/login">Clique aqui.</Link>
+              Já tem cadastro? <Link to="/login">Clique aqui.</Link>
             </span>
-            
+
+            <SubmitButton text="CADASTRAR" />
+        
           </form>
         </div>
       </div>
     </div>
   );
 }
-
-  
-
