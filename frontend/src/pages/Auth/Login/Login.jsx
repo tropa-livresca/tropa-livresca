@@ -57,7 +57,9 @@ export default function Login() {
       <div className={styles.formulario}>
          <img src={logo2} alt="Tropa Livresca" width="100" />
     <form onSubmit={handleSignin}>
-      <h1>Login</h1>
+      <h1>LOGIN</h1>
+      <h2>Bem-vindo de volta</h2>
+      <h3>Insira seus dados para acessar sua conta</h3>
       <label>E-mail</label>
       <Input
         type="email"
@@ -67,7 +69,6 @@ export default function Login() {
         }}
         value={email}
       />
-
       <label>Senha</label>
       <Input
         type="password"
@@ -77,6 +78,12 @@ export default function Login() {
         }}
         value={senha}
       />
+      
+      <div id={styles.checkbox}>
+        <input type="checkbox"/>
+        <label>Lembrar por 30 dias</label>
+      </div>
+      
       <SubmitButton text="Entrar" />
 
       {error.length > 0 && <p>{error}</p>}
@@ -86,12 +93,14 @@ export default function Login() {
       </p>
 
       <div className={styles.informacoes}>
+        <div className={styles.para}>
         <p>
         Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
         </p>
         <p>
         É funcionário? <Link to="/cadastro">Clique aqui.</Link>
         </p>
+        </div>
       </div>
 
     </form>

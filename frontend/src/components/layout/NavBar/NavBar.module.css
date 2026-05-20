@@ -1,25 +1,61 @@
+.containernav{
+  display: grid;
+  width:100%;
+  grid-template-columns: 0.5fr 1fr 0.5fr;
+  background-color:  #EDE6B3;
+}
+
 .navbar{
-    display:flex;
-    justify-content: space-between;
-    background-color: #EDE6B3;
+    display:grid;
+    place-items:center;
     padding: 1em;
 }
 
+
 .list{
-    display:flex;
+    display:grid;
+    grid-template-columns: repeat(8, 1fr);
+    place-items:center;
     list-style: none;
-    align-items:center;
 }
 
 .item{
-    margin-right: 1em;
+    padding:1.4rem;
 }
 
 .item a{
     color: #67170C;
     text-decoration: none;
+    white-space: nowrap;
 }
 
-/*.item a:hover{
+.item a:hover{
     color: #ffbb33;
-}*/
+}
+
+.logonav{
+  display:grid;
+  place-items:center;
+}
+
+.navbutton {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  place-items:center;
+}
+
+.buttoncad{
+  background-color:#67170c;
+  color:#EDE6B3;
+  padding:0.7rem;
+  align-items: center;
+  border-radius:0.4rem;
+}
+
+.buttonlog{
+  
+  background-color:#67170c;
+  color:#EDE6B3;
+  padding:0.7rem;
+  border-radius:0.4rem;
+}
