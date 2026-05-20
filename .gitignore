@@ -1,2 +1,6 @@
 node_modules
 
+#Retira os arquivos de ambiente do controle de versão
+.env.*local
+.env.production
+.env.development
