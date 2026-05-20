@@ -80,7 +80,7 @@ export default function Cadastro() {
 
       <div className={styles.ldireito}>
         <div className={styles.formulario}>
-        <img src={logo2} alt="Tropa Livresca" width="100" />
+          <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
             <h3>Insira seus dados para criar sua conta</h3>
@@ -137,7 +137,6 @@ export default function Cadastro() {
             </span>
 
             <SubmitButton text="CADASTRAR" />
-        
           </form>
         </div>
       </div>

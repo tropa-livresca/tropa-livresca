@@ -70,7 +70,6 @@ export const signup = async (req, res) => {
   const { email, password, telefone, nome } = req.body;
   //Falta verificar o número de usuários
   try {
-    
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -81,10 +80,12 @@ export const signup = async (req, res) => {
     });
 
     if (error) {
-      if(error.message.includes("already registered" || error.status === 422)){
+      if (
+        error.message.includes("already registered" || error.status === 422)
+      ) {
         return res.status(400).json({ error: "Email já cadastrado." });
       }
-      
+
       return res.status(400).json({ error: error.message });
     }
 
