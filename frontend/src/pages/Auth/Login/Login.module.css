@@ -29,21 +29,21 @@
   grid-template-rows: auto 1fr;
 }
 
-.formulario h1{
+.formulario h1 {
   color: #67170c;
   font-size: 2.5rem;
   text-align: center;
   margin-bottom: 1.5rem;
 }
 
-.formulario h2{
+.formulario h2 {
   color: #67170c;
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 1rem;
 }
 
-.formulario h3{
+.formulario h3 {
   color: #67170c;
   font-size: 1rem;
   text-align: center;
@@ -81,7 +81,7 @@ a {
 
 .para p {
   text-align: left;
-  color:#67170c;
+  color: #67170c;
   font-weight: bold;
   margin: 0.5rem;
 }
@@ -119,7 +119,7 @@ a {
     margin-bottom: 2rem;
   }
 
-    .formulario img {
+  .formulario img {
     justify-self: center;
     z-index: 2;
   }

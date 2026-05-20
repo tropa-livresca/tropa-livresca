@@ -78,7 +78,7 @@ span {
     padding: 1rem;
   }
 
-  .formulario{
+  .formulario {
     margin-bottom: 2rem;
   }
 
@@ -91,7 +91,6 @@ span {
     margin-bottom: 1.5rem;
   }
 
-
   .formulario img {
     justify-self: center;
     z-index: 2;
@@ -101,5 +100,4 @@ span {
     padding: 2rem 0.5rem;
     border-radius: 2rem;
   }
-
 }
