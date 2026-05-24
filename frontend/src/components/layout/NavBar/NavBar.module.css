@@ -13,7 +13,6 @@
   padding:1rem;
 }
 
-
 .list{
   display:grid;
   grid-auto-flow:column;
