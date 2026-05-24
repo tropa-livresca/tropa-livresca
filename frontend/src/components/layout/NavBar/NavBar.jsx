@@ -25,6 +25,11 @@ export default function NavBar() {
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
+            <ul className={styles.subtemas}>
+              <li><Link to="/">Quem Somos</Link></li>
+              <li><Link to="/">O Que Fazemos</Link></li>
+              <li><Link to="/">Depoimentos</Link></li>
+            </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Livros</Link>
@@ -42,16 +47,15 @@ export default function NavBar() {
             <Link to="/novolivro">Ajuda</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/">Resenha</Link>
+            <Link to="/">Se Autopublique</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/">Se Autopublique</Link>
+            <Link to="/">Ajuda</Link>
           </li>
         </ul>
     </nav>
       <div className={styles.navbutton}>
-        <Link to="/cadastro" className={styles.buttoncad}>Cadastrar</Link>
-        <Link to="/login" className={styles.buttonlog}>Login</Link>
+        <Link to="/cadastro" className={styles.button}>Entrar</Link>
       </div>
     </div>
   );
