@@ -1,66 +1,63 @@
 .containernav{
-  display: grid;
+  display:grid;
+  grid-template-columns:auto 1fr;
+  align-items:center;
   width:100%;
-  grid-template-columns: 0.5fr 1fr 0.5fr;
-  background-color:  #EDE6B3;
+  background-color:#EDE6B3;
 }
-
 .navbar{
-    display:grid;
-    place-items:center;
-    padding: 1em;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:2rem;
+  padding:1rem;
 }
 
 
 .list{
-    display:grid;
-    grid-template-columns: repeat(8, 1fr);
-    place-items:center;
-    list-style: none;
+  display:grid;
+  grid-auto-flow:column;
+  gap:1.2rem;
+  justify-content:center;
+
+  list-style:none;
 }
 
 .item{
-    padding-left:1.4rem;
+  padding-left:1.4rem;
 }
 
 .item a{
-    color: #67170C;
-    text-decoration: none;
-    white-space: nowrap;
+  color: #67170C;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
 .item a:hover{
-    color: #ffbb33;
+  color: #ffbb33;
 }
 
 .logonav{
   display:grid;
-  place-items:center;
+  justify-content:center;
+  margin-left:4rem;
 }
 
-.navbutton {
-  display: grid;
-  place-items:center;
+.navbutton{
+  display:flex;
+  gap:1rem;
+  margin-right:4rem;
 }
 
 .button{
+  display:flex;
+  justify-content:center;
+  align-items:center;
   background-color:#67170c;
   color:#EDE6B3;
-  padding:0.7rem;
-  border-radius:0.4rem;
-  width:7rem;
-  height:3rem;
-  place-content:center;
+  width:5rem;
+  height:2.5rem;
+  border-radius:0.5rem;
+  text-decoration:none;
 }
 
-.list .subtemas{
-  display:none;
-}
-
-.list > li:hover .subtemas{
-  display: block;
-}
-
-
-
-/*oiiiaii*/
