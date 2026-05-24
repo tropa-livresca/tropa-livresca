@@ -20,7 +20,7 @@
 }
 
 .item{
-    padding:1.4rem;
+    padding-left:1.4rem;
 }
 
 .item a{
@@ -40,22 +40,23 @@
 
 .navbutton {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
   place-items:center;
 }
 
-.buttoncad{
+.button{
   background-color:#67170c;
   color:#EDE6B3;
   padding:0.7rem;
-  align-items: center;
   border-radius:0.4rem;
+  width:7rem;
+  height:3rem;
+  place-content:center;
 }
 
-.buttonlog{
-  
-  background-color:#67170c;
-  color:#EDE6B3;
-  padding:0.7rem;
-  border-radius:0.4rem;
+.list .subtemas{
+  display:none;
+}
+
+.list > li:hover .subtemas{
+  display: block;
 }
