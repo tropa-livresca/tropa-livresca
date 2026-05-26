@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 
+import { useState, useEffect } from "react";
+
 import Container from "../Container/Container";
 
 import styles from "./NavBar.module.css";
@@ -9,22 +11,32 @@ import logo from "../../images/logo.png";
 /**
  * Componente de Barra de Navegação Superior
  * Contém o logotipo e os links principais de navegação do sistema
- * 
+ *
  * @component
- * @returns {JSX.Element} 
+ * @returns {JSX.Element}
  */
 export default function NavBar() {
-  return ( 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Verificar se o usuário está logado (exemplo usando localStorage)
+    const token = localStorage.getItem("auth-token");
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
+  return (
     <div className={styles.containernav}>
       <div className={styles.logonav}>
         <Link to="/">
           <img src={logo} alt="Tropa Livresca" width="100" />
         </Link>
       </div>
-    <nav className={styles.navbar}>
+      <nav className={styles.navbar}>
         <ul className={styles.list}>
           <li className={styles.item}>
-            <Link to="/">Sobre Nós</Link>   
+            <Link to="/">Sobre Nós</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Livros</Link>
@@ -48,11 +60,27 @@ export default function NavBar() {
             <Link to="/">Ajuda</Link>
           </li>
         </ul>
-        <div className={styles.navbutton}>
-        <Link to="/cadastro" className={styles.button}>Cadastro</Link>
-        <Link to="/login" className={styles.button}>Login</Link>
-      </div>
-    </nav>
+
+        {isLoggedIn ? (
+          <div className={styles.navbutton}>
+            <Link to="/perfil" className={styles.button}>
+              Perfil
+            </Link>
+            <Link to="/logout" className={styles.button}>
+              Logout
+            </Link>
+          </div>
+        ) : (
+          <div className={styles.navbutton}>
+            <Link to="/cadastro" className={styles.button}>
+              Cadastro
+            </Link>
+            <Link to="/login" className={styles.button}>
+              Login
+            </Link>
+          </div>
+        )}
+      </nav>
     </div>
   );
 }
