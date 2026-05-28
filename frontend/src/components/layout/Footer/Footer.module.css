@@ -1,8 +1,14 @@
 .footer {
-  /*background-color: #222;
-    color: #fff;*/
-  padding: 3em;
-  text-align: center;
+  display: grid;
+  width:100%;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr;
+  height:30vh;
+  background-color:  #EDE6B3;
+}
+
+.logo{
+  display:grid;
+  place-items:center;
 }
 
 .social_list {
@@ -31,4 +37,29 @@
 .copy_right span {
   font-weight: bold;
   /*color: #ffbb33;*/
+}
+
+.mapa{
+  display:grid;
+  place-items:center;
+}
+
+.mapalist{
+  list-style: none;
+}
+
+.mapalist a{
+  color: #67170C;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.atendimento{
+  display:grid;
+  place-items:center;
+}
+
+.icons{
+  display:grid;
+  place-items:center;
 }
