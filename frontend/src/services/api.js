@@ -1,3 +1,7 @@
+//const BASE_URL = "https://solid-space-eureka-r46pqvxg4666hw5.github.dev/";
+
+//https://solid-space-eureka-r46pqvxg4666hw5.github.dev/
+
 export const apiFetch = async (endpoint, options = {}) => {
   options.credentials = "include"; 
   options.headers = {
