@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
+import { apiFetch } from "../../../services/api";
 
 import { useState, useEffect } from "react";
 
@@ -17,14 +19,46 @@ import logo from "../../images/logo.png";
  */
 export default function NavBar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { signout } = useAuth();
+
+  const sair = async () => {
+    try {
+      const res = await apiFetch("/api/auth/signout", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("auth-token")}`
+        }
+      });
+      if (res.ok) {
+        setIsLoggedIn(false);
+        signout();
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
 
   useEffect(() => {
-    // Verificar se o usuário está logado (exemplo usando localStorage)
-    const token = localStorage.getItem("auth-token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
+    const checkAuthStatus = async () => {
+      try {
+        const response = await apiFetch("/api/auth/perfil", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${localStorage.getItem("auth-token")}`
+          }
+        });
+        if (response.ok) {
+          setIsLoggedIn(true);
+        }
+      } catch (error) {
+        console.error("Error checking authentication status:", error);
+      }
+    };
+
+    checkAuthStatus();
   }, []);
+
+
 
   return (
     <div className={styles.containernav}>
@@ -66,9 +100,9 @@ export default function NavBar() {
             <Link to="/perfil" className={styles.button}>
               Perfil
             </Link>
-            <Link to="/logout" className={styles.button}>
+            <button onClick = {sair} className={styles.button}>
               Logout
-            </Link>
+            </button>
           </div>
         ) : (
           <div className={styles.navbutton}>
