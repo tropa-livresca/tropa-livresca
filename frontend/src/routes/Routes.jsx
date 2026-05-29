@@ -12,10 +12,10 @@ import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 
 import Historia from "../pages/Public/Historia/Historia";
 
-import Meus_livros from "../pages/Public/Autores/MeusLivros";
+import MeusLivros from "../pages/Public/Autores/MeusLivros";
 
 //Se Autopublique
-import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
+import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
 import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
 import Conteudo from "../pages/Private/NovoLivro/Conteudo/Conteudo";
 import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
@@ -59,7 +59,7 @@ const RoutesApp = () => {
            */}
           <Route path="historia" element={<Historia />} />
 
-          <Route path="meus_livros" element={<Meus_livros/>}/>
+          <Route path="meus_livros" element={<MeusLivros/>}/>
 
           <Route path="seautopublique" element={<SeAutopublique />}>
             <Route index element={<SeAutopublique />} />

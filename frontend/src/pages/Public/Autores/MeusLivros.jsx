@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import {Livros} from "../../../components/Livros.jsx";
+import {Livros} from "../../../services/Livros.js";
 
 export default function MeusLivros(){
    const [livros, setLivros] = useState("");
@@ -7,13 +7,10 @@ export default function MeusLivros(){
    useEffect(() =>{
       const StartLivros = async() =>{
          console.log("a");
-         const data = Livros();
+         const data = await Livros();
          setLivros(data);
       }
-
-      
-
-   })
+   }, []);
 
    return <h1>{livros != "" ? livros[0].titulo : ""}</h1>;
 }
