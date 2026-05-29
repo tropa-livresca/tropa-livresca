@@ -16,11 +16,11 @@ import Meus_livros from "../pages/Public/Autores/MeusLivros";
 
 //Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
-import Confirmacao from "../pages/Private/NovoLivro/Confirmacao";
-import Conteudo from "../pages/Private/NovoLivro/Conteudo";
-import Detalhes from "../pages/Private/NovoLivro/Detalhes";
-import Formato from "../pages/Private/NovoLivro/Formato";
-import Orcamento from "../pages/Private/NovoLivro/Orcamento";
+import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
+import Conteudo from "../pages/Private/NovoLivro/Conteudo/Conteudo";
+import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
+import Formato from "../pages/Private/NovoLivro/Formato/Formato";
+import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
 import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
 
 /**
