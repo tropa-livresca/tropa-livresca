@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import {Livros} from "../../../components/Livros.jsx";
 
@@ -16,5 +15,5 @@ export default function MeusLivros(){
 
    })
 
-   return <h1>{livros}</h1>;
+   return <h1>{livros != "" ? livros[0].titulo : ""}</h1>;
 }
