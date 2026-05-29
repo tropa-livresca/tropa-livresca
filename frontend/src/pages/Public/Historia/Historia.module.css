@@ -1,0 +1,27 @@
+.container{
+  display:grid;
+  grid-template-columns: auto auto;
+}
+
+.lesquerdo{
+  margin-left:4rem;
+  margin-right:4rem;
+}
+
+.lesquerdo p{
+  text-align:left;
+}
+
+.ldireito{
+  margin-right:4rem;
+}
+
+.ldireito img{
+  width:30rem;
+  height:12rem;
+}
+
+.lesquerdo img{
+  width:30rem;
+  height:12rem;
+}
