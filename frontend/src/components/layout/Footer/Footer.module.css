@@ -1,7 +1,7 @@
 .footer {
   display: grid;
   width:100%;
-  grid-template-columns: 0.5fr 0.5fr 0.5fr 0.5fr;
+  grid-template-columns: auto 0.5fr 0.5fr auto;
   height:30vh;
   background-color:  #EDE6B3;
 }
@@ -9,6 +9,7 @@
 .logo{
   display:grid;
   place-items:center;
+  margin-left:4rem;
 }
 
 .social_list {
@@ -26,7 +27,7 @@
 }*/
 
 .social_list svg {
-  font-size: 1.5em;
+  font-size: 2em;
   cursor: pointer;
 }
 
@@ -62,4 +63,5 @@
 .icons{
   display:grid;
   place-items:center;
+  margin-right:4rem;
 }

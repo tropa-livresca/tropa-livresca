@@ -24,7 +24,7 @@ export default function NavBar() {
     <nav className={styles.navbar}>
         <ul className={styles.list}>
           <li className={styles.item}>
-            <Link to="/">Sobre Nós</Link>   
+            <Link to="/historia">Sobre Nós</Link>   
           </li>
           <li className={styles.item}>
             <Link to="/">Livros</Link>
