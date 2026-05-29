@@ -22,21 +22,3 @@ import { apiFetch } from "./api";
    }
 }
 
-export const GetLivrosDeAutor = async () =>{
-   try{
-     const res = await apiFetch("/api/livros/", {Method: "Get"});
-
-     const data = await res.json();
-     console.log(data);
-
-     if(!res.ok){
-      return data.error;
-     }
-
-     return data;
-
-   }catch{
-     return "error";
-   }
-}
-

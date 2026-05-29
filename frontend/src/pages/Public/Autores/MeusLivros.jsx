@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {GetLivros} from "../../../services/Livros.js";
-
 export default function MeusLivros(){
    const [livros, setLivros] = useState("");
 
@@ -21,5 +20,4 @@ export default function MeusLivros(){
             <td><h3>editar</h3> <h3>visualizar</h3> <h3>{livro.ativo == true ? <span>desativar</span> : <span>ativar</span>}</h3></td>
          </tr>
       
-   }) : ""}</table>;
-}
+   }) : ""}</table>};
