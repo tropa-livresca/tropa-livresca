@@ -59,14 +59,8 @@ const RoutesApp = () => {
           <Route/>
            */}
           <Route path="historia" element={<Historia />} />
-<<<<<<< HEAD
           <Route path="autores" element={<Autores />} />
           
-=======
-
-          <Route path="meus_livros" element={<MeusLivros/>}/>
-
->>>>>>> 3774c400fc3da119593bf5481e8d9d994ff39e02
           <Route path="seautopublique" element={<SeAutopublique />}>
             <Route index element={<SeAutopublique />} />
             <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />
