@@ -13,13 +13,15 @@ import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 import Historia from "../pages/Public/Historia/Historia";
 import Autores from "../pages/Public/Autores/Autores";
 
+import MeusLivros from "../pages/Public/Autores/MeusLivros";
+
 //Se Autopublique
-import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
-import Confirmacao from "../pages/Private/NovoLivro/Confirmacao";
-import Conteudo from "../pages/Private/NovoLivro/Conteudo";
-import Detalhes from "../pages/Private/NovoLivro/Detalhes";
-import Formato from "../pages/Private/NovoLivro/Formato";
-import Orcamento from "../pages/Private/NovoLivro/Orcamento";
+import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
+import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
+import Conteudo from "../pages/Private/NovoLivro/Conteudo/Conteudo";
+import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
+import Formato from "../pages/Private/NovoLivro/Formato/Formato";
+import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
 import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
 
 /**
@@ -57,8 +59,14 @@ const RoutesApp = () => {
           <Route/>
            */}
           <Route path="historia" element={<Historia />} />
+<<<<<<< HEAD
           <Route path="autores" element={<Autores />} />
           
+=======
+
+          <Route path="meus_livros" element={<MeusLivros/>}/>
+
+>>>>>>> 3774c400fc3da119593bf5481e8d9d994ff39e02
           <Route path="seautopublique" element={<SeAutopublique />}>
             <Route index element={<SeAutopublique />} />
             <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />
