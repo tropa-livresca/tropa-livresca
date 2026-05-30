@@ -9,16 +9,6 @@ import styles from "./Inicio.module.css";
  * @returns {JSX.element}
  */
 export default function Inicio() {
-//Criando as rotas
-/*  const [autores, setAutores] = setState([]);
-
-  const getAutores = async () => {
-    const { data } = await supabase
-    .from("users_profile")
-    .select("*")
-  };
-*/
-
   return (
     <section className={styles.inicio_container}>
       <h1>Início</h1>
