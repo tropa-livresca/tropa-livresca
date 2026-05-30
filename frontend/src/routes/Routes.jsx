@@ -11,6 +11,7 @@ import Login from "../pages/Auth/Login/Login";
 import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 
 import Historia from "../pages/Public/Historia/Historia";
+import Autores from "../pages/Public/Autores/Autores";
 
 //Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
@@ -56,7 +57,8 @@ const RoutesApp = () => {
           <Route/>
            */}
           <Route path="historia" element={<Historia />} />
-
+          <Route path="autores" element={<Autores />} />
+          
           <Route path="seautopublique" element={<SeAutopublique />}>
             <Route index element={<SeAutopublique />} />
             <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />
