@@ -24,7 +24,12 @@ export default function NavBar() {
     <nav className={styles.navbar}>
         <ul className={styles.list}>
           <li className={styles.item}>
-            <Link to="/historia">Sobre Nós</Link>   
+            <Link to="/">Sobre Nós</Link>
+            <ul className={styles.subtema}>
+              <li><Link to="/historia">Quem Somos</Link></li>
+              <li><Link to="/">O Que Fazemos</Link></li>
+              <li><Link to="/">Depoimentos</Link></li>
+            </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Livros</Link>
@@ -33,19 +38,23 @@ export default function NavBar() {
             <Link to="/">Loja</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/">Autores</Link>
+            <Link to="/autores">Autores</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Blog</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/novolivro">Ajuda</Link>
-          </li>
-          <li className={styles.item}>
             <Link to="/">Se Autopublique</Link>
+            <ul className={styles.subtema}>
+              <li><Link to="/">Meus Livros</Link></li>
+            </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Ajuda</Link>
+            <ul className={styles.subtema}>
+              <li><Link to="/">Perguntas Frequentes</Link></li>
+              <li><Link to="/">Contato</Link></li>
+            </ul>
           </li>
         </ul>
         <div className={styles.navbutton}>
