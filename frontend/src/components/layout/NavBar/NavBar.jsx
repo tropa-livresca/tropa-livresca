@@ -58,7 +58,7 @@ export default function NavBar() {
     checkAuthStatus();
   }, []);
 
-
+  const [menuAberto, setMenuAberto] = useState(false);
 
   return (
     <div className={styles.containernav}>
@@ -67,7 +67,10 @@ export default function NavBar() {
           <img src={logo} alt="Tropa Livresca" width="100" />
         </Link>
       </div>
-      <nav className={styles.navbar}>
+
+      <button className={styles.hamburguer} onClick={() => setMenuAberto(!menuAberto)}> ☰ </button>
+      
+      <nav  className={`${styles.navbar} ${ menuAberto ? styles.menuAberto : ""}`}>
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
@@ -109,9 +112,11 @@ export default function NavBar() {
             <Link to="/perfil" className={styles.button}>
               Perfil
             </Link>
+            <Link>
             <button onClick = {sair} className={styles.button}>
               Logout
             </button>
+            </Link>
           </div>
         ) : (
           <div className={styles.navbutton}>
