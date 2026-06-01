@@ -8,3 +8,9 @@ h1{
  color: #67170C;
  margin-left:4rem;
 }
+
+.autores{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}

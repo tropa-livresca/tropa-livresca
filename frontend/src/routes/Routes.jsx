@@ -44,41 +44,33 @@ const Private = ({  Item }) => {
  *
  * @component
  * @returns {JSX.Element}
- */
-const RoutesApp = () => {
+ */const RoutesApp = () => {
   return (
     <BrowserRouter>
       <Routes>
         {/* Rotas com Layout Principal (Navbar, Footer) */}
         <Route element={<MainLayout />}>
+          {/* Rota Raiz Correta */}
           <Route path="/" element={<Inicio />} />
-
-          {/*
-          <Route path = "sobre" element = {<SobreNos/>}>
-            <Route index element = ""/>
-          <Route/>
-           */}
+          
           <Route path="historia" element={<Historia />} />
           <Route path="autores" element={<Autores />} />
           
-          <Route path="seautopublique" element={<SeAutopublique />}>
+          {/* Grupo de Autopublicação Corrigido */}
+          <Route path="seautopublique">
             <Route index element={<SeAutopublique />} />
-            <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />
-            <Route path="detalhes" element={<Private Item ={Detalhes} />} />
-            <Route path="formato" element={<Private Item = {Formato} />} />
-            <Route path="orcamento" element={<Private Item = {Orcamento} />} />
-            <Route path="conteudo" element={<Private Item ={Conteudo} />} />
+            <Route path="confirmacao" element={<Private Item={Confirmacao} />} />
+            <Route path="detalhes" element={<Private Item={Detalhes} />} />
+            <Route path="formato" element={<Private Item={Formato} />} />
+            <Route path="orcamento" element={<Private Item={Orcamento} />} />
+            <Route path="conteudo" element={<Private Item={Conteudo} />} />
           </Route>
         </Route>
 
         {/* Rotas de Autenticação */}
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="login" element={<Login />} />
-        <Route path="confirmacao-email" element={<ConfirmacaoEmail />} /> 
-
-        {/* Exemplo de como usar a rota privada no futuro:
-            <Route path="/perfil" element={<Private Item={Perfil} />} /> 
-        */}
+        <Route path="confirmacao-email" element={<ConfirmacaoEmail />} />
       </Routes>
     </BrowserRouter>
   );
