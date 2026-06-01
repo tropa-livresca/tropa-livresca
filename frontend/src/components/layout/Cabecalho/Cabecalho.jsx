@@ -1,3 +1,4 @@
+import styles from "./Cabecalho.module.css";
 /**
  * Componente que corresponde ao cabeçalho da página (que indica o nome de tal)
  * 
