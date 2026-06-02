@@ -7,6 +7,6 @@ const COOKIE_OPTIONS = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
 };
 
-export const GetAutor = async() =>{
+export const GetAutor = async(userId) =>{
        return ( await supabase.from('livros').select());
 }
