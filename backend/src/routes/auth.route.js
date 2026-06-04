@@ -10,12 +10,12 @@ router.post("/signout", signout);
 router.post("/refresh", refreshSession);
 router.post("/session", setSession);
 
-router.get("/session", (req, res) => {
-  return res.status(200).json({ message: "Aguardando envio dos tokens via POST." });
+router.get("/session", checkAuth, (req, res) => {
+  return res.status(200).json({ user: req.user });
 });
 
 router.get("/perfil", checkAuth, (req, res) => {
-  res.json({message: "Rota privada",  user: req.user });
+  return res.status(200).json({ user: req.user });
 });
 
 export default router;

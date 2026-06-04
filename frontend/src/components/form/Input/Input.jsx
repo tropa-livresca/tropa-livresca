@@ -42,7 +42,7 @@ export function InputTelefone({type, text, name, placeholder, handleOnChange, va
 }
 
 
-export function InputI({type, text, name, placeholder, handleOnChange, value}){
+export function InputImagem({type, name, handleOnChange, value}){
     return(
         <div className = {styles.form_control}>
             <input

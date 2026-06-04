@@ -10,6 +10,8 @@ import Cadastro from "../pages/Auth/Cadastro/Cadastro";
 import Login from "../pages/Auth/Login/Login";
 import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 
+import Perfil from "../pages/Private/Perfil/Perfil";
+
 import Historia from "../pages/Public/Historia/Historia";
 
 import MeusLivros from "../pages/Public/Autores/MeusLivros";
@@ -79,6 +81,8 @@ const RoutesApp = () => {
         {/* Exemplo de como usar a rota privada no futuro:
             <Route path="/perfil" element={<Private Item={Perfil} />} /> 
         */}
+
+        <Route path = "/perfil" element = {<Private Item = {Perfil}/>}/>
       </Routes>
     </BrowserRouter>
   );
