@@ -1,30 +1,40 @@
 import usePerfil from "../../../hooks/usePerfil";
-import Styles from "../Perfil.module.css";
+import Styles from "./Perfil.module.css";
 import Input from "../../../components/form/Input/Input";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 export default function Perfil() {
-  const {updatePerfil} = usePerfil();
+  const {
+    perfil,
+    nome,
+    telefone,
+    imagem,
+    setNome,
+    setTelefone,
+    setImagem,
+    updatePerfil,
+    getPerfil,
+  } = usePerfil();
 
-  const [perfil, setPerfil] = useState(null);
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [imagem, setImagem] = useState(null);
+  useEffect(() => {
+    getPerfil();
+  }, [getPerfil]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagem(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setImagem(file);
     }
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    updatePerfil();
+    updatePerfil({
+      nome,
+      telefone,
+      imagem,
+    });
   };
 
   return (
@@ -49,12 +59,7 @@ export default function Perfil() {
               value={telefone}
               handleOnChange={(e) => setTelefone(e.target.value)}
             />
-            <Input
-              type="file"
-              placeholder="URL da imagem"
-              value={imagem || ""}
-              handleOnChange={handleFileChange}
-            />
+            <Input type="file" handleOnChange={handleFileChange} />
             <button type="submit">Atualizar Perfil</button>
           </form>
         </div>

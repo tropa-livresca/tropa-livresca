@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { PerfilContext } from "../context/perfil/Perfil";
+import {PerfilContext} from "../context/perfil/Perfil";
 
 const usePerfil = () => {
   const context = useContext(PerfilContext);

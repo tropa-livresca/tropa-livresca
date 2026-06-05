@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import {GetLivros} from "../../../services/Livros.js";
+import {GetLivros} from "../../../context/livro/Livros";
+
 export default function MeusLivros(){
    const [livros, setLivros] = useState("");
 
