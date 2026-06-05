@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState } from "react";
 import { apiFetch } from "../../services/api";
 
 const PerfilContext = createContext();
@@ -9,9 +9,8 @@ export const PerfilProvider = ({ children }) => {
   const [telefone, setTelefone] = useState("");
   const [imagem, setImagem] = useState(null);
 
-  useEffect(() => {
-    const getPerfil = async () => {
-      try {
+  const getPerfil = async () => {
+    try {
       const response = await apiFetch("/api/perfil");
       const data = await response.json();
 
@@ -26,35 +25,41 @@ export const PerfilProvider = ({ children }) => {
     } catch (error) {
       console.error("Error recolher os dados do supabase", error);
     }
-}
-  
-  getPerfil();
-}, []);
+  };
 
-const updatePerfil = async () => {
-  try {
-    const response = await apiFetch("/api/perfil", {
-      method: "PUT",
-      body: JSON.stringify({
-        nome,
-        telefone,
-        imagem,
-      }),
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-    const data = await response.json();
+  const updatePerfil = async (dados) => {
+    try {
+      const formData = new FormData();
 
-    if (!response.ok) {
-      throw new Error(data.error || "Erro ao atualizar perfil");
+      formData.append("nome", dados.nome);
+      formData.append("telefone", dados.telefone);
+
+      if (dados.descricao) {
+        formData.append("descricao", dados.descricao);
+      }
+
+      if (dados.imagem) {
+        formData.append("imagem", dados.imagem);
+      }
+
+      const response = await apiFetch("/api/perfil/putPerfil", {
+        method: "PUT",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro ao atualizar perfil");
+      }
+
+      setPerfil(data);
+    } catch (error) {
+      console.error("Error ao atualizar perfil", error);
     }
+  };
 
-    setPerfil(data);
-  } catch (error) {
-    console.error("Error recolher os dados do supabase", error);
-  }
-}
-
- return (
+  return (
     <PerfilContext.Provider
       value={{
         perfil,

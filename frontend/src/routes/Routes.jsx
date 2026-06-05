@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import useAuth from "../hooks/useAuth";
+import usePerfil from "../hooks/usePerfil";
 
 import Container from "../components/layout/Container/Container";
 import MainLayout from "../components/layout/MainLayout/MainLayout";
@@ -25,43 +26,22 @@ import Formato from "../pages/Private/NovoLivro/Formato/Formato";
 import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
 import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
 
-/**
- * Componente de Rota Privada
- * Verifica se o usuário está autenticado antes de renderizar o componente solicitado
- *
- * @param {object} props
- * @param {React.ComponentType} props.Item - O componente que deve ser renderizado se autenticado
- * @returns {JSX.Element}
- */
 const Private = ({  Item }) => {
   const { signed } = useAuth();
 
   return signed ? <Item /> : <Login />;
 };
 
-/**
- * Gerenciador de Rotas Principal da Aplicação.
- * Define a estrutura de navegação, layouts e proteções de rota.
- *
- * @component
- * @returns {JSX.Element}
- */
 const RoutesApp = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rotas com Layout Principal (Navbar, Footer) */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Inicio />} />
 
-          {/*
-          <Route path = "sobre" element = {<SobreNos/>}>
-            <Route index element = ""/>
-          <Route/>
-           */}
           <Route path="historia" element={<Historia />} />
 
-          <Route path="meus_livros" element={<MeusLivros/>}/>
+          <Route path="meuslivros" element={<MeusLivros/>}/>
 
           <Route path="seautopublique" element={<SeAutopublique />}>
             <Route index element={<SeAutopublique />} />
@@ -77,10 +57,6 @@ const RoutesApp = () => {
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="login" element={<Login />} />
         <Route path="confirmacao-email" element={<ConfirmacaoEmail />} /> 
-
-        {/* Exemplo de como usar a rota privada no futuro:
-            <Route path="/perfil" element={<Private Item={Perfil} />} /> 
-        */}
 
         <Route path = "/perfil" element = {<Private Item = {Perfil}/>}/>
       </Routes>
