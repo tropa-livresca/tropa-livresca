@@ -1,55 +1,24 @@
-import { apiFetch } from "../../../services/api";
+import usePerfil from "../../../hooks/usePerfil";
+import Styles from "../Perfil.module.css";
 import Input from "../../../components/form/Input/Input";
 import { useEffect, useState } from "react";
 
 export default function Perfil() {
+  const {updatePerfil} = usePerfil();
+
   const [perfil, setPerfil] = useState(null);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [imagem, setImagem] = useState(null);
 
-  useEffect(() => {
-    const getPerfil = async () => {
-      try {
-        const response = await apiFetch("/api/perfil");
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Erro ao buscar perfil");
-        }
-
-        setPerfil(data);
-        setNome(data.nome || "");
-        setTelefone(data.telefone || "");
-        setImagem(data.imagem || "");
-      } catch (error) {
-        console.error("Error recolher os dados do supabase", error);
-      }
-    };
-
-    getPerfil();
-  }, []);
-
-  const updatePerfil = async () => {
-    try {
-      const response = await apiFetch("/api/perfil", {
-        method: "PUT",
-        body: JSON.stringify({
-          nome,
-          telefone,
-          imagem,
-        }),
-        headers: { "Content-Type": "application/json" },
-      });
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Erro ao atualizar perfil");
-      }
-
-      setPerfil(data);
-    } catch (error) {
-      console.error("Error recolher os dados do supabase", error);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagem(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
   };
   
@@ -81,10 +50,10 @@ export default function Perfil() {
               handleOnChange={(e) => setTelefone(e.target.value)}
             />
             <Input
-              type="text"
+              type="file"
               placeholder="URL da imagem"
               value={imagem || ""}
-              handleOnChange={(e) => setImagem(e.target.value)}
+              handleOnChange={handleFileChange}
             />
             <button type="submit">Atualizar Perfil</button>
           </form>
