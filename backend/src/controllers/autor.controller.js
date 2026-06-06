@@ -26,7 +26,7 @@ export const GetAutores = async (req, res) => {
 export const GetAutorById = async (req, res) => {
   const { id } = req.params;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("users_profile")
       .select("id, nome, telefone, imagem, descricao")
       .eq("id", id)
