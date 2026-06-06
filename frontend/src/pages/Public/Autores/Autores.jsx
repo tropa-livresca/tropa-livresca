@@ -6,12 +6,17 @@ import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
 
 export default function Autores() {
   const { autores, carregando, erro } = useAutor();
+  const [busca, setBusca] = useState("");
 
   if (carregando) return <p>Carregando...</p>
 
   if(erro) return <p>{erro}</p>
 
   if (autores.length === 0) return <p>Nenhum autor cadastrado</p>
+
+  const autoresFiltrados = autores.filter((autor) =>{
+    return autor.nome?.toLowerCase().includes(busca.toLowerCase());
+  });
 
   return (
     <div>
@@ -30,6 +35,8 @@ export default function Autores() {
             <input
               type="text"
               placeholder="Pesquisar..."
+              value = {busca}
+              onChange={(e)=>setBusca(e.target.value)}
               className={styles.inputsearch}
             />
             <button type="submit" className={styles.buttonsearch}>
@@ -37,13 +44,19 @@ export default function Autores() {
             </button>
           </div>
           <div className={styles.containerautores}>
-            {autores.map((autor) => (
-              <div key={autor.id} className={styles.autor}>
-                {autor.imagem ? (<img src={autor.imagem} alt={autor.nome} />) : (<div>Sem foto</div>)}
-                <h3>{autor.nome || "Autor anônimo"}</h3>
-                <p>{autor.descricao || "Sem descrição"}</p>
-              </div>
-            ))}
+
+            {autoresFiltrados.length === 0 ? (<p>Nenhum autor encontrado</p>) : (
+              autoresFiltrados.map((autor)=>{
+                return (
+                  <div key={autor.id} className={styles.autor}>
+                    {autor.imagem ? (<img src={autor.imagem} alt={autor.nome} />) : (<div>Sem foto</div>)}
+                    <h3>{autor.nome || "Autor anônimo"}</h3>
+                    <p>{autor.descricao || "Sem descrição"}</p>
+                  </div>
+                );
+              })
+            )}
+
           </div>
         </div>
       </main>
