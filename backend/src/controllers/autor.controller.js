@@ -10,3 +10,12 @@ const COOKIE_OPTIONS = {
 export const GetAutor = async() =>{
        return ( await supabase.from('livros').select());
 }
+
+/*
+Vou armazenar as imagens no storage, para o perfil
+export const GetAutores = async (req, res) =>{
+  const data = await supabase.from('users_profile').select('nome');
+  res.status(200).json(data);
+  return(data);
+}
+*/

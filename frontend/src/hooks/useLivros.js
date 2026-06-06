@@ -1,12 +1,9 @@
-
-
 import { useContext } from "react";
-import { LivroContext } from "../context/auth/Livros";
+import { LivroContext } from "../context/livro/Livros";
 
-const useLivros = () =>{
-    const context = useContext(LivroContext);
-    return context;
-}
+const useLivros = () => {
+  const context = useContext(LivroContext);
+  return context;
+};
 
 export default useLivros;
-
