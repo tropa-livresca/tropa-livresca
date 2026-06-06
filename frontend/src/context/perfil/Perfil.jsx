@@ -7,6 +7,7 @@ export const PerfilProvider = ({ children }) => {
   const [perfil, setPerfil] = useState(null);
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [descricao, setDescricao] = useState("");
   const [imagem, setImagem] = useState(null);
 
   const getPerfil = async () => {
@@ -14,13 +15,11 @@ export const PerfilProvider = ({ children }) => {
       const response = await apiFetch("/api/perfil");
       const data = await response.json();
 
-      console.log("1. O que veio do backend?", data);
-
       if (!response.ok) {
         if (response.status === 404) {
           setPerfil(null);
           setNome("");
-
+          setDescricao("");
           setTelefone("");
           setImagem("");
           return;
@@ -30,9 +29,7 @@ export const PerfilProvider = ({ children }) => {
 
       setPerfil(data);
       setNome(data.nome || "");
-
-      console.log("2. O estado nome recebeu:", data.nome);
-
+      setDescricao(data.descricao || "");
       setTelefone(data.telefone || "");
       setImagem(data.imagem || "");
     } catch (error) {
@@ -70,6 +67,7 @@ export const PerfilProvider = ({ children }) => {
       setNome(data.nome || "");
       setTelefone(data.telefone || "");
       setImagem(data.imagem || "");
+      setDescricao(data.descricao || "");
 
       return { sucess: true };
     } catch (error) {
@@ -85,9 +83,11 @@ export const PerfilProvider = ({ children }) => {
         nome,
         telefone,
         imagem,
+        descricao,
         setNome,
         setTelefone,
         setImagem,
+        setDescricao,
         updatePerfil,
         getPerfil,
       }}

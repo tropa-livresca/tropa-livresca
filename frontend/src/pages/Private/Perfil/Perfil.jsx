@@ -9,6 +9,8 @@ export default function Perfil() {
     nome,
     telefone,
     imagem,
+    descricao,
+    setDescricao,
     setNome,
     setTelefone,
     setImagem,
@@ -45,7 +47,7 @@ export default function Perfil() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const resultado = await updatePerfil({ nome, telefone, imagem });
+    const resultado = await updatePerfil({ nome, telefone, imagem, descricao });
 
     if (resultado?.sucess) {
       alert("Perfil atualizado com sucesso!");
@@ -65,8 +67,8 @@ export default function Perfil() {
         <div>
           <p>Nome Atual: {perfil.nome}</p>
           <p>Telefone Atual: {perfil.telefone}</p>
-          {perfil.imagem && <img src={perfil.imagem} alt="Imagem de perfil" />}
-
+          <p>Descricao atual: {perfil.descricao}</p>
+          
           <form onSubmit={handleSubmit}>
             <div>
               {previewUrl ? (<img src={previewUrl} alt="Pré-visualização" width="150" />) : (
@@ -86,6 +88,8 @@ export default function Perfil() {
               value={telefone}
               handleOnChange={(e) => setTelefone(e.target.value)}
             />
+
+            <textarea id="Descricao" name="descricao" rows="5" cols="30" placeholder="Digite sua descrição..." value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
 
             <Input type="file" handleOnChange={handleFileChange}
               accept="image/*" />
