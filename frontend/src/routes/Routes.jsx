@@ -15,7 +15,7 @@ import Perfil from "../pages/Private/Perfil/Perfil";
 import Historia from "../pages/Public/Historia/Historia";
 import Autores from "../pages/Public/Autores/Autores";
 
-import MeusLivros from "../pages/Public/Autores/MeusLivros";
+import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 //Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";

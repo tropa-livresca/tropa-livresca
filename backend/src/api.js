@@ -5,6 +5,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import livrosRoutes from "./routes/livros.route.js";
 import perfilRoutes from "./routes/perfil.route.js";
+import autorRoutes from "./routes/autor.route.js";
 
 const app = express();
 
@@ -41,6 +42,8 @@ const PORT = process.env.PORT || 3000;
 app.use("/api", authRoutes);
 app.use("/api", livrosRoutes);
 app.use("/api", perfilRoutes);  
+app.use("/api", autorRoutes);
+
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
 });
