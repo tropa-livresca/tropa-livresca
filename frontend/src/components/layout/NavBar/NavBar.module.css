@@ -1,67 +1,268 @@
-.containernav{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  align-items:center;
-  width:100%;
-  background-color:#EDE6B3;
-}
-.navbar{
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  gap:2rem;
-  padding:1rem;
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.list{
-  display:grid;
-  grid-auto-flow:column;
-  gap:1.2rem;
-  justify-content:center;
-
-  list-style:none;
+body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
 }
 
-.item{
-  padding-left:1.4rem;
+.containernav {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  background-color: #ede6b3;
+  position: relative;
+  box-sizing: border-box;
+  padding: 1rem;
 }
 
-.item a{
-  color: #67170C;
+.navbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 1rem;
+}
+
+.list {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 3rem;
+  justify-content: center;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+}
+
+.item a {
+  padding: 0;
+  margin: 0;
+  color: #67170c;
   text-decoration: none;
   white-space: nowrap;
+  font-family: "Jacques Francois", serif;
 }
 
-.item a:hover{
+.item a:hover {
   color: #ffbb33;
 }
 
-.logonav{
-  display:grid;
-  justify-content:center;
-  margin-left:4rem;
+.logonav {
+  display: grid;
+  justify-content: center;
+  padding-left: 1rem;
 }
 
-.navbutton{
-  display:flex;
-  gap:1rem;
-  margin-right:4rem;
+.navbutton {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
 }
 
-.button{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background-color:#67170c;
-  color:#EDE6B3;
-  width:5rem;
-  height:2.5rem;
-  border-radius:0.5rem;
-  text-decoration:none;
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #67170c;
+  color: #ede6b3;
+  width: 5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-family: "Jacques Francois", serif;
 }
 
 .imagemPerfil{
   max-width: 100px;
   max-height: 100px;
   border-radius: 50%;
+}
+
+.button:hover {
+  background-color: #ffbb33;
+}
+
+.item:hover .subtema {
+  display: block;
+}
+
+.subtema {
+  display: none;
+  position: absolute;
+  top: 140%;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 10rem;
+  max-width: 10rem;
+  background-color: #fff8e8;
+  border: 1px solid #d4c07a;
+  border-radius: 0.7rem;
+  list-style: none;
+  padding: 0.2rem;
+  box-shadow: 0 6px 20px rgba(103, 23, 12, 0.12);
+  z-index: 999;
+}
+
+/*losangulo que fica apontado para os temas*/
+.subtema::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #fff8e8;
+  border-left: 1px solid #d4c07a;
+  border-top: 1px solid #d4c07a;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.subtema li a {
+  display: block;
+  padding: 0.8rem 0rem;
+  color: #67170c;
+  font-size: 0.85rem;
+  border-radius: 0.4rem;
+  transition: background 0.2s;
+  box-sizing: border-box;
+}
+
+.subtema li a:hover {
+  background-color: #ede6b3;
+  color: #ffbb33;
+}
+
+/*é o v que fica no lado dos temas que tem subtemas*/
+.item:has(.subtema) > a::after {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 4px;
+  vertical-align: middle;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2367170C' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  transition: transform 0.2s;
+}
+
+/*inverte v quando o mouse passar em cima*/
+.item:has(.subtema):hover > a::after {
+  transform: rotate(180deg);
+}
+
+/*para o subtema nao fugir sem querer ao se passar o mouse muito rapido*/
+.item:has(.subtema)::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 100%;
+  height: 8px;
+}
+
+.hamburguer {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #67170c;
+  cursor: pointer;
+  margin-right: 1rem;
+}
+
+@media (min-width: 1440px) {
+  .list {
+    gap: 4rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .containernav {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    padding: 0.5rem 1rem;
+    position: relative;
+  }
+
+  .logonav img {
+    max-width: 100%;
+    height: auto;
+  }
+  .logonav {
+    grid-column: 1;
+    grid-row: 1;
+    justify-content: start;
+  }
+
+  .hamburguer {
+    display: block;
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .navbar {
+    display: none;
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    background: #ede6b3;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .menuAberto {
+    display: grid !important;
+    grid-template-columns: 1fr;
+  }
+
+  .list {
+    grid-auto-flow: row;
+    justify-content: stretch;
+    gap: 0;
+    width: 100%;
+  }
+
+  .item {
+    padding: 0;
+    width: 100%;
+  }
+
+  .item a {
+    display: block;
+    padding: 1rem;
+    border-bottom: 1px solid #d4c07a;
+  }
+
+  .subtema {
+    position: static;
+    transform: none;
+    display: block;
+    border: none;
+    box-shadow: none;
+    background: #f8f1cc;
+    max-width: none;
+    width: 100%;
+    margin-top: 0;
+  }
+
+  .subtema::before {
+    display: none;
+  }
+
+  .navbutton {
+    margin: 1rem 0 0 0;
+    width: 100%;
+    justify-content: center;
+  }
 }

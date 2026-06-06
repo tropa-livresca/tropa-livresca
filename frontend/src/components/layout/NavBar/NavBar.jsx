@@ -33,8 +33,8 @@ export default function NavBar() {
       const res = await apiFetch("/api/auth/signout", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${localStorage.getItem("auth-token")}`
-        }
+          Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+        },
       });
       if (res.ok) {
         setIsLoggedIn(false);
@@ -51,8 +51,8 @@ export default function NavBar() {
         const response = await apiFetch("/api/auth/perfil", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${localStorage.getItem("auth-token")}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("auth-token")}`,
+          },
         });
         if (response.ok) {
           setIsLoggedIn(true);
@@ -65,7 +65,7 @@ export default function NavBar() {
     checkAuthStatus();
   }, []);
 
-
+  const [menuAberto, setMenuAberto] = useState(false);
 
   return (
     <div className={styles.containernav}>
@@ -74,10 +74,32 @@ export default function NavBar() {
           <img src={logo} alt="Tropa Livresca" width="100" />
         </Link>
       </div>
-      <nav className={styles.navbar}>
+
+      <button
+        className={styles.hamburguer}
+        onClick={() => setMenuAberto(!menuAberto)}
+      >
+        {" "}
+        ☰{" "}
+      </button>
+
+      <nav
+        className={`${styles.navbar} ${menuAberto ? styles.menuAberto : ""}`}
+      >
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
+            <ul className={styles.subtema}>
+              <li>
+                <Link to="/historia">Quem Somos</Link>
+              </li>
+              <li>
+                <Link to="/">O Que Fazemos</Link>
+              </li>
+              <li>
+                <Link to="/">Depoimentos</Link>
+              </li>
+            </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Livros</Link>
@@ -86,19 +108,29 @@ export default function NavBar() {
             <Link to="/">Loja</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/">Autores</Link>
+            <Link to="/autores">Autores</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Blog</Link>
           </li>
           <li className={styles.item}>
-            <Link to="/novolivro">Ajuda</Link>
-          </li>
-          <li className={styles.item}>
             <Link to="/">Se Autopublique</Link>
+            <ul className={styles.subtema}>
+              <li>
+                <Link to="/">Meus Livros</Link>
+              </li>
+            </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Ajuda</Link>
+            <ul className={styles.subtema}>
+              <li>
+                <Link to="/">Perguntas Frequentes</Link>
+              </li>
+              <li>
+                <Link to="/">Contato</Link>
+              </li>
+            </ul>
           </li>
         </ul>
 
@@ -110,9 +142,11 @@ export default function NavBar() {
               Perfil
             </Link>
             </div>
-            <button onClick = {sair} className={styles.button}>
-              Logout
-            </button>
+            <Link>
+              <button onClick={sair} className={styles.button}>
+                Logout
+              </button>
+            </Link>
           </div>
         ) : (
           <div className={styles.navbutton}>
