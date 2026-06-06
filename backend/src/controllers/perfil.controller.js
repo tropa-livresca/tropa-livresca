@@ -1,7 +1,6 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 export const GetPerfil = async (req, res) => {
-  console.log("ID do usuário logado requisição:", req.user?.id); 
   try {
     const { data, error } = await supabase
       .from("users_profile")
@@ -10,12 +9,18 @@ export const GetPerfil = async (req, res) => {
       .maybeSingle();
 
     if (error) {
-      console.error("ERRO DO SUPABASE NO BACKEND:", error); 
+      console.error("ERRO DO SUPABASE NO BACKEND:", error);
       return res.status(500).json({ error: error.message });
     }
 
     if (!data) {
-      return res.json({ nome: "", telefone: "", descricao: "", imagem: "" });
+      console.log(
+        "AVISO: Nenhuma linha encontrada no banco para o ID:",
+        req.user.id,
+      );
+      return res
+        .status(404)
+        .json({ error: "Perfil não existe no banco de dados ainda." });
     }
 
     return res.json(data);
@@ -28,7 +33,7 @@ export const GetPerfil = async (req, res) => {
 export const UpdatePerfil = async (req, res) => {
   try {
     const { nome, telefone, descricao } = req.body;
-    
+
     const updates = {
       id: req.user.id,
       nome,
@@ -57,7 +62,7 @@ export const UpdatePerfil = async (req, res) => {
 
       updates.imagem = publicUrlData.publicUrl;
     }
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("users_profile")
       .upsert(updates, { onConflict: "id" })
       .select()
@@ -69,9 +74,10 @@ export const UpdatePerfil = async (req, res) => {
     }
 
     return res.json(data);
-
   } catch (err) {
     console.error("Erro crítico no UpdatePerfil (Catch):", err);
-    return res.status(500).json({ error: "Erro interno do servidor", mensagem: err.message });
+    return res
+      .status(500)
+      .json({ error: "Erro interno do servidor", mensagem: err.message });
   }
 };
