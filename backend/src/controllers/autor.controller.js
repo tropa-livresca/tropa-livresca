@@ -4,7 +4,8 @@ export const GetAutores = async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select("id, nome, telefone, imagem, descricao, livros!inner(id)");
+      .select("id, nome, telefone, imagem, descricao, livros!inner(id)")
+      .order("nome", { ascending: true });
 
     if (error) {
       console.error("Erro no supabase", error);
