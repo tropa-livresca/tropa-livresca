@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import usePerfil from "../../../hooks/usePerfil";
 import { apiFetch } from "../../../services/api";
 
 import { useState, useEffect } from "react";
@@ -10,14 +11,20 @@ import styles from "./NavBar.module.css";
 
 import logo from "../../images/logo.png";
 
-/**
- * Componente de Barra de Navegação Superior
- * Contém o logotipo e os links principais de navegação do sistema
- *
- * @component
- * @returns {JSX.Element}
- */
 export default function NavBar() {
+  const {
+    perfil,
+    nome,
+    getPerfil,
+  } = usePerfil();
+
+  useEffect(() => {
+      const carregarDados = async () => {
+        await getPerfil();
+      };
+      carregarDados();
+    }, []);
+  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { signout } = useAuth();
 
@@ -97,9 +104,12 @@ export default function NavBar() {
 
         {isLoggedIn ? (
           <div className={styles.navbutton}>
+            <div>
+            {perfil.imagem && <img src={perfil.imagem} alt="Imagem de perfil" className = {styles.imagemPerfil}/>}
             <Link to="/perfil" className={styles.button}>
               Perfil
             </Link>
+            </div>
             <button onClick = {sair} className={styles.button}>
               Logout
             </button>
