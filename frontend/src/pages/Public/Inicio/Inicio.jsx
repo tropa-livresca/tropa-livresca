@@ -1,4 +1,5 @@
 import styles from "./Inicio.module.css";
+import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
 
 
 /**
@@ -11,6 +12,7 @@ import styles from "./Inicio.module.css";
 export default function Inicio() {
   return (
     <section className={styles.inicio_container}>
+      <Cabecalho nome="Início"/>
       <h1>Início</h1>
       <h2>
         Bem-vindo à <span>Tropa Livresca</span>
