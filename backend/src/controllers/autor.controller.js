@@ -1,21 +1,45 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
+export const GetAutores = async (req, res) => {
+  try {
+    const { data, error } = await supabase.from("users_profile").select("*");
+
+    if (error) {
+      console.error("Erro no supabase", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    if(!data){
+      return res.status(404).json({ error: "Nenhum autor encontrado" });
+    }
+
+  } catch (err) {
+    console.error("Erro inesperado", err);
+    return res.status(500).json({ error: "Erro inesperado" });
+  }
 };
 
-export const GetAutor = async() =>{
-       return ( await supabase.from('livros').select());
-}
+export const GetAutorById = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { data, error } = await supabase
+      .from("users_profile")
+      .select()
+      .eq("id", id)
+      .maybeSingle();
 
-/*
-Vou armazenar as imagens no storage, para o perfil
-export const GetAutores = async (req, res) =>{
-  const data = await supabase.from('users_profile').select('nome');
-  res.status(200).json(data);
-  return(data);
-}
-*/
+    if (error) {
+      console.error("Erro no supabase", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    if (!data) {
+      return res.status(404).json({ error: "Autor não encontrado" });
+    }
+
+    return res.status(200).json(data);
+  } catch (err) {
+    console.error("Erro inesperado", err);
+    return res.status(500).json({ error: "Erro inesperado" });
+  }
+};
