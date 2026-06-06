@@ -4,7 +4,7 @@ export const GetAutores = async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select("id, nome, telefone, imagem, descricao");
+      .select("id, nome, telefone, imagem, descricao, livros!inner(id)");
 
     if (error) {
       console.error("Erro no supabase", error);
@@ -16,7 +16,6 @@ export const GetAutores = async (req, res) => {
     }
 
     return res.json(data);
-
   } catch (err) {
     console.error("Erro inesperado", err);
     return res.status(500).json({ error: "Erro inesperado" });
