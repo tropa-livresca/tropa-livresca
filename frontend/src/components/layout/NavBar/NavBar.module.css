@@ -1,74 +1,88 @@
-.containernav{
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.containernav {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
   width: 100%;
-  background-color: #EDE6B3;
+  max-width: 100%;
+  background-color: #ede6b3;
   position: relative;
   box-sizing: border-box;
   padding: 1rem;
 }
 
-.navbar{
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  padding:1rem;
+.navbar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 1rem;
 }
 
-.list{
-  display:grid;
-  grid-auto-flow:column;
-  /*gap:2.3rem;*/
-  gap:4rem;
-  justify-content:center;
-  list-style:none;
+.list {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 3rem;
+  justify-content: center;
+  list-style: none;
 }
 
-.item{
-  position:relative;
+.item {
+  position: relative;
 }
 
 .item a {
   padding: 0;
   margin: 0;
-  color: #67170C;
+  color: #67170c;
   text-decoration: none;
   white-space: nowrap;
+  font-family: "Jacques Francois", serif;
 }
 
 .item a:hover {
   color: #ffbb33;
 }
 
-.logonav{
-  display:grid;
-  justify-content:center;
-  /*padding-left: 1rem;*/
-  padding-left: 3rem;
+.logonav {
+  display: grid;
+  justify-content: center;
+  padding-left: 1rem;
 }
 
-.navbutton{
-  display:flex;
-  gap:1rem;
-  /*padding-right: 1rem;*/
-  padding-right: 3rem;
+.navbutton {
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
 }
 
-.button{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background-color:#67170c;
-  color:#EDE6B3;
-  width:5rem;
-  height:2.5rem;
-  border-radius:0.5rem;
-  text-decoration:none;
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #67170c;
+  color: #ede6b3;
+  width: 5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-family: "Jacques Francois", serif;
 }
 
-.button:hover{
- background-color: #ffbb33;
+.button:hover {
+  background-color: #ffbb33;
 }
 
 .item:hover .subtema {
@@ -94,7 +108,7 @@
 
 /*losangulo que fica apontado para os temas*/
 .subtema::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -6px;
   left: 50%;
@@ -108,22 +122,22 @@
 
 .subtema li a {
   display: block;
-  padding: 0.8rem 0rem; 
-  color: #67170C;
+  padding: 0.8rem 0rem;
+  color: #67170c;
   font-size: 0.85rem;
   border-radius: 0.4rem;
-  transition: background 0.20s;
+  transition: background 0.2s;
   box-sizing: border-box;
 }
 
 .subtema li a:hover {
-  background-color: #EDE6B3;
+  background-color: #ede6b3;
   color: #ffbb33;
 }
 
 /*é o v que fica no lado dos temas que tem subtemas*/
 .item:has(.subtema) > a::after {
-  content: '';
+  content: "";
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -135,14 +149,14 @@
   transition: transform 0.2s;
 }
 
- /*inverte v quando o mouse passar em cima*/
+/*inverte v quando o mouse passar em cima*/
 .item:has(.subtema):hover > a::after {
   transform: rotate(180deg);
 }
 
- /*para o subtema nao fugir sem querer ao se passar o mouse muito rapido*/
+/*para o subtema nao fugir sem querer ao se passar o mouse muito rapido*/
 .item:has(.subtema)::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -8px;
   left: 0;
@@ -150,20 +164,24 @@
   height: 8px;
 }
 
-.hamburguer{
-  display:none;
-  background:none;
-  border:none;
-  font-size:2rem;
-  color:#67170C;
-  cursor:pointer;
-  margin-right:1rem;
+.hamburguer {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #67170c;
+  cursor: pointer;
+  margin-right: 1rem;
 }
 
-/*@media (max-width: 1024px){*/
-@media (max-width: 1200px){
+@media (min-width: 1440px) {
+  .list {
+    gap: 4rem;
+  }
+}
 
-  .containernav{
+@media (max-width: 1024px) {
+  .containernav {
     display: grid;
     grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
@@ -171,70 +189,74 @@
     position: relative;
   }
 
-  .logonav{
+  .logonav img {
+    max-width: 100%;
+    height: auto;
+  }
+  .logonav {
     grid-column: 1;
     grid-row: 1;
     justify-content: start;
   }
 
-  .hamburguer{
+  .hamburguer {
     display: block;
     grid-column: 2;
     grid-row: 1;
   }
 
-  .navbar{
+  .navbar {
     display: none;
     grid-column: 1 / -1;
     grid-row: 2;
     width: 100%;
-    background: #EDE6B3;
+    background: #ede6b3;
     padding: 1rem;
     box-sizing: border-box;
   }
 
-  .menuAberto{
+  .menuAberto {
     display: grid !important;
     grid-template-columns: 1fr;
   }
 
-  .list{
-    grid-auto-flow:row;
-    justify-content:stretch;
-    gap:0;
-    width:100%;
+  .list {
+    grid-auto-flow: row;
+    justify-content: stretch;
+    gap: 0;
+    width: 100%;
   }
 
-  .item{
-    padding:0;
-    width:100%;
+  .item {
+    padding: 0;
+    width: 100%;
   }
 
-  .item a{
-    display:block;
-    padding:1rem;
-    border-bottom:1px solid #d4c07a;
+  .item a {
+    display: block;
+    padding: 1rem;
+    border-bottom: 1px solid #d4c07a;
   }
 
-  .subtema{
-    position:static;
-    transform:none;
-    display:block;
-    border:none;
-    box-shadow:none;
-    background:#f8f1cc;
-    max-width:none;
-    width:100%;
-    margin-top:0;
+  .subtema {
+    position: static;
+    transform: none;
+    display: block;
+    border: none;
+    box-shadow: none;
+    background: #f8f1cc;
+    max-width: none;
+    width: 100%;
+    margin-top: 0;
   }
 
-  .subtema::before{
-    display:none;
+  .subtema::before {
+    display: none;
   }
 
-  .navbutton{
-    margin:1rem 0 0 0;
-    width:100%;
-    justify-content:center;
+  .navbutton {
+    margin: 1rem 0 0 0;
+    width: 100%;
+    justify-content: center;
   }
 }
