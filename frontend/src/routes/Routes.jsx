@@ -39,6 +39,8 @@ const RoutesApp = () => {
           {/* Rota Raiz Correta */}
           <Route path="/" element={<Inicio />} />
           <Route path="historia" element={<Historia />} />
+          <Route path="autores" element={<Autores />} />
+          
           <Route path="meuslivros" element={<MeusLivros />} />
 
           <Route path="seautopublique" element={<Outlet />}>

@@ -2,16 +2,20 @@ import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 export const GetAutores = async (req, res) => {
   try {
-    const { data, error } = await supabase.from("users_profile").select("*");
+    const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .select("id, nome, telefone, imagem, descricao");
 
     if (error) {
       console.error("Erro no supabase", error);
       return res.status(500).json({ error: error.message });
     }
 
-    if(!data){
+    if (!data) {
       return res.status(404).json({ error: "Nenhum autor encontrado" });
     }
+
+    return res.json(data);
 
   } catch (err) {
     console.error("Erro inesperado", err);
@@ -24,7 +28,7 @@ export const GetAutorById = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("users_profile")
-      .select()
+      .select("id, nome, telefone, imagem, descricao")
       .eq("id", id)
       .maybeSingle();
 
