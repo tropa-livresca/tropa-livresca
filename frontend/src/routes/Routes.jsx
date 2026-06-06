@@ -14,7 +14,7 @@ import Perfil from "../pages/Private/Perfil/Perfil";
 
 import Historia from "../pages/Public/Historia/Historia";
 import Autores from "../pages/Public/Autores/Autores";
-
+import AutorById from "../pages/Public/AutorById/AutorById";
 import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 //Se Autopublique
@@ -40,6 +40,7 @@ const RoutesApp = () => {
           <Route path="/" element={<Inicio />} />
           <Route path="historia" element={<Historia />} />
           <Route path="autores" element={<Autores />} />
+          <Route path = "autores/:id" element = {<AutorById/>}/>
           
           <Route path="meuslivros" element={<MeusLivros />} />
 
