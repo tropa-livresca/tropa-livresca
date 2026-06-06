@@ -1,15 +1,17 @@
 import styles from "./Autores.module.css";
-import useAutor from "../../../hooks/useAutor";
-import {useEffect, useState} from "react";
+import {useAutor} from "../../../hooks/useAutor";
+
+import { useEffect, useState } from "react";
 import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
 
 export default function Autores() {
+  const { autores, carregando, erro } = useAutor();
 
-  const { autores, getAutores } = useAutor();
+  if (carregando) return <p>Carregando...</p>
 
-  useEffect(() => {
-    getAutores();
-  }, []);
+  if(erro) return <p>{erro}</p>
+
+  if (autores.length === 0) return <p>Nenhum autor cadastrado</p>
 
   return (
     <div>
@@ -35,9 +37,13 @@ export default function Autores() {
             </button>
           </div>
           <div className={styles.containerautores}>
-            <div className={styles.l1}></div>
-            <div></div>
-            <div></div>
+            {autores.map((autor) => (
+              <div key={autor.id} className={styles.autor}>
+                {autor.imagem ? (<img src={autor.imagem} alt={autor.nome} />) : (<div>Sem foto</div>)}
+                <h3>{autor.nome || "Autor anônimo"}</h3>
+                <p>{autor.descricao || "Sem descrição"}</p>
+              </div>
+            ))}
           </div>
         </div>
       </main>
