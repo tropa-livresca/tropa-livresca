@@ -8,14 +8,14 @@ import logo from "../../images/logo.png";
 
 export default function NavBar() {
   const { perfil, getPerfil } = usePerfil();
-  const { signed, signout } = useAuth();
+  const { signed, loading, signout } = useAuth();
   const [menuAberto, setMenuAberto] = useState(false);
 
   useEffect(() => {
-    if (signed) {
+    if (!loading && signed) {
       getPerfil();
     }
-  }, [signed]); 
+  }, [loading, signed]); 
 
   const sair = async () => {
     try {
