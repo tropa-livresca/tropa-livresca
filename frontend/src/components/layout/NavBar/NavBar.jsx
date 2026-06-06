@@ -1,64 +1,34 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
+import usePerfil from "../../../hooks/usePerfil";
 import { apiFetch } from "../../../services/api";
-
 import { useState, useEffect } from "react";
-
-import Container from "../Container/Container";
-
 import styles from "./NavBar.module.css";
-
 import logo from "../../images/logo.png";
 
-/**
- * Componente de Barra de Navegação Superior
- * Contém o logotipo e os links principais de navegação do sistema
- *
- * @component
- * @returns {JSX.Element}
- */
 export default function NavBar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { signout } = useAuth();
+  const { perfil, getPerfil } = usePerfil();
+  const { signed, signout } = useAuth();
+  const [menuAberto, setMenuAberto] = useState(false);
+
+  useEffect(() => {
+    if (signed) {
+      getPerfil();
+    }
+  }, [signed]); 
 
   const sair = async () => {
     try {
       const res = await apiFetch("/api/auth/signout", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${localStorage.getItem("auth-token")}`
-        }
+        method: "POST"
       });
       if (res.ok) {
-        setIsLoggedIn(false);
         signout();
       }
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error("Erro ao fazer logout:", error);
     }
   };
-
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      try {
-        const response = await apiFetch("/api/auth/perfil", {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("auth-token")}`
-          }
-        });
-        if (response.ok) {
-          setIsLoggedIn(true);
-        }
-      } catch (error) {
-        console.error("Error checking authentication status:", error);
-      }
-    };
-
-    checkAuthStatus();
-  }, []);
-
-  const [menuAberto, setMenuAberto] = useState(false);
 
   return (
     <div className={styles.containernav}>
@@ -68,9 +38,14 @@ export default function NavBar() {
         </Link>
       </div>
 
-      <button className={styles.hamburguer} onClick={() => setMenuAberto(!menuAberto)}> ☰ </button>
-      
-      <nav  className={`${styles.navbar} ${ menuAberto ? styles.menuAberto : ""}`}>
+      <button
+        className={styles.hamburguer}
+        onClick={() => setMenuAberto(!menuAberto)}
+      >
+        ☰
+      </button>
+
+      <nav className={`${styles.navbar} ${menuAberto ? styles.menuAberto : ""}`}>
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
@@ -80,18 +55,10 @@ export default function NavBar() {
               <li><Link to="/">Depoimentos</Link></li>
             </ul>
           </li>
-          <li className={styles.item}>
-            <Link to="/">Livros</Link>
-          </li>
-          <li className={styles.item}>
-            <Link to="/">Loja</Link>
-          </li>
-          <li className={styles.item}>
-            <Link to="/autores">Autores</Link>
-          </li>
-          <li className={styles.item}>
-            <Link to="/">Blog</Link>
-          </li>
+          <li className={styles.item}><Link to="/">Livros</Link></li>
+          <li className={styles.item}><Link to="/">Loja</Link></li>
+          <li className={styles.item}><Link to="/autores">Autores</Link></li>
+          <li className={styles.item}><Link to="/">Blog</Link></li>
           <li className={styles.item}>
             <Link to="/">Se Autopublique</Link>
             <ul className={styles.subtema}>
@@ -107,16 +74,20 @@ export default function NavBar() {
           </li>
         </ul>
 
-        {isLoggedIn ? (
+        {signed ? (
           <div className={styles.navbutton}>
-            <Link to="/perfil" className={styles.button}>
-              Perfil
-            </Link>
-            <Link>
-            <button onClick = {sair} className={styles.button}>
+            <div className={styles.usuarioMenu}>
+              
+              {perfil?.imagem && (
+                <img src={perfil.imagem} alt="Imagem de perfil" className={styles.imagemPerfil} />
+              )}
+              <Link to="/perfil" className={styles.button}>
+                {perfil?.nome ? `Perfil (${perfil.nome})` : "Perfil"}
+              </Link>
+            </div>
+            <button onClick={sair} className={styles.button}>
               Logout
             </button>
-            </Link>
           </div>
         ) : (
           <div className={styles.navbutton}>

@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import livrosRoutes from "./routes/livros.route.js";
+import perfilRoutes from "./routes/perfil.route.js";
 
 const app = express();
 
@@ -37,9 +38,9 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 
-app.use("/api/auth", authRoutes);
-app.use("/api/livros", livrosRoutes);
-
+app.use("/api", authRoutes);
+app.use("/api", livrosRoutes);
+app.use("/api", perfilRoutes);  
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
 });
