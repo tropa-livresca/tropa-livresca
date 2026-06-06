@@ -14,13 +14,13 @@ export const GetPerfil = async (req, res) => {
     }
 
     if (!data) {
-      console.log(
-        "AVISO: Nenhuma linha encontrada no banco para o ID:",
-        req.user.id,
-      );
-      return res
-        .status(404)
-        .json({ error: "Perfil não existe no banco de dados ainda." });
+      return res.status(200).json({
+        id: req.user.id,
+        nome: "",
+        telefone: "",
+        descricao: "",
+        imagem: "",
+      });
     }
 
     return res.json(data);
