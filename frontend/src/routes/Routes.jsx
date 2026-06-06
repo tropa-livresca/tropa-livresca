@@ -14,6 +14,7 @@ import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 import Perfil from "../pages/Private/Perfil/Perfil";
 
 import Historia from "../pages/Public/Historia/Historia";
+import Autores from "../pages/Public/Autores/Autores";
 
 import MeusLivros from "../pages/Public/Autores/MeusLivros";
 
@@ -40,9 +41,14 @@ const RoutesApp = () => {
           <Route path="/" element={<Inicio />} />
 
           <Route path="historia" element={<Historia />} />
+<<<<<<< HEAD
 
           <Route path="meuslivros" element={<MeusLivros/>}/>
 
+=======
+          <Route path="autores" element={<Autores />} />
+          
+>>>>>>> 3ec3dd498a210711102d21269fdc370ebf7b457e
           <Route path="seautopublique" element={<SeAutopublique />}>
             <Route index element={<SeAutopublique />} />
             <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />

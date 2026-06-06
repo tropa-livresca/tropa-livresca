@@ -1,3 +1,5 @@
+import styles from "./Historia.module.css";
+import logo2 from "../../../components/images/historia1.png";
 /**
  * Página de história, contendo a história da editora fictícia.
  * 
@@ -8,7 +10,31 @@
 export default function Historia() {
   return (
     <main>
-      <span>
+     <div className={styles.container}>
+      <div className={styles.lesquerdo}>
+        <p>
+          A origem da empresa Tropa Livresca por Moisés Álvaro Pereira e Adilson
+          Silva Pereira remonta antes de sua oficialização durante a pandemia.
+        </p>
+        <p>
+          A iniciativa partiu de Moisés ao perceber que a impressão de documentos para amigos e familiares oferecia um negócio rentável, tanto assim que, em agosto de 2005, ele decidiu montar a Gráfica Regional, convidando para sócio o amigo Adilson.  Situada no centro de Taquarituba (SP), a gráfica trabalhava na impressão de livros sob demanda e na personalização de roupas, cerâmica e acrílico.
+        </p>
+        <img src={logo2} alt="Tropa Livresca" width="100" />
+      </div>
+
+      <div className={styles.ldireito}>
+        <img src={logo2} alt="Tropa Livresca" width="100" />
+        
+      </div>
+     </div>
+    </main>
+  );
+}
+
+
+
+{/*
+ <span>
         <p>
           A origem da empresa Tropa Livresca por Moisés Álvaro Pereira e Adilson
           Silva Pereira remonta antes de sua oficialização durante a pandemia.
@@ -43,7 +69,4 @@ export default function Historia() {
       <span>
         <img />
         <p>A empresa Tropa Livresca, apesar do período pandêmico de 2021 até meados de 2023 e de vários cortes decorrentes dele, conseguiu manter-se aberta. A experiência, todavia, revelou-lhes a imprescindibilidade de adaptarem-se à tendência de digitalização de serviços. Por essa razão, a editora atualmente procura abraçar a publicação independente não só física, mas também virtualmente, por meio de um site.</p>
-      </span>
-    </main>
-  );
-}
+      </span>*/}

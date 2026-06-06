@@ -1,0 +1,27 @@
+main {
+  background-color: #fff8c9;
+}
+
+.subtitulo h4 {
+  padding: 2rem;
+  color: #67170c;
+  font-weight: normal;
+  text-align: justify;
+}
+
+.barrasearch {
+  padding: 2rem;
+  background-color: white;
+  position: relative;
+}
+
+.inputsearch {
+  width: 98%;
+  padding: 0.7rem;
+  border-radius: 0.7rem;
+  border: 2px solid #67170c;
+  background-color: #ede6b3;
+}
+
+.containerautores {
+}
