@@ -3,7 +3,7 @@ import Input, { InputTelefone } from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import logo from "../../../components/images/cad.png";
 import logo2 from "../../../components/images/logo.png";
-import styles from "./Cadastro.module.css";
+ import styles from "./Cadastro.module.css";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
