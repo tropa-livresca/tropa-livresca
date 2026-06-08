@@ -1,4 +1,1 @@
-Inserir paginação em autor
-Ajustar, portanto, tudo que toca a ele
-
-Em seguida, efetivar as rotas de formulário de livros.
+Feita a paginação, falta alterar a página de AutorById, em que se mostrem as redes sociais de cada um.
