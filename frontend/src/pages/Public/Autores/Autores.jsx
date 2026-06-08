@@ -1,7 +1,10 @@
 import styles from "./Autores.module.css";
-import {Link} from "react-router-dom";
+
+import { Link } from "react-router-dom";
 
 import { useAutor } from "../../../hooks/useAutor";
+import logo from "../../../components/images/cad.png";
+import { FaSearch } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
@@ -9,7 +12,7 @@ import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
 export default function Autores() {
   const { autores, carregando, erro, buscarAutores } = useAutor();
   const [busca, setBusca] = useState("");
-  
+
   useEffect(() => {
     buscarAutores();
   }, []);
@@ -26,46 +29,45 @@ export default function Autores() {
 
   return (
     <div>
-      <Cabecalho nome="Autores" descricao="Conheça nossos autores" />
-      <main>
-        <div className={styles.container}>
-          <div className={styles.subtitulo}>
-            <h4>
-              A editora Tropa Livresca reúne autores independentes de todo o
-              Brasil . Descubra escritores que compartilham histórias únicas,
-              cheias de emoção e originalidade em suas obras. Autopublicação com
-              qualidade editorial e reconhecimento!
-            </h4>
-          </div>
-          <div className={styles.barrasearch}>
+      <main className={styles.container}>
+        <div className={styles.topo}>
+          <h1 className={styles.titulo}>Autores</h1>
+
+          <p className={styles.descricao}>
+            A editora Tropa Livresca reúne autores independentes de todo o Brasil.
+            Descubra escritores que compartilham histórias únicas, cheias de
+            emoção e originalidade em suas obras.
+          </p>
+          
+          <div className={styles.busca}>
+            <span className={styles.iconebusca}>
+              <FaSearch />
+            </span>
+
             <input
               type="text"
-              placeholder="Pesquisar..."
+              placeholder="Buscar autor"
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
-              className={styles.inputsearch}
             />
-            <button type="submit" className={styles.buttonsearch}>
-              🔍
-            </button>
-          </div>
-          <div className={styles.containerautores}>
 
-            {autoresFiltrados.length === 0 ? (<p>Nenhum autor encontrado</p>) : (
-              autoresFiltrados.map((autor) => {
-                return (
-                  <Link to={`/autores/${autor.id}`} key={autor.id} className={styles.autor}>
-                    <div  className={styles.autor}>
-                      {autor.imagem ? (<img src={autor.imagem} alt={autor.nome} />) : (<div>Sem foto</div>)}
-                      <h3>{autor.nome || "Autor anônimo"}</h3>
-                      <p>{autor.descricao || "Sem descrição"}</p>
-                    </div>
-                  </Link>
-                );
-              })
-            )}
-
+            <button className={styles.btnbuscar} type="submit">Buscar</button>
           </div>
+        </div>
+
+        <div className={styles.autorescontainer}>
+          {autoresFiltrados.length === 0 ? (<p>Nenhum autor encontrado</p>) : (
+            autoresFiltrados.map((autor) => {
+              return (
+                  <div className={styles.autorinf} key={autor.id}>
+                    {autor.imagem ? (<img src={autor.imagem} alt={autor.nome} width = "100"/>) : (<div>Sem foto</div>)}
+                    <h3>{autor.nome || "Autor anônimo"}</h3>
+                    <p>{autor.descricao || "Sem descrição"}</p>
+                    <Link to = {`/autores/${autor.id}`} className = {styles.btndetalhes}>Ver Perfil</Link>
+                  </div>
+              );
+            })
+          )}
         </div>
       </main>
     </div>
