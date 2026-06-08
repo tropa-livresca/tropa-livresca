@@ -13,7 +13,6 @@ export const PerfilProvider = ({ children }) => {
   const getPerfil = async () => {
     try {
       const response = await apiFetch("/api/perfil");
-      const data = await response.json();
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -24,8 +23,12 @@ export const PerfilProvider = ({ children }) => {
           setImagem("");
           return;
         }
-        throw new Error(data.error || "Erro ao buscar perfil");
+
+        const errorText = await response.text();
+        throw new Error(`Erro ${response.status}: ${errorText} || "Erro ao buscar perfil"`);
       }
+
+      const data = await response.json();
 
       setPerfil(data);
       setNome(data.nome || "");
