@@ -10,11 +10,11 @@ export const GetAutores = async (req, res) => {
     const end = start + limit - 1;
 
     let query = supabaseAdmin
-    .from("users_profile")
-    .select("id, nome, telefone, imagem, descricao, livros!inner(id)")
-    .order("nome", {ascending: true});
+      .from("users_profile")
+      .select("id, nome, telefone, imagem, descricao, livros!inner(id)")
+      .order("nome", { ascending: true });
 
-    if (busca){
+    if (busca) {
       query = query.ilike("nome", `%${busca}%`);
     }
 
@@ -49,7 +49,9 @@ export const GetAutorById = async (req, res) => {
   try {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select("id, nome, telefone, imagem, descricao")
+      .select(
+        "id, nome, telefone, imagem, descricao, usu_redes(url, plataforma)",
+      )
       .eq("id", id)
       .maybeSingle();
 
