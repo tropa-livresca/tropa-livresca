@@ -2,21 +2,27 @@ import { useState, useEffect } from "react";
 import {GetLivros} from "../../../services/Livros.js";
 
 export default function MeusLivros(){
-   const [livros, setLivros] = useState("");
+   const [livros, setLivros] = useState([]);
 
    useEffect(() =>{
+      
+      let ignore = false;
       const StartLivros = async() =>{
          const data = await GetLivros();
-         setLivros(data);
+         console.log(ignore);
+         if(ignore == false){
+             console.log(data);
+             setLivros(data);
+         }
       }
 
       StartLivros();
 
-      return(setLivros(""));
+      return(() => {ignore = true;});
 
    }, [])
 
-   return <table><tbody>{livros != "" ? livros.map(livro => {
+   return <table><tbody>{livros != [] ? livros.map(livro => {
 
     
         return <tr key={livro.id}>
@@ -26,5 +32,5 @@ export default function MeusLivros(){
     
 
          
-   }) : ""}</tbody></table>;
+   }) : null}</tbody></table>;
 }
