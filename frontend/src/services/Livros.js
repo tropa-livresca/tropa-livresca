@@ -9,7 +9,6 @@ import { apiFetch } from "./api";
      const res = await apiFetch("/api/livros/", {Method: "Get"});
 
      const data = await res.json();
-     console.log(data);
 
      if(!res.ok){
       return data.error;

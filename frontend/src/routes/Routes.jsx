@@ -12,7 +12,7 @@ import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 
 import Historia from "../pages/Public/Historia/Historia";
 
-import MeusLivros from "../pages/Public/Autores/MeusLivros";
+import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 //Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
