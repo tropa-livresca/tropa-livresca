@@ -30,10 +30,6 @@ export default function Autores() {
     buscarAutores(1, 12, busca);
   }
 
-  const autoresFiltrados = autores.filter((autor) => {
-    return autor.nome?.toLowerCase().includes(busca.toLowerCase());
-  });
-
   return (
     <div>
       <main className={styles.container}>
