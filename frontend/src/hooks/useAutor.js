@@ -7,6 +7,7 @@ export const useAutor = () => {
   const [autores, setAutores] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
+  const [meta, setMeta] = useState(null);
 
   const buscarAutorById = async (id) => {
     setCarregando(true);
@@ -33,19 +34,20 @@ export const useAutor = () => {
     }
   }
 
-  const buscarAutores = async () => {
+  const buscarAutores = async (page = 1, limit = 12, busca = "") => {
     setCarregando(true);
     setErro(null);
 
     try {
-      const response = await apiFetch("/api/autores/", { method: "GET" });
+      const response = await apiFetch(`/api/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`, { method: "GET" });
 
-      const data = await response.json();
+      const result = await response.json();
 
       if (response.ok) {
-        setAutores(data);
+        setAutores(result.data);
+        setMeta(result.meta);
       } else {
-        throw new Error(data.error || "Erro ao carregar lista");
+        throw new Error(result.error || "Erro ao carregar lista");
       }
     } catch (error) {
       console.error("Erro ao buscar autores", error);
@@ -62,6 +64,7 @@ export const useAutor = () => {
     recarregar: buscarAutores,
     buscarAutores,
     autor,
+    meta,
     buscarAutorById,
   };
 };

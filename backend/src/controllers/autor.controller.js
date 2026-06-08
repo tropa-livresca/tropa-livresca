@@ -2,10 +2,23 @@ import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 export const GetAutores = async (req, res) => {
   try {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .select("id, nome, telefone, imagem, descricao, livros!inner(id)")
-      .order("nome", { ascending: true });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const busca = req.query.busca || "";
+
+    const start = (page - 1) * limit;
+    const end = start + limit - 1;
+
+    let query = supabaseAdmin
+    .from("users_profile")
+    .select("id, nome, telefone, imagem, descricao, livros!inner(id)")
+    .order("nome", {ascending: true});
+
+    if (busca){
+      query = query.ilike("nome", `%${busca}%`);
+    }
+
+    const { data, error, count } = await query.range(start, end);
 
     if (error) {
       console.error("Erro no supabase", error);
@@ -16,7 +29,15 @@ export const GetAutores = async (req, res) => {
       return res.status(404).json({ error: "Nenhum autor encontrado" });
     }
 
-    return res.json(data);
+    return res.json({
+      data,
+      meta: {
+        page,
+        limit,
+        localItems: count,
+        totalPage: Math.ceil(count / limit),
+      },
+    });
   } catch (err) {
     console.error("Erro inesperado", err);
     return res.status(500).json({ error: "Erro inesperado" });
