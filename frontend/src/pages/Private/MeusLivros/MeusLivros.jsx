@@ -1,9 +1,24 @@
-import { useState } from "react";
-import {GetAutor} from "../../../../../backend/src/controllers/autor.controller";
-export default function meusLivros(){
+import { useState, useEffect } from "react";
+import {GetLivros} from "../../../context/livro/Livros";
 
+export default function MeusLivros(){
+   const [livros, setLivros] = useState("");
 
-   
+   useEffect(() =>{
+      const StartLivros = async() =>{
+         const data = await GetLivros();
+         setLivros(data);
+      }
 
+      StartLivros();
 
-}
+   }, [])
+
+   return <table>{livros != "" ? livros.map(livro => {
+
+         return <tr>
+            <td><img src={livro.capa}></img> <br></br> {livro.titulo}</td>
+            <td><h3>editar</h3> <h3>visualizar</h3> <h3>{livro.ativo == true ? <span>desativar</span> : <span>ativar</span>}</h3></td>
+         </tr>
+      
+   }) : ""}</table>};

@@ -114,6 +114,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         signed: !!user,
+        loading,
         signin,
         signup,
         signout,

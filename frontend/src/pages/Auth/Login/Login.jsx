@@ -4,7 +4,7 @@ import styles from "./Login.module.css";
 import useAuth from "../../../hooks/useAuth";
 import logo from "../../../components/images/image 1.png";
 import logo2 from "../../../components/images/logo.png";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 /**

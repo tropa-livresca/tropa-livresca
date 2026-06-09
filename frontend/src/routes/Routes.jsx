@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Importado o Outlet
 
 import useAuth from "../hooks/useAuth";
 
@@ -10,10 +10,12 @@ import Cadastro from "../pages/Auth/Cadastro/Cadastro";
 import Login from "../pages/Auth/Login/Login";
 import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 
+import Perfil from "../pages/Private/Perfil/Perfil";
+
 import Historia from "../pages/Public/Historia/Historia";
 import Autores from "../pages/Public/Autores/Autores";
-
-import MeusLivros from "../pages/Public/Autores/MeusLivros";
+import AutorById from "../pages/Public/AutorById/AutorById";
+import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 //Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
@@ -24,61 +26,39 @@ import Formato from "../pages/Private/NovoLivro/Formato/Formato";
 import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
 import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
 
-/**
- * Componente de Rota Privada
- * Verifica se o usuário está autenticado antes de renderizar o componente solicitado
- *
- * @param {object} props
- * @param {React.ComponentType} props.Item - O componente que deve ser renderizado se autenticado
- * @returns {JSX.Element}
- */
-const Private = ({  Item }) => {
+const Private = ({ Item }) => {
   const { signed } = useAuth();
-
   return signed ? <Item /> : <Login />;
 };
 
-/**
- * Gerenciador de Rotas Principal da Aplicação.
- * Define a estrutura de navegação, layouts e proteções de rota.
- *
- * @component
- * @returns {JSX.Element}
- */
 const RoutesApp = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Rotas com Layout Principal (Navbar, Footer) */}
         <Route element={<MainLayout />}>
+          {/* Rota Raiz Correta */}
           <Route path="/" element={<Inicio />} />
-
-          {/*
-          <Route path = "sobre" element = {<SobreNos/>}>
-            <Route index element = ""/>
-          <Route/>
-           */}
           <Route path="historia" element={<Historia />} />
           <Route path="autores" element={<Autores />} />
+          <Route path = "autores/:id" element = {<AutorById/>}/>
           
-          <Route path="seautopublique" element={<SeAutopublique />}>
+          <Route path="meuslivros" element={<MeusLivros />} />
+
+          <Route path="seautopublique" element={<Outlet />}>
             <Route index element={<SeAutopublique />} />
-            <Route path="confirmacao" element={<Private Item ={Confirmacao} />} />
-            <Route path="detalhes" element={<Private Item ={Detalhes} />} />
-            <Route path="formato" element={<Private Item = {Formato} />} />
-            <Route path="orcamento" element={<Private Item = {Orcamento} />} />
-            <Route path="conteudo" element={<Private Item ={Conteudo} />} />
+            <Route path="confirmacao" element={<Private Item={Confirmacao} />} />
+            <Route path="detalhes" element={<Private Item={Detalhes} />} />
+            <Route path="formato" element={<Private Item={Formato} />} />
+            <Route path="orcamento" element={<Private Item={Orcamento} />} />
+            <Route path="conteudo" element={<Private Item={Conteudo} />} />
           </Route>
+
+          <Route path="perfil" element={<Private Item={Perfil} />} />
         </Route>
 
-        {/* Rotas de Autenticação */}
         <Route path="cadastro" element={<Cadastro />} />
         <Route path="login" element={<Login />} />
-        <Route path="confirmacao-email" element={<ConfirmacaoEmail />} /> 
-
-        {/* Exemplo de como usar a rota privada no futuro:
-            <Route path="/perfil" element={<Private Item={Perfil} />} /> 
-        */}
+        <Route path="confirmacao-email" element={<ConfirmacaoEmail />} />
       </Routes>
     </BrowserRouter>
   );
