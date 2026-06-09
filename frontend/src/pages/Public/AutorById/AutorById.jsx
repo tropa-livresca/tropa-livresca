@@ -1,13 +1,15 @@
 import { useAutor } from "../../../hooks/useAutor";
 import { useParams, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function AutorById() {
     const { id } = useParams();
-    const { autor, instagram, linkedin, facebook, email, redes, livros, carregando, buscarAutorById } = useAutor();
+    const { autor, instagram, linkedin, facebook, email, redes, livros, carregando, meta, buscarAutorById } = useAutor();
+    
+    const [paginaAtual, setPaginaAtual] = useState(1);
 
     useEffect(() => {
-        if (id) buscarAutorById(id);
+        if (id) buscarAutorById(id, paginaAtual, 3);
     }, [id]);
 
     if (carregando) return <p>Carregando...</p>
@@ -49,7 +51,7 @@ export default function AutorById() {
                             {livro.capa ? (<img src={livro.capa} alt={livro.titulo} width="100" />) : (<div>Sem foto da capa</div>)}
                             <h3>{livro.titulo}</h3>
                             <p>{livro.subtitulo}</p>
-                            
+
                             <Link to={`/livros`} >Ver Livros</Link>
                         </div>
                     );

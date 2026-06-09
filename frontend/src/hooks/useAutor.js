@@ -16,12 +16,12 @@ export const useAutor = () => {
   const [erro, setErro] = useState(null);
   const [meta, setMeta] = useState(null);
 
-  const buscarAutorById = async (id) => {
+  const buscarAutorById = async (id, page = 1, limit = 3) => {
     setCarregando(true);
     setErro(null);
 
     try {
-      const response = await apiFetch(`/api/autores/${id}`, { method: "GET" });
+      const response = await apiFetch(`/api/autores/${id}?page=${page}&limit=${limit}`, { method: "GET" });
 
       const data = await response.json();
       console.log("DADOS DO AUTOR VINDOS DA API:", data);
@@ -48,6 +48,7 @@ export const useAutor = () => {
         setLinkedin(linke ? linke.url : "");
         setEmail(mail ? mail.url : "");
 
+        setMeta(result.meta);
         setAutor(data);
         setLivros(data.livros);
       } else {
