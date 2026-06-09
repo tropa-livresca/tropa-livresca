@@ -1,4 +1,2 @@
-Inserir paginação em autor
-Ajustar, portanto, tudo que toca a ele
-
-Em seguida, efetivar as rotas de formulário de livros.
+Falta inserir a paginação em Autores, para otimizar a busca dos livros.
+Corrigir barra de busca.
