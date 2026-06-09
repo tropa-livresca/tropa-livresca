@@ -85,7 +85,7 @@ export default function Cadastro() {
             <h1>CADASTRO</h1>
             <h3>Insira seus dados para criar sua conta</h3>
 
-            <label>Nome de Usuário*</label>
+            <label>Nome de Usuário</label>
             <Input
               type="text"
               name="nome"
@@ -94,7 +94,7 @@ export default function Cadastro() {
               value={nome}
             />
 
-            <label>E-mail*</label>
+            <label>E-mail</label>
             <Input
               type="email"
               name="email"
@@ -103,7 +103,7 @@ export default function Cadastro() {
               value={email}
             />
 
-            <label>Senha*</label>
+            <label>Senha</label>
             <Input
               type="password"
               name="senha"
@@ -112,7 +112,7 @@ export default function Cadastro() {
               value={senha}
             />
 
-            <label>Confirmar Senha*</label>
+            <label>Confirmar Senha</label>
             <Input
               type="password"
               name="confSenha"
@@ -121,7 +121,7 @@ export default function Cadastro() {
               value={confSenha}
             />
 
-            <label>Telefone*</label>
+            <label>Telefone</label>
             <InputTelefone
               type="text"
               name="telefone"

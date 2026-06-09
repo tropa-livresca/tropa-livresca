@@ -89,6 +89,7 @@ body {
 
 .button:hover {
   background-color: #ffbb33;
+  transition:0.3s;
 }
 
 .item:hover .subtema {
@@ -132,7 +133,7 @@ body {
   color: #67170c;
   font-size: 0.85rem;
   border-radius: 0.4rem;
-  transition: background 0.2s;
+  transition: background 0.3s;
   box-sizing: border-box;
 }
 

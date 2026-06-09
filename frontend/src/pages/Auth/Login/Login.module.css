@@ -17,10 +17,9 @@
 .lesquerdo {
   place-items: center;
   padding: 2rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2em;
+  display: grid;
+  place-items:center;
+  padding: 2rem;
 }
 
 .formulario {
@@ -55,13 +54,6 @@
 .formulario label {
   color: #67170c;
   padding-left: 2rem;
-}
-
-form {
-  background-color: white;
-  border-radius: 3rem;
-  padding: 2rem 1rem;
-  display: grid;
 }
 
 p,
@@ -103,7 +95,7 @@ a {
   justify-self: start;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .container {
     grid-template-columns: 1fr;
   }

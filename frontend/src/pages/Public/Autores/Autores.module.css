@@ -28,7 +28,7 @@ main {
   width: 8rem;
   height: 3px;
   margin-top: 1rem;
-  background: #d4b46a;
+  background-color: #d4b46a;
   border-radius: 999px;
 }
 
@@ -46,7 +46,7 @@ main {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 0.4rem;
-  background: #fffdf7;
+  background-color: #fffdf7;
   border-radius: 999px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
@@ -71,14 +71,14 @@ main {
   border: none;
   padding: 1rem 1.6rem;
   border-radius: 999px;
-  background: #4d1f18;
+  background-color: #4d1f18;
   color: white;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .btnbuscar:hover {
-  background: #6a2b22;
+  background-color: #6a2b22;
 }
 
 .autorescontainer {
@@ -92,7 +92,7 @@ main {
   justify-items: center;
   gap: 0.8rem;
   padding: 2rem;
-  background: #fffcf4;
+  background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
@@ -123,7 +123,7 @@ main {
   content: "";
   display: block;
   width: 4rem;
-  background: #d4b46a;
+  background-color: #d4b46a;
 }
 
 .btndetalhes {
@@ -131,7 +131,7 @@ main {
   margin-top: 2rem;
   margin-bottom: 0;
   padding: 0.7rem 1.4rem;
-  background: #5a1e14;
+  background-color: #5a1e14;
   color: #fff;
   border-radius: 999px;
   font-size: 0.9rem;
