@@ -16,7 +16,7 @@ export const useAutor = () => {
   const [erro, setErro] = useState(null);
   const [meta, setMeta] = useState(null);
 
-  const buscarAutorById = async (id) => {
+  const buscarAutorById = async (id, page = 1, limit = 12) => {
     setCarregando(true);
     setErro(null);
 
