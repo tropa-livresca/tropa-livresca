@@ -58,5 +58,25 @@ export default function AutorById() {
                 })
             )}
 
+            {meta && meta.totalPage > 1 && (
+                        <div>
+                          <button
+                            onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+                            disabled={paginaAtual === 1}
+                          >
+                            Anterior
+                          </button>
+            
+                          <span>Página {paginaAtual} de {meta.totalPages} (Total: {meta.totalItems})</span>
+            
+                          <button
+                            onClick={() => setPaginaAtual((prev) => Math.min(prev + 1, meta.totalPages))}
+                            disabled={paginaAtual === meta.totalPages}
+                          >
+                            Próximo
+                          </button>
+            
+                        </div>
+                      )}
         </>);
 }
