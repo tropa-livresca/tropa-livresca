@@ -1,2 +1,1 @@
-Falta inserir a paginação em Autores, para otimizar a busca dos livros.
-Corrigir barra de busca.
+Inserta a paginação de autores, porém, falata a consecução dos formulários de criação de livros.
