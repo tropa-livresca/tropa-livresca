@@ -54,7 +54,7 @@ export default function Autores() {
               onChange={(e) => setBusca(e.target.value)}
             />
 
-            <button className={styles.btnbuscar} type="submit">Buscar</button>
+            <button className={styles.btnbuscar} type="submit" onClick={handleBuscar}>Buscar</button>
           </form>
         </div>
 
