@@ -23,11 +23,9 @@ import { apiFetch } from "./api";
 
 export const GetLivrosDeAutor = async (userId) =>{
    try{
-    console.log("a");
-     const res = await apiFetch("/api/livros/", {Method: "Get"});
+     const res = await apiFetch("/api/livros/"+userId, {Method: "Get"});
 
      const data = await res.json();
-     console.log(data);
 
      if(!res.ok){
       return data.error;
