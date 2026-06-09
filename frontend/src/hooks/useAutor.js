@@ -4,6 +4,13 @@ import { useState } from "react";
 export const useAutor = () => {
   const [autor, setAutor] = useState(null);
 
+  const [redes, setRedes] = useState([]);
+  const [instagram, setInstagram] = useState("");
+  const [facebook, setFacebook] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [email, setEmail] = useState("");
+
+  const [livros, setLivros] = useState(null);
   const [autores, setAutores] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
@@ -14,32 +21,55 @@ export const useAutor = () => {
     setErro(null);
 
     try {
-        const response = await apiFetch(`/api/autores/${id}`, { method: "GET" });
+      const response = await apiFetch(`/api/autores/${id}`, { method: "GET" });
 
-        const data = await response.json();
+      const data = await response.json();
+      console.log("DADOS DO AUTOR VINDOS DA API:", data);
 
-        if (response.ok) {
-            setAutor(data);
-        }else{
-            throw new Error(data.error || "Erro ao carregar autor");
-        }
+      if (response.ok) {
+        const listaRedes = data.usu_redes || [];
+        setRedes(listaRedes);
 
-        
-    }catch(error){
-        console.error("Erro ao buscar autor por id", error);
-        setErro("Erro ao buscar autor");
+        const insta = listaRedes.find(
+          (r) => r.plataforma.toLowerCase() === "instagram",
+        );
+        const face = listaRedes.find(
+          (r) => r.plataforma.toLowerCase() === "facebook",
+        );
+        const linke = listaRedes.find(
+          (r) => r.plataforma.toLowerCase() === "linkedin",
+        );
+        const mail = listaRedes.find(
+          (r) => r.plataforma.toLowerCase() === "email",
+        );
+
+        setInstagram(insta ? insta.url : "");
+        setFacebook(face ? face.url : "");
+        setLinkedin(linke ? linke.url : "");
+        setEmail(mail ? mail.url : "");
+
+        setAutor(data);
+        setLivros(data.livros);
+      } else {
+        throw new Error(data.error || "Erro ao carregar autor");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar autor por id", error);
+      setErro("Erro ao buscar autor");
+    } finally {
+      setCarregando(false);
     }
-    finally{
-        setCarregando(false);
-    }
-  }
+  };
 
   const buscarAutores = async (page = 1, limit = 12, busca = "") => {
     setCarregando(true);
     setErro(null);
 
     try {
-      const response = await apiFetch(`/api/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`, { method: "GET" });
+      const response = await apiFetch(
+        `/api/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+        { method: "GET" },
+      );
 
       const result = await response.json();
 
@@ -61,6 +91,12 @@ export const useAutor = () => {
     autores,
     carregando,
     erro,
+    instagram,
+    linkedin,
+    facebook,
+    email,
+    livros,
+    redes,
     recarregar: buscarAutores,
     buscarAutores,
     autor,

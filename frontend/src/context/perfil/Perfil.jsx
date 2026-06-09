@@ -67,7 +67,7 @@ export const PerfilProvider = ({ children }) => {
       formData.append("nome", dados.nome || "");
       formData.append("telefone", dados.telefone || "");
 
-      if (dados.descricao) {
+      if (dados.descricao) {  
         formData.append("descricao", dados.descricao);
       }
 

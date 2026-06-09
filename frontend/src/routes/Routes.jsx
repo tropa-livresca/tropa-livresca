@@ -17,6 +17,7 @@ import Autores from "../pages/Public/Autores/Autores";
 import AutorById from "../pages/Public/AutorById/AutorById";
 import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
+import Livros from "../pages/Public/Livros/Livros";
 //Se Autopublique
 import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
 import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
@@ -40,8 +41,8 @@ const RoutesApp = () => {
           <Route path="/" element={<Inicio />} />
           <Route path="historia" element={<Historia />} />
           <Route path="autores" element={<Autores />} />
-          <Route path = "autores/:id" element = {<AutorById/>}/>
-          
+          <Route path="autores/:id" element={<AutorById />} />
+
           <Route path="meuslivros" element={<MeusLivros />} />
 
           <Route path="seautopublique" element={<Outlet />}>
@@ -53,6 +54,7 @@ const RoutesApp = () => {
             <Route path="conteudo" element={<Private Item={Conteudo} />} />
           </Route>
 
+          <Route path="livros" element={<Livros/>} />
           <Route path="perfil" element={<Private Item={Perfil} />} />
         </Route>
 
