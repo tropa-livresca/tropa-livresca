@@ -21,7 +21,7 @@ export default function Footer() {
             <span></span>
           </div>
 
-          <p>Livros que atravessam épocas, ideias que transformam.</p>
+          <p>" Livros que atravessam épocas, ideias que transformam. "</p>
         </div>
 
         <div className={styles.footercolunas}>
@@ -51,17 +51,19 @@ export default function Footer() {
 
         <div className={styles.footercolunas}>
           <h3 id={styles.h3id}>ATENDIMENTO</h3>
-
-          <p>(14) 5983-9867</p>
-          <p>Segunda a sexta, das 9h às 18h</p>
+    
+          <p>
+            Telefone: <span>(14) 9967-6767</span>
+          </p>
+          <p>Atendimento: Segunda à sexta, das <span>9</span>h às <span>18</span>h</p>
 
           <p>
-            Rua Dr. David Gabriel 667
-            <br />
-            Taquarituba-SP
+            Endereço: Rua Dr. David Gabriel <span>667</span>- Taquarituba-SP
           </p>
+            
+          
 
-          <p>contato@tropalivresca.com.br</p>
+
         </div>
 
         <div className={styles.footercolunas}>
@@ -86,10 +88,8 @@ export default function Footer() {
           </div>
 
           <p id={styles.ptexto}>
-            <i>
-              Acreditamos no poder das palavras para inspirar, conectar e
-              transformar.
-            </i>
+              " Acreditamos no poder das palavras para inspirar, conectar e
+              transformar. "
           </p>
         </div>
       </div>

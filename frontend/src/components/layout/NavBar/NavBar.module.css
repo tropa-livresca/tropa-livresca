@@ -181,8 +181,27 @@ body {
 }
 
 @media (min-width: 1440px) {
-  .list {
-    gap: 4rem;
+  .logonav{
+    padding-left:6rem;
+  }
+
+  .navbutton{
+    padding-right:6rem;
+  }
+
+  .item a {
+  font-size:1.1rem;
+}
+.list {
+    gap: 3.5rem;
+  }
+
+  .button{
+    font-size:1.03rem;
+  }
+
+  .subtema li a{
+    font-size: 0.95rem;
   }
 }
 
