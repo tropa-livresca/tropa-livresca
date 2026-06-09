@@ -11,7 +11,7 @@ export const GetAutores = async (req, res) => {
 
     let query = supabaseAdmin
       .from("users_profile")
-      .select("id, nome, telefone, imagem, descricao, livros!inner(id)")
+      .select("id, nome, telefone, imagem, descricao, livros!inner(id)", {count: 'exact'})
       .order("nome", { ascending: true });
 
     if (busca) {
@@ -29,13 +29,20 @@ export const GetAutores = async (req, res) => {
       return res.status(404).json({ error: "Nenhum autor encontrado" });
     }
 
+    const autoresUnicos = data.filter(
+      (autor, index, self) => self.findIndex((a) => a.id === autor.id) === index
+    );
+
+    const totalItens = count || autoresUnicos.length;
+
     return res.json({
-      data,
+      data: autoresUnicos,
       meta: {
         page,
         limit,
-        localItems: count,
-        totalPage: Math.ceil(count / limit),
+        localItems: autoresUnicos.length,
+        totalItems: totalItens,
+        totalPage: Math.ceil(totalItens / limit),
       },
     });
   } catch (err) {
@@ -50,7 +57,7 @@ export const GetAutorById = async (req, res) => {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
       .select(
-        "id, nome, telefone, imagem, descricao, usu_redes(url, plataforma)",
+        "id, nome, telefone, imagem, descricao, usu_redes(url, plataforma), livros!fk_user_profile_id(id,data_de_publicacao, titulo, subtitulo, capa)",
       )
       .eq("id", id)
       .maybeSingle();
@@ -65,6 +72,7 @@ export const GetAutorById = async (req, res) => {
     }
 
     return res.status(200).json(data);
+   
   } catch (err) {
     console.error("Erro inesperado", err);
     return res.status(500).json({ error: "Erro inesperado" });
