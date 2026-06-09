@@ -22,8 +22,6 @@ export default function Autores() {
 
   if (erro) return <p>{erro}</p>
 
-  if (autores.length === 0) return <p>Nenhum autor cadastrado</p>
-
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
@@ -54,7 +52,7 @@ export default function Autores() {
               onChange={(e) => setBusca(e.target.value)}
             />
 
-            <button className={styles.btnbuscar} type="submit">Buscar</button>
+            <button className={styles.btnbuscar} type="submit" onClick={handleBuscar}>Buscar</button>
           </form>
         </div>
 

@@ -1,2 +1,2 @@
 Falta inserir a paginação em Autores, para otimizar a busca dos livros.
-Configurar a paginação dos livros em autores.
+Corrigir barra de busca.
