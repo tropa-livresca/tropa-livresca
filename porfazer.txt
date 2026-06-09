@@ -1,4 +1,1 @@
-Inserir paginação em autor
-Ajustar, portanto, tudo que toca a ele
-
-Em seguida, efetivar as rotas de formulário de livros.
+Inserta a paginação de autores, porém, falata a consecução dos formulários de criação de livros.

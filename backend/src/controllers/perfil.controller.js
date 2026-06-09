@@ -37,7 +37,7 @@ export const GetPerfil = async (req, res) => {
 
 export const UpdatePerfil = async (req, res) => {
   try {
-    const { nome, telefone, descricao } = req.body;
+    const { nome, telefone, descricao, redes } = req.body;
 
     const updates = {
       id: req.user.id,
@@ -67,18 +67,43 @@ export const UpdatePerfil = async (req, res) => {
 
       updates.imagem = publicUrlData.publicUrl;
     }
-    const { data, error } = await supabaseAdmin
+    const { data: perfilData, error: perfilError } = await supabaseAdmin
       .from("users_profile")
       .upsert(updates, { onConflict: "id" })
       .select()
       .maybeSingle();
 
-    if (error) {
-      console.error("Erro no upsert do Supabase:", error);
-      return res.status(500).json({ error: error.message });
+    if (perfilError) {
+      console.error("Erro no upsert do Supabase:", perfilError);
+      return res.status(500).json({ error: perfilError.message });
     }
 
-    return res.json(data);
+    if (redes) {
+      const listaRedes = typeof redes === "string" ? JSON.parse(redes) : redes;
+
+      const redesComUserId = listaRedes.map((rede) => ({
+        ...rede,
+        fk_user_profile_id: req.user.id,
+      }));
+
+      const { error: redesError } = await supabaseAdmin
+        .from("usu_redes")
+        .upsert(redesComUserId, { onConflict: "fk_user_profile_id, plataforma" });
+
+      if(redesError){
+        consoler.error("Erro ao atualizar redes sociais: ", redesError);
+        return res.status(500).json(
+        {
+          error: "Perfil salvo, mas falha ao atualizar redes sociais",
+          detalhes: redesError.message
+        }
+      );
+      }
+
+      perfilData.usu_redes = listaRedes;
+    }
+
+    return res.json(perfilData);
   } catch (err) {
     console.error("Erro crítico no UpdatePerfil (Catch):", err);
     return res
