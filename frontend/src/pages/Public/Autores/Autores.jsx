@@ -22,8 +22,6 @@ export default function Autores() {
 
   if (erro) return <p>{erro}</p>
 
-  if (autores.length === 0) return <p>Nenhum autor cadastrado</p>
-
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
