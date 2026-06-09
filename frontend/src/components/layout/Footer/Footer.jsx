@@ -51,19 +51,17 @@ export default function Footer() {
 
         <div className={styles.footercolunas}>
           <h3 id={styles.h3id}>ATENDIMENTO</h3>
-
+    
           <p>
-            Telefone: <span id={styles.atendimentofont}>(14) 9967-6767</span>
+            Telefone: <span>(14) 9967-6767</span>
           </p>
-          <p>Segunda a sexta, das <span id={styles.atendimentofont}>9</span>h às <span id={styles.atendimentofont}>18</span>h</p>
+          <p>Atendimento: Segunda à sexta, das <span>9</span>h às <span>18</span>h</p>
 
           <p>
-            Rua Dr. David Gabriel <span id={styles.atendimentofont}>667</span>
+            Endereço: Rua Dr. David Gabriel <span>667</span>- Taquarituba-SP
           </p>
             
-          <p>
-            Taquarituba-SP
-          </p>
+          
 
 
         </div>
