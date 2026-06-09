@@ -24,19 +24,19 @@ export default function AutorById() {
             {redes && redes.length > 0 ? (
                 <ul id="redesSociais">
                     {facebook && (
-                        <li>{facebook}</li>
+                        <li>Facebook: <a href={facebook} target="_blank" rel="noopener noreferrer"></a></li>
                     )}
 
                     {instagram && (
-                        <li>{instagram}</li>
+                        <li>Instagram: <a href={instagram} target="_blank" rel="noopener noreferrer"></a></li>
                     )}
 
                     {linkedin && (
-                        <li>{linkedin}</li>
+                        <li>Linkedin:<a href={linkedin} target="_blank" rel="noopener noreferrer"></a></li>
                     )}
 
                     {email && (
-                        <li>{email}</li>
+                        <li>E-mail:<a href={{email}} target="_blank" rel="noopener noreferrer"></a></li>
                     )}
                 </ul>
             ) : (
