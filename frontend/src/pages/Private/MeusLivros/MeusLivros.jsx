@@ -1,3 +1,9 @@
+/**
+ * Barra de pesquisa
+ * Botão de novo livro
+ * Livros particulares
+ */
+
 import { useState, useEffect } from "react";
 import useLivros from "../../../hooks/useLivros";
 import useAuth from "../../../hooks/useAuth";
