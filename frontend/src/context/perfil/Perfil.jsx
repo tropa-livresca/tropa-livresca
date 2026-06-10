@@ -35,27 +35,31 @@ export const PerfilProvider = ({ children }) => {
         }
 
         const errorText = await response.text();
-        throw new Error(`Erro ${response.status}: ${errorText} || "Erro ao buscar perfil"`);
+        throw new Error(`Erro ${response.status}: ${errorText}`);
       }
 
-      const listaRedes = data.usu_redes || [];
+      const json = await response.json();
+      
+      const dadosPerfil = json.data || json;
+
+      const listaRedes = dadosPerfil.usu_redes || [];
       setRedes(listaRedes);
 
-      const insta = listaRedes.find(r => r.plataforma.toLowerCase() === "instagram");
-      const face = listaRedes.find(r => r.plataforma.toLowerCase() === "facebook");
-      const linke = listaRedes.find(r => r.plataforma.toLowerCase() === "linkedin");
-      const mail = listaRedes.find(r => r.plataforma.toLowerCase() === "email");
+      const insta = listaRedes.find(r => r.plataforma?.toLowerCase() === "instagram");
+      const face = listaRedes.find(r => r.plataforma?.toLowerCase() === "facebook");
+      const linke = listaRedes.find(r => r.plataforma?.toLowerCase() === "linkedin");
+      const mail = listaRedes.find(r => r.plataforma?.toLowerCase() === "email");
 
       setInstagram(insta ? insta.url : "");
       setFacebook(face ? face.url : "");
       setLinkedin(linke ? linke.url : "");
       setEmail(mail ? mail.url : "");
-      setPerfil(data);
-      setNome(data.nome || "");
-      setDescricao(data.descricao || "");
-      setTelefone(data.telefone || "");
-      setImagem(data.imagem || "");
-      setRedes(data.usu_redes || []);
+      
+      setPerfil(dadosPerfil);
+      setNome(dadosPerfil.nome || "");
+      setDescricao(dadosPerfil.descricao || "");
+      setTelefone(dadosPerfil.telefone || "");
+      setImagem(dadosPerfil.imagem || "");
     } catch (error) {
       console.error("Error recolher os dados do supabase", error);
     }
@@ -76,7 +80,7 @@ export const PerfilProvider = ({ children }) => {
         formData.append("imagem", dados.imagem);
       }
 
-      if(dados.usu_redes){
+      if (dados.usu_redes) {
         formData.append("redes", JSON.stringify(dados.usu_redes));
       }
 
@@ -85,10 +89,11 @@ export const PerfilProvider = ({ children }) => {
         body: formData,
       });
 
-      const data = await response.json();
+      const json = await response.json();
+      const data = json.data || json; 
 
       if (!response.ok) {
-        throw new Error(data.error || "Erro ao atualizar perfil");
+        throw new Error(json.error || "Erro ao atualizar perfil");
       }
 
       setPerfil(data);
@@ -98,7 +103,7 @@ export const PerfilProvider = ({ children }) => {
       setDescricao(data.descricao || "");
       setRedes(data.usu_redes || []);
 
-      return { sucess: true };
+      return { sucess: true }; 
     } catch (error) {
       console.error("Error ao atualizar perfil", error);
       return { sucess: false, error: error.message || "Erro ao atualizar perfil" };
