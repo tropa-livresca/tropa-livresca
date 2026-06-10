@@ -1,27 +1,49 @@
-import { createContext, useState } from "react";
 import { apiFetch } from "../../services/api";
 
-const LivroContext = createContext();
+import { createContext, useState, useEffect } from "react";
 
-export const GetLivros = async () => {
-  try {
-    const res = await apiFetch("/api/livros/", { method: "GET" });
 
-    const data = await res.json();
-    console.log(data);
-
-    if (!res.ok) {
-      return data.error;
-    }
-
-    return data;
-  } catch {
-    return "error";
-  }
-};
+export const LivroContext = createContext();
 
 export const LivroProvider = ({ children }) => {
+
   const [livros, setLivros] = useState([]);
+
+  const GetLivros = async () => {
+    try {
+      const res = await apiFetch("/api/livros/", { Method: "Get" });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Erro da API", data.error);
+        return [];
+      }
+
+      return data.data || data;
+
+    } catch (err){
+      console.error("Erro ao buscar livros:", err);
+      return[];
+    }
+  }
+
+  const GetLivrosByAutor = async (userId) => {
+    try {
+      const res = await apiFetch("/api/livros/" + userId, { Method: "GET" });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        return [];
+      }
+
+      return data.data || data;
+
+    } catch {
+      return [];
+    }
+  }
 
   return (
     <LivroContext.Provider
@@ -29,6 +51,7 @@ export const LivroProvider = ({ children }) => {
         livros,
         setLivros,
         GetLivros,
+        GetLivrosByAutor
       }}
     >
       {children}
