@@ -19,7 +19,6 @@ import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 import Livros from "../pages/Public/Livros/Livros";
 //Se Autopublique
-import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
 import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
 import Conteudo from "../pages/Private/NovoLivro/Conteudo/Conteudo";
 import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
