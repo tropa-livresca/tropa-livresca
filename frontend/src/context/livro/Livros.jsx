@@ -2,56 +2,75 @@ import { apiFetch } from "../../services/api";
 
 import { createContext, useState, useEffect } from "react";
 
-
 export const LivroContext = createContext();
 
 export const LivroProvider = ({ children }) => {
 
-  const [livros, setLivros] = useState([]);
+  const [Livros, setLivros] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
-  const GetLivros = async () => {
+  const BuscarLivros = async () => {
+    setLivros([]);
+
     try {
       const res = await apiFetch("/api/livros/", { Method: "Get" });
 
       const data = await res.json();
 
       if (!res.ok) {
-        console.error("Erro da API", data.error);
-        return [];
+        if (res.status === 404) {
+          setCarregando(true);
+          setLivros([]);
+          return;
+        }
+
+        const errorText = await res.text();
+        throw new Error(`Erro ${res.status}: ${errorText}`);
       }
 
-      return data.data || data;
-
-    } catch (err){
-      console.error("Erro ao buscar livros:", err);
-      return[];
+      const livros = data || [];
+      setLivros(livros);
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro ao buscar livros:", error);
     }
   }
 
-  const GetLivrosByAutor = async (userId) => {
+  const BuscarLivrosById = async () => {
+    setLivros([]);
     try {
-      const res = await apiFetch("/api/livros/" + userId, { Method: "GET" });
+      const res = await apiFetch("/api/meuslivros/", { Method: "GET" });
 
       const data = await res.json();
 
       if (!res.ok) {
-        return [];
+        if (res.status === 404) {
+          setLivros([]);
+          setCarregando(true);
+          return;
+        }
+
+        const errorText = await res.text();
+        throw new Error(`Erro ${res.status}: ${errorText}`);
       }
 
-      return data.data || data;
-
-    } catch {
-      return [];
+      const livros = data || [];
+      setLivros(livros);
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em GetLivrosById", error);
     }
-  }
+  };
 
   return (
     <LivroContext.Provider
       value={{
-        livros,
+        carregando,
+        Livros,
         setLivros,
-        GetLivros,
-        GetLivrosByAutor
+        setCarregando,
+        BuscarLivros,
+        BuscarLivrosById
       }}
     >
       {children}

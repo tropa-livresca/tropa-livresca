@@ -6,10 +6,11 @@ import Input from "../../../../components/form/Input/Input";
  * Pré-visualização da capa
  */
 
-const [conteudo, setConteudo] = useState([]);
+export default function Conteudo() {
+  
+const [conteudo, setConteudo] = useState("");
 const [capa, setCapa] = useState("");
 
-export default function Conteudo() {
   return (
     <main>
       <h1>Contéudo</h1>
@@ -18,7 +19,7 @@ export default function Conteudo() {
           <label>
             Subir arquivo do livro (Aceitamos formatos .pdf)
             <Input
-              type="file"
+              type="text"
               value={conteudo}
               handleOnChange={(e) => setConteudo(e.target.value)}
             />
@@ -28,7 +29,7 @@ export default function Conteudo() {
         <fieldset>
           <label>
             <Input
-              type="file"
+              type="text"
               value={capa}
               handleOnChange={(e) => { setCapa(e.target.value) }}
             />
