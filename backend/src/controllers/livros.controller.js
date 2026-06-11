@@ -1,11 +1,26 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 export const GetLivros = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
+  const busca = req.query.busca || "";
+
+  const start = (page - 1) * limit;
+  const end = start + limit - 1;
+
   try {
-    const { data, error } = await supabase
+    let query = supabaseAdmin
       .from("livros")
-      .select()
-      .eq("ativo", true);
+      .select("*", {count: "exact"})
+      .eq("ativo", true)
+      .order("titulo", { ascending: true });
+
+    if (busca) {
+      query = query.ilike("titulo", `%${busca}%`);
+    }
+
+    const { data, error, count } = await query.range(start, end);
+
     if (error) {
       console.error("Erro ao buscar os livros", error);
       return;
@@ -15,7 +30,22 @@ export const GetLivros = async (req, res) => {
       return res.status(404).error("Nenhum livro encontrado", error);
     }
 
-    return res.status(200).json(data);
+    const livrosUnicos = data.filter(
+      (livro, index, self) =>
+        self.findIndex((a) => a.id === livro.id) === index,
+    );
+
+    const totalItens = count || livrosUnicos.length;
+
+    return res.status(200).json({
+      data,
+      meta: {
+        page,
+        limit,
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+      },
+    });
   } catch (err) {
     console.error("Erro inesperado", err);
     return res.status(500).json({ error: "Erro inesperado" });
