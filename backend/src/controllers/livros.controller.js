@@ -84,13 +84,13 @@ export const GetLivrosById = async (req, res) => {
   }
 };
 
-export const GetLivrosAutorById = async (req, res) => {
+export const GetLivrosByAutor = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { livros, error} = await supabaseAdmin
+    const { data, error} = await supabaseAdmin
       .from("livros")
-      .select("*, ")
+      .select("*, users_profile(nome)")
       .eq("id", id)
       .maybeSingle();
 
@@ -103,6 +103,8 @@ export const GetLivrosAutorById = async (req, res) => {
       console.error("Erro ao buscar livros de autor específico por id");
       return res.status(404).json({ error: error.message });
     }
+
+    return res.status(200).json(data);
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });

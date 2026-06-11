@@ -9,13 +9,13 @@ export const LivroProvider = ({ children }) => {
   const [meta, setMeta] = useState(null);
 
   const BuscarLivros = useCallback(async (page = 1, limit = 12, busca = "") => {
-    setCarregando(true); 
+    setCarregando(true);
     setMeta(null);
 
     try {
 
       const res = await apiFetch(
-        `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`, 
+        `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
         { method: "GET" }
       );
 
@@ -25,10 +25,10 @@ export const LivroProvider = ({ children }) => {
         if (res.status === 404) {
           setLivros([]);
           setMeta(null);
-          setCarregando(false); 
+          setCarregando(false);
           return;
         }
-        
+
         throw new Error(result.error || `Erro ${res.status}`);
       }
 
@@ -53,7 +53,7 @@ export const LivroProvider = ({ children }) => {
       if (!res.ok) {
         if (res.status === 404) {
           setLivros([]);
-          setCarregando(false); 
+          setCarregando(false);
           return;
         }
         throw new Error(data.error || `Erro ${res.status}`);
@@ -67,6 +67,33 @@ export const LivroProvider = ({ children }) => {
       setLivros([]);
       setCarregando(false);
     }
+  }, []);
+
+  const BuscarLivrosByAutor = useCallback(async (id) => {
+    try {
+
+      const res = await apiFetch(`/api/livros/${id}`);
+
+      const { data } = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          setLivros([]);
+          setCarregando(false);
+          return;
+        }
+        throw new Error(data.error || `Erro ${res.status}`);
+      }
+
+      const livrosData = data.data || data || [];
+      setLivros(livrosData);
+      setCarregando(false);
+      
+    } catch (error) {
+      console.error("Erro em BuscarLivrosByAutor", error);
+      setLivros([]);
+      setCarregando(false);
+    };
   }, []);
 
   return (

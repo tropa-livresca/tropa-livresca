@@ -1,4 +1,5 @@
 import useLivros from "../../../hooks/useLivros";
+import Link from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
@@ -13,7 +14,7 @@ export default function Livros() {
             await BuscarLivros(paginaAtual, 12, busca);
         }
         carregarDados();
-    }, [paginaAtual,BuscarLivros]);
+    }, [paginaAtual, BuscarLivros]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
@@ -45,12 +46,15 @@ export default function Livros() {
             {!Livros || Livros.length === 0 ? (<p>Nenhum autor encontrado</p>) : (
                 Livros.map((livro) => {
                     return (
-                        <div key={livro.id}>
-                            {livro.capa ? (<img src={livro.capa} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
-                            <h3>{livro.titulo || "Sem título"}</h3>
-                            <p>{livro.descricao || "Sem descrição"}</p>
-                            <p>{livro.autor_nome || "Sem autor"}</p>
-                            <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
+                        <div>
+                            <div key={livro.id}>
+                                {livro.capa ? (<img src={livro.capa} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
+                                <h3>{livro.titulo || "Sem título"}</h3>
+                                <p>{livro.descricao || "Sem descrição"}</p>
+                                <p>{livro.autor_nome || "Sem autor"}</p>
+                                <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
+                                <Link to={`/livros/${livro.id}`}>Ver Livro</Link>
+                            </div>
                         </div>
                     );
                 })
