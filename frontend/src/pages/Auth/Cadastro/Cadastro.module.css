@@ -76,6 +76,15 @@ span a{
   font-family: "Jacques Francois", serif;
 }
 
+.erro {
+  text-align: center;
+}
+
+.erro span {
+  white-space: pre-line;
+  color:#67170c;
+}
+
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;

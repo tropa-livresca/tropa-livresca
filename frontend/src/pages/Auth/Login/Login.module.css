@@ -2,7 +2,6 @@
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   min-height: 100vh;
-  background-color:#ede6b3;
 }
 
 .ldireito {
@@ -14,12 +13,14 @@
   height: 100%;
   object-fit: cover;
 }
+
 .lesquerdo {
   place-items: center;
   padding: 2rem;
   display: grid;
   place-items:center;
   padding: 2rem;
+  background-color:#ede6b3;
 }
 
 .formulario {

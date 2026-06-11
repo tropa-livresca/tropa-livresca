@@ -7,7 +7,7 @@
 }
 
 .footertopo {
-  max-width: 87.5rem;
+  max-width: 100%;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(12rem, 1.2fr) 1.4fr 1.4fr 1.4fr;
@@ -128,7 +128,7 @@
 }
 
 .footerbottom {
-  max-width: 87.5rem;
+  max-width: 100%;
   margin: 0 auto;
   border-top: 1px solid #d7b8a5;
   display: grid;
@@ -191,6 +191,10 @@
     padding-top: 2rem;
   }
 
+  .footercolunas p{
+    text-align: center;
+  }
+
   .footerbottom {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -221,6 +225,10 @@
 
   .footercolunas h3 {
     font-size: 1rem;
+  }
+
+  .footercolunas p{
+    text-align: center;
   }
 
   .logoicons {
