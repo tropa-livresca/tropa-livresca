@@ -1,0 +1,71 @@
+.paginacao {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.btnpagina {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  background: var(--cor-primaria);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+}
+
+.btnpagina svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.btnpagina:hover:not(:disabled) {
+  background: var(--cor-primaria-hover);
+}
+
+.btnpagina:disabled {
+  background: var(--cor-superficie-clara);
+  color: var(--cor-texto-muted);
+  border: 1px solid rgba(77, 31, 24, 0.15);
+  box-shadow: none;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.info {
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pagina {
+  display: block;
+  color: var(--cor-texto);
+  font-weight: 600;
+}
+
+.total {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--cor-texto-muted);
+}
+
+@media (max-width: 480px) {
+  .paginacao {
+    gap: 0.8rem;
+  }
+
+  .btnpagina {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+  }
+}

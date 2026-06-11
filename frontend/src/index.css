@@ -1,3 +1,18 @@
+:root {
+  --cor-fundo: #fff8c9;
+  --cor-superficie: #fffcf4;
+  --cor-superficie-clara: #fffdf7;
+  --cor-primaria: #4d1f18;
+  --cor-primaria-hover: #6a2b22;
+  --cor-primaria-alt: #5a1e14;
+  --cor-dourado: #d4b46a;
+  --cor-dourado-escuro: #c8a45c;
+  --cor-texto: #432c28;
+  --cor-texto-muted: #7a6a5b;
+  --sombra-suave: 0 4px 15px rgba(0, 0, 0, 0.08);
+  --sombra-card: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
 * {
   padding: 0;
   margin: 0;
