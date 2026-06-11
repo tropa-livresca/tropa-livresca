@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
+import Paginacao from "../../../components/layout/Paginacao/Paginacao";
 
 export default function Autores() {
   const { autores, carregando, erro, buscarAutores, meta } = useAutor();
@@ -16,7 +17,7 @@ export default function Autores() {
 
   useEffect(() => {
     buscarAutores(paginaAtual, 12, busca);
-  }, []);
+  }, [paginaAtual]);
 
   if (carregando) return <p>Carregando...</p>
 
@@ -70,26 +71,12 @@ export default function Autores() {
             })
           )}
 
-          {meta && meta.totalPage > 1 && (
-            <div>
-              <button
-                onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
-                disabled={paginaAtual === 1}
-              >
-                Anterior
-              </button>
-
-              <span>Página {paginaAtual} de {meta.totalPages} (Total: {meta.totalItems})</span>
-
-              <button
-                onClick={() => setPaginaAtual((prev) => Math.min(prev + 1, meta.totalPages))}
-                disabled={paginaAtual === meta.totalPages}
-              >
-                Próximo
-              </button>
-
-            </div>
-          )}
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={meta?.totalPages}
+            totalItems={meta?.totalItems}
+            onMudarPagina={setPaginaAtual}
+          />
         </div>
       </main>
     </div>
