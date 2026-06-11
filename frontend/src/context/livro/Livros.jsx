@@ -4,6 +4,10 @@ import { createContext, useState, useCallback } from "react";
 export const LivroContext = createContext();
 
 export const LivroProvider = ({ children }) => {
+  const [livro, setLivro] = useState([]);
+  const [autor, setAutor] = useState(null);
+  const [colaboradores, setColaboradores] = useState(null);
+
   const [Livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
@@ -69,29 +73,42 @@ export const LivroProvider = ({ children }) => {
     }
   }, []);
 
-  const BuscarLivrosByAutor = useCallback(async (id) => {
+  const BuscarLivroByAutor = useCallback(async (id) => {
+    setLivro([]);
+    setColaboradores(null);
+    setAutor(null);
+    setCarregando(true);
+
     try {
 
       const res = await apiFetch(`/api/livros/${id}`);
 
-      const { data } = await res.json();
+      const json = await res.json();
 
       if (!res.ok) {
         if (res.status === 404) {
-          setLivros([]);
+          setLivro([]);
+          setAutor(null);
+          setColaboradores(null);
           setCarregando(false);
           return;
         }
-        throw new Error(data.error || `Erro ${res.status}`);
+        throw new Error(json.error || `Erro ${res.status}`);
       }
 
-      const livrosData = data.data || data || [];
-      setLivros(livrosData);
+      const livroData = json.data;
+      setLivro(livroData);
+
+      const colaboradoresData = json.data.colaboradores;
+      setColaboradores(colaboradoresData);
+
+      const autorData = json.data.users_profile;
+      setAutor(autorData);
+
       setCarregando(false);
-      
-    } catch (error) {
-      console.error("Erro em BuscarLivrosByAutor", error);
-      setLivros([]);
+    } catch (err) {
+      console.error("Erro em BuscarLivroByAutor", err);
+      setLivro([]);
       setCarregando(false);
     };
   }, []);
@@ -99,14 +116,21 @@ export const LivroProvider = ({ children }) => {
   return (
     <LivroContext.Provider
       value={{
+        autor,
+        colaboradores,
         meta,
         carregando,
+        livro,
         Livros,
+        setAutor,
         setMeta,
+        setLivro,
         setLivros,
+        setColaboradores,
         setCarregando,
         BuscarLivros,
-        BuscarLivrosById
+        BuscarLivrosById,
+        BuscarLivroByAutor,
       }}
     >
       {children}

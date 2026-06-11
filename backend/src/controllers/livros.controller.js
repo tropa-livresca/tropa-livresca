@@ -88,23 +88,41 @@ export const GetLivrosByAutor = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { data, error} = await supabaseAdmin
+    const { data: livro, error: errorLivro } = await supabaseAdmin
       .from("livros")
-      .select("*, users_profile(nome)")
+      .select(
+        "id, publico_alvo, numero_edicao, data_de_publicacao, capa, titulo, subtitulo, descricao, autor_nome, autor_sobrenome, users_profile(id, nome, imagem)",
+      )
       .eq("id", id)
       .maybeSingle();
 
-    if (error) {
-      console.error("Erro interno do supabase", error);
-      return res.status(500).json({ error: error.message });
+    if (errorLivro) {
+      console.error("Erro interno do supabase", errorLivro);
+      return res.status(500).json({ errorLivro: error.message });
     }
 
-    if (!data) {
+    if (!livro) {
       console.error("Erro ao buscar livros de autor específico por id");
-      return res.status(404).json({ error: error.message });
+      return res.status(404).json({ errorLivro: error.message });
     }
 
-    return res.status(200).json(data);
+    const { data: colaboradores, error: errorColaborador } = await supabaseAdmin
+      .from("colaboradores")
+      .select("nome, sobrenome, funcao")
+      .eq("fk_livros_id", id)
+      .order("nome", { ascending: true });
+
+    if (errorColaborador) {
+      console.error("Erro interno do supabase", errorColaborador);
+      return res.status(500).json({ errorColaborador: error.message });
+    }
+
+    return res.status(200).json({
+      data: {
+        ...livro,
+        colaboradores: colaboradores || [],
+      },
+    });
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });

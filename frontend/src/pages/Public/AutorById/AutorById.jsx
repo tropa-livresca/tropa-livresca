@@ -91,7 +91,7 @@ export default function AutorById() {
                                     <h3 className={styles.livrotitulo}>{livro.titulo}</h3>
                                     <p className={styles.livrosubtitulo}>{livro.subtitulo}</p>
 
-                                    <Link to={`/livros`} className={styles.btnlivro}>Ver Livros</Link>
+                                    <Link to={`/livros/${livro.id}`} className={styles.btnlivro}>Ver Livro</Link>
                                 </article>
                             );
                         })}

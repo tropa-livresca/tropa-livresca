@@ -25,6 +25,7 @@ import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
 import Formato from "../pages/Private/NovoLivro/Formato/Formato";
 import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
 import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
+import LivroById from "../pages/Public/LivroById/LivroById";
 
 const Private = ({ Item }) => {
   const { signed } = useAuth();
@@ -42,7 +43,7 @@ const RoutesApp = () => {
           <Route path="historia" element={<Historia />} />
           <Route path="autores" element={<Autores />} />
           <Route path="autores/:id" element={<AutorById />} />
-
+          
           <Route path="meuslivros" element={<Private Item={MeusLivros} />} />
 
           <Route path="seautopublique" element={<Outlet />}>
@@ -55,6 +56,7 @@ const RoutesApp = () => {
           </Route>
 
           <Route path="livros" element={<Livros />} />
+          <Route path= "livros/:id" element = {<LivroById/>}/>
           <Route path="perfil" element={<Private Item={Perfil} />} />
         </Route>
 

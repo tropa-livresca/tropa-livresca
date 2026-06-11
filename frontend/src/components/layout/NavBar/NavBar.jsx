@@ -55,7 +55,7 @@ export default function NavBar() {
               <li><Link to="/">Depoimentos</Link></li>
             </ul>
           </li>
-          <li className={styles.item}><Link to="/">Livros</Link></li>
+          <li className={styles.item}><Link to="/livros">Livros</Link></li>
           <li className={styles.item}><Link to="/">Loja</Link></li>
           <li className={styles.item}><Link to="/autores">Autores</Link></li>
           <li className={styles.item}><Link to="/">Blog</Link></li>
