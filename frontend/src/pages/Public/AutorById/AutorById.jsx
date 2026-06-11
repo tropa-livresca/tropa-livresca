@@ -8,7 +8,7 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaEnvelope } from "react-icons/
 import Paginacao from "../../../components/layout/Paginacao/Paginacao";
 
 export default function AutorById() {
-    const { id } = useParams();
+    const { id } = useParams(); 
     const { autor, instagram, linkedin, facebook, email, redes, livros, carregando, meta, buscarAutorById } = useAutor();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
