@@ -8,6 +8,11 @@ export const GetPerfil = async (req, res) => {
       .eq("id", req.user.id)
       .maybeSingle();
 
+      if (!req.user || !req.user.id) {
+      console.error("Acesso negado: req.user não está definido.");
+      return res.status(401).json({ error: "Usuário não autenticado ou token inválido" });
+    }
+
     if (error) {
       console.error("ERRO DO SUPABASE NO BACKEND:", error);
       return res.status(500).json({ error: error.message });

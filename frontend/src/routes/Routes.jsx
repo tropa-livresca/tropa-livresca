@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Importado o Outlet
-
+import { LivroProvider } from "../context/livro/Livros";
 import useAuth from "../hooks/useAuth";
 
 import Container from "../components/layout/Container/Container";
@@ -19,7 +19,6 @@ import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 import Livros from "../pages/Public/Livros/Livros";
 //Se Autopublique
-import NovoLivro from "../pages/Private/NovoLivro/NovoLivro/NovoLivro";
 import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
 import Conteudo from "../pages/Private/NovoLivro/Conteudo/Conteudo";
 import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
@@ -34,6 +33,7 @@ const Private = ({ Item }) => {
 
 const RoutesApp = () => {
   return (
+    <LivroProvider>
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
@@ -43,7 +43,7 @@ const RoutesApp = () => {
           <Route path="autores" element={<Autores />} />
           <Route path="autores/:id" element={<AutorById />} />
 
-          <Route path="meuslivros" element={<MeusLivros />} />
+          <Route path="meuslivros" element={<Private Item={MeusLivros} />} />
 
           <Route path="seautopublique" element={<Outlet />}>
             <Route index element={<SeAutopublique />} />
@@ -54,7 +54,7 @@ const RoutesApp = () => {
             <Route path="conteudo" element={<Private Item={Conteudo} />} />
           </Route>
 
-          <Route path="livros" element={<Livros/>} />
+          <Route path="livros" element={<Livros />} />
           <Route path="perfil" element={<Private Item={Perfil} />} />
         </Route>
 
@@ -63,6 +63,7 @@ const RoutesApp = () => {
         <Route path="confirmacao-email" element={<ConfirmacaoEmail />} />
       </Routes>
     </BrowserRouter>
+    </LivroProvider>
   );
 };
 

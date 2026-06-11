@@ -1,2 +1,2 @@
-Falta inserir a paginação em Autores, para otimizar a busca dos livros.
-Corrigir barra de busca.
+Incrementar Livros By Id e criar links para os livros do autor por meio de rota livros/:Id
+Configurar o formData e as rotas put e post em SeAutopublique

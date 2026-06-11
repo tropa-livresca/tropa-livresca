@@ -7,5 +7,8 @@
     "client": "cd frontend && npm run dev",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "multer": "^2.1.1"
   }
 }
