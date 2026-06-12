@@ -1,5 +1,5 @@
-import { supabase } from "../../lib/supabaseClient";
 import { createContext, useState, useEffect } from "react";
+import { apiFetch } from "../../services/api";
 
 /** @type {import('react').Context<any>} */
 export const AuthContext = createContext({});
@@ -12,28 +12,31 @@ export const AuthContext = createContext({});
  * @returns {JSX.Element}
  */
 export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [tempEmail, setTempEmail] = useState(() => {
     return sessionStorage.getItem("temp_email") || "";
-  });//TempEmail grava o e-mail do usuário e o salva no sessionStorage
-  const [user, setUser] = useState(null);
+  }); //TempEmail grava o e-mail do usuário e o salva no sessionStorage
 
   useEffect(() => {
-    const getUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      setUser(data?.user ?? null);
+    const checkSession = async () => {
+      try {
+        const res = await apiFetch("/api/auth/session");
+
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user);
+        } else {
+          setUser(null);
+        }
+      } catch (err) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    getUser();
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-      },
-    );
-
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+    checkSession();
   }, []);
 
   /**
@@ -43,11 +46,22 @@ export const AuthProvider = ({ children }) => {
    * @returns {Promise<string|undefined>} Retorna a mensagem de erro se falhar
    */
   const signin = async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    if (error) return error.message;
+    try{
+      const res = await apiFetch("/api/auth/signin", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if(!res.ok){
+        return data.error || "Erro ao fazer login";
+      }
+
+      setUser(data.user);
+    }catch(err){
+      return "Erro de conexão com o servidor.";
+    }
   };
 
   /**
@@ -58,38 +72,41 @@ export const AuthProvider = ({ children }) => {
    * @param {string} nome
    */
   const signup = async (email, password, telefone, nome) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { nome, telefone } },
-    });
+    try {
+      const res = await apiFetch("/api/auth/signup", {
+        method: "POST",
+        body: JSON.stringify({ email, password, telefone, nome }),
+      });
 
-    if (!error) {
+      const data = await res.json();
+
+      if (!res.ok) {
+        return data.error || "Erro ao criar conta";
+      }
+
       setTempEmail(email);
       sessionStorage.setItem("temp_email", email);
+
+      return null;
+
+    } catch (err) {
+      return "Erro de conexão com o servidor.";
     }
-    return error;
   };
-
-  /**
-   * Confirma o cadastro via OTP (Token)
-   * @param {string} token
-   */
-  const confirmsignup = async (token) => {
-    const { data, error } = await supabase.auth.verifyOtp({
-      email: tempEmail,
-      token,
-      type: "signup",
-    });
-
-    if (error) return error.message;
-    return data;
-  };
-
+  
   /** Encerra a sessão do usuário */
   const signout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+    try{
+      const res = await apiFetch("/api/auth/signout", {
+        method: "POST",
+      });
+
+      if (res.ok) {
+        setUser(null);
+      }
+    } catch(err){
+      return "Erro de conexão com o servidor.";
+    }
   };
 
   return (
@@ -97,9 +114,9 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         signed: !!user,
+        loading,
         signin,
         signup,
-        confirmsignup, // Adicionado para documentação
         signout,
         tempEmail,
         setTempEmail,

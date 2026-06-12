@@ -1,4 +1,65 @@
-node_modules
+# Dependencies
+node_modules/
+**/node_modules/
 
-package-lock.json
-package.json
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.development
+**/.env.production
+**/.env.test
+!.env.example
+!**/.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
+dist/
+dist-ssr/
+build/
+coverage/
+**/dist/
+**/dist-ssr/
+**/build/
+**/coverage/
+
+# Runtime/cache files
+.cache/
+.vite/
+.eslintcache
+*.local
+tmp/
+temp/
+uploads/
+**/.cache/
+**/.vite/
+**/.eslintcache
+**/tmp/
+**/temp/
+**/uploads/
+
+# Editor and OS files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

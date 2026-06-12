@@ -4,7 +4,7 @@ import styles from "./Login.module.css";
 import useAuth from "../../../hooks/useAuth";
 import logo from "../../../components/images/image 1.png";
 import logo2 from "../../../components/images/logo.png";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 /**
@@ -52,54 +52,62 @@ export default function Login() {
   };
 
   return (
-     <div className={styles.container}>
+    <div className={styles.container}>
       <div className={styles.lesquerdo}>
-      <div className={styles.formulario}>
-         <img src={logo2} alt="Tropa Livresca" width="100" />
-    <form onSubmit={handleSignin}>
-      <h1>Login</h1>
-      <label>E-mail</label>
-      <Input
-        type="email"
-        placeholder="Digite seu e-mail"
-        handleOnChange={(e) => {
-          setEmail(e.target.value);
-        }}
-        value={email}
-      />
+        <div className={styles.formulario}>
+          <img src={logo2} alt="Tropa Livresca" width="100" />
+          <form onSubmit={handleSignin}>
+            <h1>LOGIN</h1>
+            <h2>Bem-vindo de volta</h2>
+            <h3>Insira seus dados para acessar sua conta</h3>
+            <label>E-mail</label>
+            <Input
+              type="email"
+              placeholder="Digite seu e-mail"
+              handleOnChange={(e) => {
+                setEmail(e.target.value);
+              }}
+              value={email}
+            />
+            <label>Senha</label>
+            <Input
+              type="password"
+              placeholder="Digite sua senha"
+              handleOnChange={(e) => {
+                setSenha(e.target.value);
+              }}
+              value={senha}
+            />
 
-      <label>Senha</label>
-      <Input
-        type="password"
-        placeholder="Digite sua senha"
-        handleOnChange={(e) => {
-          setSenha(e.target.value);
-        }}
-        value={senha}
-      />
-      <SubmitButton text="Entrar" />
+            <div id={styles.checkbox}>
+              <input type="checkbox" />
+              <label>Lembrar por 30 dias</label>
+            </div>
 
-      {error.length > 0 && <p>{error}</p>}
+            <SubmitButton text="Entrar" />
 
-      <p>
-        <Link to="/cadastro">Esqueceu a senha?</Link>
-      </p>
+            {error.length > 0 && <p>{error}</p>}
 
-      <div className={styles.informacoes}>
-        <p>
-        Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
-        </p>
-        <p>
-        É funcionário? <Link to="/cadastro">Clique aqui.</Link>
-        </p>
+            <p>
+              <Link to="/cadastro">Esqueceu a senha?</Link>
+            </p>
+
+            <div className={styles.informacoes}>
+              <div className={styles.para}>
+                <p>
+                  Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
+                </p>
+                <p>
+                  É funcionário? <Link to="/cadastro">Clique aqui.</Link>
+                </p>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-
-    </form>
-    </div>
-    </div>
-    <div className={styles.ldireito}>
-            <img src={logo} alt="Tropa Livresca" width="100" />
-    </div>
+      <div className={styles.ldireito}>
+        <img src={logo} alt="Tropa Livresca" width="100" />
+      </div>
     </div>
   );
 }

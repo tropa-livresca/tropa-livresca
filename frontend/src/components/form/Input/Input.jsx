@@ -19,7 +19,7 @@ import { useMask } from '@react-input/mask';
 
 const formataçãoTelefone = 
 {
-    mask: '_____-____',
+    mask: '(__) _____-____',
     replacement: { _: /\d/ },
 }
 
@@ -28,7 +28,6 @@ export function InputTelefone({type, text, name, placeholder, handleOnChange, va
 
     return(
         <div className = {styles.form_control}>
-            <label htmlFor = {name}> {text} </label>
             <input
                 ref = {inputRef}
                 type = {type}
@@ -42,10 +41,27 @@ export function InputTelefone({type, text, name, placeholder, handleOnChange, va
     );
 }
 
+
+export function InputImagem({type, name, handleOnChange, value}){
+    return(
+        <div className = {styles.form_control}>
+            <input
+                type = {type}
+                id = {name}
+                name = {name}
+                placeholder = {placeholder}
+                onChange = {handleOnChange}
+                value = {value||''}
+
+            />
+        </div>
+    );
+}
+{/*Continuar a alteração */}
+
 export default function Input({type, text, name, placeholder, handleOnChange, value}){
     return(
         <div className = {styles.form_control}>
-            <label htmlFor = {name}> {text} </label>
             <input
                 type = {type}
                 id = {name}
@@ -58,4 +74,3 @@ export default function Input({type, text, name, placeholder, handleOnChange, va
     );
 }
 
-//llkjlk

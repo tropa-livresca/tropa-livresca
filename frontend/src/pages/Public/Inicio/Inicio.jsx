@@ -1,4 +1,5 @@
 import styles from "./Inicio.module.css";
+import Cabecalho from "../../../components/layout/Cabecalho/Cabecalho";
 
 
 /**
@@ -9,18 +10,9 @@ import styles from "./Inicio.module.css";
  * @returns {JSX.element}
  */
 export default function Inicio() {
-//Criando as rotas
-/*  const [autores, setAutores] = setState([]);
-
-  const getAutores = async () => {
-    const { data } = await supabase
-    .from("users_profile")
-    .select("*")
-  };
-*/
-
   return (
     <section className={styles.inicio_container}>
+      <Cabecalho nome="Início"/>
       <h1>Início</h1>
       <h2>
         Bem-vindo à <span>Tropa Livresca</span>
