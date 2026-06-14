@@ -14,7 +14,8 @@ export default function MeusLivros() {
       carregando,
       setLivros,
       setCarregando,
-      BuscarLivrosById
+      BuscarLivrosById,
+      UpdateStatusAtivo,
    } = useLivros();
 
    useEffect(() => {
@@ -23,6 +24,11 @@ export default function MeusLivros() {
       }
       carregarDados();
    }, []);
+
+   const HandleStatusAtivo = async (id,ativo) => {
+      await UpdateStatusAtivo(id,ativo);
+      await BuscarLivrosById();
+   }
 
    const possuiLivros = Array.isArray(Livros) && Livros.length > 0;
 
@@ -42,7 +48,7 @@ export default function MeusLivros() {
                      <td>
                         <h3>editar</h3>
                         <h3>visualizar</h3>
-                        <h3>{livro.ativo === true ? <span>desativar</span> : <span>ativar</span>}</h3>
+                        <h3> <button onClick={() => {HandleStatusAtivo(livro.id,!livro.ativo)}}>{livro.ativo === true ? "desativar" : "ativar"}</button> </h3>
                      </td>
                   </tr>
                ))

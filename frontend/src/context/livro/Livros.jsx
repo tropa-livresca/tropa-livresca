@@ -73,6 +73,21 @@ export const LivroProvider = ({ children }) => {
     }
   }, []);
 
+  const UpdateStatusAtivo = useCallback(async (id,ativo) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch("/api/meuslivros/updateA/"+id+"/"+ativo, { method: "POST" });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}`);
+      }
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
   const BuscarLivroByAutor = useCallback(async (id) => {
     setLivro([]);
     setColaboradores(null);
@@ -130,6 +145,7 @@ export const LivroProvider = ({ children }) => {
         setCarregando,
         BuscarLivros,
         BuscarLivrosById,
+        UpdateStatusAtivo,
         BuscarLivroByAutor,
       }}
     >

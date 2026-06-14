@@ -58,7 +58,6 @@ export const GetLivrosById = async (req, res) => {
       .from("livros")
       .select("*")
       .eq("fk_user_profile_id", req.user.id)
-      .eq("ativo", true);
 
     if (!req.user.id || !req.user) {
       console.error("Acesso negado: req.user não está definido");
@@ -123,6 +122,25 @@ export const GetLivrosByAutor = async (req, res) => {
         colaboradores: colaboradores || [],
       },
     });
+  } catch (err) {
+    console.error("ERRO DO SUPABASE", err);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const UpdateStatusAtivo = async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from("livros")
+      .update({ativo: req.params.ativo})
+      .eq("id", req.params.id)
+
+    if (error) {
+      console.error("Erro no supabase", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.status(200).json(data);
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });
