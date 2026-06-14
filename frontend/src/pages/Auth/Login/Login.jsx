@@ -86,7 +86,9 @@ export default function Login() {
 
             <SubmitButton text="Entrar" id={styles.btn}/>
 
+            <div className={styles.errinho}>
             {error.length > 0 && <p>{error}</p>}
+            </div>
 
             <p>
               <Link to="/cadastro">Esqueceu a senha?</Link>

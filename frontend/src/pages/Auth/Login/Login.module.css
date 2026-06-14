@@ -85,7 +85,6 @@ a {
 .para p {
   text-align: left;
   color: #67170c;
-  font-weight: bold;
   margin: 0.5rem;
   font-family: "Jacques Francois", serif;
 }
@@ -104,6 +103,10 @@ a {
 
 #checkbox input {
   justify-self: start;
+}
+
+.errinho p:not(.button p) {
+  margin-bottom: 0;
 }
 
 @media (max-width: 1024px) {
