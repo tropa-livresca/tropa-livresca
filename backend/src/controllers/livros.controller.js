@@ -58,6 +58,7 @@ export const GetLivrosById = async (req, res) => {
       .from("livros")
       .select("*")
       .eq("fk_user_profile_id", req.user.id)
+      .eq("ativo", true)
 
     if (!req.user.id || !req.user) {
       console.error("Acesso negado: req.user não está definido");
@@ -132,7 +133,7 @@ export const UpdateStatusAtivo = async (req, res) => {
   try {
     const { error } = await supabase
       .from("livros")
-      .update({ativo: req.params.ativo})
+      .update({ativo: false})
       .eq("id", req.params.id)
 
     if (error) {
@@ -140,9 +141,32 @@ export const UpdateStatusAtivo = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json(data);
+    return res.status(200).end();
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const InsertLivro = async (req,res) => {
+
+  try {
+    const {error} = supabaseAdmin
+                  .from('livros')
+                  .insert({
+                            id: 5,
+                            fk_user_profile_id: req.user.id,
+                          })
+
+    if (error) {
+      console.error("Erro no supabase", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.status(200).end();
+  } catch (err) {
+    console.error("ERRO DO SUPABASE", err);
+    return res.status(500).json({ error: error.message });
+  }
+
+}

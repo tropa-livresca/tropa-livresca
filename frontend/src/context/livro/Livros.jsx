@@ -76,7 +76,7 @@ export const LivroProvider = ({ children }) => {
   const UpdateStatusAtivo = useCallback(async (id,ativo) => {
     setCarregando(true);
     try {
-      const res = await apiFetch("/api/meuslivros/updateA/"+id+"/"+ativo, { method: "POST" });
+      const res = await apiFetch("/api/meuslivros/updateA/"+id, { method: "POST" });
 
       if (!res.ok) {
         throw new Error(`Erro ${res.status}`);
@@ -128,6 +128,21 @@ export const LivroProvider = ({ children }) => {
     };
   }, []);
 
+  const InsertLivro = useCallback(async (id,ativo) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch("/api/livros/insertLivro", { method: "POST" });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}`);
+      }
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
   return (
     <LivroContext.Provider
       value={{
@@ -147,6 +162,7 @@ export const LivroProvider = ({ children }) => {
         BuscarLivrosById,
         UpdateStatusAtivo,
         BuscarLivroByAutor,
+        InsertLivro,
       }}
     >
       {children}

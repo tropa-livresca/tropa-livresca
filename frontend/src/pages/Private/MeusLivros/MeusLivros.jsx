@@ -25,8 +25,8 @@ export default function MeusLivros() {
       carregarDados();
    }, []);
 
-   const HandleStatusAtivo = async (id,ativo) => {
-      await UpdateStatusAtivo(id,ativo);
+   const HandleStatusAtivo = async (id) => {
+      await UpdateStatusAtivo(id);
       await BuscarLivrosById();
    }
 
@@ -48,7 +48,7 @@ export default function MeusLivros() {
                      <td>
                         <h3>editar</h3>
                         <h3>visualizar</h3>
-                        <h3> <button onClick={() => {HandleStatusAtivo(livro.id,!livro.ativo)}}>{livro.ativo === true ? "desativar" : "ativar"}</button> </h3>
+                        <h3> <button onClick={() => {HandleStatusAtivo(livro.id)}}>desativar</button> </h3>
                      </td>
                   </tr>
                ))
