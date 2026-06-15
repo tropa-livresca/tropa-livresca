@@ -11,7 +11,11 @@ main {
 }
 
 .topo {
+<<<<<<< HEAD
   max-width: 100%;
+=======
+  max-width: 56rem;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   display: grid;
   gap: 1.5rem;
 }
@@ -28,7 +32,11 @@ main {
   width: 8rem;
   height: 3px;
   margin-top: 1rem;
+<<<<<<< HEAD
   background-color: #d4b46a;
+=======
+  background: #d4b46a;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   border-radius: 999px;
 }
 
@@ -46,7 +54,11 @@ main {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 0.4rem;
+<<<<<<< HEAD
   background-color: #fffdf7;
+=======
+  background: #fffdf7;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   border-radius: 999px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
@@ -59,8 +71,11 @@ main {
   color: #7a6a5b;
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 .busca input {
   border: none;
   outline: none;
@@ -73,14 +88,22 @@ main {
   border: none;
   padding: 1rem 1.6rem;
   border-radius: 999px;
+<<<<<<< HEAD
   background-color: #4d1f18;
+=======
+  background: #4d1f18;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   color: white;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .btnbuscar:hover {
+<<<<<<< HEAD
   background-color: #6a2b22;
+=======
+  background: #6a2b22;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .autorescontainer {
@@ -94,7 +117,11 @@ main {
   justify-items: center;
   gap: 0.8rem;
   padding: 2rem;
+<<<<<<< HEAD
   background-color: #fffcf4;
+=======
+  background: #fffcf4;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   border-radius: 1.5rem;
   text-align: center;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
@@ -125,7 +152,11 @@ main {
   content: "";
   display: block;
   width: 4rem;
+<<<<<<< HEAD
   background-color: #d4b46a;
+=======
+  background: #d4b46a;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .btndetalhes {
@@ -133,7 +164,11 @@ main {
   margin-top: 2rem;
   margin-bottom: 0;
   padding: 0.7rem 1.4rem;
+<<<<<<< HEAD
   background-color: #5a1e14;
+=======
+  background: #5a1e14;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   color: #fff;
   border-radius: 999px;
   font-size: 0.9rem;

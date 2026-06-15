@@ -25,6 +25,10 @@ import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
 import Formato from "../pages/Private/NovoLivro/Formato/Formato";
 import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
 import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
+<<<<<<< HEAD
+=======
+import LivroById from "../pages/Public/LivroById/LivroById";
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 
 const Private = ({ Item }) => {
   const { signed } = useAuth();
@@ -42,7 +46,11 @@ const RoutesApp = () => {
           <Route path="historia" element={<Historia />} />
           <Route path="autores" element={<Autores />} />
           <Route path="autores/:id" element={<AutorById />} />
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
           <Route path="meuslivros" element={<Private Item={MeusLivros} />} />
 
           <Route path="seautopublique" element={<Outlet />}>
@@ -55,6 +63,10 @@ const RoutesApp = () => {
           </Route>
 
           <Route path="livros" element={<Livros />} />
+<<<<<<< HEAD
+=======
+          <Route path= "livros/:id" element = {<LivroById/>}/>
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
           <Route path="perfil" element={<Private Item={Perfil} />} />
         </Route>
 

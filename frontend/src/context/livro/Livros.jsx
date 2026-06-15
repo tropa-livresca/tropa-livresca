@@ -4,18 +4,33 @@ import { createContext, useState, useCallback } from "react";
 export const LivroContext = createContext();
 
 export const LivroProvider = ({ children }) => {
+<<<<<<< HEAD
+=======
+  const [livro, setLivro] = useState([]);
+  const [autor, setAutor] = useState(null);
+  const [colaboradores, setColaboradores] = useState(null);
+
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   const [Livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
 
   const BuscarLivros = useCallback(async (page = 1, limit = 12, busca = "") => {
+<<<<<<< HEAD
     setCarregando(true); 
+=======
+    setCarregando(true);
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
     setMeta(null);
 
     try {
 
       const res = await apiFetch(
+<<<<<<< HEAD
         `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`, 
+=======
+        `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
         { method: "GET" }
       );
 
@@ -25,10 +40,17 @@ export const LivroProvider = ({ children }) => {
         if (res.status === 404) {
           setLivros([]);
           setMeta(null);
+<<<<<<< HEAD
           setCarregando(false); 
           return;
         }
         
+=======
+          setCarregando(false);
+          return;
+        }
+
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
         throw new Error(result.error || `Erro ${res.status}`);
       }
 
@@ -53,7 +75,11 @@ export const LivroProvider = ({ children }) => {
       if (!res.ok) {
         if (res.status === 404) {
           setLivros([]);
+<<<<<<< HEAD
           setCarregando(false); 
+=======
+          setCarregando(false);
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
           return;
         }
         throw new Error(data.error || `Erro ${res.status}`);
@@ -69,6 +95,7 @@ export const LivroProvider = ({ children }) => {
     }
   }, []);
 
+<<<<<<< HEAD
   return (
     <LivroContext.Provider
       value={{
@@ -80,6 +107,66 @@ export const LivroProvider = ({ children }) => {
         setCarregando,
         BuscarLivros,
         BuscarLivrosById
+=======
+  const BuscarLivroByAutor = useCallback(async (id) => {
+    setLivro([]);
+    setColaboradores(null);
+    setAutor(null);
+    setCarregando(true);
+
+    try {
+
+      const res = await apiFetch(`/api/livros/${id}`);
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          setLivro([]);
+          setAutor(null);
+          setColaboradores(null);
+          setCarregando(false);
+          return;
+        }
+        throw new Error(json.error || `Erro ${res.status}`);
+      }
+
+      const livroData = json.data;
+      setLivro(livroData);
+
+      const colaboradoresData = json.data.colaboradores;
+      setColaboradores(colaboradoresData);
+
+      const autorData = json.data.users_profile;
+      setAutor(autorData);
+
+      setCarregando(false);
+    } catch (err) {
+      console.error("Erro em BuscarLivroByAutor", err);
+      setLivro([]);
+      setCarregando(false);
+    };
+  }, []);
+
+  return (
+    <LivroContext.Provider
+      value={{
+        autor,
+        colaboradores,
+        meta,
+        carregando,
+        livro,
+        Livros,
+        setAutor,
+        setMeta,
+        setLivro,
+        setLivros,
+        setColaboradores,
+        setCarregando,
+        BuscarLivros,
+        BuscarLivrosById,
+        BuscarLivroByAutor,
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
       }}
     >
       {children}

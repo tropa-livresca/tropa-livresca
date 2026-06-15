@@ -1,4 +1,8 @@
 import useLivros from "../../../hooks/useLivros";
+<<<<<<< HEAD
+=======
+import {Link} from "react-router-dom";
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 
@@ -13,7 +17,11 @@ export default function Livros() {
             await BuscarLivros(paginaAtual, 12, busca);
         }
         carregarDados();
+<<<<<<< HEAD
     }, [paginaAtual,BuscarLivros]);
+=======
+    }, [paginaAtual, BuscarLivros]);
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 
     const handleBuscar = (e) => {
         e.preventDefault();
@@ -45,12 +53,23 @@ export default function Livros() {
             {!Livros || Livros.length === 0 ? (<p>Nenhum autor encontrado</p>) : (
                 Livros.map((livro) => {
                     return (
+<<<<<<< HEAD
                         <div key={livro.id}>
                             {livro.capa ? (<img src={livro.capa} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
                             <h3>{livro.titulo || "Sem título"}</h3>
                             <p>{livro.descricao || "Sem descrição"}</p>
                             <p>{livro.autor_nome || "Sem autor"}</p>
                             <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
+=======
+                        <div>
+                            <div key={livro.id}>
+                                {livro.capa ? (<img src={livro.capa} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
+                                <h3>{livro.titulo || "Sem título"}</h3>
+                                <p>{livro.autor_nome || "Sem autor"}</p>
+                                <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
+                                <Link to={`/livros/${livro.id}`}>Ver Livro</Link>
+                            </div>
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
                         </div>
                     );
                 })

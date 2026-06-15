@@ -1,9 +1,16 @@
+<<<<<<< HEAD
 @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
 
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 .container {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
   min-height: 100vh;
+<<<<<<< HEAD
+=======
+  background-color:#ede6b3;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .ldireito {
@@ -15,6 +22,7 @@
   height: 100%;
   object-fit: cover;
 }
+<<<<<<< HEAD
 
 .lesquerdo {
   place-items: center;
@@ -23,6 +31,15 @@
   place-items:center;
   padding: 2rem;
   background-color:#ede6b3;
+=======
+.lesquerdo {
+  place-items: center;
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .formulario {
@@ -37,8 +54,12 @@
   font-size: 2.5rem;
   text-align: center;
   margin-left:0;
+<<<<<<< HEAD
   margin-bottom: 0.5rem;
   font-family: "Jacques Francois", serif;
+=======
+  margin-bottom: 1.5rem;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .formulario h2 {
@@ -46,7 +67,10 @@
   font-size: 1.5rem;
   text-align: center;
   margin-bottom: 1rem;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .formulario h3 {
@@ -54,13 +78,26 @@
   font-size: 1rem;
   text-align: center;
   margin-bottom: 2rem;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .formulario label {
   color: #67170c;
   padding-left: 2rem;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
+=======
+}
+
+form {
+  background-color: white;
+  border-radius: 3rem;
+  padding: 2rem 1rem;
+  display: grid;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 p,
@@ -69,7 +106,10 @@ a {
   margin-bottom: 1.5rem;
   margin-top: 1.5rem;
   text-decoration: none;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .informacoes {
@@ -79,14 +119,22 @@ a {
 
 .informacoes a {
   text-decoration: underline;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .para p {
   text-align: left;
   color: #67170c;
+<<<<<<< HEAD
   margin: 0.5rem;
   font-family: "Jacques Francois", serif;
+=======
+  font-weight: bold;
+  margin: 0.5rem;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 #checkbox {
@@ -97,19 +145,27 @@ a {
 }
 
 #checkbox label {
+<<<<<<< HEAD
  padding-left: 0.5rem;
  font-family: "Jacques Francois", serif;
+=======
+  padding-left: 0.5rem;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 #checkbox input {
   justify-self: start;
 }
 
+<<<<<<< HEAD
 .errinho p:not(.button p) {
   margin-bottom: 0;
 }
 
 @media (max-width: 1024px) {
+=======
+@media (max-width: 768px) {
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   .container {
     grid-template-columns: 1fr;
   }
@@ -173,4 +229,8 @@ a {
   #checkbox label {
     padding-left: 0;
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0

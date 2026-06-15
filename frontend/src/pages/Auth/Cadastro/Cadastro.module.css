@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
 
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 .container {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
@@ -36,6 +39,7 @@
   text-align: center;
   margin-bottom: 1rem;
   margin-left:0;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
 }
 
@@ -45,12 +49,24 @@
   font-size: 1rem;
   text-align: center;
   margin-bottom: 1.2rem;
+=======
+}
+
+.formulario h3 {
+  color: #67170c;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1rem;
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .formulario label {
   color: #67170c;
   padding-left: 2rem;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .formulario img {
@@ -69,6 +85,7 @@ span {
   text-align: center;
   margin-top: 0.3rem;
   color: #67170c;
+<<<<<<< HEAD
   font-family: "Jacques Francois", serif;
 }
 
@@ -83,6 +100,8 @@ span a{
 .erro span {
   white-space: pre-line;
   color:#67170c;
+=======
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 @media (max-width: 768px) {

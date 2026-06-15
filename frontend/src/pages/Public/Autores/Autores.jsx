@@ -81,4 +81,8 @@ export default function Autores() {
       </main>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0

@@ -55,7 +55,11 @@ export default function NavBar() {
               <li><Link to="/">Depoimentos</Link></li>
             </ul>
           </li>
+<<<<<<< HEAD
           <li className={styles.item}><Link to="/">Livros</Link></li>
+=======
+          <li className={styles.item}><Link to="/livros">Livros</Link></li>
+>>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
           <li className={styles.item}><Link to="/">Loja</Link></li>
           <li className={styles.item}><Link to="/autores">Autores</Link></li>
           <li className={styles.item}><Link to="/">Blog</Link></li>
