@@ -2,11 +2,7 @@ import Input from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import styles from "./Login.module.css";
 import useAuth from "../../../hooks/useAuth";
-<<<<<<< HEAD
 import logo from "../../../components/images/log.jpg";
-=======
-import logo from "../../../components/images/image 1.png";
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 import logo2 from "../../../components/images/logo.png";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -88,17 +84,11 @@ export default function Login() {
               <label>Lembrar por 30 dias</label>
             </div>
 
-<<<<<<< HEAD
             <SubmitButton text="Entrar" id={styles.btn}/>
 
             <div className={styles.errinho}>
             {error.length > 0 && <p>{error}</p>}
             </div>
-=======
-            <SubmitButton text="Entrar" />
-
-            {error.length > 0 && <p>{error}</p>}
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 
             <p>
               <Link to="/cadastro">Esqueceu a senha?</Link>

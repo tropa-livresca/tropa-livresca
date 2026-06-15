@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-export default function LivroById(){
-    
-}
-=======
 import useLivros from "../../../hooks/useLivros";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -75,4 +70,3 @@ export default function LivroById() {
         </main>
     );
 }
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0

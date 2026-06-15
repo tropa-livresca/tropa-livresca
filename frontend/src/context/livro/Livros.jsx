@@ -4,33 +4,22 @@ import { createContext, useState, useCallback } from "react";
 export const LivroContext = createContext();
 
 export const LivroProvider = ({ children }) => {
-<<<<<<< HEAD
-=======
   const [livro, setLivro] = useState([]);
   const [autor, setAutor] = useState(null);
   const [colaboradores, setColaboradores] = useState(null);
 
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   const [Livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
 
   const BuscarLivros = useCallback(async (page = 1, limit = 12, busca = "") => {
-<<<<<<< HEAD
-    setCarregando(true); 
-=======
     setCarregando(true);
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
     setMeta(null);
 
     try {
 
       const res = await apiFetch(
-<<<<<<< HEAD
-        `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`, 
-=======
         `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
         { method: "GET" }
       );
 
@@ -40,17 +29,10 @@ export const LivroProvider = ({ children }) => {
         if (res.status === 404) {
           setLivros([]);
           setMeta(null);
-<<<<<<< HEAD
-          setCarregando(false); 
-          return;
-        }
-        
-=======
           setCarregando(false);
           return;
         }
 
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
         throw new Error(result.error || `Erro ${res.status}`);
       }
 
@@ -75,11 +57,7 @@ export const LivroProvider = ({ children }) => {
       if (!res.ok) {
         if (res.status === 404) {
           setLivros([]);
-<<<<<<< HEAD
-          setCarregando(false); 
-=======
           setCarregando(false);
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
           return;
         }
         throw new Error(data.error || `Erro ${res.status}`);
@@ -95,19 +73,6 @@ export const LivroProvider = ({ children }) => {
     }
   }, []);
 
-<<<<<<< HEAD
-  return (
-    <LivroContext.Provider
-      value={{
-        meta,
-        carregando,
-        Livros,
-        setMeta,
-        setLivros,
-        setCarregando,
-        BuscarLivros,
-        BuscarLivrosById
-=======
   const BuscarLivroByAutor = useCallback(async (id) => {
     setLivro([]);
     setColaboradores(null);
@@ -166,7 +131,6 @@ export const LivroProvider = ({ children }) => {
         BuscarLivros,
         BuscarLivrosById,
         BuscarLivroByAutor,
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
       }}
     >
       {children}

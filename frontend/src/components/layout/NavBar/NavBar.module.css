@@ -89,10 +89,7 @@ body {
 
 .button:hover {
   background-color: #ffbb33;
-<<<<<<< HEAD
   transition:0.3s;
-=======
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 }
 
 .item:hover .subtema {
@@ -136,11 +133,7 @@ body {
   color: #67170c;
   font-size: 0.85rem;
   border-radius: 0.4rem;
-<<<<<<< HEAD
   transition: background 0.3s;
-=======
-  transition: background 0.2s;
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   box-sizing: border-box;
 }
 
@@ -188,15 +181,6 @@ body {
   margin-right: 1rem;
 }
 
-<<<<<<< HEAD
-=======
-@media (min-width: 1440px) {
-  .list {
-    gap: 4rem;
-  }
-}
-
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 @media (max-width: 1024px) {
   .containernav {
     display: grid;
@@ -214,10 +198,7 @@ body {
     grid-column: 1;
     grid-row: 1;
     justify-content: start;
-<<<<<<< HEAD
      padding-left: 0;
-=======
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
   }
 
   .hamburguer {
@@ -279,7 +260,6 @@ body {
     margin: 1rem 0 0 0;
     width: 100%;
     justify-content: center;
-<<<<<<< HEAD
     padding-right: 0;
   }
 }
@@ -424,7 +404,3 @@ body {
   }
 }
 
-=======
-  }
-}
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0

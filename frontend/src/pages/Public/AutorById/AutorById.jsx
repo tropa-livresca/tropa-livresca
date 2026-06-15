@@ -91,11 +91,7 @@ export default function AutorById() {
                                     <h3 className={styles.livrotitulo}>{livro.titulo}</h3>
                                     <p className={styles.livrosubtitulo}>{livro.subtitulo}</p>
 
-<<<<<<< HEAD
-                                    <Link to={`/livros`} className={styles.btnlivro}>Ver Livros</Link>
-=======
                                     <Link to={`/livros/${livro.id}`} className={styles.btnlivro}>Ver Livro</Link>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
                                 </article>
                             );
                         })}

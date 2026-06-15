@@ -3,11 +3,7 @@ import Input, { InputTelefone } from "../../../components/form/Input/Input";
 import SubmitButton from "../../../components/form/Submit/SubmitButton";
 import logo from "../../../components/images/cad.png";
 import logo2 from "../../../components/images/logo.png";
-<<<<<<< HEAD
 import styles from "./Cadastro.module.css";
-=======
- import styles from "./Cadastro.module.css";
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -33,22 +29,14 @@ export default function Cadastro() {
     }
 
     if (senha.length < 8 && senha.length != "") {
-<<<<<<< HEAD
       novosErros.push("A senha precisa ter, no mínimo, 8 caracteres.");
-=======
-      novosErros.push("A senha precisa ter, no mínimo, 8 caracteres");
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
     }
 
     const regexSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
 
     if (senha && !regexSenha.test(senha)) {
       novosErros.push(
-<<<<<<< HEAD
         "A senha deve contar letras maiúsculas, minúsculas, números e caracteres especiais.",
-=======
-        "A senha deve contar letras maiúsculas, minúsculas, números e caracteres especiais ",
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
       );
     }
 
@@ -57,11 +45,7 @@ export default function Cadastro() {
     }
 
     if (telefone.length != 15) {
-<<<<<<< HEAD
       novosErros.push("Numero de telefone incorreto.");
-=======
-      novosErros.push("Numero de telefone incorreto");
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
     }
 
     if (novosErros.length > 0) {
@@ -101,11 +85,7 @@ export default function Cadastro() {
             <h1>CADASTRO</h1>
             <h3>Insira seus dados para criar sua conta</h3>
 
-<<<<<<< HEAD
             <label>Nome de Usuário</label>
-=======
-            <label>Nome de Usuário*</label>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
             <Input
               type="text"
               name="nome"
@@ -114,11 +94,7 @@ export default function Cadastro() {
               value={nome}
             />
 
-<<<<<<< HEAD
             <label>E-mail</label>
-=======
-            <label>E-mail*</label>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
             <Input
               type="email"
               name="email"
@@ -127,11 +103,7 @@ export default function Cadastro() {
               value={email}
             />
 
-<<<<<<< HEAD
             <label>Senha</label>
-=======
-            <label>Senha*</label>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
             <Input
               type="password"
               name="senha"
@@ -140,11 +112,7 @@ export default function Cadastro() {
               value={senha}
             />
 
-<<<<<<< HEAD
             <label>Confirmar Senha</label>
-=======
-            <label>Confirmar Senha*</label>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
             <Input
               type="password"
               name="confSenha"
@@ -153,11 +121,7 @@ export default function Cadastro() {
               value={confSenha}
             />
 
-<<<<<<< HEAD
             <label>Telefone</label>
-=======
-            <label>Telefone*</label>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
             <InputTelefone
               type="text"
               name="telefone"
@@ -166,13 +130,9 @@ export default function Cadastro() {
               value={telefone}
             />
 
-<<<<<<< HEAD
             <div className={styles.erro}>
               <span>{Array.isArray(error) ? error.join("\n") : error}</span>
             </div>
-=======
-            <span>{error}</span>
->>>>>>> 13be55e422a83260af3d0e1674b15d601ae89ef0
 
             <span>
               Já tem cadastro? <Link to="/login">Clique aqui.</Link>
