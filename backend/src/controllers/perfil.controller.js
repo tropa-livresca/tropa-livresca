@@ -26,7 +26,7 @@ export const GetPerfil = async (req, res) => {
         descricao: "",
         imagem: "",
       });
-    }
+    } 
 
     return res.json(data);
   } catch (err) {
