@@ -154,7 +154,7 @@ export const InsertLivro = async (req,res) => {
 
     const selectLastId = await supabaseAdmin
       .from("livros")
-      .select("id")
+      .select("*")
       .order("id", {ascending: false})
       .limit(1);
 
@@ -164,7 +164,7 @@ export const InsertLivro = async (req,res) => {
     const {error} = await supabase
                   .from("livros")
                   .insert({
-                            id: data[0].id +1,
+                            id: data[0].id + 1,
                             fk_user_profile_id: req.user.id,
                           })
 
@@ -181,10 +181,29 @@ export const InsertLivro = async (req,res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).end();
+    return res.status(200).json({data: data[0]});
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });
   }
 
 }
+
+export const UpdateTipoDePublicacao = async (req, res) => {
+  try {
+    const { error } = await supabase
+      .from("livros")
+      .update({tipo_de_livro: req.params.tdp})
+      .eq("id", req.params.id)
+
+    if (error) {
+      console.error("Erro no supabase", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    return res.status(200).end();
+  } catch (err) {
+    console.error("ERRO DO SUPABASE", err);
+    return res.status(500).json({ error: error.message });
+  }
+};

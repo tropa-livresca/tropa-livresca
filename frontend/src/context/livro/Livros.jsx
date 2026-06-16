@@ -138,6 +138,25 @@ export const LivroProvider = ({ children }) => {
       if (!res.ok) {
         throw new Error(`Erro ${res.status}`);
       }
+
+      const json = res.json();
+      setLivro(json.data);
+
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
+  const UpdateTDP = useCallback(async (id,tdp) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch("/api/livros/update/TDP/"+id+"/"+tdp, { method: "POST" });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}`);
+      }
       setCarregando(false);
     } catch (error) {
       console.error("Erro em UpdateStatusAtivo", error);
@@ -165,6 +184,7 @@ export const LivroProvider = ({ children }) => {
         UpdateStatusAtivo,
         BuscarLivroByAutor,
         InsertLivro,
+        UpdateTDP,
       }}
     >
       {children}

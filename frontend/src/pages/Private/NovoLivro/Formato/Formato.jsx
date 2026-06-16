@@ -7,7 +7,6 @@ Escolha de formato de livro (Quadrado, Pocket, A5)
 
 export default function Formato({HandleCriarLivro}) {
 
-  const [tamanhoLivro, setTamanhoLivro] = useState("");
   const [tipoPublicacao, setTipoPublicacao] = useState("");
 
   return (

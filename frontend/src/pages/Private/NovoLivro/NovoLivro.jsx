@@ -6,6 +6,7 @@ import Formato from "./Formato/Formato"
 
 export default function NovoLivro() {
   const {InsertLivro} = useLivros();
+  const [livroId, setLivroId] = useState(null);
 
   const HandleCriarLivro = async (e) => {
     e.preventDefault();
