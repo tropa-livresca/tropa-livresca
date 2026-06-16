@@ -10,10 +10,13 @@
   display: grid;
   justify-self: center;
   margin-top: 1.5rem;
+  font-family: "Jacques Francois", serif;
+  color: #ede6b3;
 }
 
 .btn:hover {
-  background-color: #b32512;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .btn_login {

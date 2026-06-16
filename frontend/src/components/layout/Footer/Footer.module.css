@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
 .containerfooter {
   width: 100%;
   background-color: #ede6b3;
@@ -5,12 +7,12 @@
 }
 
 .footertopo {
-  max-width: 87.5rem;
+  max-width: 100%;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(12rem, 1.2fr) 1fr 1fr 1fr;
+  grid-template-columns: minmax(12rem, 1.2fr) 1.4fr 1.4fr 1.4fr;
   gap: 3rem;
-  padding: 4rem 5%;
+  padding:2rem 5%;
 }
 
 .footerlogo {
@@ -27,7 +29,7 @@
   grid-template-columns: 5rem auto 5rem;
   align-items: center;
   gap: 1rem;
-  margin: 2rem 0;
+  margin: 0 0;
 }
 
 .livromsg span {
@@ -36,8 +38,11 @@
 }
 
 .footerlogo p {
-  line-height: 1.8;
+  line-height: 1.6;
   font-style: italic;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.125rem;
+  color: #67170c;
 }
 
 .footercolunas {
@@ -45,19 +50,32 @@
   border-left: 1px solid #d7b8a5;
 }
 
+.footercolunas p{
+  font-family: "Jacques Francois", serif;
+  text-align: justify;
+  
+}
+
 #ptexto {
-  line-height: 1.8;
+  line-height: 1.6;
   font-style: italic;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.15rem;
 }
 
 .footercolunas h3 {
-  margin-bottom: 2rem;
+  margin-bottom: 2.5rem;
   letter-spacing: 0.125rem;
+  font-family: "Jacques Francois", serif;
   text-align: center;
+  margin-top:1rem;
+  color: #67170c;
 }
 
 #h3id {
   text-align: center;
+  color: #67170c;
+  
 }
 
 .footercolunas ul {
@@ -72,12 +90,14 @@
 
 .footercolunas a {
   text-decoration: none;
-  color: inherit;
+  color: #67170c;
   transition: 0.3s;
+  font-family: "Jacques Francois", serif;
 }
 
-.footercolunas a:hover {
+.footercolunas li:hover {
   padding-left: 0.5rem;
+  transition: 0.3s;
 }
 
 .logoicons {
@@ -95,7 +115,7 @@
   place-items: center;
   border: 1px solid #8b4a3c;
   border-radius: 0.75rem;
-  color: #5a1e14;
+  color: #67170c;
   text-decoration: none;
   font-size: 1.5rem;
   transition: 0.3s;
@@ -103,18 +123,18 @@
 
 .logoicons a:hover {
   transform: translateY(-0.2rem);
-  background-color: #5a1e14;
+  background-color: #67170c;
   color: #ede6b3;
 }
 
 .footerbottom {
-  max-width: 87.5rem;
+  max-width: 100%;
   margin: 0 auto;
   border-top: 1px solid #d7b8a5;
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: center;
-  padding: 2rem 5%;
+  padding: 1rem 5%;
 }
 
 .footerbottom p {
@@ -131,7 +151,7 @@
 
 .footerlinks a {
   text-decoration: none;
-  color: inherit;
+  color: #67170c;
 }
 
 @media (max-width: 1200px) {
@@ -171,6 +191,10 @@
     padding-top: 2rem;
   }
 
+  .footercolunas p{
+    text-align: center;
+  }
+
   .footerbottom {
     grid-template-columns: 1fr;
     gap: 1rem;
@@ -201,6 +225,10 @@
 
   .footercolunas h3 {
     font-size: 1rem;
+  }
+
+  .footercolunas p{
+    text-align: center;
   }
 
   .logoicons {
