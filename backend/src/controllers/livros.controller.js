@@ -151,12 +151,30 @@ export const UpdateStatusAtivo = async (req, res) => {
 export const InsertLivro = async (req,res) => {
 
   try {
-    const {error} = supabaseAdmin
-                  .from('livros')
+
+    const selectLastId = await supabaseAdmin
+      .from("livros")
+      .select("id")
+      .order("id", {ascending: false})
+      .limit(1);
+
+     const {data} = selectLastId
+    
+
+    const {error} = await supabase
+                  .from("livros")
                   .insert({
-                            id: 5,
+                            id: data[0].id +1,
                             fk_user_profile_id: req.user.id,
                           })
+
+      if (!req.user.id || !req.user) {
+      console.error("Acesso negado: req.user não está definido");
+      return res
+        .status(401)
+        .json({ error: "Usuário não autenticado ou token inválido" });
+    }
+
 
     if (error) {
       console.error("Erro no supabase", error);

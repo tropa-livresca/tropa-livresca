@@ -19,12 +19,7 @@ import MeusLivros from "../pages/Private/MeusLivros/MeusLivros";
 
 import Livros from "../pages/Public/Livros/Livros";
 //Se Autopublique
-import Confirmacao from "../pages/Private/NovoLivro/Confirmacao/Confirmacao";
-import Conteudo from "../pages/Private/NovoLivro/Conteudo/Conteudo";
-import Detalhes from "../pages/Private/NovoLivro/Detalhes/Detalhes";
-import Formato from "../pages/Private/NovoLivro/Formato/Formato";
-import Orcamento from "../pages/Private/NovoLivro/Orcamento/Orcamento";
-import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
+import NovoLivro from "../pages/Private/NovoLivro/NovoLivro";
 import LivroById from "../pages/Public/LivroById/LivroById";
 
 const Private = ({ Item }) => {
@@ -46,14 +41,9 @@ const RoutesApp = () => {
           
           <Route path="meuslivros" element={<Private Item={MeusLivros} />} />
 
-          <Route path="seautopublique" element={<Outlet />}>
-            <Route index element={<SeAutopublique />} />
-            <Route path="confirmacao" element={<Private Item={Confirmacao} />} />
-            <Route path="detalhes" element={<Private Item={Detalhes} />} />
-            <Route path="formato" element={<Private Item={Formato} />} />
-            <Route path="orcamento" element={<Private Item={Orcamento} />} />
-            <Route path="conteudo" element={<Private Item={Conteudo} />} />
-          </Route>
+
+          <Route path="seautopublique" element={<Outlet />}></Route>
+          <Route path="novoLivro" element={<Private Item={NovoLivro} />} />
 
           <Route path="livros" element={<Livros />} />
           <Route path= "livros/:id" element = {<LivroById/>}/>

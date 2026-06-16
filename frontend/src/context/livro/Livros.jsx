@@ -128,9 +128,11 @@ export const LivroProvider = ({ children }) => {
     };
   }, []);
 
-  const InsertLivro = useCallback(async (id,ativo) => {
+  const InsertLivro = useCallback(async () => {
     setCarregando(true);
+    console.log("l");
     try {
+      console.log("k");
       const res = await apiFetch("/api/livros/insertLivro", { method: "POST" });
 
       if (!res.ok) {

@@ -5,14 +5,14 @@ Checkbox de Livro físico e digital para a publicação
 Escolha de formato de livro (Quadrado, Pocket, A5)
  */
 
-export default function Formato() {
+export default function Formato({HandleCriarLivro}) {
 
   const [tamanhoLivro, setTamanhoLivro] = useState("");
   const [tipoPublicacao, setTipoPublicacao] = useState("");
 
   return (
     <main>
-      <form>
+      <form onSubmit={HandleCriarLivro}>
         <h1>Formato</h1>
         <fieldset>
           <legend>Tipo de Publicação</legend>
@@ -50,50 +50,11 @@ export default function Formato() {
           </label>
         </fieldset>
 
-        <fieldset>
-          <legend>Formato do livro</legend>
-
-          <label>
-            <Input
-              type="radio"
-              name="tamanhoLivro"
-              value="quadrado"
-              checked={tamanhoLivro === "quadrado"}
-              handleOnChange={(e) => setTamanhoLivro(e.target.value)}
-            />
-            Quadrado
-          </label>
-
-
-          <label>
-            <Input
-              type="radio"
-              name="tamanhoLivro"
-              value="pocket"
-              checked={tamanhoLivro === "pocket"}
-              handleOnChange={(e) => setTamanhoLivro(e.target.value)}
-            />
-            Pocket
-          </label>
-
-
-          <label>
-            <Input
-              type="radio"
-              name="tamanhoLivro"
-              value="A5"
-              checked={tamanhoLivro === "A5"}
-              handleOnChange={(e) => setTamanhoLivro(e.target.value)}
-            />
-            A5
-          </label>
-        </fieldset>
-
         <div>
           <button>Anterior</button>
           <button>Posterior</button>
         </div>
-        <button>Salvar</button>
+        <button >Salvar</button>
       </form>
     </main>
   );
