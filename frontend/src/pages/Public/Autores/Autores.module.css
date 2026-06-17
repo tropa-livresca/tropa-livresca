@@ -11,8 +11,7 @@ main {
 }
 
 .topo {
-  max-width: 100%;
-  max-width: 56rem;
+  width: 100%;
   display: grid;
   gap: 1.5rem;
 }
@@ -21,6 +20,8 @@ main {
   margin: 0;
   color: #4d1f18;
   font-size: 5rem;
+  text-align: left;
+;
 }
 
 .titulo::after {
@@ -35,10 +36,11 @@ main {
 }
 
 .descricao {
-  max-width: 50rem;
+  max-width: 100%;
   line-height: 1.8;
   font-size: 1.2rem;
   color: #432c28;
+  text-align: center;
 }
 
 .busca {
@@ -74,7 +76,7 @@ main {
 
 .btnbuscar {
   border: none;
-  padding: 1rem 1.6rem;
+  padding: 1rem 1rem;
   border-radius: 999px;
   background-color: #4d1f18;
   color: white;

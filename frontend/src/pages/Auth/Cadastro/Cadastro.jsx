@@ -131,10 +131,10 @@ export default function Cadastro() {
             />
 
             <div className={styles.erro}>
-              <span>{Array.isArray(error) ? error.join("\n") : error}</span>
+              <span className={styles.span}>{Array.isArray(error) ? error.join("\n") : error}</span>
             </div>
 
-            <span>
+            <span className={styles.span}>
               Já tem cadastro? <Link to="/login">Clique aqui.</Link>
             </span>
 

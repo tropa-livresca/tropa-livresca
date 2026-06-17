@@ -107,6 +107,7 @@ a {
 
 .errinho p:not(.button p) {
   margin-bottom: 0;
+  color:#67170c;
 }
 
 @media (max-width: 1024px) {

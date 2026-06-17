@@ -154,6 +154,10 @@
   color: #67170c;
 }
 
+.numero{
+ font-family: none;
+}
+
 @media (max-width: 1200px) {
   .footertopo {
     grid-template-columns: repeat(2, 1fr);
