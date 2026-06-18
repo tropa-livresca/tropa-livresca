@@ -1,0 +1,71 @@
+.container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 4rem 5%;
+  display: grid;
+  gap: 4rem;
+}
+
+.titulo {
+  margin: 0;
+  color: #4d1f18;
+  font-size: 5rem;
+}
+
+.categoriaCard {
+  margin-bottom: 30px;
+}
+
+.categoriaTitulo {
+  max-width: 50rem;
+  line-height: 1.8;
+  font-size: 1.2rem;
+  color: #432c28;
+}
+
+.faqBloco {
+  margin-bottom: 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.perguntaBotao {
+  width: 100%;
+  padding: 16px;
+  background-color: #f7fafc;
+  border: none;
+  text-align: left;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  outline: none;
+  transition: background-color 0.2s ease;
+}
+
+.perguntaBotao:hover {
+  background-color: #edf2f7;
+}
+
+.aberto {
+  background-color: #edf2f7;
+}
+
+.seta {
+  font-size: 0.8rem;
+  color: #a0aec0;
+}
+
+.respostaCard {
+  padding: 16px;
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+}
+
+.respostaTexto {
+  margin: 0;
+  line-height: 1.6;
+}

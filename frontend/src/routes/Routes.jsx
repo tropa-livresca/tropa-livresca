@@ -12,6 +12,8 @@ import ConfirmacaoEmail from "../pages/Auth/ConfirmacaoEmail/ConfirmacaoEmail";
 
 import Perfil from "../pages/Private/Perfil/Perfil";
 
+import FAQ from "../pages/Public/FAQ/FAQ";
+
 import Historia from "../pages/Public/Historia/Historia";
 import Autores from "../pages/Public/Autores/Autores";
 import AutorById from "../pages/Public/AutorById/AutorById";
@@ -39,6 +41,8 @@ const RoutesApp = () => {
           <Route path="autores" element={<Autores />} />
           <Route path="autores/:id" element={<AutorById />} />
           
+          <Route path="FAQ" element = {<FAQ/>}/>
+
           <Route path="meuslivros" element={<Private Item={MeusLivros} />} />
 
 
