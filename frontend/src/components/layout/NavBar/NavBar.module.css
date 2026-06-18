@@ -194,6 +194,8 @@ body {
   background: transparent;
   cursor: pointer;
   border-radius: 50%;
+  width:70px;
+  height:70px;
 }
 
 .imagemPerfil {
