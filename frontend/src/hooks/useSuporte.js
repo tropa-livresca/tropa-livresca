@@ -14,15 +14,7 @@ const useSuporte = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const enviarEmail = async (e) => {
-    e.preventDefault();
-    setMessage({
-      text: "Formulário enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
-      success: true,
-    });
-
-    const formData = new FormData();
-    Object.keys(campos).forEach((key) => FormData.append(key, campos[key]));
-
+    
     try {
       const response = await apiFetch("/api/perfil");
 

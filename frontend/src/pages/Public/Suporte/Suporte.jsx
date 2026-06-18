@@ -11,7 +11,11 @@ export default function Suporte() {
             [e.target.name]: e.target.value,
         }));
     };
-
+/**e.preventDefault();
+    
+    const formData = new FormData();
+    Object.keys(campos).forEach((key) => FormData.append(key, campos[key]));
+ */
     useEffect(async () => {
         enviarEmail();
     }, []);
