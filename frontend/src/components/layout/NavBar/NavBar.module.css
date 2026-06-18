@@ -261,6 +261,7 @@ body {
 
 .menuItem:hover {
   background-color: #ede6b3;
+  color: #ffbb33;
 }
 
 .menuIcon {
