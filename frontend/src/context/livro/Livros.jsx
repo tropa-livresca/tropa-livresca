@@ -128,12 +128,12 @@ export const LivroProvider = ({ children }) => {
     };
   }, []);
 
-  const InsertLivro = useCallback(async () => {
+  const InsertLivro = useCallback(async (tdp) => {
     setCarregando(true);
     console.log("l");
     try {
       console.log("k");
-      const res = await apiFetch("/api/livros/insertLivro", { method: "POST" });
+      const res = await apiFetch("/api/livros/insertLivro/"+tdp, { method: "POST" });
 
       if (!res.ok) {
         throw new Error(`Erro ${res.status}`);

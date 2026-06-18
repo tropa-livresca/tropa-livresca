@@ -11,7 +11,7 @@ export default function Formato({HandleCriarLivro}) {
 
   return (
     <main>
-      <form onSubmit={HandleCriarLivro}>
+      <form onSubmit={(e) => {console.log(tipoPublicacao); HandleCriarLivro(e,tipoPublicacao)}}>
         <h1>Formato</h1>
         <fieldset>
           <legend>Tipo de Publicação</legend>
@@ -21,7 +21,7 @@ export default function Formato({HandleCriarLivro}) {
               name="tipoPublicacao"
               value="físico"
               checked={tipoPublicacao === "fisico"}
-              handleOnChange={(e) => setTipoPublicacao(e.target.value)}
+              handleOnChange={(e) => {console.log(tipoPublicacao); setTipoPublicacao(e.target.value)}}
             />
             Livro físico
           </label>

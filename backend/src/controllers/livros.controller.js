@@ -166,6 +166,7 @@ export const InsertLivro = async (req,res) => {
                   .insert({
                             id: data[0].id + 1,
                             fk_user_profile_id: req.user.id,
+                            tipo_de_livro: req.params.tdp
                           })
 
       if (!req.user.id || !req.user) {
@@ -189,6 +190,8 @@ export const InsertLivro = async (req,res) => {
 
 }
 
+/*
+
 export const UpdateTipoDePublicacao = async (req, res) => {
   try {
     const { error } = await supabase
@@ -206,4 +209,7 @@ export const UpdateTipoDePublicacao = async (req, res) => {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });
   }
+
+  
 };
+*/

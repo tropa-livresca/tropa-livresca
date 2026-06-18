@@ -8,10 +8,10 @@ export default function NovoLivro() {
   const {InsertLivro} = useLivros();
   const [livroId, setLivroId] = useState(null);
 
-  const HandleCriarLivro = async (e) => {
+  const HandleCriarLivro = async (e, tdp) => {
     e.preventDefault();
     console.log("bc");
-    await InsertLivro();
+    await InsertLivro(tdp);
     console.log("dc");
   }
  

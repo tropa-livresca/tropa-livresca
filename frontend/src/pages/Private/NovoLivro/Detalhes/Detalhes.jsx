@@ -15,7 +15,9 @@
 export default function Detalhes() {
   return (
     <main>
-      <form></form>
+      <form>
+        <input type="s"></input>
+      </form>
     </main>
   );
 }
