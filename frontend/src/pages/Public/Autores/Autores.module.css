@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
 main {
   background-color: #fff8c9;
 }
@@ -11,15 +13,17 @@ main {
 }
 
 .topo {
-  max-width: 56rem;
+  width: 100%;
   display: grid;
   gap: 1.5rem;
 }
 
 .titulo {
   margin: 0;
-  color: #4d1f18;
-  font-size: 5rem;
+  color: #67170c;
+  font-size: 4rem;
+  text-align: left;
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
@@ -28,15 +32,17 @@ main {
   width: 8rem;
   height: 3px;
   margin-top: 1rem;
-  background: #d4b46a;
+  background-color: #d4b46a;
   border-radius: 999px;
 }
 
 .descricao {
-  max-width: 50rem;
+  max-width: 100%;
   line-height: 1.8;
   font-size: 1.2rem;
-  color: #432c28;
+  color: #67170c;
+  text-align: center;
+  font-family: "Jacques Francois", serif;
 }
 
 .busca {
@@ -46,7 +52,7 @@ main {
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 0.4rem;
-  background: #fffdf7;
+  background-color: #fffdf7;
   border-radius: 999px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
@@ -56,7 +62,7 @@ main {
   height: 3rem;
   display: grid;
   place-items: center;
-  color: #7a6a5b;
+  color: #67170c;
 }
 
 .busca input {
@@ -69,16 +75,17 @@ main {
 
 .btnbuscar {
   border: none;
-  padding: 1rem 1.6rem;
+  padding: 1rem 1rem;
   border-radius: 999px;
-  background: #4d1f18;
-  color: white;
+  background-color: #67170c;
+  color: #ffbb33;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .btnbuscar:hover {
-  background: #6a2b22;
+  background-color: #6a2b22;
+  color: white;
 }
 
 .autorescontainer {
@@ -92,11 +99,15 @@ main {
   justify-items: center;
   gap: 0.8rem;
   padding: 2rem;
-  background: #fffcf4;
+  background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   transition: 0.3s;
+}
+
+.autorinf p{
+  font-family: "Jacques Francois", serif;
 }
 
 .autorinf:hover {
@@ -117,13 +128,14 @@ main {
   font-size: 1.8rem;
   white-space: normal;
   overflow-wrap: break-word;
+  font-family: "Jacques Francois", serif;
 }
 
 .autorinf h3::after {
   content: "";
   display: block;
   width: 4rem;
-  background: #d4b46a;
+  background-color: #d4b46a;
 }
 
 .btndetalhes {
@@ -131,12 +143,13 @@ main {
   margin-top: 2rem;
   margin-bottom: 0;
   padding: 0.7rem 1.4rem;
-  background: #5a1e14;
+  background-color: #5a1e14;
   color: #fff;
   border-radius: 999px;
   font-size: 0.9rem;
   font-weight: 600;
   transition: 0.3s;
+  font-family: "Jacques Francois", serif;
 }
 
 @media (max-width: 1200px) {

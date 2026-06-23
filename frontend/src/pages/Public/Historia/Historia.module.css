@@ -1,27 +1,126 @@
-.container{
-  display:grid;
-  grid-template-columns: auto auto;
+.container {
+  width: 100%;
+  min-height: auto;
+  padding: 4rem 5%;
+  display: grid;
+  gap: 4rem;
 }
 
-.lesquerdo{
-  margin-left:4rem;
-  margin-right:4rem;
+.topo {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
 }
 
-.lesquerdo p{
-  text-align:left;
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: 4rem;
+  text-align: left;
 }
 
-.ldireito{
-  margin-right:4rem;
+.titulo::after {
+  content: "";
+  display: block;
+  width: 7rem;
+  height: 3px;
+  margin-top: 1rem;
+  background-color: #d4b46a;
+  border-radius: 999px;
 }
 
-.ldireito img{
-  width:30rem;
-  height:12rem;
+.containerbloco {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5rem;
 }
 
-.lesquerdo img{
-  width:30rem;
-  height:12rem;
+.containerbloco::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    transparent,
+    #d4b46a 10%,
+    #d4b46a 90%,
+    transparent
+  );
+}
+
+.bloco {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 4rem;
+}
+
+.texto {
+  display: grid;
+  align-content: center;
+  padding: 3rem;
+  background-color: #fffcf4;
+  border-left: 8px solid #d4b46a;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;
+}
+
+.texto:hover {
+  transform: translateY(-6px);
+}
+
+.texto h2 {
+  margin: 0 0 1rem;
+  color: #67170c;
+  font-size: 2.5rem;
+}
+
+.texto p {
+  margin: 0;
+  line-height: 1.8;
+  color: #67170c;
+  text-align: justify;
+}
+
+.img {
+  border-radius: 20px;
+  border:3px solid white;
+  overflow: hidden;
+  display: grid;
+}
+
+.img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: 0.4s;
+}
+
+.img:hover img {
+  transform: scale(1.04);
+}
+
+@media (max-width: 900px) {
+  .titulo {
+    text-align: center;
+  }
+
+  .containerbloco::before {
+    display: none;
+  }
+
+  .bloco {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .img {
+    min-height: 300px;
+  }
 }
