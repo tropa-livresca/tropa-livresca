@@ -65,14 +65,14 @@ form {
   display: grid;
 }
 
-span {
+.span {
   text-align: center;
   margin-top: 0.3rem;
   color: #67170c;
   font-family: "Jacques Francois", serif;
 }
 
-span a{
+.span a{
   font-family: "Jacques Francois", serif;
 }
 

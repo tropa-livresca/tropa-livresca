@@ -41,7 +41,9 @@ export default function FAQ() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.titulo}>Perguntas Frequentes</h1>
+      <div className={styles.topo}>
+              <h1 className={styles.titulo}>Perguntas Frequentes</h1>
+            </div>
       
       {Object.entries(faqData).map(([categoria, itens]) => (
         <div key={categoria} className={styles.categoriaCard}>

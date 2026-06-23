@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
 main {
   background-color: #fff8c9;
 }
@@ -11,16 +13,17 @@ main {
 }
 
 .topo {
-  max-width: 100%;
-  max-width: 56rem;
+  width: 100%;
   display: grid;
   gap: 1.5rem;
 }
 
 .titulo {
   margin: 0;
-  color: #4d1f18;
-  font-size: 5rem;
+  color: #67170c;
+  font-size: 4rem;
+  text-align: left;
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
@@ -30,15 +33,16 @@ main {
   height: 3px;
   margin-top: 1rem;
   background-color: #d4b46a;
-  background: #d4b46a;
   border-radius: 999px;
 }
 
 .descricao {
-  max-width: 50rem;
+  max-width: 100%;
   line-height: 1.8;
   font-size: 1.2rem;
-  color: #432c28;
+  color: #67170c;
+  text-align: center;
+  font-family: "Jacques Francois", serif;
 }
 
 .busca {
@@ -49,7 +53,6 @@ main {
   align-items: center;
   padding: 0.4rem;
   background-color: #fffdf7;
-  background: #fffdf7;
   border-radius: 999px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
@@ -59,10 +62,8 @@ main {
   height: 3rem;
   display: grid;
   place-items: center;
-  color: #7a6a5b;
+  color: #67170c;
 }
-
-
 
 .busca input {
   border: none;
@@ -74,16 +75,17 @@ main {
 
 .btnbuscar {
   border: none;
-  padding: 1rem 1.6rem;
+  padding: 1rem 1rem;
   border-radius: 999px;
-  background-color: #4d1f18;
-  color: white;
+  background-color: #67170c;
+  color: #ffbb33;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .btnbuscar:hover {
   background-color: #6a2b22;
+  color: white;
 }
 
 .autorescontainer {
@@ -104,6 +106,10 @@ main {
   transition: 0.3s;
 }
 
+.autorinf p{
+  font-family: "Jacques Francois", serif;
+}
+
 .autorinf:hover {
   transform: translateY(-8px);
 }
@@ -122,6 +128,7 @@ main {
   font-size: 1.8rem;
   white-space: normal;
   overflow-wrap: break-word;
+  font-family: "Jacques Francois", serif;
 }
 
 .autorinf h3::after {
@@ -142,6 +149,7 @@ main {
   font-size: 0.9rem;
   font-weight: 600;
   transition: 0.3s;
+  font-family: "Jacques Francois", serif;
 }
 
 @media (max-width: 1200px) {
