@@ -1,7 +1,8 @@
 import express from "express";
-import { enviarEmail } from "../controllers/suporte.controller";
+import { enviarEmail } from "../controllers/suporte.controller.js";
 
-const router = Router();
+const router = express.Router();
 
-router.post('/send', enviarEmail);
+router.post('/enviarEmail', enviarEmail);
 
+export default router;

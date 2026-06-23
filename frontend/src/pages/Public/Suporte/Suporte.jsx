@@ -1,31 +1,59 @@
 import useSuporte from "../../../hooks/useSuporte";
-import Input from "../../../components/form/Input/Inputr";
-import { useState, useEffect } from "react";
+import Input from "../../../components/form/Input/Input";
 
 export default function Suporte() {
-    const { enviarEmail, isLoading, campos, setCampos, message } = useSuporte();
+    const {
+        error,
+        setError,
+        campos,
+        setCampos,
+        email,
+        setEmail,
+        telefone,
+        setTelefone,
+        nome,
+        setNome,
+        motivo,
+        setMotivo,
+        mensagem,
+        setMensagem,
+        enviarEmail,
+        carregando
+    } = useSuporte();
 
-    const onInputChange = (e) => {
-        setCampos((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value,
-        }));
-    };
-
-    useEffect(async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         enviarEmail();
-    }, []);
+    };
 
     return (
         <>
-            <form onSubmit={onFormSubmit}>
+            <form onSubmit={handleSubmit}>
+
+                {error.text && (
+                    <p style={{ color: error.success ? 'green' : 'red' }}>
+                        {error.text}
+                    </p>
+                )}
+
                 <label htmlFor="email">E-mail</label>
                 <Input
                     type="email"
                     id="email"
                     name="email"
+                    value={email}
                     placeholder="E-mail de destino"
-                    onChange={onInputChange}
+                    handleOnChange={(e) => setEmail(e.target.value)}
+                />
+
+                <label htmlFor="telefone">Celular</label>
+                <Input
+                    type="tel"
+                    id="telefone"
+                    name="telefone"
+                    value={telefone}
+                    placeholder="Telefone de contato"
+                    handleOnChange={(e) => setTelefone(e.target.value)}
                 />
 
                 <label htmlFor="nome">Nome</label>
@@ -33,8 +61,9 @@ export default function Suporte() {
                     type="text"
                     id="nome"
                     name="nome"
+                    value={nome}
                     placeholder="Seu nome"
-                    onChange={onInputChange}
+                    handleOnChange={(e) => setNome(e.target.value)}
                 />
 
                 <label htmlFor="mensagem">Mensagem</label>
@@ -42,15 +71,15 @@ export default function Suporte() {
                     type="text"
                     id="mensagem"
                     name="mensagem"
+                    value={mensagem}
                     placeholder="Sua mensagem"
-                    onChange={onInputChange}
+                    handleOnChange={(e) => setMensagem(e.target.value)}
                 />
 
-                <Input
-                    type="submit"
-                    value={isLoading ? "Enviando..." : "Enviar"}
-                    disabled={isLoading}
-                />
-            </form>        </>
+                <button type="submit" disabled={carregando}>
+                    {carregando ? "Enviando..." : "Enviar"}
+                </button>
+            </form>
+        </>
     );
 }

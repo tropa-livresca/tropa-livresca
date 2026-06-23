@@ -1,38 +1,80 @@
-import { apiFetch } from "../../services/api";
+import { apiFetch } from "../services/api";
+import { useState } from "react";
 
-const useSuporte = () => {
-  const [campos, setCampos] = useState({
-    email: "",
-    nome: "",
-    mensagem: "",
-    motivo: "",
-    telefone: "",
-  });
+export const useSuporte = () => {
+  const [error, setError] = useState({ text: "", success: false });
+  const [carregando, setCarregando] = useState(false);
 
-  const [message, setMessage] = useState({ text: "", success: false });
+  const [email, setEmail] = useState("");
+  const [nome, setNome] = useState("");
+  const [mensagem, setMensagem] = useState("");
+  const [motivo, setMotivo] = useState("");
+  const [telefone, setTelefone] = useState("");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const enviarEmail = async () => {
+    setCarregando(true);
+    setError({ text: "", success: false });
 
-  const enviarEmail = async (e) => {
-    e.preventDefault();
-    setMessage({
-      text: "Formulário enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
-      success: true,
-    });
-
-    const formData = new FormData();
-    Object.keys(campos).forEach((key) => FormData.append(key, campos[key]));
+    const dadosFormulario = {
+      email_do_cliente: email,
+      nome: nome,
+      mensagem: mensagem,
+      motivo: motivo,
+      telefone: telefone
+    };
 
     try {
-      const response = await apiFetch("/api/perfil");
+      const response = await apiFetch("/api/enviarEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(dadosFormulario),
+      });
 
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`Erro ${response.status}: ${errorText}`);
       }
+
+      setError({
+        text: "Formulário enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
+        success: true,
+      });
+      
+      setEmail("");
+      setNome("");
+      setMensagem("");
+      setMotivo("");
+      setTelefone("");
+
     } catch (err) {
-        console.error("Erro em useSuporte.js", err);
+      console.error("Erro em useSuporte.js", err);
+      setError({
+        text: "Ocorreu um erro ao enviar sua mensagem. Tente novamente.",
+        success: false,
+      });
+    } finally {
+      setCarregando(false);
     }
   };
+
+  return {
+    error,
+    setError,
+    carregando,
+    email,
+    setEmail,
+    nome,
+    setNome,
+    mensagem,
+    setMensagem,
+    motivo,
+    setMotivo,
+    telefone,
+    setTelefone,
+    enviarEmail,
+  };
 };
+
 export default useSuporte;

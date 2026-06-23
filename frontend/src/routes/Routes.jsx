@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Importado o Outlet
 import { LivroProvider } from "../context/livro/Livros";
 import useAuth from "../hooks/useAuth";
-
+import Suporte from "../pages/Public/Suporte/Suporte";
 import Container from "../components/layout/Container/Container";
 import MainLayout from "../components/layout/MainLayout/MainLayout";
 
@@ -47,6 +47,7 @@ const RoutesApp = () => {
           <Route path="autores/:id" element={<AutorById />} />
           
           <Route path="FAQ" element = {<FAQ/>}/>
+          <Route path= "suporte" element = {<Suporte/>}/>
 
           <Route path="meuslivros" element={<Private Item={MeusLivros} />} />
 
