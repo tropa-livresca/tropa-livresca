@@ -68,20 +68,29 @@ export const refreshSession = async (req, res) => {
 
 export const signup = async (req, res) => {
   const { email, password, telefone, nome } = req.body;
-  //Falta verificar o número de usuários
+
+  if (!email || !password || !nome || !telefone) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+  }
+
   try {
+    const redirectUrl =
+      process.env.SUPABASE_REDIRECT_URL ||
+      "http://localhost:5173/confirmacao-email";
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        //emailRedirectTo: "http://localhost:5173/confirmacao-email",
+        emailRedirectTo: redirectUrl,
         data: { nome, telefone },
       },
     });
 
     if (error) {
       if (
-        error.message.includes("already registered" || error.status === 422)
+        error.message?.includes("already registered") ||
+        error.status === 422
       ) {
         return res.status(400).json({ error: "Email já cadastrado." });
       }

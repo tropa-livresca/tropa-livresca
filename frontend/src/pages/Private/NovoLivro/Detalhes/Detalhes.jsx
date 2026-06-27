@@ -15,7 +15,11 @@
 export default function Detalhes() {
   return (
     <main>
-      <form></form>
+      <form>
+        <select>
+          
+        </select>
+      </form>
     </main>
   );
 }

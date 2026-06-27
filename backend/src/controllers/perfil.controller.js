@@ -35,7 +35,7 @@ export const GetPerfil = async (req, res) => {
   }
 };
 
-export const UpdatePerfil = async (req, res) => {
+   export const UpdatePerfil = async (req, res) => {
   try {
     const { nome, telefone, descricao, redes } = req.body;
 

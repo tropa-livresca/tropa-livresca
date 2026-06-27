@@ -20,7 +20,7 @@ export const LivroProvider = ({ children }) => {
 
       const res = await apiFetch(
         `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
-        { method: "GET" }
+        { method: "GET", skipAuthRedirect: true }
       );
 
       const result = await res.json();
@@ -73,6 +73,21 @@ export const LivroProvider = ({ children }) => {
     }
   }, []);
 
+  const UpdateStatusAtivo = useCallback(async (id,ativo) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch("/api/meuslivros/updateA/"+id, { method: "POST" });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}`);
+      }
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
   const BuscarLivroByAutor = useCallback(async (id) => {
     setLivro([]);
     setColaboradores(null);
@@ -81,7 +96,7 @@ export const LivroProvider = ({ children }) => {
 
     try {
 
-      const res = await apiFetch(`/api/livros/${id}`);
+      const res = await apiFetch(`/api/livros/${id}`, { skipAuthRedirect: true });
 
       const json = await res.json();
 
@@ -113,6 +128,42 @@ export const LivroProvider = ({ children }) => {
     };
   }, []);
 
+  const InsertLivro = useCallback(async (tdp) => {
+    setCarregando(true);
+    console.log("l");
+    try {
+      console.log("k");
+      const res = await apiFetch("/api/livros/insertLivro/"+tdp, { method: "POST" });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}`);
+      }
+
+      const json = res.json();
+      setLivro(json.data);
+
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
+  const UpdateTDP = useCallback(async (id,tdp) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch("/api/livros/update/TDP/"+id+"/"+tdp, { method: "POST" });
+
+      if (!res.ok) {
+        throw new Error(`Erro ${res.status}`);
+      }
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
   return (
     <LivroContext.Provider
       value={{
@@ -130,7 +181,10 @@ export const LivroProvider = ({ children }) => {
         setCarregando,
         BuscarLivros,
         BuscarLivrosById,
+        UpdateStatusAtivo,
         BuscarLivroByAutor,
+        InsertLivro,
+        UpdateTDP,
       }}
     >
       {children}

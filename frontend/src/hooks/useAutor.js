@@ -21,7 +21,10 @@ export const useAutor = () => {
     setErro(null);
 
     try {
-      const response = await apiFetch(`/api/autores/${id}`, { method: "GET" });
+      const response = await apiFetch(`/api/autores/${id}`, {
+        skipAuthRedirect: true,
+        method: "GET",
+      });
 
       const json = await response.json();
       console.log("DADOS DO AUTOR VINDOS DA API:", json);
@@ -69,7 +72,10 @@ export const useAutor = () => {
     try {
       const response = await apiFetch(
         `/api/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
-        { method: "GET" },
+        {
+          skipAuthRedirect: true,
+          method: "GET",
+        },
       );
 
       const result = await response.json();

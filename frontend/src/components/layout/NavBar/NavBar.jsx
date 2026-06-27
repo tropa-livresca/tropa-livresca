@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import usePerfil from "../../../hooks/usePerfil";
-import { apiFetch } from "../../../services/api";
 import { useState, useEffect, useRef } from "react"; //ref é novo
 import styles from "./NavBar.module.css";
 import logo from "../../images/logo.png";
@@ -23,11 +22,9 @@ export default function NavBar() {
 
   const sair = async () => {
     try {
-      const res = await apiFetch("/api/auth/signout", {
-        method: "POST",
-      });
-      if (res.ok) {
-        signout();
+      const errorMsg = await signout();
+      if (errorMsg) {
+        console.error("Erro ao fazer logout:", errorMsg);
       }
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -83,7 +80,7 @@ export default function NavBar() {
             </ul>
           </li>
           <li className={styles.item}>
-            <Link to="/">Livros</Link>
+            <Link to="/livros">Livros</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Loja</Link>
@@ -106,7 +103,7 @@ export default function NavBar() {
             <Link to="/">Ajuda</Link>
             <ul className={styles.subtema}>
               <li><Link to="/FAQ">Perguntas Frequentes</Link></li>
-              <li><Link to="/">Contato</Link></li>
+              <li><Link to="/suporte">Contato</Link></li>
             </ul>
           </li>
         </ul>

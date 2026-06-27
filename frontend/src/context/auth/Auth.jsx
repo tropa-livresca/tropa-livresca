@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { apiFetch } from "../../services/api";
 
 /** @type {import('react').Context<any>} */
-export const AuthContext = createContext({});
+export const AuthContext = createContext(null);
 
 /**
  * Provedor de Autenticação Supabase
@@ -21,7 +21,9 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkSession = async () => {
       try {
-        const res = await apiFetch("/api/auth/session");
+        const res = await apiFetch("/api/auth/session", {
+          skipAuthRedirect: true,
+        });
 
         if (res.ok) {
           const data = await res.json();
@@ -46,20 +48,21 @@ export const AuthProvider = ({ children }) => {
    * @returns {Promise<string|undefined>} Retorna a mensagem de erro se falhar
    */
   const signin = async (email, password) => {
-    try{
+    try {
       const res = await apiFetch("/api/auth/signin", {
+        skipAuthRedirect: true,
         method: "POST",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
 
-      if(!res.ok){
+      if (!res.ok) {
         return data.error || "Erro ao fazer login";
       }
 
       setUser(data.user);
-    }catch(err){
+    } catch (err) {
       return "Erro de conexão com o servidor.";
     }
   };
@@ -74,6 +77,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (email, password, telefone, nome) => {
     try {
       const res = await apiFetch("/api/auth/signup", {
+        skipAuthRedirect: true,
         method: "POST",
         body: JSON.stringify({ email, password, telefone, nome }),
       });
@@ -93,18 +97,22 @@ export const AuthProvider = ({ children }) => {
       return "Erro de conexão com o servidor.";
     }
   };
-  
+
   /** Encerra a sessão do usuário */
   const signout = async () => {
-    try{
+    try {
       const res = await apiFetch("/api/auth/signout", {
+        skipAuthRedirect: true,
         method: "POST",
       });
 
-      if (res.ok) {
-        setUser(null);
+      const data = await res.json();
+      if (!res.ok) {
+        return data.error || "Erro ao desconectar usuário.";
       }
-    } catch(err){
+
+      setUser(null);
+    } catch (err) {
       return "Erro de conexão com o servidor.";
     }
   };
