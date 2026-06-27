@@ -31,21 +31,22 @@ export default function ConfirmacaoEmail() {
 
             apiFetch("/api/auth/session", {
                 method: "POST",
+                skipAuthRedirect: true,
                 body: JSON.stringify({ accessToken: tokenFinal, refreshToken: refreshFinal }),
             })
-            .then(async (res) => {
-                const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.error || "Erro desconhecido");
-                }
+                .then(async (res) => {
+                    const data = await res.json();
+                    if (!res.ok) {
+                        throw new Error(data.error || "Erro desconhecido");
+                    }
 
-                setStatus("E-mail confirmado com sucesso! Redirecionando para página inicial...");
-                setTimeout(() => navigate("/login"), 2000);
-            })
-            .catch((err) => {
-                setStatus(`Falha na validação com o servidor: ${err.message}`);
-                console.error("Erro no fetch da sessão:", err);
-            });
+                    setStatus("E-mail confirmado com sucesso! Redirecionando para página inicial...");
+                    setTimeout(() => navigate("/login"), 2000);
+                })
+                .catch((err) => {
+                    setStatus(`Falha na validação com o servidor: ${err.message}`);
+                    console.error("Erro no fetch da sessão:", err);
+                });
         } else {
             setStatus("Link de confirmação inválido, expirado ou formato incorreto.");
         }

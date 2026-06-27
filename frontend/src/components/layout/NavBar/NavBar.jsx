@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 import usePerfil from "../../../hooks/usePerfil";
-import { apiFetch } from "../../../services/api";
 import { useState, useEffect, useRef } from "react"; //ref é novo
 import styles from "./NavBar.module.css";
 import logo from "../../images/logo.png";
@@ -23,11 +22,9 @@ export default function NavBar() {
 
   const sair = async () => {
     try {
-      const res = await apiFetch("/api/auth/signout", {
-        method: "POST",
-      });
-      if (res.ok) {
-        signout();
+      const errorMsg = await signout();
+      if (errorMsg) {
+        console.error("Erro ao fazer logout:", errorMsg);
       }
     } catch (error) {
       console.error("Erro ao fazer logout:", error);

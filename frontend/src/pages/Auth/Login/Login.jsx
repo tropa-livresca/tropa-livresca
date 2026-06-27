@@ -5,7 +5,7 @@ import useAuth from "../../../hooks/useAuth";
 import logo from "../../../components/images/log.jpg";
 import logo2 from "../../../components/images/logo.png";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 /**
  * Página responsável pelo Login dos Usuários
@@ -22,6 +22,8 @@ export default function Login() {
   const { signin } = useAuth();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
   /**
    * Trata o envio do formulário de Login
    * Realiza validações de campos vazios, antes de chamar o servidor
@@ -40,15 +42,12 @@ export default function Login() {
 
     const res = await signin(email, senha);
 
-    /**
-     * Assume que 'res' contem a mensagem de erro de Supabase/AuthContext
-     */
     if (res) {
-      setError("Senha ou e-mail não conferem");
+      setError(res);
       return;
     }
 
-    navigate("/"); //Navega até a tela de Início
+    navigate(from, { replace: true });
   };
 
   return (
@@ -84,10 +83,10 @@ export default function Login() {
               <label>Lembrar por 30 dias</label>
             </div>
 
-            <SubmitButton text="ENTRAR" id={styles.btn}/>
+            <SubmitButton text="ENTRAR" id={styles.btn} />
 
             <div className={styles.errinho}>
-            {error.length > 0 && <p>{error}</p>}
+              {error.length > 0 && <p>{error}</p>}
             </div>
 
             <p>

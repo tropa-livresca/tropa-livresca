@@ -25,6 +25,7 @@ export const useSuporte = () => {
 
     try {
       const response = await apiFetch("/api/enviarEmail", {
+        skipAuthRedirect: true,
         method: "POST",
         headers: {
           "Content-Type": "application/json",
