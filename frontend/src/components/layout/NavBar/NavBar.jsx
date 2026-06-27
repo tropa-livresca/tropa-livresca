@@ -80,7 +80,7 @@ export default function NavBar() {
             </ul>
           </li>
           <li className={styles.item}>
-            <Link to="/">Livros</Link>
+            <Link to="/livros">Livros</Link>
           </li>
           <li className={styles.item}>
             <Link to="/">Loja</Link>
