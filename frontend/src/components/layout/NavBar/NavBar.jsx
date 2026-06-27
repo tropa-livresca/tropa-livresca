@@ -106,7 +106,7 @@ export default function NavBar() {
             <Link to="/">Ajuda</Link>
             <ul className={styles.subtema}>
               <li><Link to="/FAQ">Perguntas Frequentes</Link></li>
-              <li><Link to="/">Contato</Link></li>
+              <li><Link to="/suporte">Contato</Link></li>
             </ul>
           </li>
         </ul>

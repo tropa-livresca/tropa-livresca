@@ -16,11 +16,11 @@ export const useSuporte = () => {
     setError({ text: "", success: false });
 
     const dadosFormulario = {
-      email_do_cliente: email,
+      email: email,
       nome: nome,
       mensagem: mensagem,
       motivo: motivo,
-      telefone: telefone
+      telefone: telefone,
     };
 
     try {
@@ -41,13 +41,12 @@ export const useSuporte = () => {
         text: "Formulário enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
         success: true,
       });
-      
+
       setEmail("");
       setNome("");
       setMensagem("");
       setMotivo("");
       setTelefone("");
-
     } catch (err) {
       console.error("Erro em useSuporte.js", err);
       setError({

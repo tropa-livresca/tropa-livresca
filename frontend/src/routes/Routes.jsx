@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom"; // Importado o Outlet
+import { BrowserRouter, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom"; // Importado o Outlet
 import { LivroProvider } from "../context/livro/Livros";
 import useAuth from "../hooks/useAuth";
 import Suporte from "../pages/Public/Suporte/Suporte";
@@ -30,8 +30,12 @@ import SeAutopublique from "../pages/Public/SeAutopublique/SeAutopublique";
 import LivroById from "../pages/Public/LivroById/LivroById";
 
 const Private = ({ Item }) => {
-  const { signed } = useAuth();
-  return signed ? <Item /> : <Login />;
+  const { signed, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return null;
+
+  return signed ? <Item /> : <Navigate to="/login" state={{ from: location }} replace />;
 };
 
 const RoutesApp = () => {

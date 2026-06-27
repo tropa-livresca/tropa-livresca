@@ -20,7 +20,7 @@ export const LivroProvider = ({ children }) => {
 
       const res = await apiFetch(
         `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
-        { method: "GET" }
+        { method: "GET", skipAuthRedirect: true }
       );
 
       const result = await res.json();
@@ -81,7 +81,7 @@ export const LivroProvider = ({ children }) => {
 
     try {
 
-      const res = await apiFetch(`/api/livros/${id}`);
+      const res = await apiFetch(`/api/livros/${id}`, { skipAuthRedirect: true });
 
       const json = await res.json();
 
