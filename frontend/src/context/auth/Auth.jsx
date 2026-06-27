@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import { apiFetch } from "../../services/api";
 
 /** @type {import('react').Context<any>} */
-export const AuthContext = createContext({});
+export const AuthContext = createContext(null);
 
 /**
  * Provedor de Autenticação Supabase
