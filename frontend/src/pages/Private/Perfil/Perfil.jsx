@@ -1,5 +1,5 @@
 import usePerfil from "../../../hooks/usePerfil";
-import Styles from "./Perfil.module.css";
+import styles from "./Perfil.module.css";
 import Input from "../../../components/form/Input/Input";
 import { useEffect, useState } from "react";
 
@@ -31,7 +31,6 @@ export default function Perfil() {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [modoeEdicao, setModoEdicao] = useState(false);
-  
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -60,15 +59,23 @@ export default function Perfil() {
     e.preventDefault();
     const redesParaEnviar = [];
 
-    if (instagram) redesParaEnviar.push({ plataforma: "Instagram", url: instagram });
+    if (instagram)
+      redesParaEnviar.push({ plataforma: "Instagram", url: instagram });
 
     if (facebook) redesParaEnviar.push({ plataforma: facebook, url: facebook });
 
-    if (linkedin) redesParaEnviar.push({ plataforma: "linkedin", url: linkedin });
+    if (linkedin)
+      redesParaEnviar.push({ plataforma: "linkedin", url: linkedin });
 
-    if (email) redesParaEnviar.push({ plataforma: "Email", url: email })
+    if (email) redesParaEnviar.push({ plataforma: "Email", url: email });
 
-    const resultado = await updatePerfil({ nome, telefone, imagem, descricao, usu_redes: redesParaEnviar });
+    const resultado = await updatePerfil({
+      nome,
+      telefone,
+      imagem,
+      descricao,
+      usu_redes: redesParaEnviar,
+    });
 
     if (resultado?.sucess) {
       alert("Perfil atualizado com sucesso!");
@@ -82,24 +89,48 @@ export default function Perfil() {
   }
 
   return (
-    <>
-      <h1>Bem-vindo ao seu perfil!</h1>
+    <main className={styles.container}>
+      <div className={styles.topo}>
+        <h1 className={styles.titulo}>Bem-vindo ao seu perfil!</h1>
+      </div>
       {perfil && (
         <div>
           <p>Nome Atual: {perfil.nome}</p>
           <p>Telefone Atual: {perfil.telefone}</p>
           <p>Descricao atual: {perfil.descricao}</p>
-          <p>Instagram: {perfil.usu_redes?.find(r => r.plataforma.toLowerCase() === "instagram")?.url || "Não informado"}</p>
+          <p>
+            Instagram:{" "}
+            {perfil.usu_redes?.find(
+              (r) => r.plataforma.toLowerCase() === "instagram",
+            )?.url || "Não informado"}
+          </p>
 
-          <p>Facebook: {perfil.usu_redes?.find(r => r.plataforma.toLowerCase() === "facebook")?.url || "Não informado"}</p>
+          <p>
+            Facebook:{" "}
+            {perfil.usu_redes?.find(
+              (r) => r.plataforma.toLowerCase() === "facebook",
+            )?.url || "Não informado"}
+          </p>
 
-          <p>LinkedIn: {perfil.usu_redes?.find(r => r.plataforma.toLowerCase() === "linkedin")?.url || "Não informado"}</p>
-          
-          <p>E-mail: {perfil.usu_redes?.find(r=> r.plataforma.toLowerCase() === "email")?.url || "Não informado"}</p>
+          <p>
+            LinkedIn:{" "}
+            {perfil.usu_redes?.find(
+              (r) => r.plataforma.toLowerCase() === "linkedin",
+            )?.url || "Não informado"}
+          </p>
+
+          <p>
+            E-mail:{" "}
+            {perfil.usu_redes?.find(
+              (r) => r.plataforma.toLowerCase() === "email",
+            )?.url || "Não informado"}
+          </p>
 
           <form onSubmit={handleSubmit}>
             <div>
-              {previewUrl ? (<img src={previewUrl} alt="Pré-visualização" width="150" />) : (
+              {previewUrl ? (
+                <img src={previewUrl} alt="Pré-visualização" width="150" />
+              ) : (
                 <div>Sem foto</div>
               )}
             </div>
@@ -124,14 +155,12 @@ export default function Perfil() {
               handleOnChange={(e) => setEmail(e.target.value)}
             />
 
-
             <Input
               type="text"
               placeholder="URL do instagram"
               value={instagram}
               handleOnChange={(e) => setInstagram(e.target.value)}
             />
-
 
             <Input
               type="text"
@@ -140,7 +169,6 @@ export default function Perfil() {
               handleOnChange={(e) => setFacebook(e.target.value)}
             />
 
-
             <Input
               type="text"
               placeholder="URL do Linkedin"
@@ -148,15 +176,26 @@ export default function Perfil() {
               handleOnChange={(e) => setLinkedin(e.target.value)}
             />
 
-            <textarea id="Descricao" name="descricao" rows="5" cols="30" placeholder="Digite sua descrição..." value={descricao} onChange={(e) => setDescricao(e.target.value)}></textarea>
+            <textarea
+              id="Descricao"
+              name="descricao"
+              rows="5"
+              cols="30"
+              placeholder="Digite sua descrição..."
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+            ></textarea>
 
-            <Input type="file" handleOnChange={handleFileChange}
-              accept="image/*" />
+            <Input
+              type="file"
+              handleOnChange={handleFileChange}
+              accept="image/*"
+            />
 
             <button type="submit">Atualizar Perfil</button>
           </form>
         </div>
       )}
-    </>
+    </main>
   );
 }

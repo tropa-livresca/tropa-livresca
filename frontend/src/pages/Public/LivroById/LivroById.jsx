@@ -1,4 +1,5 @@
 import useLivros from "../../../hooks/useLivros";
+import styles from "./LivroById.module.css";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 
@@ -10,57 +11,63 @@ export default function LivroById() {
         if (id) {
             BuscarLivroByAutor(id);
         }
-    }, [id, BuscarLivroByAutor]); 
+    }, [id, BuscarLivroByAutor]);
 
     if (carregando) return <p>Carregando...</p>;
 
     if (!livro) return <p>Livro não encontrado.</p>;
 
     return (
-        <main>
-            <section>
+        <main className={styles.container}>
+            <section className={styles.hero}>
                 {livro?.capa ? (
-                    <img src={livro.capa} alt={livro.titulo} />
+                    <img className={styles.foto}
+                        src={livro.capa} alt={livro.titulo} />
                 ) : (
-                    <div>Sem foto</div>
+                    <div className={styles.semfoto}>Sem foto</div>
                 )}
 
-                <div>
-                    <h1>{livro?.titulo}</h1>
+                <div className={styles.heroinfo}>
+                    <h1 className={styles.titulo}>{livro?.titulo}</h1>
                     {livro?.subtitulo && (
-                        <h2>{livro.subtitulo}</h2>
+                        <h2 className = {styles.subtitulo}>{livro.subtitulo}</h2>
                     )}
 
-                    <h3>Sinopse do livro</h3>
-                    <p>{livro?.descricao}</p>
+                    <span></span>
+
+                    <h2 className={styles.subtitulo}>Sinopse do livro</h2>
+                    <p className={styles.descricao}>{livro?.descricao}</p>
                 </div>
 
                 <div>
-                    <p>Publicado por: {autor?.nome || "Autor desconhecido"}</p>
-                    <p>Data de publicação: {livro?.data_de_publicacao}</p>
-                    <p>Público-alvo: {livro?.publico_alvo}</p>
+                    <p className={styles.descricao}>Publicado por: {autor?.nome || "Autor desconhecido"}</p>
+                    <p className={styles.descricao}>Data de publicação: {livro?.data_de_publicacao}</p>
+                    <p className={styles.descricao}>Público-alvo: {livro?.publico_alvo}</p>
                 </div>
             </section>
 
-            {autor && (
-                <section>
-                    <h2>Perfil do Autor</h2>
-                    <article>
-                        <h3>{autor.nome}</h3>
-                        {autor.imagem_perfil && (
-                            <img src={autor.imagem_perfil} alt={autor.nome} />
-                        )}
-                        <Link to={`/autores/${autor.id}`}>Ver Perfil</Link>
-                    </article>
-                </section>
-            )}
-
+            <section className={styles.secao}>
+                <h2 className = {styles.subtitulo}>Perfil do Autor</h2>
+                {autor && (
+                    <div className = {styles.livros}>
+                        <article className = {styles.livro}>
+                            <h3>{autor.nome}</h3>
+                            {autor.imagem_perfil && (
+                                <img className = {styles.capa} src={autor.imagem_perfil} alt={autor.nome} />
+                            )}
+                            <Link to={`/autores/${autor.id}`} className = {styles.btnlivro}>Ver Perfil</Link>
+                        </article>
+                    </div>
+                )}
+            </section>
+            
             {colaboradores && colaboradores.length > 0 && (
-                <section>
-                    <h2>Relação dos colaboradores</h2>
+                <section className = {styles.secao}>
+                    <h2 className = {styles.subtitulo}>Relação dos colaboradores</h2>
                     <ul>
                         {colaboradores.map((colaborador, index) => (
-                            <li key={`${colaborador.nome}-${index}`}>
+                            <li className = {styles.descricao}
+                            key={`${colaborador.nome}-${index}`}>
                                 {colaborador.nome} {colaborador.sobrenome} - {colaborador.funcao}
                             </li>
                         ))}

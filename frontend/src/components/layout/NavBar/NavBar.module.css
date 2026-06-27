@@ -81,7 +81,7 @@ body {
   font-family: "Jacques Francois", serif;
 }
 
-.imagemPerfil{
+.imagemPerfil {
   max-width: 100px;
   max-height: 100px;
   border-radius: 50%;
@@ -89,7 +89,7 @@ body {
 
 .button:hover {
   background-color: #ffbb33;
-  transition:0.3s;
+  transition: 0.3s;
 }
 
 .item:hover .subtema {
@@ -181,6 +181,95 @@ body {
   margin-right: 1rem;
 }
 
+.usuarioMenu {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.usuarioBotao {
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  width:70px;
+  height:70px;
+}
+
+.imagemPerfil {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #67170c;
+  transition: 0.2s;
+}
+
+.imagemPerfil:hover {
+  box-shadow: 0 0 0 3px rgba(103, 23, 12, 0.2);
+}
+
+.avatar {
+  font-size: 42px;
+  color: #67170c;
+  transition: 0.2s;
+}
+
+.avatar:hover {
+  filter: brightness(0.9);
+}
+
+.nomeUsuario {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  white-space: nowrap;
+}
+
+.menuDropdown {
+  position: absolute;
+  top: 115%;
+  right: -50%;
+  width: 150px;
+  background-color: #fff8e8;
+  border: 1px solid #d4c07a;
+  border-radius: 12px;
+  padding: 0.25rem;
+  box-shadow: 0 8px 20px rgba(103, 23, 12, 0.12);
+  z-index: 999;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 0;
+  margin-bottom: 0;
+  width: 100%;
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background-color: transparent;
+  color: #67170c;
+  text-decoration: none;
+  font-family: "Jacques Francois", serif;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.menuItem:hover {
+  background-color: #ede6b3;
+  color: #ffbb33;
+}
+
+.menuIcon {
+  font-size: 1rem;
+}
+
 @media (max-width: 1024px) {
   .containernav {
     display: grid;
@@ -198,7 +287,7 @@ body {
     grid-column: 1;
     grid-row: 1;
     justify-content: start;
-     padding-left: 0;
+    padding-left: 0;
   }
 
   .hamburguer {
@@ -262,6 +351,11 @@ body {
     justify-content: center;
     padding-right: 0;
   }
+
+  .menuDropdown {
+    right: 50%;
+    transform: translateX(50%);
+  }
 }
 
 @media (min-width: 1025px) and (max-width: 1199px) {
@@ -278,16 +372,16 @@ body {
   }
 
   .item a {
-    font-size: 0.90rem;
+    font-size: 0.9rem;
   }
 
   .button {
-    font-size: 0.90rem;
+    font-size: 0.9rem;
   }
 }
 
 @media (min-width: 1059px) and (max-width: 1199px) {
-   .logonav {
+  .logonav {
     padding-left: 1.5rem;
   }
 
@@ -304,7 +398,7 @@ body {
   }
 
   .button {
-    font-size: 0.90rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -403,4 +497,3 @@ body {
     font-size: 1rem;
   }
 }
-

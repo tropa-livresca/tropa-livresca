@@ -84,7 +84,7 @@ export default function Login() {
               <label>Lembrar por 30 dias</label>
             </div>
 
-            <SubmitButton text="Entrar" id={styles.btn}/>
+            <SubmitButton text="ENTRAR" id={styles.btn}/>
 
             <div className={styles.errinho}>
             {error.length > 0 && <p>{error}</p>}
