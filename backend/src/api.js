@@ -12,6 +12,7 @@ import suporteRoutes from "./routes/suporte.route.js";
 const app = express();
 
 const allowedOrigins = [
+  "https://tropa-livresca.vercel.app",
   "http://localhost:5173",
 ];
 
