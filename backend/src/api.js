@@ -12,7 +12,7 @@ import suporteRoutes from "./routes/suporte.route.js";
 const app = express();
 
 const allowedOrigins = [
-  "https://tropa-livresca.vercel.app",
+  "https://vercel.app",
   "http://localhost:5173",
 ];
 
@@ -26,10 +26,10 @@ app.use(
       }
     },
     credentials: true,
+    optionsSuccessStatus: 204,
+    preflightContinue: false
   })
 );
-
-app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
