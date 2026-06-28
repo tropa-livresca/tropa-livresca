@@ -12,14 +12,14 @@ import suporteRoutes from "./routes/suporte.route.js";
 const app = express();
 
 const allowedOrigins = [
-  "https://vercel.app",
+  "https://tropa-livresca.vercel.app",
   "http://localhost:5173",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".app.github.dev")) {
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".app.github.dev") || origin.endsWith(".vercel.app")) {
         callback(null, true);
       } else {
         callback(null, false);
@@ -28,6 +28,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
