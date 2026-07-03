@@ -175,7 +175,7 @@ A autenticação é realizada por meio de sessão e cookies, com validação de 
 
 ## Como contribuir
 
-Contribuições são bem-vindas. Para colaborar:
+Contribuições são bem-vindas. Para colaborar, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
 
 1. Faça um fork do repositório.
 2. Crie uma branch para a sua alteração.
