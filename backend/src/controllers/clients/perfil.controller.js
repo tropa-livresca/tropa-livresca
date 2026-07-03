@@ -1,4 +1,4 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
+import supabase, { supabaseAdmin } from "../../config/supabase.js";
 
 export const GetPerfil = async (req, res) => {
   try {

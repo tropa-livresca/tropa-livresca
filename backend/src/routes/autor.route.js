@@ -1,5 +1,5 @@
 import express from "express";
-import {GetAutores, GetAutorById} from "../controllers/autor.controller.js";
+import {GetAutores, GetAutorById} from "../controllers/clients/autor.controller.js";
 
 const router = express.Router();
 
