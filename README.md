@@ -1,108 +1,196 @@
 # Tropa Livresca
 
-Projeto full stack da Tropa Livresca, com uma interface web em React para navegacao, cadastro, login, consulta de livros/autores e fluxo de publicacao, alem de uma API Node.js/Express integrada ao Supabase para autenticacao, dados e arquivos.
+![Node.js](https://img.shields.io/badge/Node.js-20%2B-blue) ![React](https://img.shields.io/badge/React-19-61DAFB) ![Vite](https://img.shields.io/badge/Vite-8-646CFF) ![Express](https://img.shields.io/badge/Express-5-000000) ![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E) ![License](https://img.shields.io/badge/License-GPLv3-green) ![Status](https://img.shields.io/badge/Status-em%20desenvolvimento-yellow)
 
-## Tecnologias
+Aplicação full stack da editora de autopublicação Tropa Livresca, desenvolvida como Trabalho de Conclusão de Curso (TCC), para oferecer uma experiência web completa de navegação, cadastro, autenticação, consulta de livros e autores, além de um fluxo de publicação e gestão de conteúdo. O projeto conta com uma interface em React/Vite e uma API em Node.js/Express integrada ao Supabase para autenticação, armazenamento de dados e arquivos.
 
-- Node.js
-- npm
+## Índice
+
+- [Descrição do projeto](#descrição-do-projeto)
+- [Demonstração](#demonstração)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias utilizadas](#tecnologias-utilizadas)
+- [Arquitetura do sistema](#arquitetura-do-sistema)
+- [Estrutura de diretórios](#estrutura-de-diretórios)
+- [Pré-requisitos](#pré-requisitos)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Instalação](#instalação)
+- [Execução em desenvolvimento](#execução-em-desenvolvimento)
+- [Scripts disponíveis](#scripts-disponíveis)
+- [Configuração do Supabase](#configuração-do-supabase)
+- [Fluxo da aplicação](#fluxo-da-aplicação)
+- [Endpoints da API](#endpoints-da-api)
+- [Autenticação e autorização](#autenticação-e-autorização)
+- [Como contribuir](#como-contribuir)
+- [Licença](#licença)
+- [Autor](#autor)
+
+## Descrição do projeto
+
+A Tropa Livresca é um projeto voltado para organizar e facilitar a publicação e a descoberta de obras, autores e conteúdos relacionados à editora. O sistema foi pensado como uma solução web completa, com:
+
+- uma interface pública para navegação e consulta;
+- uma área privada para cadastro e gestão de livros;
+- autenticação de usuários;
+- integração com Supabase para persistência e arquivos;
+- fluxo de suporte e contato.
+
+## Demonstração
+
+Em breve será disponibilizada uma demonstração visual do projeto.
+
+- Screenshot/ GIF: Preencher posteriormente
+- Link de demonstração: Preencher posteriormente
+
+## Funcionalidades
+
+A plataforma oferece um conjunto de recursos voltados à experiência do leitor, do autor e da gestão editorial.
+
+Para detalhes completos, consulte a documentação específica em [docs/funcionalidades](docs/funcionalidades).
+
+## Tecnologias utilizadas
+
+### Frontend
+
 - React
 - Vite
+- React Router DOM
+- CSS Modules
+- Axios
+
+### Backend
+
+- Node.js
 - Express
+- CORS
+- Cookie Parser
+- Multer
+- Nodemailer
+
+### Infraestrutura e dados
+
 - Supabase
+- dotenv
+- Nodemon
 
-## Pre-requisitos
+## Arquitetura do sistema
 
-Antes de comecar, instale:
+A aplicação segue um modelo simples em camadas, com o frontend consumindo a API REST, que por sua vez se comunica com o Supabase para operações de dados e autenticação.
 
-- Node.js 20 ou superior
-- npm
-- Uma conta/projeto no Supabase
+Para detalhes técnicos, consulte [docs/arquitetura.md](docs/arquitetura.md).
 
-Tambem sera necessario ter as chaves do Supabase:
+## Diagrama de casos de uso
 
-- URL do projeto
-- chave anonima
-- service role key
+O diagrama completo de casos de uso foi deslocado para [docs/diagramas/caso-de-uso.puml](docs/diagramas/caso-de-uso.puml).
 
-## Estrutura do projeto
+## Estrutura de diretórios
 
 ```text
 tropa-livresca/
-  backend/   API em Node.js/Express
-  frontend/  Aplicacao React/Vite
+├── backend/
+│   ├── package.json
+│   ├── README.md
+│   └── src/
+│       ├── api.js
+│       ├── config/
+│       │   └── supabase.js
+│       ├── controllers/
+│       ├── middlewares/
+│       │   ├── auth.middleware.js
+│       │   └── upload.middleware.js
+│       └── routes/
+├── docs/
+│   ├── api/
+│   ├── diagramas/
+│   ├── funcionalidades/
+│   ├── instalacao.md
+│   ├── autenticacao.md
+│   ├── arquitetura.md
+│   ├── banco-de-dados.md
+│   └── deploy.md
+├── frontend/
+│   ├── index.html
+│   ├── package.json
+│   ├── public/
+│   ├── src/
+│   │   ├── App.jsx
+│   │   ├── index.css
+│   │   ├── main.jsx
+│   │   ├── admin/
+│   │   ├── clients/
+│   │   │   ├── components/
+│   │   │   ├── context/
+│   │   │   ├── hooks/
+│   │   │   ├── pages/
+│   │   │   └── routes/
+│   │   ├── common/
+│   │   ├── lib/
+│   │   ├── services/
+│   │   └── routes/
+│   └── vite.config.js
+├── LICENSE
+├── package.json
+└── README.md
 ```
 
-## Variaveis de ambiente
+## Pré-requisitos
 
-Use o arquivo `.env.example` como referencia. Ele fica na raiz do projeto e mostra todas as variaveis necessarias com valores ficticios.
+As instruções completas de instalação e configuração estão em [docs/instalacao.md](docs/instalacao.md).
 
-Para desenvolvimento local, crie os arquivos abaixo:
+## Variáveis de ambiente
 
-```bash
-cp .env.example backend/.env.development
-cp .env.example frontend/.env
-```
+As variáveis de ambiente do projeto estão descritas em [docs/instalacao.md](docs/instalacao.md).
 
-Depois, ajuste os valores reais em cada arquivo. O backend usa `PORT`, `NODE_ENV`, `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_SERVICE_ROLE_KEY`. O frontend usa apenas as variaveis com prefixo `VITE_`.
+## Instalação
 
-> Nunca versione arquivos `.env` com chaves reais.
+Consulte [docs/instalacao.md](docs/instalacao.md) para o passo a passo completo.
 
-## Instalacao
+## Execução em desenvolvimento
 
-Instale as dependencias da raiz, do backend e do frontend:
+Consulte [docs/instalacao.md](docs/instalacao.md) para instruções de execução local.
 
-```bash
-npm install
-cd backend
-npm install
-cd ../frontend
-npm install
-cd ..
-```
+## Scripts disponíveis
 
-## Como rodar localmente
+Os comandos disponíveis estão documentados em [docs/instalacao.md](docs/instalacao.md).
 
-Com os arquivos de ambiente configurados, rode backend e frontend juntos a partir da raiz:
+## Configuração do banco de dados
 
-```bash
-npm run dev
-```
+A configuração do banco de dados está detalhada em [docs/banco-de-dados.md](docs/banco-de-dados.md).
 
-Por padrao:
+## Configuração do Supabase
 
-- Backend: `http://localhost:3000`
-- Frontend: `http://localhost:5173`
+As configurações do Supabase estão descritas em [docs/banco-de-dados.md](docs/banco-de-dados.md).
 
-Tambem e possivel rodar cada parte separadamente:
+## Fluxo da aplicação
 
-```bash
-npm run server
-npm run client
-```
+O fluxo principal da aplicação está documentado em [docs/autenticacao.md](docs/autenticacao.md).
 
-## Scripts disponiveis
+## Endpoints da API
 
-Na raiz:
+Os endpoints da API estão organizados em [docs/api](docs/api).
 
-- `npm run dev`: inicia backend e frontend em paralelo
-- `npm run server`: inicia apenas o backend
-- `npm run client`: inicia apenas o frontend
+## Autenticação e autorização
 
-No `backend/`:
+A autenticação é realizada por meio de sessão e cookies, com validação de acesso em rotas protegidas. O middleware de autenticação é aplicado em endpoints sensíveis, como perfil e gestão de livros.
 
-- `npm run dev`: inicia a API com `nodemon` usando `.env.development`
-- `npm start`: inicia a API em modo de producao usando `.env.production`
+## Como contribuir
 
-No `frontend/`:
+Contribuições são bem-vindas. Para colaborar, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
 
-- `npm run dev`: inicia o Vite
-- `npm run build`: gera a build de producao
-- `npm run preview`: serve a build localmente
-- `npm run lint`: executa o ESLint
+1. Faça um fork do repositório.
+2. Crie uma branch para a sua alteração.
+3. Implemente a mudança com commits claros.
+4. Abra um pull request descrevendo o contexto e o objetivo da alteração.
 
-## Observacoes
+## Licença
 
-- O backend aceita requisicoes de `http://localhost:5173` por CORS em desenvolvimento.
-- A URL da API usada pelo frontend deve ser configurada em `VITE_API_URL`.
-- As chaves `SUPABASE_SERVICE_ROLE_KEY` e outras credenciais sensiveis devem ficar apenas no backend.
+Este projeto está licenciado sob a GNU General Public License v3.0. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+## Autores
+
+- David Gabriel Cardoso Pereira - Documentação
+- Gabriel Rodrigues Duarte - Fullstack
+- Luís Fabiano da Silva - Frontend
+- Lukas Soldera Markues - Documentação
+- Matheus Ruy de Almeida - Backend
+- Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) da Tropa Livresca

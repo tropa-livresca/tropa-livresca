@@ -1,0 +1,191 @@
+@startuml Diagrama_Casos_De_Uso_Legivel
+
+skinparam packageStyle rectangle
+
+title Diagrama de Casos de Uso - Plataforma Literária
+
+left to right direction
+
+actor "Usuário / Leitor" as Leitor
+actor "Autor" as Autor
+actor "Funcionário\n(Admin Comum)" as Funcionario
+actor "Administrador Master" as AdminMaster
+
+Autor -up-|> Leitor
+AdminMaster -up-|> Funcionario
+
+rectangle "Plataforma Literária" {
+
+  package "Área do Leitor: Conta & Acesso" {
+    usecase "Manter Cadastro" as UC_Cadastro
+    usecase "Verificar por E-mail" as UC_VerifEmail
+    usecase "Verificar por Telefone" as UC_VerifTel
+    usecase "Efetuar Login" as UC_Login
+    usecase "Recuperar Senha" as UC_Senha
+    usecase "Acessar Perfil" as UC_Perfil
+    usecase "Alterar Dados do Perfil" as UC_AlterarPerfil
+    usecase "Efetuar Logout" as UC_Logout
+
+    UC_Cadastro ..> UC_VerifEmail : <<include>>
+    UC_Cadastro ..> UC_VerifTel : <<include>>
+    UC_Perfil ..> UC_Login : <<include>>
+    UC_AlterarPerfil .up.> UC_Perfil : <<extend>>
+    UC_Logout .up.> UC_Perfil : <<extend>>
+  }
+
+  package "Área do Leitor: Loja & Carrinho" {
+    usecase "Buscar e Filtrar Livros" as UC_BuscaLivro
+    usecase "Visualizar Detalhes do Livro" as UC_DetalheLivro
+    usecase "Visualizar Comentários do Livro" as UC_VisualizarComentarios
+    usecase "Comentar Livro na Loja" as UC_ComentarLoja
+    usecase "Avaliar Livro na Loja" as UC_AvaliarLivro
+    usecase "Gerenciar Carrinho" as UC_Carrinho
+    usecase "Adicionar Item ao Carrinho" as UC_AdicionarItem
+    usecase "Adicionar Livro Físico" as UC_LivroFisico
+    usecase "Adicionar Livro Digital" as UC_LivroDigital
+    usecase "Indicar Quantidade" as UC_IndicarQuantidade
+    usecase "Retirar Item do Carrinho" as UC_RetirarItem
+    usecase "Finalizar Compra" as UC_FinalizarCompra
+    usecase "Selecionar Método de Pagamento" as UC_MetodoPagamento
+    usecase "Pagamento via Pix" as UC_PagPix
+    usecase "Pagamento via Cartão" as UC_PagCartao
+    usecase "Pagamento via Boleto" as UC_PagBoleto
+    usecase "Informar Endereço de Entrega" as UC_Endereco
+    usecase "Calcular Frete e Entrega" as UC_Frete
+    usecase "Visualizar Confirmação" as UC_ConfPagto
+    usecase "Acompanhar Pedidos" as UC_Pedidos
+
+    UC_DetalheLivro ..> UC_VisualizarComentarios : <<include>>
+    UC_AdicionarItem .up.> UC_Carrinho : <<extend>>
+    UC_RetirarItem .up.> UC_Carrinho : <<extend>>
+    UC_FinalizarCompra .up.> UC_Carrinho : <<extend>>
+    UC_LivroFisico -up-|> UC_AdicionarItem
+    UC_LivroDigital -up-|> UC_AdicionarItem
+    UC_LivroFisico ..> UC_IndicarQuantidade : <<include>>
+    UC_FinalizarCompra ..> UC_MetodoPagamento : <<include>>
+    UC_Endereco .up.> UC_FinalizarCompra : <<extend>>
+    UC_PagPix -up-|> UC_MetodoPagamento
+    UC_PagCartao -up-|> UC_MetodoPagamento
+    UC_PagBoleto -up-|> UC_MetodoPagamento
+    UC_Carrinho ..> UC_Frete : <<include>>
+    UC_MetodoPagamento ..> UC_ConfPagto : <<include>>
+  }
+
+  package "Área do Leitor: Comunidade & Suporte" {
+    usecase "Seguir Autor" as UC_Seguir
+    usecase "Visualizar Perfil do Autor" as UC_PerfilAutor
+    usecase "Ler e Filtrar Blogs" as UC_Blog
+    usecase "Manter Depoimentos" as UC_Depoimentos
+    usecase "Contato via Formulário" as UC_FormContato
+    usecase "Gerenciar Notificações" as UC_Notificacoes
+    usecase "Interagir com FAQ" as UC_FAQ
+    usecase "Visualizar Páginas Institucionais" as UC_Inst
+  }
+
+  package "Área Exclusiva do Autor" {
+    usecase "Publicar Novo Livro" as UC_PubLivro
+    usecase "Escolher Formato e Tipo" as UC_Formato
+    usecase "Configurar Metadados" as UC_Metadados
+    usecase "Fazer Upload de Conteúdo" as UC_Upload
+    usecase "Precificar Livro" as UC_Preco
+    usecase "Salvar como Rascunho" as UC_Rascunho
+    usecase "Gerenciar Seus Livros\n(Editar/Excluir)" as UC_GerenciarLivros
+    usecase "Consultar Número de Vendas" as UC_ConsultarVendas
+    usecase "Visualizar Saldo de Royalties" as UC_VisualizarSaldo
+
+    UC_PubLivro ..> UC_Formato : <<include>>
+    UC_PubLivro ..> UC_Metadados : <<include>>
+    UC_PubLivro ..> UC_Upload : <<include>>
+    UC_PubLivro ..> UC_Preco : <<include>>
+    UC_Rascunho .up.> UC_PubLivro : <<extend>>
+  }
+
+  package "Painel Admin: Operações da Loja" {
+    usecase "Alterar Senha Painel" as UC_AdminSenha
+    usecase "Gerenciar Carrossel" as UC_AdminCarrossel
+    usecase "Gerenciar Categorias da Loja" as UC_AdminCategorias
+    usecase "Gerenciar Cupons" as UC_AdminCupons
+    usecase "Editar Cupom" as UC_AdminEditarCupom
+    usecase "Monitorar Entregas" as UC_AdminEntregas
+    usecase "Gerenciar Pedidos" as UC_AdminPedidos
+  }
+
+  package "Painel Admin: Moderação & Conteúdo" {
+    usecase "Gerenciar Publicações do Blog" as UC_AdminBlog
+    usecase "Criar/Editar Artigo do Blog" as UC_AdminCriarBlog
+    usecase "Pré-visualizar Artigo" as UC_AdminPreviaBlog
+    usecase "Visualizar Relatórios Gerais" as UC_AdminRelatorios
+    usecase "Gerenciar Autores (Painel)" as UC_AdminAutores
+    usecase "Gerenciar Usuários/Leitores" as UC_AdminLeitores
+    usecase "Gerenciar Livros do Catálogo" as UC_AdminCatalogo
+    usecase "Definir Detalhes" as UC_IncludeDetBlog
+    usecase "Selecionar Categoria" as UC_IncludeCatBlog
+    usecase "Escrever Conteúdo" as UC_IncludeContBlog
+    usecase "Calcular Faturamento Total" as UC_IncludeFaturamento
+
+    UC_AdminCriarBlog ..> UC_IncludeDetBlog : <<include>>
+    UC_AdminCriarBlog ..> UC_IncludeCatBlog : <<include>>
+    UC_AdminCriarBlog ..> UC_IncludeContBlog : <<include>>
+    UC_AdminRelatorios ..> UC_IncludeFaturamento : <<include>>
+  }
+
+  package "Painel Admin: Comunicação" {
+    usecase "Enviar Nova Notificação" as UC_AdminEnviarNotif
+    usecase "Histórico de Notificações" as UC_AdminHistNotif
+    usecase "Interagir nas Notificações Recebidas" as UC_AdminRecNotif
+    usecase "Moderar Formulários de Contato" as UC_AdminFormContato
+  }
+
+  package "Painel Admin: Controle de Recursos Humanos (Restrito)" {
+    usecase "Gerenciar Funcionários" as UC_AdminFuncionarios
+    usecase "Gerenciar Funções/Cargos" as UC_AdminCargos
+  }
+}
+
+Leitor --> UC_Cadastro
+Leitor --> UC_Login
+Leitor --> UC_Senha
+Leitor --> UC_Perfil
+Leitor --> UC_BuscaLivro
+Leitor --> UC_DetalheLivro
+Leitor --> UC_ComentarLoja
+Leitor --> UC_AvaliarLivro
+Leitor --> UC_Carrinho
+Leitor --> UC_Seguir
+Leitor --> UC_PerfilAutor
+Leitor --> UC_Blog
+Leitor --> UC_Depoimentos
+Leitor --> UC_FormContato
+Leitor --> UC_Notificacoes
+Leitor --> UC_Pedidos
+Leitor --> UC_FAQ
+Leitor --> UC_Inst
+
+Autor --> UC_PubLivro
+Autor --> UC_GerenciarLivros
+Autor --> UC_ConsultarVendas
+Autor --> UC_VisualizarSaldo
+
+Funcionario --> UC_AdminSenha
+Funcionario --> UC_AdminCarrossel
+Funcionario --> UC_AdminCategorias
+Funcionario --> UC_AdminCupons
+Funcionario --> UC_AdminEditarCupom
+Funcionario --> UC_AdminEntregas
+Funcionario --> UC_AdminPedidos
+Funcionario --> UC_AdminBlog
+Funcionario --> UC_AdminCriarBlog
+Funcionario --> UC_AdminPreviaBlog
+Funcionario --> UC_AdminRelatorios
+Funcionario --> UC_AdminAutores
+Funcionario --> UC_AdminLeitores
+Funcionario --> UC_AdminCatalogo
+Funcionario --> UC_AdminEnviarNotif
+Funcionario --> UC_AdminHistNotif
+Funcionario --> UC_AdminRecNotif
+Funcionario --> UC_AdminFormContato
+
+AdminMaster --> UC_AdminFuncionarios
+AdminMaster --> UC_AdminCargos
+
+@enduml

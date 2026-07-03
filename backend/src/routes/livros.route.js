@@ -1,6 +1,6 @@
 
 import express from "express";
-import { GetLivros, GetLivrosById, GetLivrosByAutor, UpdateStatusAtivo, InsertLivro } from "../controllers/livros.controller.js";
+import { GetLivros, GetLivrosById, GetLivrosByAutor, UpdateStatusAtivo, InsertLivro } from "../controllers/clients/livros.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();

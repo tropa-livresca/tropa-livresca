@@ -1,19 +1,24 @@
 export const apiFetch = async (endpoint, options = {}) => {
-  options.credentials = "include";
-  options.headers = {
-    ...options.headers,
+  const { skipAuthRedirect = false, ...fetchOptions } = options;
+  fetchOptions.credentials = "include";
+  fetchOptions.headers = {
+    ...fetchOptions.headers,
   };
 
-  if(!(options.body instanceof FormData)){
-    options.headers["Content-Type"] = "application/json";
+  if (!(fetchOptions.body instanceof FormData)) {
+    fetchOptions.headers["Content-Type"] = "application/json";
   }
 
   let response = await fetch(
     `${import.meta.env.VITE_API_URL}${endpoint}`,
-    options,
+    fetchOptions,
   );
 
-  if (response.status === 401 && endpoint !== "/api/auth/refresh") {
+  if (
+    response.status === 401 &&
+    endpoint !== "/api/auth/refresh" &&
+    !skipAuthRedirect
+  ) {
     try {
       const refreshResponse = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
@@ -26,7 +31,7 @@ export const apiFetch = async (endpoint, options = {}) => {
       if (refreshResponse.ok) {
         response = await fetch(
           `${import.meta.env.VITE_API_URL}${endpoint}`,
-          options,
+          fetchOptions,
         );
       } else if (window.location.pathname !== "/login") {
         window.location.href = "/login";
