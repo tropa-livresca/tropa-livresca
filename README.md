@@ -186,11 +186,11 @@ Contribuições são bem-vindas. Para colaborar, consulte o guia em [CONTRIBUTIN
 
 Este projeto está licenciado sob a GNU General Public License v3.0. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
 
-## Autor
+## Autores
 
-- David Gabriel Cardoso Pereira
-- Gabriel Rodrigues Duarte
-- Luís Fabiano da Silva
-- Lukas Soldera Markues
-- Matheus Ruy de Almeida
+- David Gabriel Cardoso Pereira - Documentação
+- Gabriel Rodrigues Duarte - Fullstack
+- Luís Fabiano da Silva - Frontend
+- Lukas Soldera Markues - Documentação
+- Matheus Ruy de Almeida - Backend
 - Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) da Tropa Livresca
