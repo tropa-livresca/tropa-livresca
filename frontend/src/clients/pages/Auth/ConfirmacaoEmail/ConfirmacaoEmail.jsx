@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiFetch } from "../../../services/api";
+import { apiFetch } from "../../../../services/api";
 
 /**
  * Página de confirmação de email

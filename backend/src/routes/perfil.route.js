@@ -1,5 +1,5 @@
 import express from "express";
-import {UpdatePerfil, GetPerfil} from "../controllers/perfil.controller.js";
+import {UpdatePerfil, GetPerfil} from "../controllers/clients/perfil.controller.js";
 import { checkAuth } from "../middlewares/auth.middleware.js";
 import {upload} from "../middlewares/upload.middleware.js";
 
