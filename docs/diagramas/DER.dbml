@@ -1,0 +1,209 @@
+// =============================================
+// Schema Completo - dbdiagram.io
+// =============================================
+
+Table users_profile {
+  id uuid [pk]
+  nome text
+  telefone varchar(15)
+}
+
+Table livros {
+  id bigint [pk]
+  estado text
+  conteudo text
+  idioma text
+  cor text
+  direitos_de_publicacao boolean
+  conteudo_por_IA boolean
+  imagens_explicitas boolean
+  tipo_de_livro varchar(50)
+  publico_alvo text
+  numero_edicao smallint
+  data_de_publicacao date
+  comissao numeric
+  preco_digital numeric
+  preco_fisico numeric
+  capa text
+  titulo text
+  subtitulo text
+  descricao text
+  autor_nome text
+  autor_sobrenome text
+  ativo boolean [default: true]
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table vendas {
+  id bigint [pk]
+  data timestamp
+  total numeric
+  fk_met_pagamentos_id bigint [ref: > met_pagamentos.id]
+  transacao_id text
+  status_pagamento text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table itens_venda {
+  id bigint [pk]
+  qtd bigint
+  subtotal numeric
+  fk_livros_itens_id bigint [ref: > livros.id]
+  fk_vendas_id bigint [ref: > vendas.id]
+}
+
+Table usuarios_cartoes {
+  id bigint [pk]
+  token_pagamento text
+  final_cartao varchar(5)
+  bandeira_varchar varchar(8)
+  nome_no_cartao text
+  data_expiracao varchar(7)
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table blogs {
+  id bigint [pk]
+  data date
+  texto text
+  titulo text
+  subtitulo text
+  fk_adms_id bigint
+}
+
+Table categorias {
+  id bigint [pk]
+  nome text
+  tipo text
+  data_criacao timestamp
+  fk_adms_id uuid
+}
+
+Table livros_categorias {
+  id bigint [pk]
+  fk_livros_id bigint [ref: > livros.id]
+  fk_categorias_id bigint [ref: > categorias.id]
+}
+
+Table blogs_categorias {
+  id bigint [pk]
+  fk_blogs_id bigint [ref: > blogs.id]
+  fk_categorias_id bigint [ref: > categorias.id]
+}
+
+Table adm_credenciais {
+  id bigint [pk]
+  codigo_especial text
+  senha_adm text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+  ativo boolean [default: true]
+}
+
+Table adm_funcoes {
+  id bigint [pk]
+  fk_categorias_id bigint [ref: > categorias.id]
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table funcoes_base {
+  id bigint [pk]
+  nome text
+  fk_adm_funcoes_id bigint [ref: > adm_funcoes.id]
+}
+
+Table imagens {
+  id bigint [pk]
+  imagem text
+  tipo text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table notificacoes {
+  id bigint [pk]
+  texto text
+  tipo text
+  data timestamp
+  ADM boolean
+  lida boolean
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table usu_redes {
+  id bigint [pk]
+  link text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table colaboradores {
+  id bigint [pk]
+  nome text
+  sobrenome text
+  fk_livros_id bigint [ref: > livros.id]
+}
+
+Table enderecos {
+  id bigint [pk]
+  estado varchar(2)
+  cidade text
+  bairro text
+  rua text
+  num integer
+  cep varchar(10)
+  complemento text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table denuncias {
+  id bigint [pk]
+  data timestamp
+  descricao text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+  tipo uuid
+}
+
+Table met_pagamentos {
+  id bigint [pk]
+  nome text
+}
+
+Table cupons {
+  id bigint [pk]
+  nome text
+  codigo text
+  valor numeric
+  tipo_desconto text
+  universal boolean
+  ativo boolean
+  data_inicio timestamp
+  data_fim timestamp
+  limite_uso_total integer
+  limite_usuario integer
+  valor_minimo_compra numeric
+  data_criacao timestamp
+  data_atualizacao timestamp
+  fk_livros_id bigint [ref: > livros.id]
+  fk_adm_credenciais uuid [ref: > users_profile.id]
+}
+
+Table comentarios {
+  id bigint [pk]
+  data timestamp [default: `now()`]
+  texto text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+  fk_livros_id bigint [ref: > livros.id]
+  fk_blog_id bigint [ref: > blogs.id]
+}
+
+Table revisoes {
+  id bigint [pk]
+  arquivo text
+  data timestamp
+  apontamento text
+  fk_user_profile_id uuid [ref: > users_profile.id]
+  fk_livro_id bigint [ref: > livros.id]
+}
+
+// =============================================
+// Tabelas que estavam faltando
+// =============================================
+

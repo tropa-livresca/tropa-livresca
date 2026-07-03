@@ -1,36 +1,29 @@
 import "dotenv/config";
+
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth.route.js";
-import livrosRoutes from "./routes/livros.route.js";
-import perfilRoutes from "./routes/perfil.route.js";
-import autorRoutes from "./routes/autor.route.js";
+import indexRoutes from "./routes/index.js";
 
 const app = express();
 
 const allowedOrigins = [
+  "https://vercel.app",
   "http://localhost:5173",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith(".app.github.dev") || origin.endsWith(".vercel.app")) {
+        callback(null, true);
+      } else {
+        callback(null, false);
       }
-
-      if (
-        origin.endsWith(".app.github.dev")
-      ) {
-        return callback(null, true);
-      }
-
-      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
+    optionsSuccessStatus: 204,
+    preflightContinue: false
   })
 );
 
@@ -39,10 +32,7 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 
-app.use("/api", authRoutes);
-app.use("/api", livrosRoutes);
-app.use("/api", perfilRoutes);  
-app.use("/api", autorRoutes);
+app.use("/api", indexRoutes);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
