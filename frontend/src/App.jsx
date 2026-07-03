@@ -1,7 +1,7 @@
 import React from "react";
-import RoutesApp from "./routes/Routes";
-import { AuthProvider } from "./context/auth/Auth";
-import { PerfilProvider } from "./context/perfil/Perfil";
+import RoutesApp from "./clients/routes/Routes";
+import { AuthProvider } from "./clients/context/auth/Auth";
+import { PerfilProvider } from "./clients/context/perfil/Perfil";
 
 /**
  * Componente Raiz da Aplicação
