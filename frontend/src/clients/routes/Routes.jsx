@@ -60,7 +60,7 @@ const RoutesApp = () => {
             <Route path="perfil" element={<Private Item={Perfil} />} />
           </Route>
 
-          <Route path="novoLivro" element={<Private Item={NovoLivro} />} />
+          <Route path="novo-livro" element={<Private Item={NovoLivro} />} />
 
           <Route path="cadastro" element={<Cadastro />} />
           <Route path="login" element={<Login />} />

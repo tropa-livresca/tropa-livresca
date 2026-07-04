@@ -5,7 +5,7 @@ export default function SeAutopublique() {
     <>
       Tela de se autopublicar
       <nav>
-        <Link to = "/novolivro">Novo livro</Link>
+        <Link to = "/novo-livro">Novo livro</Link>
         <Outlet/>
       </nav>
     </>
