@@ -1,8 +1,13 @@
 import { useState, useEffect } from "react";
-import useLivros from "../../../hooks/useLivros";
-import Formato from "./Formato/Formato"
-import Detalhes from "./Detalhes/Detalhes"
 
+import styles from "./NovoLivro.module.css";
+
+import useLivros from "../../../hooks/useLivros";
+import Formato from "./Formato/Formato";
+import Detalhes from "./Detalhes/Detalhes";
+import Conteudo from "./Conteudo/Conteudo";
+import Orcamento from "./Orcamento/Orcamento";
+import Confirmacao from "./Confirmacao/Confirmacao";
 
 export default function NovoLivro() {
   const {InsertLivro, livro} = useLivros();
@@ -10,28 +15,21 @@ export default function NovoLivro() {
 
   const HandleCriarLivro = async (e, tdp) => {
     e.preventDefault();
-    console.log("bc");
     await InsertLivro(tdp);
-    console.log("dc");
     HandleMudarEtapa(true);
   }
 
   const HandleMudarEtapa = (posterior) => {
-    if(posterior == true){
-      setEtapa(etapa + 1);
-    }else{
-      setEtapa(etapa - 1);
-    }
+    posterior ? setEtapa(etapa + 1) : setEtapa(etapa - 1);
   }
  
   return(
     <>
-      
-      {etapa == 1 && <Formato HandleCriarLivro={HandleCriarLivro}/>}
-      {etapa == 2 && <Detalhes/>}
-
-      
-
+      {etapa === 1 && <Formato HandleCriarLivro={HandleCriarLivro}/>}
+      {etapa === 2 && <Detalhes/>}
+      {etapa === 3 && <Conteudo/>}
+      {etapa === 4 && <Orcamento/>}
+      {etapa === 5 && <Confirmacao/>}
     </>
     
   )
