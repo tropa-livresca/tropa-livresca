@@ -1,3 +1,4 @@
+import {useState} from "react";
 import Select from "../../../../components/form/Select/Select";
 
 export default function Detalhes() {
