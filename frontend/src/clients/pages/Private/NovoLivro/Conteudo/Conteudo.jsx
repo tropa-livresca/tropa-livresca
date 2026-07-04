@@ -7,9 +7,9 @@ import Input from "../../../../components/form/Input/Input";
  */
 
 export default function Conteudo() {
-  
-const [conteudo, setConteudo] = useState("");
-const [capa, setCapa] = useState("");
+
+  const [conteudo, setConteudo] = useState("");
+  const [capa, setCapa] = useState("");
 
   return (
     <main>
@@ -19,7 +19,8 @@ const [capa, setCapa] = useState("");
           <label>
             Subir arquivo do livro (Aceitamos formatos .pdf)
             <Input
-              type="text"
+              accept=".pdf"
+              type="file"
               value={conteudo}
               handleOnChange={(e) => setConteudo(e.target.value)}
             />

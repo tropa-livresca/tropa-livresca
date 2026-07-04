@@ -13,19 +13,22 @@ export default function NovoLivro() {
   const {InsertLivro, livro} = useLivros();
   const [etapa, setEtapa] = useState(1);
 
-  const HandleCriarLivro = async (e, tdp) => {
+/*  const HandleCriarLivro = async (e, tdp) => {
     e.preventDefault();
     await InsertLivro(tdp);
     HandleMudarEtapa(true);
   }
-
-  const HandleMudarEtapa = (posterior) => {
-    posterior ? setEtapa(etapa + 1) : setEtapa(etapa - 1);
+*/
+  
+const HandleMudarEtapa = (posterior) => {
+  if(etapa >= 1 && etapa <= 5){
+    posterior ? setEtapa((atual) => atual + 1) : setEtapa((atual) => atual - 1);
   }
- 
+}
+
   return(
     <>
-      {etapa === 1 && <Formato HandleCriarLivro={HandleCriarLivro}/>}
+      {etapa === 1 && <Formato/>}
       {etapa === 2 && <Detalhes/>}
       {etapa === 3 && <Conteudo/>}
       {etapa === 4 && <Orcamento/>}

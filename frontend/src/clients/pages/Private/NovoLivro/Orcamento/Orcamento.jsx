@@ -10,7 +10,7 @@ import Input from "../../../../components/form/Input/Input";
  */
 
 export default function Orcamento() {
-  const [tipoFormatacao, setTipoFormatacao] = useState("");
+  const [tipoPublicacao, setTipoPublicacao] = useState("");
   const [valorLivroFisico, setValorLivroFisico] = useState("");
   const [valorLivroDigital, setValorLivroDigital] = useState("");
 
@@ -25,7 +25,7 @@ export default function Orcamento() {
               type="radio"
               name="tipoPublicacao"
               value="físico"
-              checked={tipoPublicacao === "fisico"}
+              checked={tipoPublicacao === "físico"}
               handleOnChange={(e) => setTipoPublicacao(e.target.value)}
             />
             Livro físico
@@ -61,7 +61,7 @@ export default function Orcamento() {
             <Input
               type="text"
               value={valorLivroFisico}
-              handleOnChange={(e) => setValorLivroFisico}
+              handleOnChange={(e) => setValorLivroFisico(e.target.value)}
             ></Input>
             <p>Valor total</p>
           </label>
