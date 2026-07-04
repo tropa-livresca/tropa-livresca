@@ -1,59 +1,59 @@
-import { useEffect, useState } from "react";
 import Input from "../../../../components/form/Input/Input";
-/*
-Checkbox de Livro físico e digital para a publicação
-Escolha de formato de livro (Quadrado, Pocket, A5)
- */
 
-export default function Formato({HandleCriarLivro}) {
-
-  const [tipoPublicacao, setTipoPublicacao] = useState("");
+export default function Formato({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
+  const atualizarCampo = (chave, valor) => {
+    onChange({ ...dados, [chave]: valor });
+  };
 
   return (
     <main>
-      <form onSubmit={(e) => {console.log(tipoPublicacao); HandleCriarLivro(e,tipoPublicacao)}}>
+      <form onSubmit={(e) => { e.preventDefault() }}>
         <h1>Formato</h1>
+
         <fieldset>
           <legend>Tipo de Publicação</legend>
-          <label>
-            <Input
-              type="radio"
-              name="tipoPublicacao"
-              value="físico"
-              checked={tipoPublicacao === "fisico"}
-              handleOnChange={(e) => {console.log(tipoPublicacao); setTipoPublicacao(e.target.value)}}
-            />
+          
+          <Input
+            id="publicacaoFisico"
+            type="radio"
+            name="tipoPublicacao"
+            value="fisico"
+            checked={dados.tipoPublicacao === "fisico"}
+            handleOnChange={(e) => atualizarCampo("tipoPublicacao", e.target.value)}
+          />
+          <label htmlFor="publicacaoFisico">
             Livro físico
           </label>
 
-          <label>
-            <Input
-              type="radio"
-              name="tipoPublicacao"
-              value="digital"
-              checked={tipoPublicacao === "digital"}
-              handleOnChange={(e) => setTipoPublicacao(e.target.value)}
-            />
+          <Input
+            id="publicacaoDigital"
+            type="radio"
+            name="tipoPublicacao"
+            value="digital"
+            checked={dados.tipoPublicacao === "digital"}
+            handleOnChange={(e) => atualizarCampo("tipoPublicacao", e.target.value)}
+          />
+          <label htmlFor="publicacaoDigital">
             Livro Digital (E-book)
           </label>
 
-          <label>
-            <Input
-              type="radio"
-              name="tipoPublicacao"
-              value="ambos"
-              checked={tipoPublicacao === "ambos"}
-              handleOnChange={(e) => setTipoPublicacao(e.target.value)}
-            />
+          <Input
+            id="publicacaoAmbos"
+            type="radio"
+            name="tipoPublicacao"
+            value="ambos"
+            checked={dados.tipoPublicacao === "ambos"}
+            handleOnChange={(e) => atualizarCampo("tipoPublicacao", e.target.value)}
+          />
+          <label htmlFor="publicacaoAmbos">
             Ambas as formas de publicação
           </label>
         </fieldset>
 
         <div>
-          <button>Anterior</button>
-          <button>Posterior</button>
+          <button type="button" onClick={voltarEtapa}>Anterior</button>
+          <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
         </div>
-        <button >Salvar</button>
       </form>
     </main>
   );
