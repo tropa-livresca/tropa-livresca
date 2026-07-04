@@ -182,27 +182,3 @@ export const InsertLivro = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
-/*
-
-export const UpdateTipoDePublicacao = async (req, res) => {
-  try {
-    const { error } = await supabase
-      .from("livros")
-      .update({tipo_de_livro: req.params.tdp})
-      .eq("id", req.params.id)
-
-    if (error) {
-      console.error("Erro no supabase", error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    return res.status(200).end();
-  } catch (err) {
-    console.error("ERRO DO SUPABASE", err);
-    return res.status(500).json({ error: error.message });
-  }
-
-  
-};
-*/
