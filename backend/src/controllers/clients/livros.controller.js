@@ -58,7 +58,7 @@ export const GetLivrosById = async (req, res) => {
       .from("livros")
       .select("*")
       .eq("fk_user_profile_id", req.user.id)
-      .eq("ativo", true)
+      .eq("ativo", true);
 
     if (!req.user.id || !req.user) {
       console.error("Acesso negado: req.user não está definido");
@@ -133,8 +133,8 @@ export const UpdateStatusAtivo = async (req, res) => {
   try {
     const { error } = await supabase
       .from("livros")
-      .update({ativo: false})
-      .eq("id", req.params.id)
+      .update({ ativo: false })
+      .eq("id", req.params.id);
 
     if (error) {
       console.error("Erro no supabase", error);
@@ -148,47 +148,40 @@ export const UpdateStatusAtivo = async (req, res) => {
   }
 };
 
-export const InsertLivro = async (req,res) => {
-
+export const InsertLivro = async (req, res) => {
   try {
-
     const selectLastId = await supabaseAdmin
       .from("livros")
       .select("*")
-      .order("id", {ascending: false})
+      .order("id", { ascending: false })
       .limit(1);
 
-     const {data} = selectLastId
-    
+    const { data } = selectLastId;
 
-    const {error} = await supabase
-                  .from("livros")
-                  .insert({
-                            id: data[0].id + 1,
-                            fk_user_profile_id: req.user.id,
-                            tipo_de_livro: req.params.tdp
-                          })
+    const { error } = await supabase.from("livros").insert({
+      id: data[0].id + 1,
+      fk_user_profile_id: req.user.id,
+      tipo_de_livro: req.params.tdp,
+    });
 
-      if (!req.user.id || !req.user) {
+    if (!req.user.id || !req.user) {
       console.error("Acesso negado: req.user não está definido");
       return res
         .status(401)
         .json({ error: "Usuário não autenticado ou token inválido" });
     }
 
-
     if (error) {
       console.error("Erro no supabase", error);
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json({data: data[0]});
+    return res.status(200).json({ data: data[0] });
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });
   }
-
-}
+};
 
 /*
 
