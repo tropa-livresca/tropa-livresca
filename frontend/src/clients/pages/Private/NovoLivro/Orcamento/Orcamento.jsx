@@ -122,6 +122,9 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
 
         <div>
           <button type="button" onClick={voltarEtapa}>Anterior</button>
+
+          /*Botão para publicar o livro futuramente*/
+          
           <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
         </div>
       </form>
