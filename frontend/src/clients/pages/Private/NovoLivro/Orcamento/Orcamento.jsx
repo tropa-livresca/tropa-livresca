@@ -1,91 +1,129 @@
-import { useState, useEffect } from "react";
 import Input from "../../../../components/form/Input/Input";
 
+export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
+  const numeroPaginas = Number(dados.numeroPaginas) || 100;
 
-/**
- * Tipo de publicação (checkbox)
- * Impressão (preto e branco ou colorida)
- * Valor livro físico (Valor mínimo, valor de comissão, valor final)
- * Valor livro digital (valor mínimo, valor de comissão, valor final)
- */
+  const precoMinimoFisicoCentavos = numeroPaginas * 8;
+  const precoMinimoDigitalCentavos = 599;
 
-export default function Orcamento() {
-  const [tipoPublicacao, setTipoPublicacao] = useState("");
-  const [valorLivroFisico, setValorLivroFisico] = useState("");
-  const [valorLivroDigital, setValorLivroDigital] = useState("");
+  const formatarMoeda = (centavos) => {
+    const stringCentavos = String(centavos).padStart(3, "0");
+    const reais = stringCentavos.slice(0, -2);
+    const centavosFinais = stringCentavos.slice(-2);
+    return `${reais},${centavosFinais}`;
+  };
+
+  const calcularEstruturaPreco = (valorDigitado, minimoCentavos) => {
+    const limpo = String(valorDigitado || "").replace(",", ".");
+    const partes = limpo.split(".");
+    
+    const reais = Number(partes[0]) || 0;
+    const centavos = Number(String(partes[1] || "").padEnd(2, "0").slice(0, 2)) || 0;
+    const adicionalCentavos = (reais * 100) + centavos;
+
+    const subtotalCentavos = minimoCentavos + adicionalCentavos;
+    const comissaoCentavos = Math.round(subtotalCentavos * 0.20);
+    const vendaTotalCentavos = subtotalCentavos + comissaoCentavos;
+
+    return {
+      minimo: formatarMoeda(minimoCentavos),
+      comissao: formatarMoeda(comissaoCentavos),
+      final: formatarMoeda(vendaTotalCentavos)
+    };
+  };
+
+  const atualizarCampo = (chave, valor) => {
+    onChange({ ...dados, [chave]: valor });
+  };
+
+  const valoresFisico = calcularEstruturaPreco(dados.valorLivroFisico, precoMinimoFisicoCentavos);
+  const valoresDigital = calcularEstruturaPreco(dados.valorLivroDigital, precoMinimoDigitalCentavos);
 
   return (
     <main>
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <h1>Orçamento</h1>
+
         <fieldset>
-          <legend>Tipo de Publicação</legend>
+          <legend>Especificações do Livro</legend>
           <label>
+            Número de Páginas:
             <Input
-              type="radio"
-              name="tipoPublicacao"
-              value="físico"
-              checked={tipoPublicacao === "físico"}
-              handleOnChange={(e) => setTipoPublicacao(e.target.value)}
+              type="number"
+              min="1"
+              value={dados.numeroPaginas || ""}
+              handleOnChange={(e) => atualizarCampo("numeroPaginas", e.target.value)}
             />
-            Livro físico
-          </label>
-
-          <label>
-            <Input
-              type="radio"
-              name="tipoPublicacao"
-              value="digital"
-              checked={tipoPublicacao === "digital"}
-              handleOnChange={(e) => setTipoPublicacao(e.target.value)}
-            />
-            Livro Digital (E-book)
-          </label>
-
-          <label>
-            <Input
-              type="radio"
-              name="tipoPublicacao"
-              value="ambos"
-              checked={tipoPublicacao === "ambos"}
-              handleOnChange={(e) => setTipoPublicacao(e.target.value)}
-            />
-            Ambas as formas de publicação
           </label>
         </fieldset>
 
         <fieldset>
-          Valor do Livro Físico
+          <legend>Tipo de Impressão</legend>
           <label>
-            <p>Valor Padrão</p>
             <Input
-              type="text"
-              value={valorLivroFisico}
-              handleOnChange={(e) => setValorLivroFisico(e.target.value)}
-            ></Input>
-            <p>Valor total</p>
+              id="impressaoPretoBranco"
+              type="radio"
+              name="tipoFormatacao"
+              value="pretoBranco"
+              checked={dados.tipoFormatacao === "pretoBranco"}
+              handleOnChange={(e) => atualizarCampo("tipoFormatacao", "pretoBranco")}
+            />
+            Preto e Branco
+          </label>
+
+          <label>
+            <Input
+              id="impressaoColorida"
+              type="radio"
+              name="tipoFormatacao"
+              value="colorida"
+              checked={dados.tipoFormatacao === "colorida"}
+              handleOnChange={(e) => atualizarCampo("tipoFormatacao", "colorida")}
+            />
+            Colorida
           </label>
         </fieldset>
 
-
         <fieldset>
-          Valor do Livro Digital
+          <legend>Preço do Livro Físico</legend>
+          <p>Custo de Fabricação Mínimo (R$ 0,08 por página): R$ {valoresFisico.minimo}</p>
           <label>
-            <p>Valor Padrão</p>
+            Valor Adicional Desejado (R$):
             <Input
               type="text"
-              value={valorLivroDigital}
-              handleOnChange={(e) => setValorLivroDigital}
-            ></Input>
-            <p>Valor total</p>
+              placeholder="0,00"
+              value={dados.valorLivroFisico || ""}
+              handleOnChange={(e) => atualizarCampo("valorLivroFisico", e.target.value)}
+            />
           </label>
+          <div>
+            <p>Comissão da Plataforma (20%): R$ {valoresFisico.comissao}</p>
+            <strong>Valor Total de Venda: R$ {valoresFisico.final}</strong>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Preço do Livro Digital</legend>
+          <p>Custo Digital Mínimo: R$ {valoresDigital.minimo}</p>
+          <label>
+            Valor Adicional Desejado (R$):
+            <Input
+              type="text"
+              placeholder="0,00"
+              value={dados.valorLivroDigital || ""}
+              handleOnChange={(e) => atualizarCampo("valorLivroDigital", e.target.value)}
+            />
+          </label>
+          <div>
+            <p>Comissão da Plataforma (20%): R$ {valoresDigital.comissao}</p>
+            <strong>Valor Total de Venda: R$ {valoresDigital.final}</strong>
+          </div>
         </fieldset>
 
         <div>
-          <button>Anterior</button>
-          <button>Posterior</button>
+          <button type="button" onClick={voltarEtapa}>Anterior</button>
+          <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
         </div>
-        <button>Salvar</button>
       </form>
     </main>
   );
