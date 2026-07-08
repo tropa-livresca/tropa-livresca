@@ -58,33 +58,6 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
         </fieldset>
 
         <fieldset>
-          <legend>Tipo de Impressão</legend>
-          <label>
-            <Input
-              id="impressaoPretoBranco"
-              type="radio"
-              name="tipoFormatacao"
-              value="pretoBranco"
-              checked={dados.tipoFormatacao === "pretoBranco"}
-              handleOnChange={(e) => atualizarCampo("tipoFormatacao", "pretoBranco")}
-            />
-            Preto e Branco
-          </label>
-
-          <label>
-            <Input
-              id="impressaoColorida"
-              type="radio"
-              name="tipoFormatacao"
-              value="colorida"
-              checked={dados.tipoFormatacao === "colorida"}
-              handleOnChange={(e) => atualizarCampo("tipoFormatacao", "colorida")}
-            />
-            Colorida
-          </label>
-        </fieldset>
-
-        <fieldset>
           <legend>Preço do Livro Físico</legend>
           <p>Custo de Fabricação Mínimo (R$ 0,08 por página): R$ {valoresFisico.minimo}</p>
           <label>
@@ -123,8 +96,6 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
         <div>
           <button type="button" onClick={voltarEtapa}>Anterior</button>
 
-          /*Botão para publicar o livro futuramente*/
-          
           <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
         </div>
       </form>

@@ -73,10 +73,10 @@ export const LivroProvider = ({ children }) => {
     }
   }, []);
 
-  const UpdateStatusAtivo = useCallback(async (id,ativo) => {
+  const UpdateStatusAtivo = useCallback(async (id, ativo) => {
     setCarregando(true);
     try {
-      const res = await apiFetch("/api/meuslivros/updateA/"+id, { method: "POST" });
+      const res = await apiFetch("/api/meuslivros/updateA/" + id, { method: "POST" });
 
       if (!res.ok) {
         throw new Error(`Erro ${res.status}`);
@@ -128,39 +128,33 @@ export const LivroProvider = ({ children }) => {
     };
   }, []);
 
-  const InsertLivro = useCallback(async (tdp) => {
+  const InsertLivro = useCallback(async (dadosLivro, publicar = true) => {
     setCarregando(true);
     try {
-      const res = await apiFetch("/api/livros/insertLivro/"+tdp, { method: "POST" });
+      const res = await apiFetch("/api/livros/insertLivro/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...dadosLivro,
+          publicar
+        }),
+      });
 
       if (!res.ok) {
         throw new Error(`Erro ${res.status}`);
       }
 
       const json = await res.json();
-      setLivro(json.data);
-
-      setCarregando(false);
+      console.log("Livro inserido com sucesso:", json);
     } catch (error) {
-      console.error("Erro em UpdateStatusAtivo", error);
+      console.error("Erro em InsertLivro", error);
+    } finally {
       setCarregando(false);
     }
   }, []);
 
-  const UpdateTDP = useCallback(async (id,tdp) => {
-    setCarregando(true);
-    try {
-      const res = await apiFetch("/api/livros/update/TDP/"+id+"/"+tdp, { method: "POST" });
-
-      if (!res.ok) {
-        throw new Error(`Erro ${res.status}`);
-      }
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro em UpdateStatusAtivo", error);
-      setCarregando(false);
-    }
-  }, []);
 
   return (
     <LivroContext.Provider
@@ -182,7 +176,6 @@ export const LivroProvider = ({ children }) => {
         UpdateStatusAtivo,
         BuscarLivroByAutor,
         InsertLivro,
-        UpdateTDP,
       }}
     >
       {children}

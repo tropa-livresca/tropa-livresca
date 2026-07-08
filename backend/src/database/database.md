@@ -76,17 +76,6 @@ CREATE TABLE public.categorias (
 );
 
 -- ==========================================
--- CRIAÇÃO DA TABELA: colaboradores
--- ==========================================
-CREATE TABLE public.colaboradores (
-    sobrenome text,
-    funcao text,
-    nome text,
-    fk_livros_id bigint,
-    id bigint PRIMARY KEY
-);
-
--- ==========================================
 -- CRIAÇÃO DA TABELA: comentarios
 -- ==========================================
 CREATE TABLE public.comentarios (
@@ -190,7 +179,6 @@ CREATE TABLE public.livros (
     preco_digital numeric NOT NULL,
     preco_fisico numeric NOT NULL,
     ativo boolean DEFAULT true,
-    formato text NOT NULL,
     tipo_de_livro text NOT NULL,
     publico_alvo text,
     capa text NOT NULL,
@@ -199,7 +187,7 @@ CREATE TABLE public.livros (
     descricao text NOT NULL,
     autor_nome text NOT NULL,
     autor_sobrenome text NOT NULL,
-    status text DEFAULT 'rascunho'::text
+    estado text DEFAULT 'rascunho'::text
 );
 
 -- ==========================================

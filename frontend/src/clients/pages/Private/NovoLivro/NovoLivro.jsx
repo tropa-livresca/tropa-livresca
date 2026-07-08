@@ -10,6 +10,8 @@ import Orcamento from "./Orcamento/Orcamento";
 import Confirmacao from "./Confirmacao/Confirmacao";
 
 export default function NovoLivro() {
+  const { InsertLivro } = useLivros();
+
   const [dadosLivro, setDadosLivro] = useState({
     formato: {
       tipoPublicacao: "",
@@ -35,13 +37,16 @@ export default function NovoLivro() {
       capa: null,
     },
     orcamento: {
-      tipoFormatacao: "",
       valorLivroFisico: "",
       valorLivroDigital: "",
     },
   });
 
   const [etapa, setEtapa] = useState(1);
+
+  const irParaEtapaEspecifica = (numeroDaEtapa) => {
+    setEtapa(numeroDaEtapa);
+  };
 
   const irParaProximaEtapa = () => {
     setEtapa((atual) => Math.min(atual + 1, totalEtapas));
@@ -59,6 +64,10 @@ export default function NovoLivro() {
   };
 
   const navegar = { irParaProximaEtapa, voltarEtapa };
+
+  const publicarLivro = async (publicar = true) => {
+    await InsertLivro(dadosLivro, publicar);
+  };
 
   return (
     <>
@@ -101,7 +110,8 @@ export default function NovoLivro() {
         {etapa === 5 && (
           <Confirmacao
             dados={dadosLivro}
-            {...navegar}
+            irParaEtapaEspecifica={irParaEtapaEspecifica}
+            publicarLivro={publicarLivro}
           />
         )}
       </main>

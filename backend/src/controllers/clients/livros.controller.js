@@ -150,35 +150,54 @@ export const UpdateStatusAtivo = async (req, res) => {
 
 export const InsertLivro = async (req, res) => {
   try {
-    const selectLastId = await supabaseAdmin
-      .from("livros")
-      .select("*")
-      .order("id", { ascending: false })
-      .limit(1);
-
-    const { data } = selectLastId;
-
-    const { error } = await supabase.from("livros").insert({
-      id: data[0].id + 1,
-      fk_user_profile_id: req.user.id,
-      tipo_de_livro: req.params.tdp,
-    });
-
-    if (!req.user.id || !req.user) {
-      console.error("Acesso negado: req.user não está definido");
-      return res
-        .status(401)
-        .json({ error: "Usuário não autenticado ou token inválido" });
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ error: "Usuário não autenticado" });
     }
 
+    const publicar = req.body.publicar ?? true;
+    const dadosLivro = req.body.dadosLivro || req.body;
+
+    const dadosParaInserir = {
+      fk_user_profile_id: req.user.id,
+      tipo_de_livro: dadosLivro.formato?.tipoPublicacao,
+      estado: publicar ? "publicado" : "rascunho",
+      titulo: dadosLivro.detalhes?.titulo,
+      subtitulo: dadosLivro.detalhes?.subtitulo,
+      descricao: dadosLivro.detalhes?.descricao,
+      numero_edicao: dadosLivro.detalhes?.numeroEdicao
+        ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
+        : null,
+      autor_nome: dadosLivro.detalhes?.autor?.nome,
+      autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome,
+      publico_alvo: dadosLivro.detalhes?.publicoPrincipal,
+      colaboradores: dadosLivro.detalhes?.colaboradores || [],
+      direitos_de_publicacao:
+        dadosLivro.detalhes?.direitoPublicacao === "Sim" ||
+        dadosLivro.detalhes?.direitoPublicacao === true,
+      conteudo_por_IA: dadosLivro.detalhes?.conteudoPorIA === true,
+      imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
+      data_de_publicacao: new Date().toISOString().split("T")[0],
+      preco_digital: dadosLivro.orcamento?.valorLivroDigital
+        ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
+        : 0.0,
+      preco_fisico: dadosLivro.orcamento?.valorLivroFisico
+        ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
+        : 0.0,
+      capa: dadosLivro.conteudo?.capaUrl || "url_provisoria_da_capa",
+    };
+
+    const { data: novoLivro, error } = await supabase
+      .from("livros")
+      .insert(dadosParaInserir)
+      .select();
+
     if (error) {
-      console.error("Erro no supabase", error);
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json({ data: data[0] });
+    return res.status(201).json({ data: novoLivro });
   } catch (err) {
-    console.error("ERRO DO SUPABASE", err);
-    return res.status(500).json({ error: error.message });
+    console.error("Erro no InsertLivro", err);
+    return res.status(500).json({ error: err.message });
   }
 };
