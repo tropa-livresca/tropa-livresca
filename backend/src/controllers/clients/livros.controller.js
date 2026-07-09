@@ -203,7 +203,7 @@ export const InsertLivro = async (req, res) => {
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
             .from("livros")
-            .upload(`capas/${nomeArquivo}`, capaFile.buffer, {
+            .upload(`capa-livros/${nomeArquivo}`, capaFile.buffer, {
               contentType: capaFile.mimetype,
             });
 
@@ -227,7 +227,7 @@ export const InsertLivro = async (req, res) => {
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
             .from("livros")
-            .upload(`capas/${nomeArquivo}`, capaFile.buffer, {
+            .upload(`capa-livros/${nomeArquivo}`, capaFile.buffer, {
               contentType: capaFile.mimetype,
             });
 
@@ -251,7 +251,7 @@ export const InsertLivro = async (req, res) => {
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
             .from("livros")
-            .upload(`capas/${nomeArquivo}`, capaFile.buffer, {
+            .upload(`capa-livros/${nomeArquivo}`, capaFile.buffer, {
               contentType: capaFile.mimetype,
             });
 
@@ -275,7 +275,7 @@ export const InsertLivro = async (req, res) => {
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
             .from("livros")
-            .upload(`manuscritos/${nomeArquivo}`, manuscritoFile.buffer, {
+            .upload(`manuscrito-livro/${nomeArquivo}`, manuscritoFile.buffer, {
               contentType: manuscritoFile.mimetype,
             });
 
