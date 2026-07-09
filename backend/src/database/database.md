@@ -181,6 +181,7 @@ CREATE TABLE public.livros (
     ativo boolean DEFAULT true,
     tipo_de_livro text NOT NULL,
     publico_alvo text,
+    manuscrito text NOT NULL,
     capa text NOT NULL,
     titulo text NOT NULL,
     subtitulo text NOT NULL,

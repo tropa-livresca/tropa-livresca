@@ -1,5 +1,27 @@
 import supabase, { supabaseAdmin } from "../../config/supabase.js";
 
+// Helper para parsear e estruturar URLs de capa
+const parseCapaUrls = (livro) => {
+  if (!livro) return livro;
+
+  try {
+    if (typeof livro.capa === "string") {
+      // Tenta parsear como JSON
+      livro.capa = JSON.parse(livro.capa);
+    }
+  } catch (e) {
+    // Se falhar, mantém como string (URL simples ou provisória)
+    console.warn("Erro ao parsear capa JSON", e);
+  }
+
+  return livro;
+};
+
+// Helper para aplicar parseCapaUrls em array de livros
+const parseCapasArray = (livros) => {
+  return livros.map(parseCapaUrls);
+};
+
 export const GetLivros = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;
@@ -35,10 +57,12 @@ export const GetLivros = async (req, res) => {
         self.findIndex((a) => a.id === livro.id) === index,
     );
 
-    const totalItens = count || livrosUnicos.length;
+    const livrosComCapas = parseCapasArray(livrosUnicos);
+
+    const totalItens = count || livrosComCapas.length;
 
     return res.status(200).json({
-      data,
+      data: livrosComCapas,
       meta: {
         page,
         limit,
@@ -77,7 +101,8 @@ export const GetLivrosById = async (req, res) => {
       return res.status(404).json({ error: error.message });
     }
 
-    return res.status(200).json(data);
+    const livrosComCapas = parseCapasArray(data);
+    return res.status(200).json(livrosComCapas);
   } catch (err) {
     console.error("ERRO DO SUPABASE", err);
     return res.status(500).json({ error: error.message });
@@ -117,9 +142,11 @@ export const GetLivrosByAutor = async (req, res) => {
       return res.status(500).json({ errorColaborador: error.message });
     }
 
+    const livroComCapa = parseCapaUrls(livro);
+
     return res.status(200).json({
       data: {
-        ...livro,
+        ...livroComCapa,
         colaboradores: colaboradores || [],
       },
     });
@@ -161,11 +188,13 @@ export const InsertLivro = async (req, res) => {
         ? JSON.parse(dadosLivroRaw)
         : dadosLivroRaw;
 
-    // Upload de arquivos para o Supabase Storage
-    let capaUrl = "url_provisoria_da_capa";
+    let capaUrls = {
+      frente: null,
+      verso: null,
+      orelhas: null,
+    };
     let manuscritoUrl = null;
 
-    // Se houver arquivo de capa_frente, fazer upload
     if (req.files?.capa_frente && req.files.capa_frente[0]) {
       try {
         const capaFile = req.files.capa_frente[0];
@@ -179,18 +208,65 @@ export const InsertLivro = async (req, res) => {
             });
 
         if (uploadError) {
-          console.error("Erro ao fazer upload da capa", uploadError);
+          console.error("Erro ao fazer upload da capa_frente", uploadError);
         } else {
-          capaUrl = supabaseAdmin.storage
+          capaUrls.frente = supabaseAdmin.storage
             .from("livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
-        console.error("Erro ao processar upload da capa", uploadErr);
+        console.error("Erro ao processar upload da capa_frente", uploadErr);
       }
     }
 
-    // Se houver arquivo de manuscrito, fazer upload
+    if (req.files?.capa_verso && req.files.capa_verso[0]) {
+      try {
+        const capaFile = req.files.capa_verso[0];
+        const nomeArquivo = `livro_${req.user.id}_capa_verso_${Date.now()}.${capaFile.mimetype.split("/")[1]}`;
+
+        const { data: uploadData, error: uploadError } =
+          await supabaseAdmin.storage
+            .from("livros")
+            .upload(`capas/${nomeArquivo}`, capaFile.buffer, {
+              contentType: capaFile.mimetype,
+            });
+
+        if (uploadError) {
+          console.error("Erro ao fazer upload da capa_verso", uploadError);
+        } else {
+          capaUrls.verso = supabaseAdmin.storage
+            .from("livros")
+            .getPublicUrl(uploadData.path).data.publicUrl;
+        }
+      } catch (uploadErr) {
+        console.error("Erro ao processar upload da capa_verso", uploadErr);
+      }
+    }
+
+    if (req.files?.capa_orelhas && req.files.capa_orelhas[0]) {
+      try {
+        const capaFile = req.files.capa_orelhas[0];
+        const nomeArquivo = `livro_${req.user.id}_capa_orelhas_${Date.now()}.${capaFile.mimetype.split("/")[1]}`;
+
+        const { data: uploadData, error: uploadError } =
+          await supabaseAdmin.storage
+            .from("livros")
+            .upload(`capas/${nomeArquivo}`, capaFile.buffer, {
+              contentType: capaFile.mimetype,
+            });
+
+        if (uploadError) {
+          console.error("Erro ao fazer upload da capa_orelhas", uploadError);
+        } else {
+          capaUrls.orelhas = supabaseAdmin.storage
+            .from("livros")
+            .getPublicUrl(uploadData.path).data.publicUrl;
+        }
+      } catch (uploadErr) {
+        console.error("Erro ao processar upload da capa_orelhas", uploadErr);
+      }
+    }
+
     if (req.files?.manuscrito && req.files.manuscrito[0]) {
       try {
         const manuscritoFile = req.files.manuscrito[0];
@@ -241,7 +317,8 @@ export const InsertLivro = async (req, res) => {
       preco_fisico: dadosLivro.orcamento?.valorLivroFisico
         ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
         : 0.0,
-      capa: capaUrl,
+      capa: JSON.stringify(capaUrls),
+      manuscrito: manuscritoUrl,
     };
 
     const { data: novoLivro, error } = await supabase
@@ -253,7 +330,8 @@ export const InsertLivro = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(201).json({ data: novoLivro, manuscritoUrl });
+    const livroComCapas = parseCapaUrls(novoLivro[0] || novoLivro);
+    return res.status(201).json({ data: livroComCapas, manuscritoUrl });
   } catch (err) {
     console.error("Erro no InsertLivro", err);
     return res.status(500).json({ error: err.message });
