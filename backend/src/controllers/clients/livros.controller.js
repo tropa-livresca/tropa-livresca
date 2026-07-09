@@ -154,13 +154,71 @@ export const InsertLivro = async (req, res) => {
       return res.status(401).json({ error: "Usuário não autenticado" });
     }
 
-    const publicar = req.body.publicar ?? true;
-    const dadosLivro = req.body.dadosLivro || req.body;
+    const publicar = req.body.publicar === "true" || req.body.publicar === true;
+    const dadosLivroRaw = req.body.dadosLivro || "{}";
+    const dadosLivro =
+      typeof dadosLivroRaw === "string"
+        ? JSON.parse(dadosLivroRaw)
+        : dadosLivroRaw;
+
+    // Upload de arquivos para o Supabase Storage
+    let capaUrl = "url_provisoria_da_capa";
+    let manuscritoUrl = null;
+
+    // Se houver arquivo de capa_frente, fazer upload
+    if (req.files?.capa_frente && req.files.capa_frente[0]) {
+      try {
+        const capaFile = req.files.capa_frente[0];
+        const nomeArquivo = `livro_${req.user.id}_capa_frente_${Date.now()}.${capaFile.mimetype.split("/")[1]}`;
+
+        const { data: uploadData, error: uploadError } =
+          await supabaseAdmin.storage
+            .from("livros")
+            .upload(`capas/${nomeArquivo}`, capaFile.buffer, {
+              contentType: capaFile.mimetype,
+            });
+
+        if (uploadError) {
+          console.error("Erro ao fazer upload da capa", uploadError);
+        } else {
+          capaUrl = supabaseAdmin.storage
+            .from("livros")
+            .getPublicUrl(uploadData.path).data.publicUrl;
+        }
+      } catch (uploadErr) {
+        console.error("Erro ao processar upload da capa", uploadErr);
+      }
+    }
+
+    // Se houver arquivo de manuscrito, fazer upload
+    if (req.files?.manuscrito && req.files.manuscrito[0]) {
+      try {
+        const manuscritoFile = req.files.manuscrito[0];
+        const nomeArquivo = `livro_${req.user.id}_manuscrito_${Date.now()}.pdf`;
+
+        const { data: uploadData, error: uploadError } =
+          await supabaseAdmin.storage
+            .from("livros")
+            .upload(`manuscritos/${nomeArquivo}`, manuscritoFile.buffer, {
+              contentType: manuscritoFile.mimetype,
+            });
+
+        if (uploadError) {
+          console.error("Erro ao fazer upload do manuscrito", uploadError);
+        } else {
+          manuscritoUrl = supabaseAdmin.storage
+            .from("livros")
+            .getPublicUrl(uploadData.path).data.publicUrl;
+        }
+      } catch (uploadErr) {
+        console.error("Erro ao processar upload do manuscrito", uploadErr);
+      }
+    }
 
     const dadosParaInserir = {
       fk_user_profile_id: req.user.id,
       tipo_de_livro: dadosLivro.formato?.tipoPublicacao,
-      estado: publicar ? "publicado" : "rascunho",
+      status: publicar ? "publicado" : "rascunho",
       titulo: dadosLivro.detalhes?.titulo,
       subtitulo: dadosLivro.detalhes?.subtitulo,
       descricao: dadosLivro.detalhes?.descricao,
@@ -172,7 +230,7 @@ export const InsertLivro = async (req, res) => {
       publico_alvo: dadosLivro.detalhes?.publicoPrincipal,
       colaboradores: dadosLivro.detalhes?.colaboradores || [],
       direitos_de_publicacao:
-        dadosLivro.detalhes?.direitoPublicacao === "Sim" ||
+        dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
       conteudo_por_IA: dadosLivro.detalhes?.conteudoPorIA === true,
       imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
@@ -183,7 +241,7 @@ export const InsertLivro = async (req, res) => {
       preco_fisico: dadosLivro.orcamento?.valorLivroFisico
         ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
         : 0.0,
-      capa: dadosLivro.conteudo?.capaUrl || "url_provisoria_da_capa",
+      capa: capaUrl,
     };
 
     const { data: novoLivro, error } = await supabase
@@ -195,7 +253,7 @@ export const InsertLivro = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(201).json({ data: novoLivro });
+    return res.status(201).json({ data: novoLivro, manuscritoUrl });
   } catch (err) {
     console.error("Erro no InsertLivro", err);
     return res.status(500).json({ error: err.message });

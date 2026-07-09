@@ -51,7 +51,6 @@ export default function Formato({ dados, onChange, irParaProximaEtapa, voltarEta
         </fieldset>
 
         <div>
-          <button type="button" onClick={voltarEtapa}>Anterior</button>
           <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
         </div>
       </form>

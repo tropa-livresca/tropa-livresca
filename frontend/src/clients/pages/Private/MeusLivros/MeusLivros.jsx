@@ -1,9 +1,3 @@
-/**
- * Barra de pesquisa
- * Botão de novo livro
- * Livros particulares
- */
-
 import { useState, useEffect } from "react";
 import useLivros from "../../../hooks/useLivros";
 
@@ -46,9 +40,9 @@ export default function MeusLivros() {
                         {livro.titulo}
                      </td>
                      <td>
-                        <h3>editar</h3>
-                        <h3>visualizar</h3>
-                        <h3> <button onClick={() => {HandleStatusAtivo(livro.id)}}>desativar</button> </h3>
+                        <h3>Editar</h3>
+                        <h3>Visualizar</h3>
+                        <h3> <button onClick={() => {HandleStatusAtivo(livro.id)}}>Desativar</button> </h3>
                      </td>
                   </tr>
                ))
@@ -58,6 +52,7 @@ export default function MeusLivros() {
                </tr>
             )}
          </tbody>
+         <button onClick={() => {window.location.href = "/novo-livro"}}>Novo Livro</button>
       </table>
    );
 }

@@ -130,16 +130,42 @@ export const LivroProvider = ({ children }) => {
 
   const InsertLivro = useCallback(async (dadosLivro, publicar = true) => {
     setCarregando(true);
+
     try {
+      const formData = new FormData();
+
+      // Adicionar dados principais do livro
+      formData.append("dadosLivro", JSON.stringify({
+        formato: dadosLivro.formato,
+        detalhes: dadosLivro.detalhes,
+        orcamento: dadosLivro.orcamento,
+      }));
+
+      formData.append("publicar", publicar);
+
+      // Adicionar arquivos do conteúdo
+      if (dadosLivro.conteudo) {
+        if (dadosLivro.conteudo.manuscrito && dadosLivro.conteudo.manuscrito[0]) {
+          formData.append("manuscrito", dadosLivro.conteudo.manuscrito[0]);
+        }
+
+        // Adicionar partes da capa
+        if (dadosLivro.conteudo.capa) {
+          if (dadosLivro.conteudo.capa.frente && dadosLivro.conteudo.capa.frente[0]) {
+            formData.append("capa_frente", dadosLivro.conteudo.capa.frente[0]);
+          }
+          if (dadosLivro.conteudo.capa.verso && dadosLivro.conteudo.capa.verso[0]) {
+            formData.append("capa_verso", dadosLivro.conteudo.capa.verso[0]);
+          }
+          if (dadosLivro.conteudo.capa.orelhas && dadosLivro.conteudo.capa.orelhas[0]) {
+            formData.append("capa_orelhas", dadosLivro.conteudo.capa.orelhas[0]);
+          }
+        }
+      }
+
       const res = await apiFetch("/api/livros/insertLivro/", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...dadosLivro,
-          publicar
-        }),
+        body: formData,
       });
 
       if (!res.ok) {

@@ -44,16 +44,52 @@ export default function NovoLivro() {
 
   const [etapa, setEtapa] = useState(1);
 
+  const validarEtapaAtual = (etapa, dadosLivro) => {
+    switch (etapa) {
+      case 1:
+        return !!dadosLivro.formato?.tipoPublicacao;
+
+      case 2:
+        const d = dadosLivro.detalhes;
+        if (!d?.titulo || !d?.idioma || !d?.descricao || !d?.direitoPublicacao) return false;
+        if (!d.autor?.nome || !d.autor?.sobrenome) return false;
+
+        if (d.colaboradores?.length > 0) {
+          const colaboradoresValidos = d.colaboradores.every(c => c.funcao && c.nome && c.sobrenome);
+          if (!colaboradoresValidos) return false;
+        }
+        return true;
+
+      case 3:
+        return !!dadosLivro.conteudo?.manuscrito && !!dadosLivro.conteudo?.capa;
+
+      case 4:
+        const o = dadosLivro.orcamento;
+        return !!o?.numeroPaginas && !!o?.valorLivroFisico && !!o?.valorLivroDigital;
+
+      default:
+        return true;
+    }
+  };
+
   const irParaEtapaEspecifica = (numeroDaEtapa) => {
     setEtapa(numeroDaEtapa);
   };
 
   const irParaProximaEtapa = () => {
-    setEtapa((atual) => Math.min(atual + 1, totalEtapas));
+    if (validarEtapaAtual(etapa, dadosLivro)) {
+      setEtapa((atual) => Math.min(atual + 1, 5));
+    } else {
+      alert("Por favor, preencha todos os campos obrigatórios antes de continuar.");
+    }
   };
 
   const voltarEtapa = () => {
-    setEtapa((atual) => Math.max(atual - 1, 1));
+    if (validarEtapaAtual(etapa, dadosLivro)) {
+      setEtapa((atual) => Math.max(atual - 1, 1));
+    } else {
+      alert("Por favor, preencha todos os campos obrigatórios antes de continuar.");
+    }
   };
 
   const atualizarEtapa = (chave) => (novosDados) => {

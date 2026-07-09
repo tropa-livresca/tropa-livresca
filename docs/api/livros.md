@@ -13,4 +13,8 @@
 ## Observações
 
 - A rota de cadastro exige autenticação.
-- O parâmetro :tdp representa o tipo de publicação.
+- A rota de criação é `POST /api/livros/insertLivro`.
+- O corpo da requisição deve conter `dadosLivro` com os dados do livro e o booleano `publicar`.
+  - `publicar: true` cria o livro em estado `publicado`.
+  - `publicar: false` cria o livro em estado `rascunho`.
+- O endpoint aceita o objeto `dadosLivro` no corpo diretamente quando necessário.

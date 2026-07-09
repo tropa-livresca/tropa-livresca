@@ -14,7 +14,12 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
   ];
 
   const funcaoOpcoes = ["Selecione a função", "Coautor", "Ilustrador", "Revisor", "Tradutor", "Outro"];
-  const [imagemExplicita, setImagemExplicita] = useState("");
+  
+  const [imagemExplicita, setImagemExplicita] = useState(() => {
+    if (dados.imagensExplicitas === true) return "sim";
+    if (dados.imagensExplicitas === false) return "nao";
+    return "";
+  });
 
   const listaColaboradores = dados.colaboradores || [];
 
@@ -119,7 +124,8 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
               <Select
                 name={`funcao-${index}`}
                 value={colaborador.funcao || ""}
-                handleOnChange={(value) => atualizarColaborador(index, "funcao", value)}
+                onChange={(e) => atualizarColaborador(index, "funcao", e.target.value || e)}
+                handleOnChange={(e) => atualizarColaborador(index, "funcao", e.target.value || e)}
                 options={funcaoOpcoes}
               />
 
@@ -162,7 +168,8 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
             <Select
               name="idioma"
               value={dados.idioma || ""}
-              handleOnChange={(value) => atualizarCampo("idioma", value)}
+              onChange={(e) => atualizarCampo("idioma", e.target.value || e)}
+              handleOnChange={(e) => atualizarCampo("idioma", e.target.value || e)}
               options={listaIdiomas}
             />
           </label>
@@ -210,7 +217,11 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
             checked={imagemExplicita === "sim"}
             onChange={() => {
               setImagemExplicita("sim");
-              atualizarCampo("categorias", ["Adulto"]);
+              onChange({
+                ...dados,
+                imagensExplicitas: true,
+                categorias: ["Adulto"]
+              });
             }}
           />
           <label htmlFor="imagemExplicitaSim">Sim</label>
@@ -222,7 +233,11 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
             checked={imagemExplicita === "nao"}
             onChange={() => {
               setImagemExplicita("nao");
-              atualizarCampo("categorias", []);
+              onChange({
+                ...dados,
+                imagensExplicitas: false,
+                categorias: []
+              });
             }}
           />
           <label htmlFor="imagemExplicitaNao">Não</label>

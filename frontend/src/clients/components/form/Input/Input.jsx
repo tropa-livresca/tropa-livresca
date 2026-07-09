@@ -2,17 +2,17 @@ import React from "react";
 import styles from "./Input.module.css";
 import { useMask } from '@react-input/mask';
 
-const formataçãoTelefone =
-{
+const formataçãoTelefone = {
     mask: '(__) _____-____',
     replacement: { _: /\d/ },
-}
+};
 
-export function InputTelefone({ type, text, name, placeholder, handleOnChange, value }) {
-    const inputRef = useMask(formataçãoTelefone)
+export function InputTelefone({ type = "text", text, name, placeholder, handleOnChange, value }) {
+    const inputRef = useMask(formataçãoTelefone);
 
     return (
         <div className={styles.form_control}>
+            {text && <label htmlFor={name}>{text}</label>}
             <input
                 ref={inputRef}
                 type={type}
@@ -26,24 +26,26 @@ export function InputTelefone({ type, text, name, placeholder, handleOnChange, v
     );
 }
 
-export function InputImagem({ type, name, placeholder, handleOnChange, value }) {
+export function InputImagem({ name, handleOnChange, text }) {
     return (
         <div className={styles.form_control}>
+            {text && <label htmlFor={name}>{text}</label>}
             <input
-                type={type}
+                type="file"
                 id={name}
                 name={name}
-                placeholder={placeholder}
+                accept="image/*"
                 onChange={handleOnChange}
-                value={value || ''}
+                /* Correção: propriedade value foi removida por restrição do navegador */
             />
         </div>
     );
 }
 
-export default function Input({ type, text, name, placeholder, handleOnChange, value }) {
+export default function Input({ type = "text", text, name, placeholder, handleOnChange, value, ...props }) {
     return (
         <div className={styles.form_control}>
+            {text && <label htmlFor={name}>{text}</label>}
             <input
                 type={type}
                 id={name}
@@ -51,6 +53,7 @@ export default function Input({ type, text, name, placeholder, handleOnChange, v
                 placeholder={placeholder}
                 onChange={handleOnChange}
                 value={value || ''}
+                {...props}
             />
         </div>
     );
