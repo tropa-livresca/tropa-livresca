@@ -2,57 +2,116 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Input from "../../../../components/form/Input/Input";
 
-export default function Confirmacao({ dadosLivro, irParaEtapaEspecifica, publicarLivro }) {
+export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivro }) {
   const [urlPreviewManga, setUrlPreviewManga] = useState(null);
-  const [urlPreviewCapa, setUrlPreviewCapa] = useState(null);
+  const [urlPreviewFrente, setUrlPreviewFrente] = useState(null);
+  const [urlPreviewVerso, setUrlPreviewVerso] = useState(null);
+  const [urlPreviewOrelhas, setUrlPreviewOrelhas] = useState(null);
 
   useEffect(() => {
     let urlManga = null;
-    let urlCapa = null;
+    let urlFrente = null;
+    let urlVerso = null;
+    let urlOrelhas = null;
 
-    if (dadosLivro.conteudo?.manuscrito instanceof File) {
-      urlManga = URL.createObjectURL(dadosLivro.conteudo.manuscrito);
+    // Correção: Verifica "dado" (parâmetro) em vez de "dados" (escopo pai)
+    const extrairArquivo = (dado) => {
+      if (!dado) return null;
+
+      // Se já for um arquivo direto (File), retorna ele
+      if (dado instanceof File) return dado;
+
+      // CORREÇÃO: Se for uma FileList, extrai o primeiro arquivo [0] dela
+      if (dado instanceof FileList && dado.length > 0) return dado[0];
+
+      // Caso o dado venha como um Array tradicional do JS
+      if (Array.isArray(dado) && dado.length > 0) return dado[0];
+
+      // Se o seu componente customizado <Input /> envelopar o arquivo em algum objeto
+      if (dado[0] instanceof File) return dado[0];
+
+      return null;
+    };
+
+    // Correção 1: Declarando as variáveis antes de usá-las
+    const arquivoManuscrito = extrairArquivo(dados.conteudo?.manuscrito);
+    const arquivoFrente = extrairArquivo(dados.conteudo?.capa?.frente);
+    const arquivoVerso = extrairArquivo(dados.conteudo?.capa?.verso);
+    const arquivoOrelhas = extrairArquivo(dados.conteudo?.capa?.orelhas);
+
+    // Processamento do Manuscrito (Adicionado de volta)
+    if (arquivoManuscrito) {
+      urlManga = URL.createObjectURL(arquivoManuscrito);
       setUrlPreviewManga(urlManga);
-    } else if (typeof dadosLivro.conteudo?.manuscrito === "string") {
-      setUrlPreviewManga(dadosLivro.conteudo.manuscrito);
+    } else if (typeof dados.conteudo?.manuscrito === "string") {
+      setUrlPreviewManga(dados.conteudo.manuscrito);
+    } else {
+      setUrlPreviewManga(null);
     }
 
-    if (dadosLivro.conteudo?.capa instanceof File) {
-      urlCapa = URL.createObjectURL(dadosLivro.conteudo.capa);
-      setUrlPreviewCapa(urlCapa);
-    } else if (typeof dadosLivro.conteudo?.capa === "string") {
-      setUrlPreviewCapa(dadosLivro.conteudo.capa);
+    // Processamento da Frente (Correção: URL.createObjectURL e setUrlPreviewFrente)
+    if (arquivoFrente) {
+      urlFrente = URL.createObjectURL(arquivoFrente);
+      setUrlPreviewFrente(urlFrente);
+    } else if (typeof dados.conteudo?.capa?.frente === "string") {
+      setUrlPreviewFrente(dados.conteudo.capa.frente);
+    } else {
+      setUrlPreviewFrente(null);
+    }
+
+    // Processamento do Verso
+    if (arquivoVerso) {
+      urlVerso = URL.createObjectURL(arquivoVerso);
+      setUrlPreviewVerso(urlVerso);
+    } else if (typeof dados.conteudo?.capa?.verso === "string") {
+      setUrlPreviewVerso(dados.conteudo.capa.verso);
+    } else {
+      setUrlPreviewVerso(null);
+    }
+
+    // Processamento das Orelhas (Correção: Vinculação correta das variáveis das orelhas)
+    if (arquivoOrelhas) {
+      urlOrelhas = URL.createObjectURL(arquivoOrelhas);
+      setUrlPreviewOrelhas(urlOrelhas);
+    } else if (typeof dados.conteudo?.capa?.orelhas === "string") {
+      setUrlPreviewOrelhas(dados.conteudo.capa.orelhas);
+    } else {
+      setUrlPreviewOrelhas(null);
     }
 
     return () => {
       if (urlManga) URL.revokeObjectURL(urlManga);
-      if (urlCapa) URL.revokeObjectURL(urlCapa);
+      if (urlFrente) URL.revokeObjectURL(urlFrente);
+      if (urlVerso) URL.revokeObjectURL(urlVerso);
+      if (urlOrelhas) URL.revokeObjectURL(urlOrelhas);
     };
-  }, [dadosLivro.conteudo?.manuscrito, dadosLivro.conteudo?.capa]);
+  }, [dados.conteudo]);
+
+  const temAlgumaCapa = dados.conteudo?.capa?.frente || dados.conteudo?.capa?.verso || dados.conteudo?.capa?.orelhas;
 
   return (
     <main>
       <h1>Confirmação</h1>
       <div>
-        Formato: {dadosLivro.formato}
+        Formato: {dados.formato?.tipoPublicacao || "Não definido"}
         <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>
       </div>
       <div>
         Detalhes:
-        {dadosLivro.detalhes && (
+        {dados.detalhes && (
           <ul>
-            <li>Título: {dadosLivro.detalhes.titulo}</li>
-            <li>Subtítulo: {dadosLivro.detalhes.subtitulo}</li>
-            <li>Descrição: {dadosLivro.detalhes.descricao}</li>
-            <li>Idioma: {dadosLivro.detalhes.idioma}</li>
-            <li>Direito de Publicação: {dadosLivro.detalhes.direitoPublicacao}</li>
-            <li>Autor: {dadosLivro.detalhes.autor?.nome} {dadosLivro.detalhes.autor?.sobrenome}</li>
+            <li>Título: {dados.detalhes.titulo}</li>
+            <li>Subtítulo: {dados.detalhes.subtitulo}</li>
+            <li>Descrição: {dados.detalhes.descricao}</li>
+            <li>Idioma: {dados.detalhes.idioma}</li>
+            <li>Direito de Publicação: {dados.detalhes.direitoPublicacao}</li>
+            <li>Autor: {dados.detalhes.autor?.nome} {dados.detalhes.autor?.sobrenome}</li>
             <li>
-              Colaboradores: {dadosLivro.detalhes.colaboradores?.map(c => `${c.nome} ${c.sobrenome} (${c.funcao})`).join(", ") || "Nenhum"}
+              Colaboradores: {dados.detalhes.colaboradores?.map(c => `${c.nome} ${c.sobrenome} (${c.funcao})`).join(", ") || "Nenhum"}
             </li>
-            <li>Publico Principal: {dadosLivro.detalhes.publicoPrincipal}</li>
-            <li>Categorias: {dadosLivro.detalhes.categorias?.join(", ")}</li>
-            <li>Palavras-chave: {dadosLivro.detalhes.palavrasChave?.join(", ")}</li>
+            <li>Publico Principal: {dados.detalhes.publicoPrincipal}</li>
+            <li>Categorias: {dados.detalhes.categorias?.join(", ")}</li>
+            <li>Palavras-chave: {dados.detalhes.palavrasChave?.join(", ")}</li>
           </ul>
         )}
         <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>
@@ -60,26 +119,41 @@ export default function Confirmacao({ dadosLivro, irParaEtapaEspecifica, publica
       <div>
         <div>
           <div>
-            <p><strong>Manuscrito:</strong> {dadosLivro.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</p>
+            <p><strong>Manuscrito:</strong> {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</p>
             {urlPreviewManga && (
-              <iframe src={urlPreviewManga} title="Pré-visualização do Manuscrito" type="application/pdf" />
+              <iframe src={urlPreviewManga} title="Pré-visualização do Manuscrito" type="application/pdf" width="100%" height="200px" />
             )}
           </div>
-          <div>
-            <p><strong>Capa:</strong> {dadosLivro.conteudo?.capa ? "Imagem carregada" : "Não enviada"}</p>
-            {urlPreviewCapa && (
-              <img src={urlPreviewCapa} alt="Pré-visualização da Capa" />
+          <p><strong>Imagens da Capa:</strong></p>
+          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+            {urlPreviewFrente && (
+              <div>
+                <p><small>Frente:</small></p>
+                <img src={urlPreviewFrente} alt="Frente da Capa" width="150" />
+              </div>
+            )}
+            {urlPreviewVerso && (
+              <div>
+                <p><small>Verso:</small></p>
+                <img src={urlPreviewVerso} alt="Verso da Capa" width="150" />
+              </div>
+            )}
+            {urlPreviewOrelhas && (
+              <div>
+                <p><small>Orelhas:</small></p>
+                <img src={urlPreviewOrelhas} alt="Orelhas da Capa" width="150" />
+              </div>
             )}
           </div>
           <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>
         </div>
       </div>
       <div>
-        Orçamento:{dadosLivro.orcamento && (
+        Orçamento:{dados.orcamento && (
           <ul>
-            <li>Tipo de Formatação: {dadosLivro.orcamento.tipoFormatacao}</li>
-            <li>Valor do Livro Físico: {dadosLivro.orcamento.valorLivroFisico}</li>
-            <li>Valor do Livro Digital: {dadosLivro.orcamento.valorLivroDigital}</li>
+            <li>Tipo de Formatação: {dados.orcamento.tipoFormatacao}</li>
+            <li>Valor do Livro Físico: {dados.orcamento.valorLivroFisico}</li>
+            <li>Valor do Livro Digital: {dados.orcamento.valorLivroDigital}</li>
           </ul>
         )}
         <button onClick={() => irParaEtapaEspecifica(4)}>Editar</button>

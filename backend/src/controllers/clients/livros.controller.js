@@ -174,7 +174,6 @@ export const UpdateStatusAtivo = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
-
 export const InsertLivro = async (req, res) => {
   try {
     if (!req.user || !req.user.id) {
@@ -202,8 +201,8 @@ export const InsertLivro = async (req, res) => {
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
-            .from("livros")
-            .upload(`capa-livros/${nomeArquivo}`, capaFile.buffer, {
+            .from("capa-livros")
+            .upload(nomeArquivo, capaFile.buffer, {
               contentType: capaFile.mimetype,
             });
 
@@ -211,7 +210,7 @@ export const InsertLivro = async (req, res) => {
           console.error("Erro ao fazer upload da capa_frente", uploadError);
         } else {
           capaUrls.frente = supabaseAdmin.storage
-            .from("livros")
+            .from("capa-livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
@@ -226,8 +225,8 @@ export const InsertLivro = async (req, res) => {
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
-            .from("livros")
-            .upload(`capa-livros/${nomeArquivo}`, capaFile.buffer, {
+            .from("capa-livros")
+            .upload(nomeArquivo, capaFile.buffer, {
               contentType: capaFile.mimetype,
             });
 
@@ -235,7 +234,7 @@ export const InsertLivro = async (req, res) => {
           console.error("Erro ao fazer upload da capa_verso", uploadError);
         } else {
           capaUrls.verso = supabaseAdmin.storage
-            .from("livros")
+            .from("capa-livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
@@ -250,8 +249,8 @@ export const InsertLivro = async (req, res) => {
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
-            .from("livros")
-            .upload(`capa-livros/${nomeArquivo}`, capaFile.buffer, {
+            .from("capa-livros")
+            .upload(nomeArquivo, capaFile.buffer, {
               contentType: capaFile.mimetype,
             });
 
@@ -259,7 +258,7 @@ export const InsertLivro = async (req, res) => {
           console.error("Erro ao fazer upload da capa_orelhas", uploadError);
         } else {
           capaUrls.orelhas = supabaseAdmin.storage
-            .from("livros")
+            .from("capa-livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
@@ -274,17 +273,23 @@ export const InsertLivro = async (req, res) => {
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
-            .from("livros")
-            .upload(`manuscrito-livro/${nomeArquivo}`, manuscritoFile.buffer, {
+            .from("manuscrito-livro")
+            .upload(nomeArquivo, manuscritoFile.buffer, {
               contentType: manuscritoFile.mimetype,
             });
 
         if (uploadError) {
           console.error("Erro ao fazer upload do manuscrito", uploadError);
         } else {
-          manuscritoUrl = supabaseAdmin.storage
-            .from("livros")
-            .getPublicUrl(uploadData.path).data.publicUrl;
+          const { data: signedData, error: signedError } = await supabaseAdmin.storage
+            .from("manuscrito-livro")
+            .createSignedUrl(uploadData.path, 31536000);
+
+          if (signedError) {
+            console.error("Erro ao criar URL assinada do manuscrito", signedError);
+          } else {
+            manuscritoUrl = signedData.signedUrl;
+          }
         }
       } catch (uploadErr) {
         console.error("Erro ao processar upload do manuscrito", uploadErr);
@@ -309,7 +314,7 @@ export const InsertLivro = async (req, res) => {
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
       conteudo_por_IA: dadosLivro.detalhes?.conteudoPorIA === true,
-      imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
+      images_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
       data_de_publicacao: new Date().toISOString().split("T")[0],
       preco_digital: dadosLivro.orcamento?.valorLivroDigital
         ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
@@ -330,8 +335,8 @@ export const InsertLivro = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const livroComCapas = parseCapaUrls(novoLivro[0] || novoLivro);
-    return res.status(201).json({ data: livroComCapas, manuscritoUrl });
+    const livroRetornado = novoLivro[0] || novoLivro;
+    return res.status(201).json({ data: livroRetornado, manuscritoUrl });
   } catch (err) {
     console.error("Erro no InsertLivro", err);
     return res.status(500).json({ error: err.message });

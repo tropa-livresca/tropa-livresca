@@ -1,23 +1,34 @@
+import { useEffect } from "react";
 import Input from "../../../../components/form/Input/Input";
 
 export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
-  const atualizarCampo = (chave, valor) => {
-    onChange({ ...dados, [chave]: valor });
+  
+  const atualizarCampo = (chave, e) => {
+    const arquivo = e.target.files?.[0];
+    if (arquivo) {
+      onChange({ ...dados, [chave]: arquivo });
+    }
   };
 
-  const atualizarCapa = (parte, arquivos) => {
-    onChange({
-      ...dados,
-      capa: {
-        ...dados.capa,
-        [parte]: arquivos
-      }
-    });
+  const atualizarCapa = (parte, e) => {
+    const arquivo = e.target.files?.[0];
+    if (arquivo) {
+      onChange({
+        ...dados,
+        capa: {
+          ...(dados.capa || {}),
+          [parte]: arquivo
+        }
+      });
+    }
   };
 
-  const obterPreview = (arquivos) => {
-    if (arquivos && arquivos[0]) {
-      return URL.createObjectURL(arquivos[0]);
+  const obterPreview = (arquivo) => {
+    if (arquivo && (arquivo instanceof File || arquivo instanceof Blob)) {
+      return URL.createObjectURL(arquivo);
+    }
+    if (typeof arquivo === "string") {
+      return arquivo;
     }
     return null;
   };
@@ -25,6 +36,14 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
   const previewFrente = obterPreview(dados.capa?.frente);
   const previewVerso = obterPreview(dados.capa?.verso);
   const previewOrelhas = obterPreview(dados.capa?.orelhas);
+
+  useEffect(() => {
+    return () => {
+      if (previewFrente) URL.revokeObjectURL(previewFrente);
+      if (previewVerso) URL.revokeObjectURL(previewVerso);
+      if (previewOrelhas) URL.revokeObjectURL(previewOrelhas);
+    };
+  }, [previewFrente, previewVerso, previewOrelhas]);
 
   return (
     <main>
@@ -34,24 +53,25 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
           <legend>Manuscrito</legend>
           <label>
             Subir arquivo do livro (Aceitamos formatos .pdf)
-            <Input
+            <input
               accept=".pdf"
               type="file"
-              handleOnChange={(e) => atualizarCampo("manuscrito", e.target.files)}
+              onChange={(e) => atualizarCampo("manuscrito", e)}
             />
           </label>
+          {dados.manuscrito && <p style={{ color: "green" }}>✓ Manuscrito carregado</p>}
         </fieldset>
 
         <fieldset>
           <legend>Capa do Livro</legend>
-          
+
           <div>
             <label>
               Frente da capa (.jpg, .png)
-              <Input
+              <input
                 accept=".jpg,.jpeg,.png"
                 type="file"
-                handleOnChange={(e) => atualizarCapa("frente", e.target.files)}
+                onChange={(e) => atualizarCapa("frente", e)}   
               />
             </label>
             {previewFrente && (
@@ -64,10 +84,10 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
           <div>
             <label>
               Verso / Trás da capa (.jpg, .png)
-              <Input
+              <input
                 accept=".jpg,.jpeg,.png"
                 type="file"
-                handleOnChange={(e) => atualizarCapa("verso", e.target.files)}
+                onChange={(e) => atualizarCapa("verso", e)}
               />
             </label>
             {previewVerso && (
@@ -80,10 +100,10 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
           <div>
             <label>
               Orelhas da capa (.jpg, .png)
-              <Input
+              <input
                 accept=".jpg,.jpeg,.png"
                 type="file"
-                handleOnChange={(e) => atualizarCapa("orelhas", e.target.files)}
+                onChange={(e) => atualizarCapa("orelhas", e)}
               />
             </label>
             {previewOrelhas && (

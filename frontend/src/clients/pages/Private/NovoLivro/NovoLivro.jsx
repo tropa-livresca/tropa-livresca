@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./NovoLivro.module.css";
 
 import useLivros from "../../../hooks/useLivros";
@@ -9,40 +9,58 @@ import Conteudo from "./Conteudo/Conteudo";
 import Orcamento from "./Orcamento/Orcamento";
 import Confirmacao from "./Confirmacao/Confirmacao";
 
+const ESTADO_INICIAL = {
+  formato: {
+    tipoPublicacao: "",
+  },
+  detalhes: {
+    idioma: "",
+    titulo: "",
+    subtitulo: "",
+    numeroEdicao: "",
+    autor: {
+      nome: "",
+      sobrenome: "",
+    },
+    colaboradores: [],
+    descricao: "",
+    direitoPublicacao: "",
+    publicoPrincipal: "",
+    categorias: [],
+    palavrasChave: [],
+  },
+  conteudo: {
+    manuscrito: null,
+    capa: null,
+  },
+  orcamento: {
+    valorLivroFisico: "",
+    valorLivroDigital: "",
+  },
+}
 export default function NovoLivro() {
   const { InsertLivro } = useLivros();
 
-  const [dadosLivro, setDadosLivro] = useState({
-    formato: {
-      tipoPublicacao: "",
-    },
-    detalhes: {
-      idioma: "",
-      titulo: "",
-      subtitulo: "",
-      numeroEdicao: "",
-      autor: {
-        nome: "",
-        sobrenome: "",
-      },
-      colaboradores: [],
-      descricao: "",
-      direitoPublicacao: "",
-      publicoPrincipal: "",
-      categorias: [],
-      palavrasChave: [],
-    },
-    conteudo: {
-      manuscrito: null,
-      capa: null,
-    },
-    orcamento: {
-      valorLivroFisico: "",
-      valorLivroDigital: "",
-    },
+  const [dadosLivro, setDadosLivro] = useState(() => {
+    const salvos = localStorage.getItem("rascunhoDadosLivro");
+    return salvos ? JSON.parse(salvos) : ESTADO_INICIAL;
   });
 
-  const [etapa, setEtapa] = useState(1);
+  const [etapa, setEtapa] = useState(() => {
+    const etapaSalva = localStorage.getItem("rascunhoEtapaLivro");
+    return etapaSalva ? Number(etapaSalva) : 1;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("rascunhoEtapaLivro", etapa.toString());
+
+    const dadosParaSalvar = {
+      ...dadosLivro,
+      conteudo: { manuscrito: null, capa: null }
+    }
+
+    localStorage.setItem("rascunhoDadosLivro", JSON.stringify(dadosParaSalvar));
+  }, [dadosLivro, etapa]);
 
   const validarEtapaAtual = (etapa, dadosLivro) => {
     switch (etapa) {
@@ -61,7 +79,8 @@ export default function NovoLivro() {
         return true;
 
       case 3:
-        return !!dadosLivro.conteudo?.manuscrito && !!dadosLivro.conteudo?.capa;
+        const c = dadosLivro.conteudo;
+        return !!c?.manuscrito && !!c?.capa.frente && !!c?.capa.verso && !!c?.capa.orelhas;
 
       case 4:
         const o = dadosLivro.orcamento;
@@ -85,11 +104,7 @@ export default function NovoLivro() {
   };
 
   const voltarEtapa = () => {
-    if (validarEtapaAtual(etapa, dadosLivro)) {
-      setEtapa((atual) => Math.max(atual - 1, 1));
-    } else {
-      alert("Por favor, preencha todos os campos obrigatórios antes de continuar.");
-    }
+    setEtapa((atual) => Math.max(atual - 1, 1));
   };
 
   const atualizarEtapa = (chave) => (novosDados) => {
@@ -103,6 +118,8 @@ export default function NovoLivro() {
 
   const publicarLivro = async (publicar = true) => {
     await InsertLivro(dadosLivro, publicar);
+    localStorage.removeItem("rascunhoDadosLivro");
+    localStorage.removeItem("rascunhoEtapaLivro");
   };
 
   return (
