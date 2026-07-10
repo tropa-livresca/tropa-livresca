@@ -37,7 +37,7 @@ export default function NavBar() {
   const abrirSeletor = () => {
     inputFoto.current?.click();
   };
-
+ 
   const trocarFoto = (e) => {
     const arquivo = e.target.files[0];
 
@@ -95,7 +95,7 @@ export default function NavBar() {
             <Link to="/">Se Autopublique</Link>
             <ul className={styles.subtema}>
               <li>
-                <Link to="/">Meus Livros</Link>
+                <Link to="/meuslivros">Meus Livros</Link>
               </li>
             </ul>
           </li>
