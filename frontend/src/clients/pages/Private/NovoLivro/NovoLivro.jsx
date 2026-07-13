@@ -3,16 +3,12 @@ import styles from "./NovoLivro.module.css";
 
 import useLivros from "../../../hooks/useLivros";
 
-import Formato from "./Formato/Formato";
 import Detalhes from "./Detalhes/Detalhes";
 import Conteudo from "./Conteudo/Conteudo";
 import Orcamento from "./Orcamento/Orcamento";
 import Confirmacao from "./Confirmacao/Confirmacao";
 
 const ESTADO_INICIAL = {
-  formato: {
-    tipoPublicacao: "",
-  },
   detalhes: {
     idioma: "",
     titulo: "",
@@ -65,9 +61,6 @@ export default function NovoLivro() {
   const validarEtapaAtual = (etapa, dadosLivro) => {
     switch (etapa) {
       case 1:
-        return !!dadosLivro.formato?.tipoPublicacao;
-
-      case 2:
         const d = dadosLivro.detalhes;
         if (!d?.titulo || !d?.idioma || !d?.descricao || !d?.direitoPublicacao) return false;
         if (!d.autor?.nome || !d.autor?.sobrenome) return false;
@@ -78,11 +71,11 @@ export default function NovoLivro() {
         }
         return true;
 
-      case 3:
+      case 2:
         const c = dadosLivro.conteudo;
         return !!c?.manuscrito && !!c?.capa.frente && !!c?.capa.verso && !!c?.capa.orelhas;
 
-      case 4:
+      case 3:
         const o = dadosLivro.orcamento;
         return !!o?.numeroPaginas && !!o?.valorLivroFisico && !!o?.valorLivroDigital;
 
@@ -97,7 +90,7 @@ export default function NovoLivro() {
 
   const irParaProximaEtapa = () => {
     if (validarEtapaAtual(etapa, dadosLivro)) {
-      setEtapa((atual) => Math.min(atual + 1, 5));
+      setEtapa((atual) => Math.min(atual + 1, 4));
     } else {
       alert("Por favor, preencha todos os campos obrigatórios antes de continuar.");
     }
@@ -124,19 +117,11 @@ export default function NovoLivro() {
 
   return (
     <>
-      <h1>Novo Livro</h1>
-      <span>Etapa {etapa} de 5</span>
+      <main>
+        <h1>Novo Livro</h1>
+        <span>Etapa {etapa} de 5</span>
 
-      <main className={styles.conteinerPrincipal}>
         {etapa === 1 && (
-          <Formato
-            dados={dadosLivro.formato}
-            onChange={atualizarEtapa("formato")}
-            {...navegar}
-          />
-        )}
-
-        {etapa === 2 && (
           <Detalhes
             dados={dadosLivro.detalhes}
             onChange={atualizarEtapa("detalhes")}
@@ -144,7 +129,7 @@ export default function NovoLivro() {
           />
         )}
 
-        {etapa === 3 && (
+        {etapa === 2 && (
           <Conteudo
             dados={dadosLivro.conteudo}
             onChange={atualizarEtapa("conteudo")}
@@ -152,7 +137,7 @@ export default function NovoLivro() {
           />
         )}
 
-        {etapa === 4 && (
+        {etapa === 3 && (
           <Orcamento
             dados={dadosLivro.orcamento}
             onChange={atualizarEtapa("orcamento")}
@@ -160,14 +145,14 @@ export default function NovoLivro() {
           />
         )}
 
-        {etapa === 5 && (
+        {etapa === 4 && (
           <Confirmacao
             dados={dadosLivro}
             irParaEtapaEspecifica={irParaEtapaEspecifica}
             publicarLivro={publicarLivro}
           />
         )}
-      </main>
+      </main >
     </>
   );
 }

@@ -93,10 +93,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
     <main>
       <h1>Confirmação</h1>
       <div>
-        Formato: {dados.formato?.tipoPublicacao || "Não definido"}
-        <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>
-      </div>
-      <div>
         Detalhes:
         {dados.detalhes && (
           <ul>
@@ -114,7 +110,7 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
             <li>Palavras-chave: {dados.detalhes.palavrasChave?.join(", ")}</li>
           </ul>
         )}
-        <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>
+        <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>
       </div>
       <div>
         <div>
@@ -145,7 +141,7 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
               </div>
             )}
           </div>
-          <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>
+          <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>
         </div>
       </div>
       <div>
@@ -156,7 +152,7 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
             <li>Valor do Livro Digital: {dados.orcamento.valorLivroDigital}</li>
           </ul>
         )}
-        <button onClick={() => irParaEtapaEspecifica(4)}>Editar</button>
+        <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>
       </div>
       <div>
         <button type="button" onClick={() => publicarLivro(true)}>Publicar Livro</button>

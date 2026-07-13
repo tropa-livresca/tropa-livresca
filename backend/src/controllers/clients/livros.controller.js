@@ -197,7 +197,10 @@ export const InsertLivro = async (req, res) => {
     if (req.files?.capa_frente && req.files.capa_frente[0]) {
       try {
         const capaFile = req.files.capa_frente[0];
-        const nomeArquivo = `livro_${req.user.id}_capa_frente_${Date.now()}.${capaFile.mimetype.split("/")[1]}`;
+        const extensao = capaFile.mimetype
+          ? capaFile.mimetype.split("/")[1]
+          : "png";
+        const nomeArquivo = `livro_${req.user.id}_capa_frente_${Date.now()}.${extensao}`;
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
@@ -207,21 +210,24 @@ export const InsertLivro = async (req, res) => {
             });
 
         if (uploadError) {
-          console.error("Erro ao fazer upload da capa_frente", uploadError);
+          console.error("Erro ao fazer upload da capa_frente:", uploadError);
         } else {
           capaUrls.frente = supabaseAdmin.storage
             .from("capa-livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
-        console.error("Erro ao processar upload da capa_frente", uploadErr);
+        console.error("Erro no fluxo da capa_frente:", uploadErr);
       }
     }
 
     if (req.files?.capa_verso && req.files.capa_verso[0]) {
       try {
         const capaFile = req.files.capa_verso[0];
-        const nomeArquivo = `livro_${req.user.id}_capa_verso_${Date.now()}.${capaFile.mimetype.split("/")[1]}`;
+        const extensao = capaFile.mimetype
+          ? capaFile.mimetype.split("/")[1]
+          : "png";
+        const nomeArquivo = `livro_${req.user.id}_capa_verso_${Date.now()}.${extensao}`;
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
@@ -231,21 +237,24 @@ export const InsertLivro = async (req, res) => {
             });
 
         if (uploadError) {
-          console.error("Erro ao fazer upload da capa_verso", uploadError);
+          console.error("Erro ao fazer upload da capa_verso:", uploadError);
         } else {
           capaUrls.verso = supabaseAdmin.storage
             .from("capa-livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
-        console.error("Erro ao processar upload da capa_verso", uploadErr);
+        console.error("Erro no fluxo da capa_verso:", uploadErr);
       }
     }
 
     if (req.files?.capa_orelhas && req.files.capa_orelhas[0]) {
       try {
         const capaFile = req.files.capa_orelhas[0];
-        const nomeArquivo = `livro_${req.user.id}_capa_orelhas_${Date.now()}.${capaFile.mimetype.split("/")[1]}`;
+        const extensao = capaFile.mimetype
+          ? capaFile.mimetype.split("/")[1]
+          : "png";
+        const nomeArquivo = `livro_${req.user.id}_capa_orelhas_${Date.now()}.${extensao}`;
 
         const { data: uploadData, error: uploadError } =
           await supabaseAdmin.storage
@@ -255,14 +264,14 @@ export const InsertLivro = async (req, res) => {
             });
 
         if (uploadError) {
-          console.error("Erro ao fazer upload da capa_orelhas", uploadError);
+          console.error("Erro ao fazer upload da capa_orelhas:", uploadError);
         } else {
           capaUrls.orelhas = supabaseAdmin.storage
             .from("capa-livros")
             .getPublicUrl(uploadData.path).data.publicUrl;
         }
       } catch (uploadErr) {
-        console.error("Erro ao processar upload da capa_orelhas", uploadErr);
+        console.error("Erro no fluxo da capa_orelhas:", uploadErr);
       }
     }
 
@@ -279,42 +288,45 @@ export const InsertLivro = async (req, res) => {
             });
 
         if (uploadError) {
-          console.error("Erro ao fazer upload do manuscrito", uploadError);
+          console.error("Erro ao fazer upload do manuscrito:", uploadError);
         } else {
-          const { data: signedData, error: signedError } = await supabaseAdmin.storage
-            .from("manuscrito-livro")
-            .createSignedUrl(uploadData.path, 31536000);
+          const { data: signedData, error: signedError } =
+            await supabaseAdmin.storage
+              .from("manuscrito-livro")
+              .createSignedUrl(uploadData.path, 31536000);
 
           if (signedError) {
-            console.error("Erro ao criar URL assinada do manuscrito", signedError);
+            console.error(
+              "Erro ao criar URL assinada do manuscrito:",
+              signedError,
+            );
           } else {
             manuscritoUrl = signedData.signedUrl;
           }
         }
       } catch (uploadErr) {
-        console.error("Erro ao processar upload do manuscrito", uploadErr);
+        console.error("Erro no fluxo do manuscrito:", uploadErr);
       }
     }
 
     const dadosParaInserir = {
       fk_user_profile_id: req.user.id,
-      tipo_de_livro: dadosLivro.formato?.tipoPublicacao,
       status: publicar ? "publicado" : "rascunho",
-      titulo: dadosLivro.detalhes?.titulo,
-      subtitulo: dadosLivro.detalhes?.subtitulo,
-      descricao: dadosLivro.detalhes?.descricao,
+      titulo: dadosLivro.detalhes?.titulo || null,
+      subtitulo: dadosLivro.detalhes?.subtitulo || null,
+      descricao: dadosLivro.detalhes?.descricao || null,
       numero_edicao: dadosLivro.detalhes?.numeroEdicao
         ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
         : null,
-      autor_nome: dadosLivro.detalhes?.autor?.nome,
-      autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome,
-      publico_alvo: dadosLivro.detalhes?.publicoPrincipal,
+      autor_nome: dadosLivro.detalhes?.autor?.nome || null,
+      autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome || null,
+      publico_alvo: dadosLivro.detalhes?.publicoPrincipal || null,
       colaboradores: dadosLivro.detalhes?.colaboradores || [],
       direitos_de_publicacao:
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
       conteudo_por_IA: dadosLivro.detalhes?.conteudoPorIA === true,
-      images_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
+      imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
       data_de_publicacao: new Date().toISOString().split("T")[0],
       preco_digital: dadosLivro.orcamento?.valorLivroDigital
         ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
@@ -335,10 +347,11 @@ export const InsertLivro = async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
-    const livroRetornado = novoLivro[0] || novoLivro;
-    return res.status(201).json({ data: livroRetornado, manuscritoUrl });
+    return res
+      .status(201)
+      .json({ data: novoLivro?.[0] || novoLivro, manuscritoUrl });
   } catch (err) {
-    console.error("Erro no InsertLivro", err);
+    console.error("Erro fatal no InsertLivro:", err);
     return res.status(500).json({ error: err.message });
   }
 };

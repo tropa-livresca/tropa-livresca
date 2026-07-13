@@ -272,7 +272,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
         </fieldset>
 
         <div>
-          <button type="button" onClick={voltarEtapa}>Anterior</button>
           <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
         </div>
       </form>

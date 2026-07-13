@@ -84,7 +84,6 @@ rectangle "Plataforma Literária" {
 
   package "Área Exclusiva do Autor" {
     usecase "Publicar Novo Livro" as UC_PubLivro
-    usecase "Escolher Formato e Tipo" as UC_Formato
     usecase "Configurar Metadados" as UC_Metadados
     usecase "Fazer Upload de Conteúdo" as UC_Upload
     usecase "Precificar Livro" as UC_Preco
@@ -93,7 +92,6 @@ rectangle "Plataforma Literária" {
     usecase "Consultar Número de Vendas" as UC_ConsultarVendas
     usecase "Visualizar Saldo de Royalties" as UC_VisualizarSaldo
 
-    UC_PubLivro ..> UC_Formato : <<include>>
     UC_PubLivro ..> UC_Metadados : <<include>>
     UC_PubLivro ..> UC_Upload : <<include>>
     UC_PubLivro ..> UC_Preco : <<include>>

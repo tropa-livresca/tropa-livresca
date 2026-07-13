@@ -135,7 +135,6 @@ export const LivroProvider = ({ children }) => {
       const formData = new FormData();
 
       formData.append("dadosLivro", JSON.stringify({
-        formato: dadosLivro.formato,
         detalhes: dadosLivro.detalhes,
         orcamento: dadosLivro.orcamento,
       }));
