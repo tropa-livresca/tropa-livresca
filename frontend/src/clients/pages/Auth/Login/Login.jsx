@@ -6,7 +6,8 @@ import logo from "../../../components/images/log.jpg";
 import logo2 from "../../../components/images/logo.png";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
+import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { IoChevronBack } from "react-icons/io5";
 /**
  * Página responsável pelo Login dos Usuários
  * Gerencia o estado do formulário, validações de e-mail e senha e integração com hook de autenticação
@@ -50,10 +51,24 @@ export default function Login() {
     navigate(from, { replace: true });
   };
 
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const loginGoogle = () => {
+    // aaa
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.lesquerdo}>
         <div className={styles.formulario}>
+          <button
+            type="button"
+            className={styles.voltar}
+            onClick={() => navigate("/")}
+          >
+            <IoChevronBack size={28} />
+          </button>
+
           <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleSignin}>
             <h1>LOGIN</h1>
@@ -69,14 +84,23 @@ export default function Login() {
               value={email}
             />
             <label>Senha</label>
-            <Input
-              type="password"
-              placeholder="Digite sua senha"
-              handleOnChange={(e) => {
-                setSenha(e.target.value);
-              }}
-              value={senha}
-            />
+
+            <div className={styles.inputSenha}>
+              <Input
+                type={mostrarSenha ? "text" : "password"}
+                placeholder="Digite sua senha"
+                handleOnChange={(e) => setSenha(e.target.value)}
+                value={senha}
+              />
+
+              <button
+                type="button"
+                className={styles.olho}
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+              >
+                {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             <div id={styles.checkbox}>
               <input type="checkbox" />
@@ -84,6 +108,21 @@ export default function Login() {
             </div>
 
             <SubmitButton text="ENTRAR" id={styles.btn} />
+
+            <div className={styles.divisor}>
+              <span></span>
+              <p>ou</p>
+              <span></span>
+            </div>
+
+            <button
+              type="button"
+              className={styles.google}
+              onClick={loginGoogle}
+            >
+              <FaGoogle />
+              Entrar com Google
+            </button>
 
             <div className={styles.errinho}>
               {error.length > 0 && <p>{error}</p>}

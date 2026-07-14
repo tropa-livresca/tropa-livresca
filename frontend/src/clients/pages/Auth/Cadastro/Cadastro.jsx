@@ -6,6 +6,8 @@ import logo2 from "../../../components/images/logo.png";
 import styles from "./Cadastro.module.css";
 import useAuth from "../../../hooks/useAuth";
 import { Link, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { IoChevronBack } from "react-icons/io5";
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
@@ -72,6 +74,9 @@ export default function Cadastro() {
     navigate("/login");
   };
 
+  const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [mostrarConfSenha, setMostrarConfSenha] = useState(false);
+
   return (
     <div className={styles.container}>
       <div className={styles.lesquerdo}>
@@ -80,6 +85,14 @@ export default function Cadastro() {
 
       <div className={styles.ldireito}>
         <div className={styles.formulario}>
+          <button
+            type="button"
+            className={styles.voltar}
+            onClick={() => navigate("/")}
+          >
+            <IoChevronBack size={28} />
+          </button>
+
           <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleSignup} method="POST">
             <h1>CADASTRO</h1>
@@ -104,22 +117,42 @@ export default function Cadastro() {
             />
 
             <label>Senha</label>
-            <Input
-              type="password"
-              name="senha"
-              placeholder="Digite a senha"
-              handleOnChange={(e) => setSenha(e.target.value)}
-              value={senha}
-            />
+            <div className={styles.inputSenha}>
+              <Input
+                type={mostrarSenha ? "text" : "password"}
+                name="senha"
+                placeholder="Digite a senha"
+                handleOnChange={(e) => setSenha(e.target.value)}
+                value={senha}
+              />
+
+              <button
+                type="button"
+                className={styles.olho}
+                onClick={() => setMostrarSenha(!mostrarSenha)}
+              >
+                {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             <label>Confirmar Senha</label>
-            <Input
-              type="password"
-              name="confSenha"
-              placeholder="Confirme a senha"
-              handleOnChange={(e) => setConfSenha(e.target.value)}
-              value={confSenha}
-            />
+            <div className={styles.inputSenha}>
+              <Input
+                type={mostrarConfSenha ? "text" : "password"}
+                name="confSenha"
+                placeholder="Confirme a senha"
+                handleOnChange={(e) => setConfSenha(e.target.value)}
+                value={confSenha}
+              />
+
+              <button
+                type="button"
+                className={styles.olho}
+                onClick={() => setMostrarConfSenha(!mostrarConfSenha)}
+              >
+                {mostrarConfSenha ? <FaEyeSlash /> : <FaEye />}
+              </button>
+            </div>
 
             <label>Telefone</label>
             <InputTelefone
@@ -131,7 +164,9 @@ export default function Cadastro() {
             />
 
             <div className={styles.erro}>
-              <span className={styles.span}>{Array.isArray(error) ? error.join("\n") : error}</span>
+              <span className={styles.span}>
+                {Array.isArray(error) ? error.join("\n") : error}
+              </span>
             </div>
 
             <span className={styles.span}>
