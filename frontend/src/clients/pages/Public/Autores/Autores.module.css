@@ -6,10 +6,9 @@ main {
 
 .container {
   width: 100%;
-  min-height: 100vh;
-  padding: 4rem 5%;
-  display: grid;
-  gap: 4rem;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
 }
 
 .topo {
@@ -21,7 +20,7 @@ main {
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: 4rem;
+  font-size: clamp(3rem, 5vw, 5rem);
   text-align: left;
   font-family: "Jacques Francois", serif;
 }
@@ -29,7 +28,7 @@ main {
 .titulo::after {
   content: "";
   display: block;
-  width: 8rem;
+  width: 7rem;
   height: 3px;
   margin-top: 1rem;
   background-color: #d4b46a;
@@ -55,6 +54,7 @@ main {
   background-color: #fffdf7;
   border-radius: 999px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 8%;
 }
 
 .iconebusca {
@@ -78,14 +78,14 @@ main {
   padding: 1rem 1rem;
   border-radius: 999px;
   background-color: #67170c;
-  color: #ffbb33;
+  color: #ede6b3;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .btnbuscar:hover {
-  background-color: #6a2b22;
-  color: white;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .autorescontainer {
@@ -108,6 +108,7 @@ main {
 
 .autorinf p{
   font-family: "Jacques Francois", serif;
+  color: #67170c;
 }
 
 .autorinf:hover {
@@ -129,6 +130,7 @@ main {
   white-space: normal;
   overflow-wrap: break-word;
   font-family: "Jacques Francois", serif;
+  color: #67170c;
 }
 
 .autorinf h3::after {
@@ -143,13 +145,17 @@ main {
   margin-top: 2rem;
   margin-bottom: 0;
   padding: 0.7rem 1.4rem;
-  background-color: #5a1e14;
-  color: #fff;
+  background-color: #67170c;
+  color: #ede6b3;
   border-radius: 999px;
   font-size: 0.9rem;
-  font-weight: 600;
   transition: 0.3s;
   font-family: "Jacques Francois", serif;
+}
+
+.btndetalhes:hover{
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 @media (max-width: 1200px) {
