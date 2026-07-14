@@ -85,6 +85,53 @@ form {
   color:#67170c;
 }
 
+.inputSenha {
+  position: relative;
+  width: 100%;
+}
+
+.formulario {
+  position: relative;
+}
+
+
+.voltar {
+  position: absolute;
+  top: 17%;
+  left: 5%;
+  width: 3.3rem;
+  height: 2.8rem;
+  color: #67170c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.olho {
+  position: absolute;
+  top: 35%;
+  right: 3rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.2rem;
+  padding: 0;
+  z-index: 10;
+}
+
+.olho:hover {
+  color: #67170c;
+}
+
 @media (max-width: 768px) {
   .container {
     grid-template-columns: 1fr;
@@ -119,5 +166,10 @@ form {
   form {
     padding: 2rem 0.5rem;
     border-radius: 2rem;
+  }
+
+  .voltar {
+    width: 2.5rem;
+    height: 2.5rem;
   }
 }

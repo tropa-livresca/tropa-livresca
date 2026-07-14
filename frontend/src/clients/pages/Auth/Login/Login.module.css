@@ -20,9 +20,9 @@
   place-items: center;
   padding: 2rem;
   display: grid;
-  place-items:center;
+  place-items: center;
   padding: 2rem;
-  background-color:#ede6b3;
+  background-color: #ede6b3;
 }
 
 .formulario {
@@ -36,7 +36,7 @@
   color: #67170c;
   font-size: 2.5rem;
   text-align: center;
-  margin-left:0;
+  margin-left: 0;
   margin-bottom: 0.5rem;
   font-family: "Jacques Francois", serif;
 }
@@ -97,8 +97,8 @@ a {
 }
 
 #checkbox label {
- padding-left: 0.5rem;
- font-family: "Jacques Francois", serif;
+  padding-left: 0.5rem;
+  font-family: "Jacques Francois", serif;
 }
 
 #checkbox input {
@@ -107,7 +107,101 @@ a {
 
 .errinho p:not(.button p) {
   margin-bottom: 0;
-  color:#67170c;
+  color: #67170c;
+}
+
+.inputSenha {
+  position: relative;
+  width: 100%;
+}
+
+.olho {
+  position: absolute;
+  top: 35%;
+  right: 3rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.2rem;
+  padding: 0;
+  z-index: 10;
+}
+
+.olho:hover {
+  color: #67170c;
+}
+
+.formulario {
+  position: relative;
+}
+
+.voltar {
+  position: absolute;
+  top: 16%;
+  left: 5%;
+  width: 3.3rem;
+  height: 2.8rem;
+  color: #67170c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.divisor {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 90%;
+  margin: 1.5rem auto;
+}
+
+.divisor span {
+  flex: 1;
+  height: 1px;
+  background: #c9b9a5;
+}
+
+.divisor p {
+  margin: 0;
+  color: #67170c;
+  font-size: 0.9rem;
+}
+
+.google {
+  width: 90%;
+  height: 3rem;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background-color: #ede6b3;
+  border-radius: 0.7rem;
+  border: 0.2em solid beige;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.google:hover {
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.google svg {
+  font-size: 1.25rem;
 }
 
 @media (max-width: 1024px) {
@@ -154,7 +248,6 @@ a {
   .formulario label {
     width: 90%;
     justify-self: center;
-
     padding-left: 0;
     text-align: left;
   }
@@ -173,5 +266,22 @@ a {
 
   #checkbox label {
     padding-left: 0;
+  }
+
+  .olho {
+    right: 2.5rem;
+  }
+
+  .voltar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .google {
+    width: 90%;
+  }
+
+  .divisor {
+    width: 90%;
   }
 }
