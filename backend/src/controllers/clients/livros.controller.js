@@ -174,184 +174,223 @@ export const UpdateStatusAtivo = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
 export const InsertLivro = async (req, res) => {
   try {
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ error: "Usuário não autenticado" });
+    if (!req.user?.id) {
+      return res.status(401).json({
+        error: "Usuário não autenticado",
+      });
     }
 
-    const publicar = req.body.publicar === "true" || req.body.publicar === true;
-    const dadosLivroRaw = req.body.dadosLivro || "{}";
-    const dadosLivro =
-      typeof dadosLivroRaw === "string"
-        ? JSON.parse(dadosLivroRaw)
-        : dadosLivroRaw;
+    const {
+      dadosLivro = {},
+      publicar = true,
+      capa = {},
+      manuscritoPath = null,
+    } = req.body;
 
-    let capaUrls = {
-      frente: null,
-      verso: null,
-      orelhas: null,
-    };
+    const userId = req.user.id;
+
     let manuscritoUrl = null;
 
-    if (req.files?.capa_frente && req.files.capa_frente[0]) {
-      try {
-        const capaFile = req.files.capa_frente[0];
-        const extensao = capaFile.mimetype
-          ? capaFile.mimetype.split("/")[1]
-          : "png";
-        const nomeArquivo = `livro_${req.user.id}_capa_frente_${Date.now()}.${extensao}`;
+    if (manuscritoPath) {
+      const caminhoEsperado = `${userId}/`;
 
-        const { data: uploadData, error: uploadError } =
-          await supabaseAdmin.storage
-            .from("capa-livros")
-            .upload(nomeArquivo, capaFile.buffer, {
-              contentType: capaFile.mimetype,
-            });
-
-        if (uploadError) {
-          console.error("Erro ao fazer upload da capa_frente:", uploadError);
-        } else {
-          capaUrls.frente = supabaseAdmin.storage
-            .from("capa-livros")
-            .getPublicUrl(uploadData.path).data.publicUrl;
-        }
-      } catch (uploadErr) {
-        console.error("Erro no fluxo da capa_frente:", uploadErr);
+      if (!manuscritoPath.startsWith(caminhoEsperado)) {
+        return res.status(403).json({
+          error: "Manuscrito inválido para este usuário",
+        });
       }
-    }
 
-    if (req.files?.capa_verso && req.files.capa_verso[0]) {
-      try {
-        const capaFile = req.files.capa_verso[0];
-        const extensao = capaFile.mimetype
-          ? capaFile.mimetype.split("/")[1]
-          : "png";
-        const nomeArquivo = `livro_${req.user.id}_capa_verso_${Date.now()}.${extensao}`;
+      const { data: signedData, error: signedError } =
+        await supabaseAdmin.storage
+          .from("manuscrito-livro")
+          .createSignedUrl(
+            manuscritoPath,
+            31536000,
+          );
 
-        const { data: uploadData, error: uploadError } =
-          await supabaseAdmin.storage
-            .from("capa-livros")
-            .upload(nomeArquivo, capaFile.buffer, {
-              contentType: capaFile.mimetype,
-            });
+      if (signedError) {
+        console.error(
+          "Erro ao criar URL assinada:",
+          signedError,
+        );
 
-        if (uploadError) {
-          console.error("Erro ao fazer upload da capa_verso:", uploadError);
-        } else {
-          capaUrls.verso = supabaseAdmin.storage
-            .from("capa-livros")
-            .getPublicUrl(uploadData.path).data.publicUrl;
-        }
-      } catch (uploadErr) {
-        console.error("Erro no fluxo da capa_verso:", uploadErr);
+        return res.status(500).json({
+          error:
+            "Erro ao gerar acesso ao manuscrito",
+        });
       }
-    }
 
-    if (req.files?.capa_orelhas && req.files.capa_orelhas[0]) {
-      try {
-        const capaFile = req.files.capa_orelhas[0];
-        const extensao = capaFile.mimetype
-          ? capaFile.mimetype.split("/")[1]
-          : "png";
-        const nomeArquivo = `livro_${req.user.id}_capa_orelhas_${Date.now()}.${extensao}`;
-
-        const { data: uploadData, error: uploadError } =
-          await supabaseAdmin.storage
-            .from("capa-livros")
-            .upload(nomeArquivo, capaFile.buffer, {
-              contentType: capaFile.mimetype,
-            });
-
-        if (uploadError) {
-          console.error("Erro ao fazer upload da capa_orelhas:", uploadError);
-        } else {
-          capaUrls.orelhas = supabaseAdmin.storage
-            .from("capa-livros")
-            .getPublicUrl(uploadData.path).data.publicUrl;
-        }
-      } catch (uploadErr) {
-        console.error("Erro no fluxo da capa_orelhas:", uploadErr);
-      }
-    }
-
-    if (req.files?.manuscrito && req.files.manuscrito[0]) {
-      try {
-        const manuscritoFile = req.files.manuscrito[0];
-        const nomeArquivo = `livro_${req.user.id}_manuscrito_${Date.now()}.pdf`;
-
-        const { data: uploadData, error: uploadError } =
-          await supabaseAdmin.storage
-            .from("manuscrito-livro")
-            .upload(nomeArquivo, manuscritoFile.buffer, {
-              contentType: manuscritoFile.mimetype,
-            });
-
-        if (uploadError) {
-          console.error("Erro ao fazer upload do manuscrito:", uploadError);
-        } else {
-          const { data: signedData, error: signedError } =
-            await supabaseAdmin.storage
-              .from("manuscrito-livro")
-              .createSignedUrl(uploadData.path, 31536000);
-
-          if (signedError) {
-            console.error(
-              "Erro ao criar URL assinada do manuscrito:",
-              signedError,
-            );
-          } else {
-            manuscritoUrl = signedData.signedUrl;
-          }
-        }
-      } catch (uploadErr) {
-        console.error("Erro no fluxo do manuscrito:", uploadErr);
-      }
+      manuscritoUrl = signedData.signedUrl;
     }
 
     const dadosParaInserir = {
-      fk_user_profile_id: req.user.id,
-      status: publicar ? "publicado" : "rascunho",
-      titulo: dadosLivro.detalhes?.titulo || null,
-      subtitulo: dadosLivro.detalhes?.subtitulo || null,
-      descricao: dadosLivro.detalhes?.descricao || null,
-      numero_edicao: dadosLivro.detalhes?.numeroEdicao
-        ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
-        : null,
-      autor_nome: dadosLivro.detalhes?.autor?.nome || null,
-      autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome || null,
-      publico_alvo: dadosLivro.detalhes?.publicoPrincipal || null,
-      colaboradores: dadosLivro.detalhes?.colaboradores || [],
+      fk_user_profile_id: userId,
+
+      estado: publicar
+        ? "publicado"
+        : "rascunho",
+
+      titulo:
+        dadosLivro.detalhes?.titulo || null,
+
+      subtitulo:
+        dadosLivro.detalhes?.subtitulo || null,
+
+      descricao:
+        dadosLivro.detalhes?.descricao || null,
+
+      numero_edicao:
+        dadosLivro.detalhes?.numeroEdicao
+          ? parseInt(
+              dadosLivro.detalhes.numeroEdicao,
+              10,
+            )
+          : null,
+
+      autor_nome:
+        dadosLivro.detalhes?.autor?.nome || null,
+
+      autor_sobrenome:
+        dadosLivro.detalhes?.autor?.sobrenome || null,
+
+      publico_alvo:
+        dadosLivro.detalhes?.publicoPrincipal || null,
+
+      colaboradores:
+        dadosLivro.detalhes?.colaboradores || [],
+
       direitos_de_publicacao:
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
-      conteudo_por_IA: dadosLivro.detalhes?.conteudoPorIA === true,
-      imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
-      data_de_publicacao: new Date().toISOString().split("T")[0],
-      preco_digital: dadosLivro.orcamento?.valorLivroDigital
-        ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
-        : 0.0,
-      preco_fisico: dadosLivro.orcamento?.valorLivroFisico
-        ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
-        : 0.0,
-      capa: JSON.stringify(capaUrls),
+
+      conteudo_por_IA:
+        dadosLivro.detalhes?.conteudoPorIA === true,
+
+      imagens_explicitas:
+        dadosLivro.detalhes?.imagensExplicitas === true,
+
+      data_de_publicacao:
+        new Date().toISOString().split("T")[0],
+
+      preco_digital:
+        dadosLivro.orcamento?.valorLivroDigital
+          ? parseFloat(
+              dadosLivro.orcamento.valorLivroDigital,
+            )
+          : 0.0,
+
+      preco_fisico:
+        dadosLivro.orcamento?.valorLivroFisico
+          ? parseFloat(
+              dadosLivro.orcamento.valorLivroFisico,
+            )
+          : 0.0,
+
+      capa: JSON.stringify({
+        frente: capa.frente || null,
+        verso: capa.verso || null,
+        orelhas: capa.orelhas || null,
+      }),
+
       manuscrito: manuscritoUrl,
     };
+
+  
+    console.time("Tempo do insert");
 
     const { data: novoLivro, error } = await supabase
       .from("livros")
       .insert(dadosParaInserir)
-      .select();
+      .select()
+      .single();
+
+    console.timeEnd("Tempo do insert");
 
     if (error) {
-      return res.status(500).json({ error: error.message });
+      console.error(
+        "Erro ao inserir livro:",
+        error,
+      );
+
+      return res.status(500).json({
+        error: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
     }
 
-    return res
-      .status(201)
-      .json({ data: novoLivro?.[0] || novoLivro, manuscritoUrl });
-  } catch (err) {
-    console.error("Erro fatal no InsertLivro:", err);
-    return res.status(500).json({ error: err.message });
+    return res.status(201).json({
+      data: novoLivro,
+      manuscritoUrl,
+    });
+  } catch (error) {
+    console.error(
+      "Erro fatal no InsertLivro:",
+      error,
+    );
+
+    return res.status(500).json({
+      error: error.message,
+      type: error.name,
+    });
+  }
+};
+
+export const CriarUploadLivro = async (req, res) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({
+        error: "Usuário não autenticado",
+      });
+    }
+
+    const { tipo, extensao } = req.body;
+    const userId = req.user.id;
+
+    const buckets = {
+      capa_frente: "capa-livros",
+      capa_verso: "capa-livros",
+      capa_orelhas: "capa-livros",
+      manuscrito: "manuscrito-livro",
+    };
+
+    const bucket = buckets[tipo];
+
+    if (!bucket) {
+      return res.status(400).json({
+        error: "Tipo de arquivo inválido",
+      });
+    }
+
+    const path =
+      `${userId}/livro_${tipo}_${crypto.randomUUID()}.${extensao}`;
+
+    const { data, error } = await supabaseAdmin.storage
+      .from(bucket)
+      .createSignedUploadUrl(path);
+
+    if (error) {
+      console.error("Erro ao criar upload assinado:", error);
+
+      return res.status(500).json({
+        error: error.message,
+      });
+    }
+
+    return res.status(200).json({
+      bucket,
+      path,
+      token: data.token,
+    });
+  } catch (error) {
+    console.error("Erro em CriarUploadLivro:", error);
+
+    return res.status(500).json({
+      error: error.message,
+    });
   }
 };

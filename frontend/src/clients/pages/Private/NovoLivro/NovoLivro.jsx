@@ -119,7 +119,7 @@ export default function NovoLivro() {
     <>
       <main>
         <h1>Novo Livro</h1>
-        <span>Etapa {etapa} de 5</span>
+        <span>Etapa {etapa} de 4</span>
 
         {etapa === 1 && (
           <Detalhes

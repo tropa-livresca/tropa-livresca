@@ -1,9 +1,12 @@
 import { apiFetch } from "../../../services/api";
-import { createContext, useState, useCallback } from "react";
+import { createContext, useState, useCallback, useContext } from "react";
+import { supabase } from "../../../lib/supabaseClient.js";
+import { AuthContext } from "../auth/Auth";
 
 export const LivroContext = createContext();
 
 export const LivroProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
   const [livro, setLivro] = useState([]);
   const [autor, setAutor] = useState(null);
   const [colaboradores, setColaboradores] = useState(null);
@@ -132,50 +135,163 @@ export const LivroProvider = ({ children }) => {
     setCarregando(true);
 
     try {
-      const formData = new FormData();
+      const userId = user?.id;
 
-      formData.append("dadosLivro", JSON.stringify({
-        detalhes: dadosLivro.detalhes,
-        orcamento: dadosLivro.orcamento,
-      }));
+      if (!userId || typeof userId !== "string") {
+        console.error("USER RECEBIDO:", user);
 
-      formData.append("publicar", publicar);
-
-      if (dadosLivro.conteudo) {
-        if (dadosLivro.conteudo.manuscrito) {
-          formData.append("manuscrito", dadosLivro.conteudo.manuscrito);
-        }
-
-        if (dadosLivro.conteudo.capa) {
-          if (dadosLivro.conteudo.capa.frente) {
-            formData.append("capa_frente", dadosLivro.conteudo.capa.frente);
-          }
-          if (dadosLivro.conteudo.capa.verso) {
-            formData.append("capa_verso", dadosLivro.conteudo.capa.verso);
-          }
-          if (dadosLivro.conteudo.capa.orelhas) {
-            formData.append("capa_orelhas", dadosLivro.conteudo.capa.orelhas);
-          }
-        }
+        throw new Error("ID do usuário inválido");
       }
+
+      const conteudo = dadosLivro.conteudo;
+      const capa = conteudo?.capa;
+
+      const uploadArquivo = async (arquivo, tipo) => {
+        if (!arquivo) {
+          return null;
+        }
+
+        const extensao =
+          arquivo.name?.split(".").pop() ||
+          arquivo.type?.split("/")[1] ||
+          "bin";
+
+        const res = await apiFetch(
+          "/api/livros/upload-url",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              tipo,
+              extensao,
+            }),
+          },
+        );
+
+        const uploadData = await res.json();
+
+        if (!res.ok) {
+          throw new Error(
+            uploadData.error ||
+            "Erro ao autorizar upload",
+          );
+        }
+
+        const { bucket, path, token } = uploadData;
+
+        const { error } = await supabase.storage
+          .from(bucket)
+          .uploadToSignedUrl(
+            path,
+            token,
+            arquivo,
+            {
+              contentType: arquivo.type,
+            },
+          );
+
+        if (error) {
+          throw new Error(
+            `Erro ao enviar ${tipo}: ${error.message}`,
+          );
+        }
+
+        if (bucket === "capa-livros") {
+          const { data } = supabase.storage
+            .from(bucket)
+            .getPublicUrl(path);
+
+          return data.publicUrl;
+        }
+
+        return path;
+      };
+      console.time("Tempo dos uploads");
+
+      const [
+        capaFrenteUrl,
+        capaVersoUrl,
+        capaOrelhasUrl,
+        manuscritoPath,
+      ] = await Promise.all([
+        uploadArquivo(
+          capa?.frente,
+          "capa_frente",
+        ),
+
+        uploadArquivo(
+          capa?.verso,
+          "capa_verso",
+        ),
+
+        uploadArquivo(
+          capa?.orelhas,
+          "capa_orelhas",
+        ),
+
+        uploadArquivo(
+          conteudo?.manuscrito,
+          "manuscrito",
+        ),
+      ]);
+      
+      console.timeEnd("Tempo dos uploads");
+
+      const payload = {
+        dadosLivro: {
+          detalhes: dadosLivro.detalhes,
+          orcamento: dadosLivro.orcamento,
+        },
+
+        publicar,
+
+        capa: {
+          frente: capaFrenteUrl,
+          verso: capaVersoUrl,
+          orelhas: capaOrelhasUrl,
+        },
+
+        manuscritoPath,
+      };
+
+      console.time("Tempo do backend");
 
       const res = await apiFetch("/api/livros/insertLivro/", {
         method: "POST",
-        body: formData,
+
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) {
-        throw new Error(`Erro ${res.status}`);
-      }
+      console.timeEnd("Tempo do backend");
 
       const json = await res.json();
-      console.log("Livro inserido com sucesso:", json);
+
+      if (!res.ok) {
+        throw new Error(
+          json.error || `Erro ${res.status}`,
+        );
+      }
+
+      console.log(
+        "Livro inserido com sucesso:",
+        json,
+      );
+
+      return json;
     } catch (error) {
-      console.error("Erro em InsertLivro", error);
+      console.error(
+        "Erro em InsertLivro:",
+        error,
+      );
+
+      throw error;
     } finally {
       setCarregando(false);
     }
-  }, []);
+  }, [user]);
 
   return (
     <LivroContext.Provider
