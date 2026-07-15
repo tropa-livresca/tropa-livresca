@@ -2,10 +2,9 @@
 
 .container {
   width: 100%;
-  min-height: auto;
-  padding: 4rem 5%;
-  display: grid;
-  gap: 4rem;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
 }
 
 .topo {
@@ -17,7 +16,7 @@
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: 4rem;
+  font-size: clamp(3rem, 5vw, 5rem);
   text-align: left;
 }
 
@@ -29,13 +28,14 @@
   margin-top: 1rem;
   background-color: #d4b46a;
   border-radius: 999px;
+  margin-bottom: 8%;
 }
 
 .containerbloco {
   position: relative;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 5rem;
+  gap: clamp(3rem, 6vw, 5rem);
 }
 
 .containerbloco::before {
@@ -55,22 +55,21 @@
 }
 
 .bloco {
-  position: relative;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(18rem, 1fr) minmax(18rem, 1fr);
   align-items: stretch;
-  gap: 4rem;
+  gap: clamp(2rem, 4vw, 4rem);
 }
 
 .texto {
   display: grid;
   align-content: center;
-  padding: 3rem;
-  background-color: #fffcf4;
+  padding: clamp(1.8rem, 3vw, 3rem);
+  background: #fffcf4;
   border-left: 8px solid #d4b46a;
-  border-radius: 20px;
+  border-radius: clamp(12px, 2vw, 20px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  transition: 0.3s;
+  transition: .3s;
 }
 
 .texto:hover {
@@ -80,28 +79,30 @@
 .texto h2 {
   margin: 0 0 1rem;
   color: #67170c;
-  font-size: 2.5rem;
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
 }
 
 .texto p {
   margin: 0;
-  line-height: 1.8;
   color: #67170c;
   text-align: justify;
+  line-height: 1.8;
+  font-size: clamp(.95rem, 1vw, 1.15rem);
 }
 
 .img {
   border-radius: 20px;
-  border: 3px solid white;
-  overflow: hidden;
+  min-height: clamp(18rem, 32vw, 32rem);
+  border-radius: clamp(12px, 2vw, 20px);
   display: grid;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
 }
 
 .img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: 0.4s;
+  transition: .4s;
 }
 
 .img:hover img {
@@ -109,8 +110,13 @@
 }
 
 @media (max-width: 900px) {
+
   .titulo {
     text-align: center;
+  }
+
+  .titulo::after {
+    margin-inline: auto;
   }
 
   .containerbloco::before {
@@ -123,6 +129,29 @@
   }
 
   .img {
-    min-height: 300px;
+    min-height: 20rem;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .container {
+    padding: 3rem 5%;
+  }
+
+  .texto {
+    padding: 1.5rem;
+  }
+
+  .texto h2 {
+    font-size: 1.7rem;
+  }
+
+  .texto p {
+    font-size: .95rem;
+  }
+
+  .img {
+    min-height: 16rem;
   }
 }
