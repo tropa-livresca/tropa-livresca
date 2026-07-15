@@ -81,56 +81,54 @@ Para detalhes técnicos, consulte [docs/arquitetura.md](docs/arquitetura.md).
 
 ## Diagrama de casos de uso
 
-O diagrama completo de casos de uso foi deslocado para [docs/diagramas/caso-de-uso.puml](docs/diagramas/caso-de-uso.puml).
+O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](docs/diagramas/caso-de-uso.puml).
 
 ## Estrutura de diretórios
 
 ```text
-tropa-livresca/
-├── backend/
-│   ├── package.json
-│   ├── README.md
-│   └── src/
-│       ├── api.js
-│       ├── config/
-│       │   └── supabase.js
-│       ├── controllers/
-│       ├── middlewares/
-│       │   ├── auth.middleware.js
-│       │   └── upload.middleware.js
-│       └── routes/
-├── docs/
-│   ├── api/
-│   ├── diagramas/
-│   ├── funcionalidades/
-│   ├── instalacao.md
-│   ├── autenticacao.md
-│   ├── arquitetura.md
-│   ├── banco-de-dados.md
-│   └── deploy.md
-├── frontend/
-│   ├── index.html
-│   ├── package.json
-│   ├── public/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   ├── main.jsx
-│   │   ├── admin/
-│   │   ├── clients/
-│   │   │   ├── components/
-│   │   │   ├── context/
-│   │   │   ├── hooks/
-│   │   │   ├── pages/
-│   │   │   └── routes/
-│   │   ├── common/
-│   │   ├── lib/
-│   │   ├── services/
-│   │   └── routes/
-│   └── vite.config.js
-├── LICENSE
-├── package.json
-└── README.md
+.
+└── Tropa-Livresca/
+    ├── backend/
+    │   ├── src/
+    │   │   ├── admin
+    │   │   ├── clients
+    │   │   └── common/
+    │   │       ├── config
+    │   │       ├── database
+    │   │       ├── middlewares
+    │   │       └── models
+    │   ├── api.js
+    │   ├── README.md
+    │   └── .env.example
+    ├── docs/
+    │   ├── api
+    │   ├── diagramas
+    │   ├── funcionalidades
+    │   ├── arquitetura.md
+    │   ├── autenticacao.md
+    │   ├── deploy.md
+    │   └── instalacao.md
+    ├── frontend/
+    │   ├── public
+    │   └── src/
+    │       ├── admin
+    │       ├── clients/
+    │       │   ├── components
+    │       │   ├── context
+    │       │   ├── features
+    │       │   └── hooks
+    │       ├── common/
+    │       │   ├── components
+    │       │   └── images
+    │       ├── lib
+    │       ├── routes
+    │       ├── services
+    │       ├── README.md
+    │       └── .env.example
+    ├── .env.example 
+    ├── LICENSE
+    ├── CONTRIBUTING
+    └── README.md
 ```
 
 ## Pré-requisitos
