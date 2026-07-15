@@ -4,8 +4,6 @@
 
 - Publicação de novos livros
 - Salvamento como rascunho
-- Escolha do formato de publicação
-- Definição de formato físico/digital
 - Cadastro de metadados da obra
 - Upload de manuscrito e capa
 - Pré-visualização da publicação
