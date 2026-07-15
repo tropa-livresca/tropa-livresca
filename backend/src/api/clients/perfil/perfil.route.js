@@ -1,7 +1,8 @@
 import express from "express";
-import {UpdatePerfil, GetPerfil} from "../controllers/clients/perfil.controller.js";
-import { checkAuth } from "../middlewares/auth.middleware.js";
-import {upload} from "../middlewares/upload.middleware.js";
+import {UpdatePerfil, GetPerfil} from "./perfil.controller.js";
+
+import { checkAuth } from "../../common/middlewares/auth.middleware.js";
+import {upload} from "../../common/middlewares/upload.middleware.js";
 
 const router = express.Router();
 

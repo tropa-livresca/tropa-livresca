@@ -1,6 +1,5 @@
-import supabase, { supabaseAdmin } from "../../config/supabase.js";
+import supabase, { supabaseAdmin } from "../../common/config/supabase.js";
 
-// Helper para parsear e estruturar URLs de capa
 const parseCapaUrls = (livro) => {
   if (!livro) return livro;
 

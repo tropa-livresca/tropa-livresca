@@ -1,4 +1,4 @@
-import supabase, { supabaseAdmin } from "../../config/supabase.js";
+import supabase, { supabaseAdmin } from "../../common/config/supabase.js";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,

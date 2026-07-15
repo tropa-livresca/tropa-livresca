@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   GetLivros,
   GetLivrosById,
@@ -6,9 +7,10 @@ import {
   UpdateStatusAtivo,
   InsertLivro,
   CriarUploadLivro,
-} from "../controllers/clients/livros.controller.js";
-import { checkAuth } from "../middlewares/auth.middleware.js";
-import { upload } from "../middlewares/upload.middleware.js";
+} from "./livros.controller.js";
+
+import { checkAuth } from "../../common/middlewares/auth.middleware.js";
+import {upload} from "../../common/middlewares/upload.middleware.js";
 
 const router = express.Router();
 

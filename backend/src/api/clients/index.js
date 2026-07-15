@@ -1,10 +1,10 @@
 import express from "express";
 const router = express.Router();
 
-import livrosRoutes from "./livros.route.js";
-import autorRoutes from "./autor.route.js";
-import suporteRoutes from "./suporte.route.js";
-import perfilRoutes from "./perfil.route.js";
+import livrosRoutes from "./livro/livros.route.js";
+import autorRoutes from "./autores/autor.route.js";
+import suporteRoutes from "./suporte/suporte.route.js";
+import perfilRoutes from "./perfil/perfil.route.js";
 
 router.use("/", livrosRoutes);
 router.use("/", autorRoutes);
