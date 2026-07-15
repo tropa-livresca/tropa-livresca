@@ -14,7 +14,6 @@ export default function Perfil() {
     facebook,
     linkedin,
     email,
-    redes,
     setNome,
     setTelefone,
     setImagem,
@@ -23,14 +22,12 @@ export default function Perfil() {
     setFacebook,
     setLinkedin,
     setEmail,
-    setRedes,
     updatePerfil,
     getPerfil,
   } = usePerfil();
 
   const [previewUrl, setPreviewUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
-  const [modoeEdicao, setModoEdicao] = useState(false);
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -47,13 +44,24 @@ export default function Perfil() {
   }, [perfil]);
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
 
     if (file) {
       setImagem(file);
+      if (previewUrl && previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
       setPreviewUrl(URL.createObjectURL(file));
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl && previewUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,12 +70,14 @@ export default function Perfil() {
     if (instagram)
       redesParaEnviar.push({ plataforma: "Instagram", url: instagram });
 
-    if (facebook) redesParaEnviar.push({ plataforma: facebook, url: facebook });
+    if (facebook) 
+      redesParaEnviar.push({ plataforma: "Facebook", url: facebook });
 
     if (linkedin)
-      redesParaEnviar.push({ plataforma: "linkedin", url: linkedin });
+      redesParaEnviar.push({ plataforma: "LinkedIn", url: linkedin });
 
-    if (email) redesParaEnviar.push({ plataforma: "Email", url: email });
+    if (email) 
+      redesParaEnviar.push({ plataforma: "Email", url: email });
 
     const resultado = await updatePerfil({
       nome,
@@ -77,10 +87,10 @@ export default function Perfil() {
       usu_redes: redesParaEnviar,
     });
 
-    if (resultado?.sucess) {
-      alert("Perfil atualizado com sucesso!");
+    if (resultado?.success) {
+      alert("Perfil updated com sucesso!");
     } else {
-      alert(`Erro ao atualizar perfil: ${resultado.error}`);
+      alert(`Erro ao atualizar perfil: ${resultado?.error || "Erro desconhecido"}`);
     }
   };
 
@@ -97,39 +107,39 @@ export default function Perfil() {
         <div>
           <p>Nome Atual: {perfil.nome}</p>
           <p>Telefone Atual: {perfil.telefone}</p>
-          <p>Descricao atual: {perfil.descricao}</p>
+          <p>Descrição atual: {perfil.descricao}</p>
           <p>
             Instagram:{" "}
             {perfil.usu_redes?.find(
               (r) => r.plataforma.toLowerCase() === "instagram",
-            )?.url || "NÃ£o informado"}
+            )?.url || "Não informado"}
           </p>
 
           <p>
             Facebook:{" "}
             {perfil.usu_redes?.find(
               (r) => r.plataforma.toLowerCase() === "facebook",
-            )?.url || "NÃ£o informado"}
+            )?.url || "Não informado"}
           </p>
 
           <p>
             LinkedIn:{" "}
             {perfil.usu_redes?.find(
               (r) => r.plataforma.toLowerCase() === "linkedin",
-            )?.url || "NÃ£o informado"}
+            )?.url || "Não informado"}
           </p>
 
           <p>
             E-mail:{" "}
             {perfil.usu_redes?.find(
               (r) => r.plataforma.toLowerCase() === "email",
-            )?.url || "NÃ£o informado"}
+            )?.url || "Não informado"}
           </p>
 
           <form onSubmit={handleSubmit}>
             <div>
               {previewUrl ? (
-                <img src={previewUrl} alt="Pré-visualizaÃ§Ã£o" width="150" />
+                <img src={previewUrl} alt="Pré-visualização" width="150" />
               ) : (
                 <div>Sem foto</div>
               )}
@@ -157,21 +167,21 @@ export default function Perfil() {
 
             <Input
               type="text"
-              placeholder="URL do instagram"
+              placeholder="URL do Instagram"
               value={instagram}
               handleOnChange={(e) => setInstagram(e.target.value)}
             />
 
             <Input
               type="text"
-              placeholder="URL do facebook"
+              placeholder="URL do Facebook"
               value={facebook}
               handleOnChange={(e) => setFacebook(e.target.value)}
             />
 
             <Input
               type="text"
-              placeholder="URL do Linkedin"
+              placeholder="URL do LinkedIn"
               value={linkedin}
               handleOnChange={(e) => setLinkedin(e.target.value)}
             />
@@ -181,7 +191,7 @@ export default function Perfil() {
               name="descricao"
               rows="5"
               cols="30"
-              placeholder="Digite sua descriÃ§Ã£o..."
+              placeholder="Digite sua descrição..."
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
             ></textarea>
@@ -199,5 +209,3 @@ export default function Perfil() {
     </main>
   );
 }
-
-
