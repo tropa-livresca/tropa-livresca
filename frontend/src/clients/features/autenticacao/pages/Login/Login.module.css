@@ -1,0 +1,278 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
+.container {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  min-height: 100vh;
+}
+
+.ldireito {
+  overflow: hidden;
+}
+
+.ldireito img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.lesquerdo {
+  place-items: center;
+  padding: 2rem;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background-color: #ede6b3;
+}
+
+.formulario {
+  width: 100%;
+  max-width: 40rem;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.formulario h1 {
+  color: #67170c;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-left: 0;
+  margin-bottom: 0.5rem;
+}
+
+.formulario h2 {
+  color: #67170c;
+  font-size: 1.5rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.formulario h3 {
+  color: #67170c;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.formulario label {
+  color: #67170c;
+  padding-left: 2rem;
+}
+
+p,
+a {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  text-decoration: none;
+}
+
+.informacoes {
+  display: grid;
+  justify-content: center;
+}
+
+.informacoes a {
+  text-decoration: underline;
+}
+
+.para p {
+  text-align: left;
+  color: #67170c;
+  margin: 0.5rem;
+}
+
+#checkbox {
+  width: 90%;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: auto 1fr;
+}
+
+#checkbox label {
+  padding-left: 0.5rem;
+}
+
+#checkbox input {
+  justify-self: start;
+}
+
+.errinho p:not(.button p) {
+  margin-bottom: 0;
+  color: #67170c;
+}
+
+.inputSenha {
+  position: relative;
+  width: 100%;
+}
+
+.olho {
+  position: absolute;
+  top: 35%;
+  right: 3rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.2rem;
+  padding: 0;
+  z-index: 10;
+}
+
+.olho:hover {
+  color: #67170c;
+}
+
+.formulario {
+  position: relative;
+}
+
+.voltar {
+  position: absolute;
+  top: 16%;
+  left: 5%;
+  width: 3.3rem;
+  height: 2.8rem;
+  color: #67170c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.divisor {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 90%;
+  margin: 1.5rem auto;
+}
+
+.divisor span {
+  flex: 1;
+  height: 1px;
+  background: #c9b9a5;
+}
+
+.divisor p {
+  margin: 0;
+  color: #67170c;
+  font-size: 0.9rem;
+}
+
+.google {
+  width: 90%;
+  height: 3rem;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  background-color: #ede6b3;
+  border-radius: 0.7rem;
+  border: 0.2em solid beige;
+  color: #67170c;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.google:hover {
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.google svg {
+  font-size: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .ldireito {
+    display: none;
+  }
+
+  .lesquerdo {
+    padding: 1rem;
+  }
+
+  .formulario {
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+
+  .formulario img {
+    justify-self: center;
+    z-index: 2;
+  }
+
+  form {
+    border-radius: 2rem;
+    padding: 2rem 0.8rem;
+  }
+
+  .formulario h1 {
+    font-size: 1.8rem;
+  }
+
+  .formulario h2 {
+    font-size: 1.2rem;
+  }
+
+  .formulario h3 {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .formulario label {
+    width: 90%;
+    justify-self: center;
+    padding-left: 0;
+    text-align: left;
+  }
+
+  p,
+  a {
+    font-size: 0.95rem;
+    margin: 1rem 0;
+  }
+
+  #checkbox {
+    width: 90%;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  #checkbox label {
+    padding-left: 0;
+  }
+
+  .olho {
+    right: 2.5rem;
+  }
+
+  .voltar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .google {
+    width: 90%;
+  }
+
+  .divisor {
+    width: 90%;
+  }
+}

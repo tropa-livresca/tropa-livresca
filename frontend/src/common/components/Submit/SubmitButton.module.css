@@ -1,0 +1,23 @@
+.btn {
+  background-color: #67170c;
+  width: 90%;
+  color: white;
+  padding: 0.7em 1.2em;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  margin-top: 1.5rem;
+  color: #ede6b3;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btn_login {
+  margin-bottom: 2rem;
+}
