@@ -104,13 +104,9 @@ main {
   transition: 0.3s;
 }
 
-<<<<<<< HEAD:frontend/src/clients/features/autores/pages/Autores/Autores.module.css
-.autorinf p {
-=======
 .autorinf p{
   font-family: "Jacques Francois", serif;
   color: #67170c;
->>>>>>> db5a90a247c75c9a32ffc3a9fe282ce46d732c95:frontend/src/clients/pages/Public/Autores/Autores.module.css
 }
 
 .autorinf:hover {
@@ -131,11 +127,7 @@ main {
   font-size: 1.8rem;
   white-space: normal;
   overflow-wrap: break-word;
-<<<<<<< HEAD:frontend/src/clients/features/autores/pages/Autores/Autores.module.css
-=======
-  font-family: "Jacques Francois", serif;
   color: #67170c;
->>>>>>> db5a90a247c75c9a32ffc3a9fe282ce46d732c95:frontend/src/clients/pages/Public/Autores/Autores.module.css
 }
 
 .autorinf h3::after {

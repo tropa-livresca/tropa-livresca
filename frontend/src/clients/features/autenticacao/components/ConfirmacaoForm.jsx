@@ -14,18 +14,18 @@ export default function ConfirmacaoForm({text}) {
 
     return (
     <>
-    <h1>Digite o seu cÃ³digo de verificaÃ§Ã£o mandado no seu {text}</h1>
+    <h1>Digite o seu código de verificação mandado no seu {text}</h1>
       <form onSubmit={handleonSubmit}>
         <Input
         type = "text"
-        text = "CÃ³digo de verificaÃ§Ã£o"
-        name = "CÃ³digo"
-        placeholder = "Digite o cÃ³digo de verificaÃ§Ã£o"
+        text = "Código de verificação"
+        name = "Código"
+        placeholder = "Digite o código de verificaÃ§Ã£o"
         handleOnChange={(e)=> setCodigo(e.target.value)}
         value = {codigo}
         />
 
-        <SubmitButton text = "Submeter CÃ³digo"/>
+        <SubmitButton text = "Submeter Código"/>
 
       </form>
     </>

@@ -30,7 +30,7 @@ export default function AutorById() {
 
                 <div className={styles.heroinfo}>
                     <h1 className={styles.titulo}>{autor?.nome}</h1>
-                    <p className={styles.descricao}>{autor?.descricao || "Sem descriÃ§Ã£o."}</p>
+                    <p className={styles.descricao}>{autor?.descricao || "Sem descrição."}</p>
                 </div>
             </section>
 
@@ -68,7 +68,7 @@ export default function AutorById() {
                         )}
                     </div>
                 ) : (
-                    <p className={styles.vazio}>Sem redes sociais disponÃ­veis.</p>
+                    <p className={styles.vazio}>Sem redes sociais disponíveis.</p>
                 )}
             </section>
 
@@ -108,6 +108,3 @@ export default function AutorById() {
         </main>
     );
 }
-
-
-
