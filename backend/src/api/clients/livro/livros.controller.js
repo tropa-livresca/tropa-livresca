@@ -1,4 +1,7 @@
-import supabase, { supabaseAdmin } from "../../../common/config/supabase.js";
+import supabase, { supabaseAdmin } from "../../common/config/supabase.js";
+
+import {LivroModel} from "../../common/models/livro.model.js";
+import {ColaboradorModel} from "../../common/models/colaborador.model.js";
 
 const parseCapaUrls = (livro) => {
   if (!livro) return livro;
@@ -21,31 +24,16 @@ export const GetLivros = async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 12;
   const busca = req.query.busca || "";
 
-  const start = (page - 1) * limit;
-  const end = start + limit - 1;
-
   try {
-    let query = supabaseAdmin
-      .from("livros")
-      .select("*", { count: "exact" })
-      .eq("ativo", true)
-      .order("titulo", { ascending: true });
+    const {data, count} = await LivroModel.buscarComFiltros({
+      page,
+      limit,
+      busca,
+    });
 
-    if (busca) {
-      query = query.ilike("titulo", `%${busca}%`);
-    }
-
-    const { data, error, count } = await query.range(start, end);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
+    if (data.length === 0) {
       const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
       erro404.statusCode = 404;
-      throw erro404;
     }
 
     const livrosComCapas = parseCapasArray(data);
@@ -66,31 +54,23 @@ export const GetLivros = async (req, res, next) => {
 
 export const GetLivrosById = async (req, res, next) => {
   try {
-    // Validação de segurança antecipada para evitar queries de usuários fantasma
     if (!req.user || !req.user.id) {
       const erro401 = new Error("Usuário não autenticado ou token inválido.");
       erro401.statusCode = 401;
       throw erro401;
     }
 
-    const { data, error } = await supabase
-      .from("livros")
-      .select("*")
-      .eq("fk_user_profile_id", req.user.id)
-      .eq("ativo", true);
+    const livros = await LivroModel.buscarPorPerfilUsuario(req.user.id,);
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    if (!data || data.length === 0) {
+    if (data.length === 0) {
       const erro404 = new Error("Nenhum rascunho de livro encontrado para este autor.");
+
       erro404.statusCode = 404;
       throw erro404;
     }
 
     const livrosComCapas = parseCapasArray(data);
+    
     return res.status(200).json(livrosComCapas);
   } catch (err) {
     next(err);
@@ -101,18 +81,7 @@ export const GetLivrosByAutor = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const { data: livro, error: errorLivro } = await supabaseAdmin
-      .from("livros")
-      .select(
-        "id, publico_alvo, numero_edicao, data_de_publicacao, capa, titulo, subtitulo, descricao, autor_nome, autor_sobrenome, users_profile(id, nome, imagem)",
-      )
-      .eq("id", id)
-      .maybeSingle();
-
-    if (errorLivro) {
-      errorLivro.statusCode = 500;
-      throw errorLivro;
-    }
+    const livro = await LivroModel.buscarDetalhesPorId(id, false);
 
     if (!livro) {
       const erro404 = new Error("O livro solicitado não existe ou está indisponível.");
@@ -120,16 +89,7 @@ export const GetLivrosByAutor = async (req, res, next) => {
       throw erro404;
     }
 
-    const { data: colaboradores, error: errorColaborador } = await supabaseAdmin
-      .from("colaboradores")
-      .select("nome, sobrenome, funcao")
-      .eq("fk_livros_id", id)
-      .order("nome", { ascending: true });
-
-    if (errorColaborador) {
-      errorColaborador.statusCode = 500;
-      throw errorColaborador;
-    }
+    const colaborador = await ColaboradorModel.buscarPorLivroId(id);
 
     const livroComCapa = parseCapaUrls(livro);
 
@@ -146,15 +106,7 @@ export const GetLivrosByAutor = async (req, res, next) => {
 
 export const UpdateStatusAtivo = async (req, res, next) => {
   try {
-    const { error } = await supabase
-      .from("livros")
-      .update({ ativo: false })
-      .eq("id", req.params.id);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
+    await LivroModel.desativar(req.params.id);
 
     return res.status(200).end();
   } catch (err) {
@@ -227,17 +179,8 @@ export const InsertLivro = async (req, res, next) => {
     };
 
     console.time("Tempo do insert");
-    const { data: novoLivro, error } = await supabase
-      .from("livros")
-      .insert(dadosParaInserir)
-      .select()
-      .single();
-    console.timeEnd("Tempo do insert");
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
+    
+    const novoLivro = await LivroModel.criar(dadosParaInserir);
 
     return res.status(201).json({
       data: novoLivro,
@@ -245,5 +188,52 @@ export const InsertLivro = async (req, res, next) => {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+export const CriarUploadLivro = async (req, res, next) => {
+  try {
+    if (!req.user?.id) {
+      const erro401 = new Error("Usuário não autenticado.");
+      erro401.statusCode = 401;
+      throw erro401;
+    }
+
+    const { tipo, extensao } = req.body;
+    const userId = req.user.id;
+
+    const buckets = {
+      capa_frente: "capa-livros",
+      capa_verso: "capa-livros",
+      capa_orelhas: "capa-livros",
+      manuscrito: "manuscrito-livro",
+    };
+
+    const bucket = buckets[tipo];
+
+    if (!bucket) {
+      const erro400 = new Error("Tipo de arquivo inválido para o sistema.");
+      erro400.statusCode = 400;
+      throw erro400;
+    }
+
+    const path = `${userId}/livro_${tipo}_${globalThis.crypto.randomUUID()}.${extensao}`;
+
+    const { data, error } = await supabaseAdmin.storage
+      .from(bucket)
+      .createSignedUploadUrl(path);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return res.status(200).json({
+      bucket,
+      path,
+      token: data.token,
+    });
+  } catch (error) {
+    next(error);
   }
 };

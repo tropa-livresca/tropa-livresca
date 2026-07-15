@@ -1,4 +1,6 @@
-import { supabaseAdmin } from "../../../common/config/supabase.js";
+import { supabaseAdmin } from "../../common/config/supabase.js";
+
+import { PerfilModel } from "../../common/models/perfil.model.js";
 
 export const GetPerfil = async (req, res, next) => {
   try {
@@ -8,18 +10,9 @@ export const GetPerfil = async (req, res, next) => {
       throw erro401;
     }
 
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .select("*")
-      .eq("id", req.user.id)
-      .maybeSingle();
+    const perfil = await PerfilModel.buscarPorId(req.user.id);
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    if (!data) {
+    if (!perfil) {
       return res.json({
         id: req.user.id,
         nome: "",
@@ -27,9 +20,9 @@ export const GetPerfil = async (req, res, next) => {
         descricao: "",
         imagem: "",
       });
-    } 
+    }
 
-    return res.json(data);
+    return res.json(perfil);
   } catch (err) {
     next(err);
   }
@@ -38,7 +31,9 @@ export const GetPerfil = async (req, res, next) => {
 export const UpdatePerfil = async (req, res, next) => {
   try {
     if (!req.user || !req.user.id) {
-      const erro401 = new Error("Sessão expirada. Autentique-se novamente para salvar as alterações.");
+      const erro401 = new Error(
+        "Sessão expirada. Autentique-se novamente para salvar as alterações.",
+      );
       erro401.statusCode = 401;
       throw erro401;
     }
@@ -75,38 +70,16 @@ export const UpdatePerfil = async (req, res, next) => {
       updates.imagem = publicUrlData.publicUrl;
     }
 
-    const { data: perfilData, error: perfilError } = await supabaseAdmin
-      .from("users_profile")
-      .upsert(updates, { onConflict: "id" })
-      .select()
-      .maybeSingle();
-
-    if (perfilError) {
-      perfilError.statusCode = 500;
-      throw perfilError;
-    }
+    const perfilData = await PerfilModel.salvar(updates);
 
     if (redes) {
-      const listaRedes = typeof redes === "string" ? JSON.parse(redes) : redes;
-
-      const redesComUserId = listaRedes.map((rede) => ({
-        ...rede,
-        fk_user_profile_id: req.user.id,
-      }));
-
-      const { error: redesError } = await supabaseAdmin
-        .from("usu_redes")
-        .upsert(redesComUserId, { onConflict: "fk_user_profile_id, plataforma" });
-
-      if (redesError) {
-        const erroParcial = new Error(`Perfil salvo, mas falha ao atualizar redes sociais: ${redesError.message}`);
-        erroParcial.statusCode = 400;
-        throw erroParcial;
-      }
+      const listaRedes =
+      typeof redes === "string" ? JSON.parse(redes) : redes;
+      await PerfilModel.salvarRedes(req.user.id, listaRedes);
 
       perfilData.usu_redes = listaRedes;
     }
-
+ 
     return res.json(perfilData);
   } catch (err) {
     next(err);
