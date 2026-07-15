@@ -87,50 +87,48 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 
 ```text
 .
-└── Tropa-Livresca/
-    ├── backend/
-    │   ├── src/
-    │   │   ├── admin
-    │   │   ├── clients
-    │   │   └── common/
-    │   │       ├── config
-    │   │       ├── database
-    │   │       ├── middlewares
-    │   │       └── models
-    │   ├── api.js
-    │   ├── README.md
-    │   └── .env.example
-    ├── docs/
-    │   ├── api
-    │   ├── diagramas
-    │   ├── funcionalidades
-    │   ├── arquitetura.md
-    │   ├── autenticacao.md
-    │   ├── deploy.md
-    │   └── instalacao.md
-    ├── frontend/
-    │   ├── public
-    │   └── src/
-    │       ├── admin
-    │       ├── clients/
-    │       │   ├── components
-    │       │   ├── context
-    │       │   ├── features
-    │       │   └── hooks
-    │       ├── common/
-    │       │   ├── components
-    │       │   └── images
-    │       ├── lib
-    │       ├── routes
-    │       ├── services
-    │       ├── README.md
-    │       └── .env.example
-    ├── .env.example 
-    ├── LICENSE
-    ├── CONTRIBUTING
-    └── README.md
+├── backend/
+│   ├── src/
+│   │   ├── admin/
+│   │   ├── clients/
+│   │   └── common/
+│   │       ├── config/
+│   │       ├── database/
+│   │       ├── middlewares/
+│   │       └── models/
+│   ├── api.js
+│   ├── README.md
+│   └── .env.example
+├── docs/
+│   ├── api/
+│   ├── diagramas/
+│   ├── funcionalidades/
+│   ├── arquitetura.md
+│   ├── autenticacao.md
+│   ├── deploy.md
+│   └── instalacao.md
+├── frontend/
+│   ├── public/
+│   └── src/
+│       ├── admin/
+│       ├── clients/
+│       │   ├── components/
+│       │   ├── context/
+│       │   ├── features/
+│       │   └── hooks/
+│       ├── common/
+│       │   ├── components/
+│       │   └── images/
+│       ├── lib/
+│       ├── routes/
+│       ├── services/
+│       ├── README.md
+│       └── .env.example
+├── .env.example
+├── LICENSE
+├── CONTRIBUTING
+└── README.md
 ```
-
 ## Pré-requisitos
 
 As instruções completas de instalação e configuração estão em [docs/instalacao.md](docs/instalacao.md).
