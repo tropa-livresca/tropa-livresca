@@ -1,6 +1,6 @@
-import supabase, { supabaseAdmin } from "../../common/config/supabase.js";
+import { supabaseAdmin } from "../../../common/config/supabase.js";
 
-export const GetAutores = async (req, res) => {
+export const GetAutores = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 12;
@@ -11,7 +11,7 @@ export const GetAutores = async (req, res) => {
 
     let query = supabaseAdmin
       .from("users_profile")
-      .select("id, nome, telefone, imagem, descricao, livros!inner(id)", {
+      .select("id, nome, imagem, descricao, livros!inner(id)", {
         count: "exact",
       })
       .eq("livros.ativo", true)
@@ -24,20 +24,15 @@ export const GetAutores = async (req, res) => {
     const { data, error, count } = await query.range(start, end);
 
     if (error) {
-      console.error("Erro no supabase", error);
-      return res.status(500).json({ error: error.message });
+      error.statusCode = 500;
+      throw error;
     }
 
-    if (!data) {
-      return res.status(404).json({ error: "Nenhum autor encontrado" });
+    if (!data || data.length === 0) {
+      const erro404 = new Error("Nenhum autor foi encontrado no catálogo.");
+      erro404.statusCode = 404;
+      throw erro404;
     }
-
-    const autoresUnicos = data.filter(
-      (autor, index, self) =>
-        self.findIndex((a) => a.id === autor.id) === index,
-    );
-
-    const totalItens = count || autoresUnicos.length;
 
     return res.json({
       data,
@@ -50,12 +45,11 @@ export const GetAutores = async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Erro inesperado", err);
-    return res.status(500).json({ error: "Erro inesperado" });
+    next(err);
   }
 };
 
-export const GetAutorById = async (req, res) => {
+export const GetAutorById = async (req, res, next) => {
   const { id } = req.params;
 
   const page = parseInt(req.query.page) || 1;
@@ -68,21 +62,23 @@ export const GetAutorById = async (req, res) => {
     const { data: autor, error: autorError } = await supabaseAdmin
       .from("users_profile")
       .select(
-        "id, nome, telefone, imagem, descricao, usu_redes(url, plataforma)",
+        "id, nome, imagem, descricao, usu_redes(url, plataforma)",
       )
       .eq("id", id)
-      .maybeSingle()
+      .maybeSingle();
       
     if (autorError) {
-      console.error("Erro no supabase", autorError);
-      return res.status(500).json({ autorError: error.message });
+      autorError.statusCode = 500;
+      throw autorError;
     }
 
     if (!autor) {
-      return res.status(404).json({ autorError: "Autor não encontrado" });
+      const erro404 = new Error("O autor solicitado não foi encontrado.");
+      erro404.statusCode = 404;
+      throw erro404;
     }
 
- const { data: livros, error: livrosError, count } = await supabaseAdmin
+    const { data: livros, error: livrosError, count } = await supabaseAdmin
       .from("livros")
       .select("id, data_de_publicacao, titulo, subtitulo, capa", { count: "exact" })
       .eq("fk_user_profile_id", id)
@@ -91,8 +87,8 @@ export const GetAutorById = async (req, res) => {
       .range(start, end);
 
     if (livrosError) {
-      console.error("Erro ao buscar livros", livrosError);
-      return res.status(500).json({ error: livrosError.message });
+      livrosError.statusCode = 500;
+      throw livrosError;
     }
 
     return res.status(200).json({
@@ -108,7 +104,6 @@ export const GetAutorById = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Erro inesperado", err);
-    return res.status(500).json({ error: "Erro inesperado" });
+    next(err);
   }
 };

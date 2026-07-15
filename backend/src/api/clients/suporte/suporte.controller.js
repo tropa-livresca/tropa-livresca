@@ -1,21 +1,24 @@
 import nodemailer from "nodemailer";
 import "dotenv/config";
 
-export const enviarEmail = async (req, res) => {
+export const enviarEmail = async (req, res, next) => {
   const { telefone, email, nome, mensagem, motivo } = req.body;
 
   const emailCliente = email;
   const mensagemCliente = mensagem;
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailCliente || !mensagemCliente || !emailRegex.test(emailCliente)) {
-    return res.status(400).send("Dados inválidos ou e-mail malformatado.");
-  }
-
   try {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailCliente || !mensagemCliente || !emailRegex.test(emailCliente)) {
+      const erroValidacao = new Error("Dados inválidos ou e-mail malformatado.");
+      erroValidacao.statusCode = 400;
+      throw erroValidacao;
+    }
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
-      port: parseInt(process.env.SMTP_PORT || "465"),
+      port: parseInt(process.env.SMTP_PORT || "465", 10),
       secure: true,
       auth: {
         user: process.env.SMTP_USER,
@@ -23,6 +26,11 @@ export const enviarEmail = async (req, res) => {
       },
       family: 4,
     });
+
+    const mensagemSanitizada = mensagemCliente
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\n/g, "<br>");
 
     const mail = {
       from: `"Suporte Tropa Livresca" <${process.env.SMTP_USER}>`,
@@ -35,12 +43,18 @@ export const enviarEmail = async (req, res) => {
             <b>E-mail do remetente:</b> ${emailCliente} <br>
             <b>Telefone/Celular:</b> ${telefone || 'Não informado'} <br><br>
             <b>Mensagem:</b><br>
-            <p>${mensagemCliente.replace(/\n/g, "<br>")}</p>`,
+            <p>${mensagemSanitizada}</p>`,
     };
 
     const response = await transporter.sendMail(mail);
-    return res.json(response);
+    
+    return res.status(200).json({
+      status: "success",
+      message: "Sua mensagem de suporte foi enviada com sucesso!",
+      responseId: response.messageId
+    });
+    
   } catch (err) {
-    return res.status(500).json({ error: "Erro ao enviar e-mail", err: err.message });
+    next(err);
   }
 };
