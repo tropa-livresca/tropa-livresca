@@ -15,7 +15,7 @@ export const useAutores = () => {
   const [erro, setErro] = useState(null);
   const [meta, setMeta] = useState(null);
 
-  const buscarAutorById = useCallback(async (id) => {
+    const buscarAutorById = useCallback(async (id) => {
     setCarregando(true);
     setErro(null);
 
@@ -50,7 +50,26 @@ export const useAutores = () => {
         setEmail(mail ? mail.url : "");
 
         setAutor(json.data);
-        setLivros(json.data.livros || []);
+
+        const livrosTratados = (json.data.livros || []).map((livro) => {
+          let capaTratada = livro.capa;
+          
+          if (typeof livro.capa === "string") {
+            try {
+              capaTratada = JSON.parse(livro.capa);
+            } catch (e) {
+              console.error("Erro ao converter JSON da capa:", e);
+              capaTratada = null;
+            }
+          }
+          
+          return {
+            ...livro,
+            capa: capaTratada
+          };
+        });
+
+        setLivros(livrosTratados);
         setMeta(json.meta);
       } else {
         throw new Error(json.error || "Erro ao carregar autor");

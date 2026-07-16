@@ -27,7 +27,7 @@ export default function MeusLivros() {
                {Livros.map(livro => (
                   <div key={livro.id}>
                      <div>
-                        {livro.capa?.[0] && <img src={livro.capa[0]} alt={livro.titulo} style={{ width: "50px" }} />}
+                        {livro.capa?.frente && <img src={livro.capa.frente} alt={livro.titulo} style={{ width: "50px" }} />}
                         <br />
                         {livro.titulo}
                      </div>

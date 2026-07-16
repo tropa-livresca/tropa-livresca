@@ -40,7 +40,7 @@ export const LivroModel = {
   async buscarDetalhesPorId(id) {
     let query = supabaseAdmin
       .from("livros")
-      .select("id, publico_alvo, numero_edicao, data_de_publicacao, capa, titulo, subtitulo, descricao, autor_nome, autor_sobrenome, users_profile(id, nome, imagem)")
+      .select("*, users_profile(id, nome, imagem)")
       .eq("id", id)
       .eq("ativo", true);
 
