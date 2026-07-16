@@ -15,7 +15,7 @@ export const usePerfil = () => {
 
   const getPerfil = async () => {
     try {
-      const response = await apiFetch("/api/perfil");
+      const response = await apiFetch("/api/v1/clients/perfil");
 
       if (!response.ok) {
         if (response.status === 404) {
@@ -37,22 +37,30 @@ export const usePerfil = () => {
       }
 
       const json = await response.json();
-      
+
       const dadosPerfil = json.data || json;
 
       const listaRedes = dadosPerfil.usu_redes || [];
       setRedes(listaRedes);
 
-      const insta = listaRedes.find(r => r.plataforma?.toLowerCase() === "instagram");
-      const face = listaRedes.find(r => r.plataforma?.toLowerCase() === "facebook");
-      const linke = listaRedes.find(r => r.plataforma?.toLowerCase() === "linkedin");
-      const mail = listaRedes.find(r => r.plataforma?.toLowerCase() === "email");
+      const insta = listaRedes.find(
+        (r) => r.plataforma?.toLowerCase() === "instagram",
+      );
+      const face = listaRedes.find(
+        (r) => r.plataforma?.toLowerCase() === "facebook",
+      );
+      const linke = listaRedes.find(
+        (r) => r.plataforma?.toLowerCase() === "linkedin",
+      );
+      const mail = listaRedes.find(
+        (r) => r.plataforma?.toLowerCase() === "email",
+      );
 
       setInstagram(insta ? insta.url : "");
       setFacebook(face ? face.url : "");
       setLinkedin(linke ? linke.url : "");
       setEmail(mail ? mail.url : "");
-      
+
       setPerfil(dadosPerfil);
       setNome(dadosPerfil.nome || "");
       setDescricao(dadosPerfil.descricao || "");
@@ -70,7 +78,7 @@ export const usePerfil = () => {
       formData.append("nome", dados.nome || "");
       formData.append("telefone", dados.telefone || "");
 
-      if (dados.descricao) {  
+      if (dados.descricao) {
         formData.append("descricao", dados.descricao);
       }
 
@@ -82,13 +90,13 @@ export const usePerfil = () => {
         formData.append("redes", JSON.stringify(dados.usu_redes));
       }
 
-      const response = await apiFetch("/api/perfil", {
+      const response = await apiFetch("/api/v1/clients/perfil", {
         method: "PUT",
         body: formData,
       });
 
       const json = await response.json();
-      const data = json.data || json; 
+      const data = json.data || json;
 
       if (!response.ok) {
         throw new Error(json.error || "Erro ao atualizar perfil");
@@ -101,34 +109,37 @@ export const usePerfil = () => {
       setDescricao(data.descricao || "");
       setRedes(data.usu_redes || []);
 
-      return { sucess: true }; 
+      return { sucess: true };
     } catch (error) {
       console.error("Error ao atualizar perfil", error);
-      return { sucess: false, error: error.message || "Erro ao atualizar perfil" };
+      return {
+        sucess: false,
+        error: error.message || "Erro ao atualizar perfil",
+      };
     }
   };
 
   return {
     perfil,
-        nome,
-        telefone,
-        imagem,
-        descricao,
-        instagram,
-        facebook,
-        linkedin,
-        email,
-        redes,
-        setNome,
-        setTelefone,
-        setImagem,
-        setDescricao,
-        setInstagram,
-        setFacebook,
-        setLinkedin,
-        setEmail,
-        setRedes,
-        updatePerfil,
-        getPerfil,
-  };        
+    nome,
+    telefone,
+    imagem,
+    descricao,
+    instagram,
+    facebook,
+    linkedin,
+    email,
+    redes,
+    setNome,
+    setTelefone,
+    setImagem,
+    setDescricao,
+    setInstagram,
+    setFacebook,
+    setLinkedin,
+    setEmail,
+    setRedes,
+    updatePerfil,
+    getPerfil,
+  };
 };

@@ -9,30 +9,24 @@ export const apiFetch = async (endpoint, options = {}) => {
     fetchOptions.headers["Content-Type"] = "application/json";
   }
 
-  let response = await fetch(
-    `${import.meta.env.VITE_API_URL}${endpoint}`,
-    fetchOptions,
-  );
+  const urlBase = import.meta.env.VITE_API_URL.replace(/\/$/, "");
+  const caminhoEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  
+  let response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
 
-  if (
-    response.status === 401 &&
-    endpoint !== "/api/auth/refresh" &&
-    !skipAuthRedirect
-  ) {
+  const ehRotaRefresh = caminhoEndpoint.endsWith("/auth/refresh") || caminhoEndpoint.endsWith("/refresh");
+
+  if (response.status === 401 && !ehRotaRefresh && !skipAuthRedirect) {
     try {
-      const refreshResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
-        {
-          method: "POST",
-          credentials: "include",
-        },
-      );
+      const urlRefresh = `${urlBase}/api/v1/clients/auth/refresh`;
+
+      const refreshResponse = await fetch(urlRefresh, {
+        method: "POST",
+        credentials: "include",
+      });
 
       if (refreshResponse.ok) {
-        response = await fetch(
-          `${import.meta.env.VITE_API_URL}${endpoint}`,
-          fetchOptions,
-        );
+        response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
       } else if (window.location.pathname !== "/login") {
         window.location.href = "/login";
       }

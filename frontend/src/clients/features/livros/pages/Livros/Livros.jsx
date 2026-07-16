@@ -48,7 +48,7 @@ export default function Livros() {
                     return (
                         <div>
                             <div key={livro.id}>
-                                {livro.capa ? (<img src={livro.capa} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
+                                {livro?.capa?.[0] ? (<img src={livro.capa[0]} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
                                 <h3>{livro.titulo || "Sem tÃ­tulo"}</h3>
                                 <p>{livro.autor_nome || "Sem autor"}</p>
                                 <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>

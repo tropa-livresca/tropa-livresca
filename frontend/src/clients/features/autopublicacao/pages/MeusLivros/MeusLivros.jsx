@@ -1,25 +1,20 @@
 import { useEffect } from "react";
-//import useLivros from "../../../hooks/useLivros";
+import {useMeusLivros} from "../../hooks/useMeusLivros";
 
 export default function MeusLivros() {
-   /*const {
+   const {
       Livros,
       carregando,
       BuscarLivrosById,
-      UpdateStatusAtivo,
-   } = useLivros();
-
+      UpdateEstado,
+   } = useMeusLivros();
+   
    useEffect(() => {
       const carregarDados = async () => {
          await BuscarLivrosById();
       };
       carregarDados();
    }, [BuscarLivrosById]);
-
-   const HandleStatusAtivo = async (id) => {
-      await UpdateStatusAtivo(id);
-      await BuscarLivrosById();
-   };
 
    const possuiLivros = Array.isArray(Livros) && Livros.length > 0;
 
@@ -30,16 +25,15 @@ export default function MeusLivros() {
          {possuiLivros ? (
             <div>
                {Livros.map(livro => (
-                  <div key={livro.id} style={{ display: "flex", alignItems: "center", marginBottom: "15px", gap: "20px" }}>
+                  <div key={livro.id}>
                      <div>
-                        {livro.capa && <img src={livro.capa} alt={livro.titulo} style={{ width: "50px" }} />}
+                        {livro.capa?.[0] && <img src={livro.capa[0]} alt={livro.titulo} style={{ width: "50px" }} />}
                         <br />
                         {livro.titulo}
                      </div>
                      <div>
                         <button>Editar</button>
                         <button>Visualizar</button>
-                        <button onClick={() => HandleStatusAtivo(livro.id)}>Desativar</button>
                      </div>
                   </div>
                ))}
@@ -50,7 +44,8 @@ export default function MeusLivros() {
          
          <button onClick={() => { window.location.href = "/novo-livro"; }}>Novo Livro</button>
       </div>
-   );*/
+   );
+
    return(
    <><button onClick={() => { window.location.href = "/novo-livro"; }}>Novo Livro</button></>);
 }

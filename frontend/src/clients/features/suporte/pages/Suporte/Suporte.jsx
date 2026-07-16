@@ -1,6 +1,7 @@
 ﻿import useSuporte from "../../hooks/useSuporte";
 
 import Input from "../../../../../common/components/Input/Input";
+import Select from "../../../../../common/components/Select/Select";
 
 export default function Suporte() {
     const {
@@ -26,6 +27,8 @@ export default function Suporte() {
         e.preventDefault();
         enviarEmail();
     };
+
+    const motivos = ["Problemas de Autopublicação", "Problemas ao receber", "Dúvidas"];
 
     return (
         <form onSubmit={handleSubmit} method="POST">
@@ -64,6 +67,14 @@ export default function Suporte() {
                 value={nome}
                 placeholder="Seu nome"
                 handleOnChange={(e) => setNome(e.target.value)}
+            />
+
+            <Select 
+            text= "Motivo de contato" 
+            name = "motivo" 
+            value = {motivo} 
+            options = {motivos}
+            handleOnChange = {(e) => {setMotivo(e.target.value)}}
             />
 
             <label htmlFor="mensagem">Mensagem</label>

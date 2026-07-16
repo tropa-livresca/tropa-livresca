@@ -1,4 +1,5 @@
 ﻿import styles from "./NovoLivro.module.css";
+import { AutopublicacaoProvider } from "../../context/Autopublicacao";
 import { useAutopublicacao } from "../../hooks/useAutopublicacao";
 
 import Detalhes from "../Detalhes/Detalhes";
@@ -6,10 +7,15 @@ import Conteudo from "../Conteudo/Conteudo";
 import Orcamento from "../Orcamento/Orcamento";
 import Confirmacao from "../Confirmacao/Confirmacao";
 
-export default function NovoLivro() {
+export function FormularioNovoLivro() {
   const { 
-    dadosLivro, etapa, atualizarEtapa, 
-    irParaProximaEtapa, voltarEtapa, irParaEtapaEspecifica, publicarLivro 
+    dadosLivro, 
+    etapa, 
+    atualizarEtapa, 
+    irParaProximaEtapa, 
+    voltarEtapa, 
+    irParaEtapaEspecifica, 
+    publicarLivro 
   } = useAutopublicacao();
 
   const navegar = { irParaProximaEtapa, voltarEtapa };
@@ -54,6 +60,12 @@ export default function NovoLivro() {
   );
 }
 
-
+export default function NovoLivro() {
+  return (
+    <AutopublicacaoProvider>
+      <FormularioNovoLivro />
+    </AutopublicacaoProvider>
+  );
+}
 
 

@@ -14,7 +14,6 @@ export default function Select({ text, name, options, handleOnChange, value }) {
         <option value="">Selecione uma opção</option>
 
         {options?.map((option, index) => {
-          // Verifica se a opção é um objeto estruturado ou uma string simples
           const isObj = option && typeof option === "object";
           const optionId = isObj ? option.id : option;
           const optionName = isObj ? option.label || option.name : option;

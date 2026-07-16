@@ -15,14 +15,14 @@ export default function LivroById() {
 
     if (carregando) return <p>Carregando...</p>;
 
-    if (!livro) return <p>Livro nÃ£o encontrado.</p>;
+    if (!livro) return <p>Livro não encontrado.</p>;
 
     return (
         <main className={styles.container}>
             <section className={styles.hero}>
-                {livro?.capa ? (
+                {livro?.capa?.[0] ? (
                     <img className={styles.foto}
-                        src={livro.capa} alt={livro.titulo} />
+                        src={livro.capa[0]} alt={livro.titulo} />
                 ) : (
                     <div className={styles.semfoto}>Sem foto</div>
                 )}
@@ -41,8 +41,8 @@ export default function LivroById() {
 
                 <div>
                     <p className={styles.descricao}>Publicado por: {autor?.nome || "Autor desconhecido"}</p>
-                    <p className={styles.descricao}>Data de publicaÃ§Ã£o: {livro?.data_de_publicacao}</p>
-                    <p className={styles.descricao}>PÃºblico-alvo: {livro?.publico_alvo}</p>
+                    <p className={styles.descricao}>Data de publicação: {livro?.data_de_publicacao}</p>
+                    <p className={styles.descricao}>Público-alvo: {livro?.publico_alvo}</p>
                 </div>
             </section>
 
@@ -63,7 +63,7 @@ export default function LivroById() {
             
             {colaboradores && colaboradores.length > 0 && (
                 <section className = {styles.secao}>
-                    <h2 className = {styles.subtitulo}>RelaÃ§Ã£o dos colaboradores</h2>
+                    <h2 className = {styles.subtitulo}>Relação dos colaboradores</h2>
                     <ul>
                         {colaboradores.map((colaborador, index) => (
                             <li className = {styles.descricao}
@@ -77,5 +77,3 @@ export default function LivroById() {
         </main>
     );
 }
-
-
