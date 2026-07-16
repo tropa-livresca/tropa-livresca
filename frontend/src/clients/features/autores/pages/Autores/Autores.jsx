@@ -8,6 +8,7 @@ import { FaSearch } from "react-icons/fa";
 
 import { useEffect, useState } from "react";
 
+import { FaUserCircle } from "react-icons/fa";
 
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
@@ -20,15 +21,15 @@ export default function Autores() {
     buscarAutores(paginaAtual, 12, busca);
   }, [paginaAtual]);
 
-  if (carregando) return <p>Carregando...</p>
+  if (carregando) return <p>Carregando...</p>;
 
-  if (erro) return <p>{erro}</p>
+  if (erro) return <p>{erro}</p>;
 
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
     buscarAutores(1, 12, busca);
-  }
+  };
 
   return (
     <div>
@@ -37,9 +38,9 @@ export default function Autores() {
           <h1 className={styles.titulo}>Autores</h1>
 
           <p className={styles.descricao}>
-            A editora Tropa Livresca reúne autores independentes de todo o Brasil.
-            Descubra escritores que compartilham histórias únicas, cheias de
-            emoção e originalidade em suas obras.
+            A editora Tropa Livresca reúne autores independentes de todo o
+            Brasil. Descubra escritores que compartilham histórias únicas,
+            cheias de emoção e originalidade em suas obras.
           </p>
 
           <form className={styles.busca} onSubmit={handleBuscar}>
@@ -54,19 +55,34 @@ export default function Autores() {
               onChange={(e) => setBusca(e.target.value)}
             />
 
-            <button className={styles.btnbuscar} type="submit">Buscar</button>
+            <button className={styles.btnbuscar} type="submit">
+              Buscar
+            </button>
           </form>
         </div>
 
         <div className={styles.autorescontainer}>
-          {!autores || autores.length === 0 ? (<p>Nenhum autor encontrado</p>) : (
+          {!autores || autores.length === 0 ? (
+            <p>Nenhum autor encontrado</p>
+          ) : (
             autores.map((autor) => {
               return (
                 <div className={styles.autorinf} key={autor.id}>
-                  {autor.imagem ? (<img src={autor.imagem} alt={autor.nome} width="100" />) : (<div>Sem foto</div>)}
+                  {autor.imagem ? (
+                    <img src={autor.imagem} alt={autor.nome} />
+                  ) : (
+                    <div className={styles.semfoto}>
+                      <FaUserCircle />
+                    </div>
+                  )}
                   <h3>{autor.nome || "Autor anônimo"}</h3>
                   <p>{autor.descricao || "Sem descrição"}</p>
-                  <Link to={`/autores/${autor.id}`} className={styles.btndetalhes}>Ver Perfil</Link>
+                  <Link
+                    to={`/autores/${autor.id}`}
+                    className={styles.btndetalhes}
+                  >
+                    Ver Perfil
+                  </Link>
                 </div>
               );
             })
