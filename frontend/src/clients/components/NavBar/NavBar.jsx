@@ -1,7 +1,7 @@
 ﻿import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
-import { useState, useEffect, useRef } from "react"; //ref é novo
+import { useState, useEffect, useRef } from "react";
 import styles from "./NavBar.module.css";
 import logo from "../../../common/images/logo.png";
 
@@ -40,7 +40,7 @@ export default function NavBar() {
   };
 
   const trocarFoto = (e) => {
-    const arquivo = e.target.files[0];
+    const arquivo = e.target.files?.[0];
 
     if (!arquivo) return;
 
@@ -59,7 +59,7 @@ export default function NavBar() {
         className={styles.hamburguer}
         onClick={() => setMenuAberto(!menuAberto)}
       >
-        â˜°
+        ☰
       </button>
 
       <nav
@@ -170,7 +170,3 @@ export default function NavBar() {
     </div>
   );
 }
-
-
-
-

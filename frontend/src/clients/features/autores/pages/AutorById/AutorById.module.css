@@ -1,14 +1,14 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
 main {
   background-color: var(--cor-fundo);
 }
 
 .container {
   width: 100%;
-  min-height: 100vh;
-  padding: 4rem 5%;
-  display: grid;
-  gap: 4rem;
-  align-content: start;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
 }
 
 /* ---------- Hero do autor ---------- */
@@ -17,6 +17,7 @@ main {
   display: flex;
   align-items: center;
   gap: 3rem;
+  margin-bottom: 8%;
 }
 
 .foto,
@@ -42,25 +43,26 @@ main {
 }
 
 .heroinfo {
-  max-width: 56rem;
+  width: 100%;
   display: grid;
   gap: 1.5rem;
 }
 
 .titulo {
   margin: 0;
-  color: var(--cor-primaria);
-  font-size: 5rem;
-  line-height: 1;
+  color: #67170c;
+  font-size: clamp(3rem, 5vw, 5rem);
+  text-align: left;
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
   content: "";
   display: block;
-  width: 8rem;
+  width: 7rem;
   height: 3px;
   margin-top: 1rem;
-  background: var(--cor-dourado);
+  background-color: #d4b46a;
   border-radius: 999px;
 }
 
@@ -68,7 +70,8 @@ main {
   max-width: 50rem;
   line-height: 1.8;
   font-size: 1.2rem;
-  color: var(--cor-texto);
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
 }
 
 /* ---------- Seções ---------- */
@@ -76,12 +79,14 @@ main {
 .secao {
   display: grid;
   gap: 1.5rem;
+  margin-bottom: 10%;
 }
 
 .subtitulo {
   margin: 0;
   color: var(--cor-primaria);
   font-size: 2.2rem;
+  font-family: "Jacques Francois", serif;
 }
 
 .subtitulo::after {
@@ -96,6 +101,8 @@ main {
 
 .vazio {
   color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 1.2rem;
 }
 
 /* ---------- Redes sociais ---------- */
@@ -181,6 +188,7 @@ main {
   color: var(--cor-primaria);
   font-size: 1.5rem;
   overflow-wrap: break-word;
+  font-family: "Jacques Francois", serif;
 }
 
 .livrotitulo::after {
@@ -198,22 +206,23 @@ main {
   color: var(--cor-texto-muted);
   font-size: 0.9rem;
   line-height: 1.6;
+  font-family: "Jacques Francois", serif;
 }
 
 .btnlivro {
   text-decoration: none;
   margin-top: 1rem;
   padding: 0.7rem 1.4rem;
-  background: var(--cor-primaria-alt);
-  color: #fff;
+  background-color: #67170c;
+  color: #ede6b3;
   border-radius: 999px;
   font-size: 0.9rem;
-  font-weight: 600;
   transition: 0.3s;
 }
 
 .btnlivro:hover {
-  background: var(--cor-primaria-hover);
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 /* ---------- Responsivo ---------- */

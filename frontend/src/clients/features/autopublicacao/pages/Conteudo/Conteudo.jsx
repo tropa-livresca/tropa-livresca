@@ -47,7 +47,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
 
   return (
     <main>
-      <h1>ConteÃºdo</h1>
+      <h1>Conteúdo</h1>
       <form onSubmit={(e) => e.preventDefault()}>
         <fieldset>
           <legend>Manuscrito</legend>
@@ -59,7 +59,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
               onChange={(e) => atualizarCampo("manuscrito", e)}
             />
           </label>
-          {dados.manuscrito && <p style={{ color: "green" }}>âœ“ Manuscrito carregado</p>}
+          {dados.manuscrito && <p style={{ color: "green" }}>✓ Manuscrito carregado</p>}
         </fieldset>
 
         <fieldset>
@@ -83,7 +83,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
 
           <div>
             <label>
-              Verso / TrÃ¡s da capa (.jpg, .png)
+              Verso / Trás da capa (.jpg, .png)
               <input
                 accept=".jpg,.jpeg,.png"
                 type="file"
@@ -122,4 +122,3 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
     </main>
   );
 }
-

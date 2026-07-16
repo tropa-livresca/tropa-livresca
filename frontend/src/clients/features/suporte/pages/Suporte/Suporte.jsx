@@ -6,17 +6,12 @@ import Select from "../../../../../common/components/Select/Select";
 export default function Suporte() {
     const {
         error,
-        setError,
-        campos,
-        setCampos,
         email,
         setEmail,
         telefone,
         setTelefone,
         nome,
         setNome,
-        motivo,
-        setMotivo,
         mensagem,
         setMensagem,
         enviarEmail,
@@ -33,7 +28,7 @@ export default function Suporte() {
     return (
         <form onSubmit={handleSubmit} method="POST">
 
-            {error.text && (
+            {error?.text && (
                 <p style={{ color: error.success ? 'green' : 'red' }}>
                     {error.text}
                 </p>
@@ -93,4 +88,3 @@ export default function Suporte() {
         </form>
     );
 }
-
