@@ -179,11 +179,6 @@ A autenticação é realizada por meio de sessão e cookies, com validação de 
 
 Contribuições são bem-vindas. Para colaborar, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
 
-1. Faça um fork do repositório.
-2. Crie uma branch para a sua alteração.
-3. Implemente a mudança com commits claros.
-4. Abra um pull request descrevendo o contexto e o objetivo da alteração.
-
 ## Licença
 
 Este projeto está licenciado sob a GNU General Public License v3.0. Consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
