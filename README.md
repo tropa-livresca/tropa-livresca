@@ -27,11 +27,7 @@ Aplicação full stack da editora de autopublicação Tropa Livresca, desenvolvi
 
 ## Descrição do projeto
 
-kkkkkkkkkkkkkkkk Davidd
-
-hhahahahahhahahahahahhahahahahaha to ficando loco ahahahahahaha
-
-A Tropa Livresca é um projeto voltado para organizar e facilitar a publicação e a descoberta de obras, autorres e contúdos relacionados à editora. O sistema foi pensado como uma solução web completa, com:
+A Tropa Livresca é um projeto voltado para organizar e facilitar a publicação e a descoberta de obras, autores e conteúdos relacionados à editora. O sistema foi pensado como uma solução web completa, com:
 
 - uma interface pública para navegação e consulta;
 - uma área privada para cadastro e gestão de livros;
