@@ -35,18 +35,6 @@ const PORT = process.env.PORT || 3000;
 
 app.use("/api/v1/clients", routerClients);
 
-// Substitua o bloco de depuração antigo por este no final do seu api.js (antes do app.listen):
-app._router?.stack?.forEach((r) => {
-  if (r.route) {
-    console.log(`[Rota Ativa] ${Object.keys(r.route.methods).toUpperCase()} ${r.route.path}`);
-  } else if (r.name === 'router' && r.handle?.stack) {
-    r.handle.stack.forEach((subR) => {
-      if (subR.route) {
-        console.log(`[Rota Ativa] /api/v1/clients${subR.route.path}`);
-      }
-    });
-  }
-});
 app.get("/teste", (req, res) => res.send("Express está funcionando!"));
 
 app.use(errorHandler);

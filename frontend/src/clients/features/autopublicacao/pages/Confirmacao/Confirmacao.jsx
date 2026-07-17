@@ -14,32 +14,25 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
     let urlVerso = null;
     let urlOrelhas = null;
 
-    // Correção: Verifica "dado" (parâmetro) em vez de "dados" (escopo pai)
     const extrairArquivo = (dado) => {
       if (!dado) return null;
 
-      // Se já for um arquivo direto (File), retorna ele
       if (dado instanceof File) return dado;
 
-      // CORREÇÃO: Se for uma FileList, extrai o primeiro arquivo [0] dela
       if (dado instanceof FileList && dado.length > 0) return dado[0];
 
-      // Caso o dado venha como um Array tradicional do JS
       if (Array.isArray(dado) && dado.length > 0) return dado[0];
 
-      // Se o seu componente customizado <Input /> envelopar o arquivo em algum objeto
       if (dado[0] instanceof File) return dado[0];
 
       return null;
     };
 
-    // Correção 1: Declarando as variáveis antes de usá-las
     const arquivoManuscrito = extrairArquivo(dados.conteudo?.manuscrito);
     const arquivoFrente = extrairArquivo(dados.conteudo?.capa?.frente);
     const arquivoVerso = extrairArquivo(dados.conteudo?.capa?.verso);
     const arquivoOrelhas = extrairArquivo(dados.conteudo?.capa?.orelhas);
 
-    // Processamento do Manuscrito (Adicionado de volta)
     if (arquivoManuscrito) {
       urlManga = URL.createObjectURL(arquivoManuscrito);
       setUrlPreviewManga(urlManga);
@@ -49,7 +42,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       setUrlPreviewManga(null);
     }
 
-    // Processamento da Frente (Correção: URL.createObjectURL e setUrlPreviewFrente)
     if (arquivoFrente) {
       urlFrente = URL.createObjectURL(arquivoFrente);
       setUrlPreviewFrente(urlFrente);
@@ -59,7 +51,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       setUrlPreviewFrente(null);
     }
 
-    // Processamento do Verso
     if (arquivoVerso) {
       urlVerso = URL.createObjectURL(arquivoVerso);
       setUrlPreviewVerso(urlVerso);
@@ -69,7 +60,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       setUrlPreviewVerso(null);
     }
 
-    // Processamento das Orelhas (Correção: Vinculação correta das variáveis das orelhas)
     if (arquivoOrelhas) {
       urlOrelhas = URL.createObjectURL(arquivoOrelhas);
       setUrlPreviewOrelhas(urlOrelhas);
