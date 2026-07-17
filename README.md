@@ -88,7 +88,7 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 ```text
 .
 ├── backend/
-│   ├── src/
+│   ├── api/
 │   │   ├── admin/
 │   │   ├── clients/
 │   │   └── common/
