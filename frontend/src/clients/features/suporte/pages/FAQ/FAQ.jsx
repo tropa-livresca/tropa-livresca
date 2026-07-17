@@ -141,7 +141,7 @@ export default function FAQ() {
           Entre em contato com nossa equipe.
         </p>
 
-        <Link to="/contato" className={styles.contatoBotao}>
+        <Link to="/suporte" className={styles.contatoBotao}>
           Entrar em Contato
         </Link>
       </div>

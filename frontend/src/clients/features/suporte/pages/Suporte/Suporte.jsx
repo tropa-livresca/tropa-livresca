@@ -14,6 +14,8 @@ export default function Suporte() {
         setNome,
         mensagem,
         setMensagem,
+        motivo,
+        setMotivo,
         enviarEmail,
         carregando
     } = useSuporte();

@@ -1,21 +1,21 @@
 import { apiFetch } from "../../services/api";
-
 import { useState, useCallback } from "react";
 
 export const useAutores = () => {
   const [autor, setAutor] = useState(null);
-  const [redes, setRedes] = useState([]);
-  const [instagram, setInstagram] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [email, setEmail] = useState("");
+  const [redesSociais, setRedesSociais] = useState({
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    email: "",
+  });
   const [livros, setLivros] = useState(null);
   const [autores, setAutores] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState(null);
   const [meta, setMeta] = useState(null);
 
-    const buscarAutorById = useCallback(async (id) => {
+  const buscarAutorById = useCallback(async (id) => {
     setCarregando(true);
     setErro(null);
 
@@ -28,30 +28,17 @@ export const useAutores = () => {
       const json = await response.json();
 
       if (response.ok) {
-        const listaRedes = json.data.usu_redes || [];
-        setRedes(listaRedes);
+        const dadosAutor = json.data;
+        setAutor(dadosAutor);
 
-        const insta = listaRedes.find(
-          (r) => r.plataforma.toLowerCase() === "instagram",
-        );
-        const face = listaRedes.find(
-          (r) => r.plataforma.toLowerCase() === "facebook",
-        );
-        const linke = listaRedes.find(
-          (r) => r.plataforma.toLowerCase() === "linkedin",
-        );
-        const mail = listaRedes.find(
-          (r) => r.plataforma.toLowerCase() === "email",
-        );
+        setRedesSociais({
+          instagram: dadosAutor.redes_sociais?.instagram || "",
+          facebook: dadosAutor.redes_sociais?.facebook || "",
+          linkedin: dadosAutor.redes_sociais?.linkedin || "",
+          email: dadosAutor.redes_sociais?.email || "",
+        });
 
-        setInstagram(insta ? insta.url : "");
-        setFacebook(face ? face.url : "");
-        setLinkedin(linke ? linke.url : "");
-        setEmail(mail ? mail.url : "");
-
-        setAutor(json.data);
-
-        const livrosTratados = (json.data.livros || []).map((livro) => {
+        const livrosTratados = (dadosAutor.livros || []).map((livro) => {
           let capaTratada = livro.capa;
           
           if (typeof livro.capa === "string") {
@@ -82,48 +69,41 @@ export const useAutores = () => {
     }
   }, []);
 
-  const buscarAutores = useCallback(
-    async (page = 1, limit = 12, busca = "") => {
-      setCarregando(true);
-      setErro(null);
+  const buscarAutores = useCallback(async (page = 1, limit = 12, busca = "") => {
+    setCarregando(true);
+    setErro(null);
 
-      try {
-        const response = await apiFetch(
-          `/api/v1/clients/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
-          {
-            skipAuthRedirect: true,
-            method: "GET",
-          },
-        );
+    try {
+      const response = await apiFetch(
+        `/api/v1/clients/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+        {
+          skipAuthRedirect: true,
+          method: "GET",
+        },
+      );
 
-        const result = await response.json();
+      const result = await response.json();
 
-        if (response.ok) {
-          setAutores(result.data);
-          setMeta(result.meta);
-        } else {
-          throw new Error(result.error || "Erro ao carregar lista");
-        }
-      } catch (error) {
-        console.error("Erro ao buscar autores", error);
-        setErro("Erro ao buscar autores");
-      } finally {
-        setCarregando(false);
+      if (response.ok) {
+        setAutores(result.data);
+        setMeta(result.meta);
+      } else {
+        throw new Error(result.error || "Erro ao carregar lista");
       }
-    },
-    [],
-  );
+    } catch (error) {
+      console.error("Erro ao buscar autores", error);
+      setErro("Erro ao buscar autores");
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
 
   return {
     autores,
     carregando,
     erro,
-    instagram,
-    linkedin,
-    facebook,
-    email,
+    redesSociais,
     livros,
-    redes,
     recarregar: buscarAutores,
     buscarAutores,
     autor,

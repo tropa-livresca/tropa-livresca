@@ -6,8 +6,8 @@ import RoutesClients from "../clients/features/routes/RoutesClients";
 const RoutesApp = () => {
   return (
     <BrowserRouter>
-      <RoutesAdm/>
       <RoutesClients />
+      <RoutesAdm/>
     </BrowserRouter>
   );
 };

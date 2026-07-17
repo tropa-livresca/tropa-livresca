@@ -9,7 +9,7 @@ import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
 export default function AutorById() {
     const { id } = useParams(); 
-    const { autor, instagram, linkedin, facebook, email, livros, carregando, meta, buscarAutorById } = useAutores();
+    const { autor, redesSociais, livros, carregando, meta, buscarAutorById } = useAutores();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
 
@@ -19,6 +19,7 @@ export default function AutorById() {
 
     if (carregando) return <p>Carregando...</p>;
 
+    const { facebook, instagram, linkedin, email } = redesSociais;
     const temRedesSociais = facebook || instagram || linkedin || email;
 
     return (

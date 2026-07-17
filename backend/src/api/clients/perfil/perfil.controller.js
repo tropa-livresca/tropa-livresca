@@ -14,14 +14,14 @@ export const GetPerfil = async (req, res, next) => {
 export const UpdatePerfil = async (req, res, next) => {
   try {
     const userId = req.user?.id;
-    const { nome, telefone, descricao, redes } = req.body;
+    const { nome, telefone, descricao, redes_sociais } = req.body;
     const file = req.file;
 
     const perfilAtualizado = await perfilService.updatePerfilService({
       userId,
       dadosPerfil: { nome, telefone, descricao },
       file,
-      redes,
+      redes_sociais,
     });
 
     return res.status(200).json(perfilAtualizado);

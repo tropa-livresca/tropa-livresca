@@ -17,13 +17,14 @@ export const getPerfilService = async (userId) => {
       telefone: "",
       descricao: "",
       imagem: "",
+      redes_sociais: { instagram: "", facebook: "", linkedin: "", email: "" },
     };
   }
 
   return perfil;
 };
 
-export const updatePerfilService = async ({ userId, dadosPerfil, file, redes }) => {
+export const updatePerfilService = async ({ userId, dadosPerfil, file, redes_sociais }) => {
   if (!userId) {
     const erro401 = new Error("Sessão expirada. Autentique-se novamente para salvar as alterações.");
     erro401.statusCode = 401;
@@ -38,6 +39,12 @@ export const updatePerfilService = async ({ userId, dadosPerfil, file, redes }) 
     telefone,
     descricao,
   };
+
+  if (redes_sociais) {
+    updates.redes_sociais = typeof redes_sociais === "string" 
+      ? JSON.parse(redes_sociais) 
+      : redes_sociais;
+  }
 
   if (file) {
     const extensao = file.originalname.split(".").pop();
@@ -63,13 +70,6 @@ export const updatePerfilService = async ({ userId, dadosPerfil, file, redes }) 
   }
 
   const perfilData = await PerfilModel.salvar(updates);
-
-  if (redes) {
-    const listaRedes = typeof redes === "string" ? JSON.parse(redes) : redes;
-    await PerfilModel.salvarRedes(userId, listaRedes);
-
-    perfilData.usu_redes = listaRedes;
-  }
 
   return perfilData;
 };

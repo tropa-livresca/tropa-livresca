@@ -31,7 +31,7 @@ export const AutorModel = {
   async buscarPorId(id) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select("id, nome, imagem, descricao, usu_redes(url, plataforma)")
+      .select("id, nome, imagem, descricao, redes_sociais")
       .eq("id", id)
       .maybeSingle();
 
