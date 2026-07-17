@@ -1,209 +1,179 @@
 // =============================================
-// Schema Completo - dbdiagram.io
+// Schema Completo Atualizado - dbdiagram.io
 // =============================================
 
 Table users_profile {
-  id uuid [pk]
+  id uuid [pk, default: `gen_random_uuid()`]
   nome text
-  telefone varchar(15)
-}
-
-Table livros {
-  id bigint [pk]
-  estado text
-  conteudo text
-  idioma text
-  cor text
-  direitos_de_publicacao boolean
-  conteudo_por_IA boolean
-  imagens_explicitas boolean
-  tipo_de_livro varchar(50)
-  publico_alvo text
-  numero_edicao smallint
-  data_de_publicacao date
-  comissao numeric
-  preco_digital numeric
-  preco_fisico numeric
-  capa text
-  titulo text
-  subtitulo text
+  telefone varchar [not null]
+  imagem text
   descricao text
-  autor_nome text
-  autor_sobrenome text
-  ativo boolean [default: true]
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table vendas {
-  id bigint [pk]
-  data timestamp
-  total numeric
-  fk_met_pagamentos_id bigint [ref: > met_pagamentos.id]
-  transacao_id text
-  status_pagamento text
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table itens_venda {
-  id bigint [pk]
-  qtd bigint
-  subtotal numeric
-  fk_livros_itens_id bigint [ref: > livros.id]
-  fk_vendas_id bigint [ref: > vendas.id]
-}
-
-Table usuarios_cartoes {
-  id bigint [pk]
-  token_pagamento text
-  final_cartao varchar(5)
-  bandeira_varchar varchar(8)
-  nome_no_cartao text
-  data_expiracao varchar(7)
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table blogs {
-  id bigint [pk]
-  data date
-  texto text
-  titulo text
-  subtitulo text
-  fk_adms_id bigint
-}
-
-Table categorias {
-  id bigint [pk]
-  nome text
-  tipo text
-  data_criacao timestamp
-  fk_adms_id uuid
-}
-
-Table livros_categorias {
-  id bigint [pk]
-  fk_livros_id bigint [ref: > livros.id]
-  fk_categorias_id bigint [ref: > categorias.id]
-}
-
-Table blogs_categorias {
-  id bigint [pk]
-  fk_blogs_id bigint [ref: > blogs.id]
-  fk_categorias_id bigint [ref: > categorias.id]
+  redes_sociais jsonb [default: '{}']
 }
 
 Table adm_credenciais {
-  id bigint [pk]
-  codigo_especial text
-  senha_adm text
-  fk_user_profile_id uuid [ref: > users_profile.id]
+  id bigint [pk, increment]
+  codigo_especial text [not null]
+  senha_adm text [not null]
   ativo boolean [default: true]
+  funcao text
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
 }
 
-Table adm_funcoes {
-  id bigint [pk]
+Table banner_config {
+  id integer [pk]
+  carrossel_banners jsonb [default: '[]']
+}
+
+Table categorias {
+  id bigint [pk, increment]
+  nome text [not null]
+  tipo text [not null]
+  data_criacao timestamp [default: `now()`, not null]
+  slug text [not null]
+  fk_adms_id uuid [not null]
+}
+
+Table blogs {
+  id bigint [pk, increment]
+  data date [not null]
+  texto text [not null]
+  titulo text [not null]
+  subtitulo text
+  fk_adms_id bigint [ref: > adm_credenciais.id, not null]
   fk_categorias_id bigint [ref: > categorias.id]
-  fk_user_profile_id uuid [ref: > users_profile.id]
 }
 
-Table funcoes_base {
-  id bigint [pk]
-  nome text
-  fk_adm_funcoes_id bigint [ref: > adm_funcoes.id]
-}
-
-Table imagens {
-  id bigint [pk]
-  imagem text
-  tipo text
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table notificacoes {
-  id bigint [pk]
-  texto text
-  tipo text
-  data timestamp
-  ADM boolean
-  lida boolean
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table usu_redes {
-  id bigint [pk]
-  link text
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table colaboradores {
-  id bigint [pk]
-  nome text
-  sobrenome text
-  fk_livros_id bigint [ref: > livros.id]
-}
-
-Table enderecos {
-  id bigint [pk]
-  estado varchar(2)
-  cidade text
-  bairro text
-  rua text
-  num integer
-  cep varchar(10)
-  complemento text
-  fk_user_profile_id uuid [ref: > users_profile.id]
-}
-
-Table denuncias {
-  id bigint [pk]
-  data timestamp
-  descricao text
-  fk_user_profile_id uuid [ref: > users_profile.id]
-  tipo uuid
-}
-
-Table met_pagamentos {
-  id bigint [pk]
-  nome text
-}
-
-Table cupons {
-  id bigint [pk]
-  nome text
-  codigo text
-  valor numeric
-  tipo_desconto text
-  universal boolean
-  ativo boolean
-  data_inicio timestamp
-  data_fim timestamp
-  limite_uso_total integer
-  limite_usuario integer
-  valor_minimo_compra numeric
-  data_criacao timestamp
-  data_atualizacao timestamp
-  fk_livros_id bigint [ref: > livros.id]
-  fk_adm_credenciais uuid [ref: > users_profile.id]
+Table livros {
+  id bigint [pk, increment]
+  direitos_de_publicacao boolean [not null]
+  conteudo_por_IA boolean [not null]
+  imagens_explicitas boolean [not null]
+  publico_alvo text
+  numero_edicao smallint
+  data_de_publicacao date [not null]
+  preco_digital numeric [not null]
+  preco_fisico numeric [not null]
+  titulo text [not null]
+  subtitulo text [not null]
+  descricao text [not null]
+  autor_nome text [not null]
+  autor_sobrenome text [not null]
+  ativo boolean [default: true, not null]
+  estado varchar [default: 'rascunho', not null]
+  idioma text [not null]
+  manuscrito text
+  colaboradores jsonb [default: '[]']
+  capa jsonb [default: '{}']
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+  fk_categorias_id bigint [ref: > categorias.id]
 }
 
 Table comentarios {
-  id bigint [pk]
-  data timestamp [default: `now()`]
-  texto text
-  fk_user_profile_id uuid [ref: > users_profile.id]
+  id bigint [pk, increment]
+  data timestamp [default: `now()`, not null]
+  texto text [not null]
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
   fk_livros_id bigint [ref: > livros.id]
   fk_blog_id bigint [ref: > blogs.id]
 }
 
-Table revisoes {
-  id bigint [pk]
-  arquivo text
-  data timestamp
-  apontamento text
-  fk_user_profile_id uuid [ref: > users_profile.id]
-  fk_livro_id bigint [ref: > livros.id]
+Table denuncias {
+  id bigint [pk, increment]
+  data timestamp [default: `now()`, not null]
+  descricao text [not null]
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+  fk_categorias_id bigint [ref: > categorias.id]
 }
 
-// =============================================
-// Tabelas que estavam faltando
-// =============================================
+Table enderecos {
+  id bigint [pk, increment]
+  estado varchar [not null]
+  bairro text [not null]
+  rua text [not null]
+  num integer [not null]
+  cep varchar [not null]
+  cidade text [not null]
+  complemento text
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+}
 
+Table met_pagamentos {
+  id bigint [pk, increment]
+  nome text [not null]
+}
+
+Table usuarios_cartoes {
+  id bigint [pk, increment]
+  token_pagamento text
+  final_cartao varchar [not null]
+  bandeira_varchar varchar [not null]
+  nome_no_cartao text [not null]
+  data_expiracao varchar [not null]
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+}
+
+Table vendas {
+  id bigint [pk, increment]
+  data timestamp [default: `now()`, not null]
+  total numeric [not null]
+  transacao_id text [not null]
+  status_pagamento text [not null]
+  endereco_entrega jsonb [not null]
+  fk_met_pagamentos_id bigint [ref: > met_pagamentos.id, not null]
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+}
+
+Table itens_venda {
+  id bigint [pk, increment]
+  qtd bigint [not null]
+  subtotal numeric [not null]
+  fk_livros_itens_id bigint [ref: > livros.id, not null]
+  fk_vendas_id bigint [ref: > vendas.id, not null]
+}
+
+Table cupons {
+  id bigint [pk, increment]
+  codigo text [unique, not null]
+  nome text [not null]
+  valor numeric [not null]
+  tipo_desconto text [not null]
+  universal boolean [default: false, not null]
+  ativo boolean [default: true, not null]
+  data_inicio timestamp [not null]
+  data_fim timestamp [not null]
+  limite_uso_total integer
+  limite_usuario integer [default: 1]
+  valor_minimo_compra numeric [default: 0]
+  data_criacao timestamp [default: `now()`]
+  data_atualizacao timestamp [default: `now()`]
+  fk_livros_id bigint [ref: > livros.id]
+  fk_adm_credenciais_id bigint [ref: > adm_credenciais.id]
+}
+
+Table revisoes {
+  id bigint [pk, increment]
+  arquivo text [not null]
+  data timestamp [default: `now()`, not null]
+  apontamento text
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+  fk_livro_id bigint [ref: > livros.id, not null]
+}
+
+Table notificacoes {
+  id bigint [pk, increment]
+  titulo text [not null]
+  texto text [not null]
+  tipo text [not null]
+  data timestamp [default: `now()`, not null]
+  ADM boolean [default: false, not null]
+  metadados jsonb [default: '{}']
+  fk_user_profile_id uuid [ref: > users_profile.id]
+}
+
+Table notificacoes_lidas {
+  id bigint [pk, increment]
+  data_leitura timestamp [default: `now()`, not null]
+  fk_notificacao_id bigint [ref: > notificacoes.id, not null]
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+}

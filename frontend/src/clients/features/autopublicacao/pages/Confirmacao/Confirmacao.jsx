@@ -14,32 +14,25 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
     let urlVerso = null;
     let urlOrelhas = null;
 
-    // CorreÃ§Ã£o: Verifica "dado" (parÃ¢metro) em vez de "dados" (escopo pai)
     const extrairArquivo = (dado) => {
       if (!dado) return null;
 
-      // Se jÃ¡ for um arquivo direto (File), retorna ele
       if (dado instanceof File) return dado;
 
-      // CORREÃ‡ÃƒO: Se for uma FileList, extrai o primeiro arquivo [0] dela
       if (dado instanceof FileList && dado.length > 0) return dado[0];
 
-      // Caso o dado venha como um Array tradicional do JS
       if (Array.isArray(dado) && dado.length > 0) return dado[0];
 
-      // Se o seu componente customizado <Input /> envelopar o arquivo em algum objeto
       if (dado[0] instanceof File) return dado[0];
 
       return null;
     };
 
-    // CorreÃ§Ã£o 1: Declarando as variÃ¡veis antes de usÃ¡-las
     const arquivoManuscrito = extrairArquivo(dados.conteudo?.manuscrito);
     const arquivoFrente = extrairArquivo(dados.conteudo?.capa?.frente);
     const arquivoVerso = extrairArquivo(dados.conteudo?.capa?.verso);
     const arquivoOrelhas = extrairArquivo(dados.conteudo?.capa?.orelhas);
 
-    // Processamento do Manuscrito (Adicionado de volta)
     if (arquivoManuscrito) {
       urlManga = URL.createObjectURL(arquivoManuscrito);
       setUrlPreviewManga(urlManga);
@@ -49,7 +42,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       setUrlPreviewManga(null);
     }
 
-    // Processamento da Frente (CorreÃ§Ã£o: URL.createObjectURL e setUrlPreviewFrente)
     if (arquivoFrente) {
       urlFrente = URL.createObjectURL(arquivoFrente);
       setUrlPreviewFrente(urlFrente);
@@ -59,7 +51,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       setUrlPreviewFrente(null);
     }
 
-    // Processamento do Verso
     if (arquivoVerso) {
       urlVerso = URL.createObjectURL(arquivoVerso);
       setUrlPreviewVerso(urlVerso);
@@ -69,7 +60,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       setUrlPreviewVerso(null);
     }
 
-    // Processamento das Orelhas (CorreÃ§Ã£o: VinculaÃ§Ã£o correta das variÃ¡veis das orelhas)
     if (arquivoOrelhas) {
       urlOrelhas = URL.createObjectURL(arquivoOrelhas);
       setUrlPreviewOrelhas(urlOrelhas);
@@ -91,21 +81,21 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
 
   return (
     <main>
-      <h1>ConfirmaÃ§Ã£o</h1>
+      <h1>Confirmação</h1>
       <div>
         Detalhes:
         {dados.detalhes && (
           <ul>
-            <li>TÃ­tulo: {dados.detalhes.titulo}</li>
-            <li>SubtÃ­tulo: {dados.detalhes.subtitulo}</li>
-            <li>DescriÃ§Ã£o: {dados.detalhes.descricao}</li>
+            <li>Título: {dados.detalhes.titulo}</li>
+            <li>Subtítulo: {dados.detalhes.subtitulo}</li>
+            <li>Descrição: {dados.detalhes.descricao}</li>
             <li>Idioma: {dados.detalhes.idioma}</li>
-            <li>Direito de PublicaÃ§Ã£o: {dados.detalhes.direitoPublicacao}</li>
+            <li>Direito de Publicação: {dados.detalhes.direitoPublicacao}</li>
             <li>Autor: {dados.detalhes.autor?.nome} {dados.detalhes.autor?.sobrenome}</li>
             <li>
               Colaboradores: {dados.detalhes.colaboradores?.map(c => `${c.nome} ${c.sobrenome} (${c.funcao})`).join(", ") || "Nenhum"}
             </li>
-            <li>Publico Principal: {dados.detalhes.publicoPrincipal}</li>
+            <li>Público Principal: {dados.detalhes.publicoPrincipal}</li>
             <li>Categorias: {dados.detalhes.categorias?.join(", ")}</li>
             <li>Palavras-chave: {dados.detalhes.palavrasChave?.join(", ")}</li>
           </ul>
@@ -115,9 +105,9 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
       <div>
         <div>
           <div>
-            <p><strong>Manuscrito:</strong> {dados.conteudo?.manuscrito ? "Arquivo carregado" : "NÃ£o enviado"}</p>
+            <p><strong>Manuscrito:</strong> {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</p>
             {urlPreviewManga && (
-              <iframe src={urlPreviewManga} title="Pré-visualizaÃ§Ã£o do Manuscrito" type="application/pdf" width="100%" height="200px" />
+              <iframe src={urlPreviewManga} title="Pré-visualização do Manuscrito" type="application/pdf" width="100%" height="200px" />
             )}
           </div>
           <p><strong>Imagens da Capa:</strong></p>
@@ -145,10 +135,10 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
         </div>
       </div>
       <div>
-        OrÃ§amento:{dados.orcamento && (
+        Orçamento:{dados.orcamento && (
           <ul>
-            <li>Tipo de FormataÃ§Ã£o: {dados.orcamento.tipoFormatacao}</li>
-            <li>Valor do Livro FÃ­sico: {dados.orcamento.valorLivroFisico}</li>
+            <li>Tipo de Formatação: {dados.orcamento.tipoFormatacao}</li>
+            <li>Valor do Livro Físico: {dados.orcamento.valorLivroFisico}</li>
             <li>Valor do Livro Digital: {dados.orcamento.valorLivroDigital}</li>
           </ul>
         )}
@@ -161,4 +151,3 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
     </main>
   );
 }
-

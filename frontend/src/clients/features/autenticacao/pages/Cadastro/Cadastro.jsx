@@ -34,23 +34,23 @@ export default function Cadastro() {
     let novosErros = [];
 
     if (senha.length < 8) {
-      novosErros.push("A senha precisa ter, no mÃ­nimo, 8 caracteres.");
+      novosErros.push("A senha precisa ter, no mínimo, 8 caracteres.");
     }
 
     const regexSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
 
     if (!regexSenha.test(senha)) {
       novosErros.push(
-        "A senha deve conter letras maiÃºsculas, minÃºsculas, nÃºmeros e caracteres especiais.",
+        "A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais.",
       );
     }
 
     if (senha !== confSenha) {
-      novosErros.push("As senhas nÃ£o sÃ£o iguais.");
+      novosErros.push("As senhas não são iguais.");
     }
 
     if (telefone.length !== 15) {
-      novosErros.push("NÃºmero de telefone incorreto.");
+      novosErros.push("Número de telefone incorreto.");
     }
 
     if (novosErros.length > 0) {
@@ -96,11 +96,11 @@ export default function Cadastro() {
             <h1>CADASTRO</h1>
             <h3>Insira seus dados para criar sua conta</h3>
 
-            <label>Nome de UsuÃ¡rio</label>
+            <label>Nome de Usuário</label>
             <Input
               type="text"
               name="nome"
-              placeholder="Digite o usuÃ¡rio"
+              placeholder="Digite o usuário"
               handleOnChange={(e) => setNome(e.target.value)}
               value={nome}
             />
@@ -174,7 +174,7 @@ export default function Cadastro() {
             </div>
 
             <span className={styles.span}>
-              JÃ¡ tem cadastro? <Link to="/login">Clique aqui.</Link>
+              Já tem cadastro? <Link to="/login">Clique aqui.</Link>
             </span>
 
             <SubmitButton text="CADASTRAR" />
@@ -184,8 +184,3 @@ export default function Cadastro() {
     </div>
   );
 }
-
-
-
-
-

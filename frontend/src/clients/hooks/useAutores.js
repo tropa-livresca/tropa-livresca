@@ -1,14 +1,14 @@
 import { apiFetch } from "../../services/api";
-
 import { useState, useCallback } from "react";
 
 export const useAutores = () => {
   const [autor, setAutor] = useState(null);
-  const [redes, setRedes] = useState([]);
-  const [instagram, setInstagram] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [email, setEmail] = useState("");
+  const [redesSociais, setRedesSociais] = useState({
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    email: "",
+  });
   const [livros, setLivros] = useState(null);
   const [autores, setAutores] = useState([]);
   const [carregando, setCarregando] = useState(true);
@@ -20,7 +20,7 @@ export const useAutores = () => {
     setErro(null);
 
     try {
-      const response = await apiFetch(`/api/autores/${id}`, {
+      const response = await apiFetch(`/api/v1/clients/autores/${id}`, {
         skipAuthRedirect: true,
         method: "GET",
       });
@@ -28,21 +28,35 @@ export const useAutores = () => {
       const json = await response.json();
 
       if (response.ok) {
-        const listaRedes = json.data.usu_redes || [];
-        setRedes(listaRedes);
+        const dadosAutor = json.data;
+        setAutor(dadosAutor);
 
-        const insta = listaRedes.find((r) => r.plataforma.toLowerCase() === "instagram");
-        const face = listaRedes.find((r) => r.plataforma.toLowerCase() === "facebook");
-        const linke = listaRedes.find((r) => r.plataforma.toLowerCase() === "linkedin");
-        const mail = listaRedes.find((r) => r.plataforma.toLowerCase() === "email");
+        setRedesSociais({
+          instagram: dadosAutor.redes_sociais?.instagram || "",
+          facebook: dadosAutor.redes_sociais?.facebook || "",
+          linkedin: dadosAutor.redes_sociais?.linkedin || "",
+          email: dadosAutor.redes_sociais?.email || "",
+        });
 
-        setInstagram(insta ? insta.url : "");
-        setFacebook(face ? face.url : "");
-        setLinkedin(linke ? linke.url : "");
-        setEmail(mail ? mail.url : "");
+        const livrosTratados = (dadosAutor.livros || []).map((livro) => {
+          let capaTratada = livro.capa;
+          
+          if (typeof livro.capa === "string") {
+            try {
+              capaTratada = JSON.parse(livro.capa);
+            } catch (e) {
+              console.error("Erro ao converter JSON da capa:", e);
+              capaTratada = null;
+            }
+          }
+          
+          return {
+            ...livro,
+            capa: capaTratada
+          };
+        });
 
-        setAutor(json.data);
-        setLivros(json.data.livros || []);
+        setLivros(livrosTratados);
         setMeta(json.meta);
       } else {
         throw new Error(json.error || "Erro ao carregar autor");
@@ -61,7 +75,7 @@ export const useAutores = () => {
 
     try {
       const response = await apiFetch(
-        `/api/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+        `/api/v1/clients/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
         {
           skipAuthRedirect: true,
           method: "GET",
@@ -88,12 +102,8 @@ export const useAutores = () => {
     autores,
     carregando,
     erro,
-    instagram,
-    linkedin,
-    facebook,
-    email,
+    redesSociais,
     livros,
-    redes,
     recarregar: buscarAutores,
     buscarAutores,
     autor,

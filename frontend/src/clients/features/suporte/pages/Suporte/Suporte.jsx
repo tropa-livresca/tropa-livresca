@@ -1,23 +1,21 @@
 ﻿import useSuporte from "../../hooks/useSuporte";
 
 import Input from "../../../../../common/components/Input/Input";
+import Select from "../../../../../common/components/Select/Select";
 
 export default function Suporte() {
     const {
         error,
-        setError,
-        campos,
-        setCampos,
         email,
         setEmail,
         telefone,
         setTelefone,
         nome,
         setNome,
-        motivo,
-        setMotivo,
         mensagem,
         setMensagem,
+        motivo,
+        setMotivo,
         enviarEmail,
         carregando
     } = useSuporte();
@@ -27,10 +25,12 @@ export default function Suporte() {
         enviarEmail();
     };
 
+    const motivos = ["Problemas de Autopublicação", "Problemas ao receber", "Dúvidas"];
+
     return (
         <form onSubmit={handleSubmit} method="POST">
 
-            {error.text && (
+            {error?.text && (
                 <p style={{ color: error.success ? 'green' : 'red' }}>
                     {error.text}
                 </p>
@@ -66,6 +66,14 @@ export default function Suporte() {
                 handleOnChange={(e) => setNome(e.target.value)}
             />
 
+            <Select 
+            text= "Motivo de contato" 
+            name = "motivo" 
+            value = {motivo} 
+            options = {motivos}
+            handleOnChange = {(e) => {setMotivo(e.target.value)}}
+            />
+
             <label htmlFor="mensagem">Mensagem</label>
             <Input
                 type="text"
@@ -82,4 +90,3 @@ export default function Suporte() {
         </form>
     );
 }
-

@@ -56,15 +56,15 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
     atualizarCampo("colaboradores", novosColaboradores);
   };
 
-  return (
+return (
     <main>
       <form onSubmit={(e) => e.preventDefault()}>
         <h1>Detalhes</h1>
 
         <fieldset>
-          <legend>TÃ­tulo e subtÃ­tulo</legend>
+          <legend>Título e subtítulo</legend>
           <label>
-            *TÃ­tulo:
+            *Título:
             <Input
               type="text"
               value={dados.titulo || ""}
@@ -72,7 +72,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
             />
           </label>
           <label>
-            SubtÃ­tulo:
+            Subtítulo:
             <Input
               type="text"
               value={dados.subtitulo || ""}
@@ -82,9 +82,9 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
         </fieldset>
 
         <fieldset>
-          <legend>EdiÃ§Ã£o</legend>
+          <legend>Edição</legend>
           <label>
-            NÃºmero da ediÃ§Ã£o:
+            Número da edição:
             <Input
               type="text"
               value={dados.numeroEdicao || ""}
@@ -94,7 +94,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
         </fieldset>
 
         <fieldset>
-          <legend>IdentificaÃ§Ã£o do Autor no Livro</legend>
+          <legend>Identificação do Autor no Livro</legend>
           <label>
             Nome:
             <Input
@@ -120,7 +120,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
             <div key={index}>
               <h4>Colaborador #{index + 1}</h4>
 
-              <label>FunÃ§Ã£o:</label>
+              <label>Função:</label>
               <Select
                 name={`funcao-${index}`}
                 value={colaborador.funcao || ""}
@@ -176,9 +176,9 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
         </fieldset>
 
         <fieldset>
-          <legend>DescriÃ§Ã£o</legend>
+          <legend>Descrição</legend>
           <label>
-            DescriÃ§Ã£o do livro
+            Descrição do livro
             <textarea
               value={dados.descricao || ""}
               onChange={(e) => atualizarCampo("descricao", e.target.value)}
@@ -187,7 +187,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
         </fieldset>
 
         <fieldset>
-          <legend>Direitos de PublicaÃ§Ã£o e Uso de IA</legend>
+          <legend>Direitos de Publicação e Uso de IA</legend>
           <Input
             id="direitoPublicacaoSim"
             type="radio"
@@ -204,12 +204,12 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
             checked={dados.direitoPublicacao === "nao"}
             onChange={() => atualizarCampo("direitoPublicacao", "nao")}
           />
-          <label htmlFor="direitoPublicacaoNao">NÃ£o</label>
+          <label htmlFor="direitoPublicacaoNao">Não</label>
         </fieldset>
 
         <fieldset>
-          <legend>RestriÃ§Ãµes de ConteÃºdo</legend>
-          <label>HÃ¡ imagens explÃ­citas?</label>
+          <legend>Restrições de Conteúdo</legend>
+          <label>Há imagens explícitas?</label>
           <Input
             id="imagemExplicitaSim"
             type="radio"
@@ -240,12 +240,12 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
               });
             }}
           />
-          <label htmlFor="imagemExplicitaNao">NÃ£o</label>
+          <label htmlFor="imagemExplicitaNao">Não</label>
         </fieldset>
 
         {imagemExplicita === "nao" ? (
           <fieldset>
-            <legend>ClassificaÃ§Ã£o</legend>
+            <legend>Classificação</legend>
             <label>Categoria do Livro</label>
             <Input
               type="text"
@@ -255,14 +255,14 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
           </fieldset>
         ) : imagemExplicita === "sim" ? (
           <div>
-            <p>O livro serÃ¡ incluÃ­do automaticamente na categoria Adulto.</p>
+            <p>O livro será incluído automaticamente na categoria Adulto.</p>
           </div>
         ) : null}
 
         <fieldset>
           <legend>Tags</legend>
           <label>
-            Palavras-chave (separadas por ponto e vÃ­rgula)
+            Palavras-chave (separadas por ponto e vírgula)
             <Input
               type="text"
               value={Array.isArray(dados.palavrasChave) ? dados.palavrasChave.join("; ") : ""}
@@ -277,6 +277,4 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
       </form>
     </main>
   );
-}
-
-
+};

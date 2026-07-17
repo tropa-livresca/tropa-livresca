@@ -81,55 +81,57 @@ Para detalhes técnicos, consulte [docs/arquitetura.md](docs/arquitetura.md).
 
 ## Diagrama de casos de uso
 
-O diagrama completo de casos de uso foi deslocado para [docs/diagramas/caso-de-uso.puml](docs/diagramas/caso-de-uso.puml).
+O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](docs/diagramas/caso-de-uso.puml).
 
 ## Estrutura de diretórios
 
 ```text
-tropa-livresca/
+.
 ├── backend/
-│   ├── package.json
+│   ├── src /
+│   │   ├── api/
+│   │   │   ├── admin/
+│   │   │   ├── clients/
+│   │   │   └── common/
+│   │   │       ├── config/
+│   │   │       ├── database/
+│   │   │       ├── middlewares/
+│   │   │       └── models/
+│   │   └── api.js
 │   ├── README.md
-│   └── src/
-│       ├── api.js
-│       ├── config/
-│       │   └── supabase.js
-│       ├── controllers/
-│       ├── middlewares/
-│       │   ├── auth.middleware.js
-│       │   └── upload.middleware.js
-│       └── routes/
+│   └── .env.example
 ├── docs/
 │   ├── api/
 │   ├── diagramas/
 │   ├── funcionalidades/
-│   ├── instalacao.md
-│   ├── autenticacao.md
 │   ├── arquitetura.md
-│   ├── banco-de-dados.md
-│   └── deploy.md
+│   ├── autenticacao.md
+│   ├── deploy.md
+│   └── instalacao.md
 ├── frontend/
-│   ├── index.html
-│   ├── package.json
 │   ├── public/
-│   ├── src/
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   ├── main.jsx
-│   │   ├── admin/
-│   │   ├── clients/
-│   │   │   ├── components/
-│   │   │   ├── context/
-│   │   │   ├── hooks/
-│   │   │   ├── pages/
-│   │   │   └── routes/
-│   │   ├── common/
-│   │   ├── lib/
-│   │   ├── services/
-│   │   └── routes/
-│   └── vite.config.js
+│   └── src/
+│       ├── admin/
+|       |   ├── components/
+│       │   ├── context/
+│       │   ├── features/
+│       │   └── hooks/
+│       ├── clients/
+│       │   ├── components/
+│       │   ├── context/
+│       │   ├── features/
+│       │   └── hooks/
+│       ├── common/
+│       │   ├── components/
+│       │   └── images/
+│       ├── lib/
+│       ├── routes/
+│       ├── services/
+│       ├── README.md
+│       └── .env.example
+├── .env.example 
 ├── LICENSE
-├── package.json
+├── CONTRIBUTING
 └── README.md
 ```
 
@@ -176,11 +178,6 @@ A autenticação é realizada por meio de sessão e cookies, com validação de 
 ## Como contribuir
 
 Contribuições são bem-vindas. Para colaborar, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
-
-1. Faça um fork do repositório.
-2. Crie uma branch para a sua alteração.
-3. Implemente a mudança com commits claros.
-4. Abra um pull request descrevendo o contexto e o objetivo da alteração.
 
 ## Licença
 

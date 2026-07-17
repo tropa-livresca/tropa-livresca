@@ -6,129 +6,110 @@ export const usePerfil = () => {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [descricao, setDescricao] = useState("");
-  const [imagem, setImagem] = useState(null);
-  const [instagram, setInstagram] = useState("");
-  const [facebook, setFacebook] = useState("");
-  const [linkedin, setLinkedin] = useState("");
-  const [email, setEmail] = useState("");
-  const [redes, setRedes] = useState([]);
+  const [imagem, setImagem] = useState("");
+  const [redesSociais, setRedesSociais] = useState({
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    email: "",
+  });
+
+  const resetEstados = () => {
+    setPerfil(null);
+    setNome("");
+    setDescricao("");
+    setTelefone("");
+    setImagem("");
+    setRedesSociais({ instagram: "", facebook: "", linkedin: "", email: "" });
+  };
 
   const getPerfil = async () => {
     try {
-      const response = await apiFetch("/api/perfil");
-
+      const response = await apiFetch("/api/v1/clients/perfil");
       if (!response.ok) {
         if (response.status === 404) {
-          setPerfil(null);
-          setNome("");
-          setDescricao("");
-          setTelefone("");
-          setImagem("");
-          setInstagram("");
-          setFacebook("");
-          setLinkedin("");
-          setEmail("");
-          setRedes([]);
+          resetEstados();
           return;
         }
-
         const errorText = await response.text();
         throw new Error(`Erro ${response.status}: ${errorText}`);
       }
-
       const json = await response.json();
-      
       const dadosPerfil = json.data || json;
 
-      const listaRedes = dadosPerfil.usu_redes || [];
-      setRedes(listaRedes);
-
-      const insta = listaRedes.find(r => r.plataforma?.toLowerCase() === "instagram");
-      const face = listaRedes.find(r => r.plataforma?.toLowerCase() === "facebook");
-      const linke = listaRedes.find(r => r.plataforma?.toLowerCase() === "linkedin");
-      const mail = listaRedes.find(r => r.plataforma?.toLowerCase() === "email");
-
-      setInstagram(insta ? insta.url : "");
-      setFacebook(face ? face.url : "");
-      setLinkedin(linke ? linke.url : "");
-      setEmail(mail ? mail.url : "");
-      
       setPerfil(dadosPerfil);
       setNome(dadosPerfil.nome || "");
       setDescricao(dadosPerfil.descricao || "");
       setTelefone(dadosPerfil.telefone || "");
       setImagem(dadosPerfil.imagem || "");
+      setRedesSociais({
+        instagram: dadosPerfil.redes_sociais?.instagram || "",
+        facebook: dadosPerfil.redes_sociais?.facebook || "",
+        linkedin: dadosPerfil.redes_sociais?.linkedin || "",
+        email: dadosPerfil.redes_sociais?.email || "",
+      });
     } catch (error) {
-      console.error("Error recolher os dados do supabase", error);
+      console.error("Erro ao recolher os dados do supabase", error);
     }
+  };
+
+  const tirarImagemPerfil = () => {
+    setImagem("");
   };
 
   const updatePerfil = async (dados) => {
     try {
       const formData = new FormData();
-
       formData.append("nome", dados.nome || "");
       formData.append("telefone", dados.telefone || "");
-
-      if (dados.descricao) {  
-        formData.append("descricao", dados.descricao);
-      }
-
-      if (dados.imagem) {
+      if (dados.descricao) formData.append("descricao", dados.descricao);
+      
+      if (dados.imagem === "") {
+        formData.append("imagem", "");
+      } else if (dados.imagem) {
         formData.append("imagem", dados.imagem);
       }
 
-      if (dados.usu_redes) {
-        formData.append("redes", JSON.stringify(dados.usu_redes));
-      }
+      formData.append("redes_sociais", JSON.stringify(dados.redes_sociais));
 
-      const response = await apiFetch("/api/perfil", {
+      const response = await apiFetch("/api/v1/clients/perfil", {
         method: "PUT",
         body: formData,
       });
 
-      const json = await response.json();
-      const data = json.data || json; 
-
       if (!response.ok) {
-        throw new Error(json.error || "Erro ao atualizar perfil");
+        const errorJson = await response.json().catch(() => ({}));
+        throw new Error(errorJson.error || `Erro ${response.status} ao atualizar perfil`);
       }
+
+      const json = await response.json();
+      const data = json.data || json;
 
       setPerfil(data);
       setNome(data.nome || "");
       setTelefone(data.telefone || "");
       setImagem(data.imagem || "");
       setDescricao(data.descricao || "");
-      setRedes(data.usu_redes || []);
+      setRedesSociais({
+        instagram: data.redes_sociais?.instagram || "",
+        facebook: data.redes_sociais?.facebook || "",
+        linkedin: data.redes_sociais?.linkedin || "",
+        email: data.redes_sociais?.email || "",
+      });
 
-      return { sucess: true }; 
+      return { sucess: true };
     } catch (error) {
-      console.error("Error ao atualizar perfil", error);
-      return { sucess: false, error: error.message || "Erro ao atualizar perfil" };
+      console.error("Erro ao atualizar perfil", error);
+      return {
+        sucess: false,
+        error: error.message || "Erro ao atualizar perfil",
+      };
     }
   };
 
   return {
-    perfil,
-        nome,
-        telefone,
-        imagem,
-        descricao,
-        instagram,
-        facebook,
-        linkedin,
-        email,
-        redes,
-        setNome,
-        setTelefone,
-        setImagem,
-        setDescricao,
-        setInstagram,
-        setFacebook,
-        setLinkedin,
-        setEmail,
-        setRedes,
-        updatePerfil,
-        getPerfil,
-  };        
+    perfil, nome, telefone, imagem, descricao, redesSociais,
+    setNome, setTelefone, setImagem, setDescricao, setRedesSociais,
+    updatePerfil, tirarImagemPerfil, getPerfil,
+  };
 };

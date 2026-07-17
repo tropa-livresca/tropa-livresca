@@ -1,4 +1,4 @@
-import supabase, { supabaseAdmin } from "../../common/config/supabase.js";
+import supabase from "../../common/config/supabase.js"; 
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -7,7 +7,7 @@ const COOKIE_OPTIONS = {
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
 };
 
-export const setSession = async (req, res) => {
+export const setSession = async (req, res, next) => {
   const { accessToken, refreshToken } = req.body;
 
   try {
@@ -17,7 +17,8 @@ export const setSession = async (req, res) => {
     });
 
     if (error) {
-      return res.status(400).json({ error: error.message });
+      error.statusCode = 400;
+      throw error;
     }
 
     res.cookie("auth-token", data.session.access_token, COOKIE_OPTIONS);
@@ -28,98 +29,91 @@ export const setSession = async (req, res) => {
       message: "Sessão definida com sucesso e cookies configurados.",
     });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao definir sessão." });
+    next(err);
   }
 };
 
-export const refreshSession = async (req, res) => {
+export const refreshSession = async (req, res, next) => {
   const refreshToken = req.cookies["refresh-token"];
 
-  if (!refreshToken) {
-    return res
-      .status(401)
-      .json({ error: "Token de atualização não fornecido." });
-  }
-
   try {
+    if (!refreshToken) {
+      const erroToken = new Error("Token de atualização não fornecido.");
+      erroToken.statusCode = 401;
+      throw erroToken;
+    }
+
     const { data, error } = await supabase.auth.refreshSession({
       refresh_token: refreshToken,
     });
 
     if (error || !data.session) {
-      return res.status(401).json({ error: "Token de atualização inválido." });
+      const erroValidacao = new Error("Token de atualização inválido ou expirado.");
+      erroValidacao.statusCode = 401;
+      throw erroValidacao;
     }
-
-    const COOKIE_OPTIONS = {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
-    };
 
     res.cookie("auth-token", data.session.access_token, COOKIE_OPTIONS);
     res.cookie("refresh-token", data.session.refresh_token, COOKIE_OPTIONS);
 
     return res.status(200).json({ message: "Sessão renovada com sucesso." });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao atualizar sessão." });
+    next(err);
   }
 };
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
   const { email, password, telefone, nome } = req.body;
 
-  if (!email || !password || !nome || !telefone) {
-    return res.status(400).json({ error: "Todos os campos são obrigatórios." });
-  }
-
   try {
-    const redirectUrl =
-      process.env.SUPABASE_REDIRECT_URL ||
-      "http://localhost:5173/confirmacao-email";
+    if (!email || !password || !nome || !telefone) {
+      const erroCampos = new Error("Todos os campos são obrigatórios para o cadastro.");
+      erroCampos.statusCode = 400;
+      throw erroCampos;
+    }
+
+    const redirectUrl = process.env.SUPABASE_REDIRECT_URL || "http://localhost:5173/confirmacao-email";
 
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { nome, telefone },
+        data: { nome, telephone: telefone },
       },
     });
 
     if (error) {
-      if (
-        error.message?.includes("already registered") ||
-        error.status === 422
-      ) {
-        return res.status(400).json({ error: "Email já cadastrado." });
+      if (error.message?.includes("already registered") || error.status === 422) {
+        const erroDuplicado = new Error("O e-mail informado já está cadastrado no sistema.");
+        erroDuplicado.statusCode = 400;
+        throw erroDuplicado;
       }
-
-      return res.status(400).json({ error: error.message });
+      error.statusCode = 400;
+      throw error;
     }
 
     return res.status(201).json({
       user: data.user,
-      message:
-        "Cadastro Realizado! Por favor, verifique seu email para confirmar a conta.",
+      message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
     });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao criar usuário." });
+    next(err);
   }
 };
 
-export const signout = async (req, res) => {
+export const signout = async (req, res, next) => {
   try {
     await supabase.auth.signOut();
     res.clearCookie("auth-token", COOKIE_OPTIONS);
     res.clearCookie("refresh-token", COOKIE_OPTIONS);
-    res.json({ message: "Desconectado com sucesso." });
+    return res.json({ message: "Desconectado com sucesso." });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao desconectar usuário." });
+    next(err);
   }
 };
 
-export const signin = async (req, res) => {
+export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
   try {
@@ -129,16 +123,15 @@ export const signin = async (req, res) => {
     });
 
     if (error) {
-      return res.status(400).json({ error: error.message });
+      error.statusCode = 400;
+      throw error;
     }
 
     res.cookie("auth-token", data.session.access_token, COOKIE_OPTIONS);
     res.cookie("refresh-token", data.session.refresh_token, COOKIE_OPTIONS);
 
-    return res
-      .status(200)
-      .json({ user: data.user, message: "Login Realizado!" });
+    return res.status(200).json({ user: data.user, message: "Login realizado com sucesso!" });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao realizar login." });
+    next(err);
   }
 };

@@ -125,10 +125,10 @@ export default function Login() {
             <div className={styles.informacoes}>
               <div className={styles.para}>
                 <p>
-                  NÃ£o tem uma conta? <Link to="/cadastro">Crie uma.</Link>
+                  Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
                 </p>
                 <p>
-                  Ã‰ funcionÃ¡rio? <Link to="/cadastro">Clique aqui.</Link>
+                  É funcionário? <Link to="/cadastro">Clique aqui.</Link>
                 </p>
               </div>
             </div>
@@ -141,8 +141,3 @@ export default function Login() {
     </div>
   );
 }
-
-
-
-
-

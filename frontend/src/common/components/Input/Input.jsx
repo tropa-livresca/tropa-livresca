@@ -26,22 +26,6 @@ export function InputTelefone({ type = "text", text, name, placeholder, handleOn
     );
 }
 
-export function InputImagem({ name, handleOnChange, text }) {
-    return (
-        <div className={styles.form_control}>
-            {text && <label htmlFor={name}>{text}</label>}
-            <input
-                type="file"
-                id={name}
-                name={name}
-                accept="image/*"
-                onChange={handleOnChange}
-                /* Correção: propriedade value foi removida por restrição do navegador */
-            />
-        </div>
-    );
-}
-
 export default function Input({ type = "text", text, name, placeholder, handleOnChange, value, ...props }) {
     return (
         <div className={styles.form_control}>

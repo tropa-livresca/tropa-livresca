@@ -6,8 +6,8 @@ O projeto utiliza o Supabase como camada principal para armazenamento de dados, 
 
 A configuração de conexão e os arquivos relacionados ao banco estão localizados em:
 
-- [backend/src/config/supabase.js](../backend/src/config/supabase.js)
-- [backend/src/database](../backend/src/database)
+- [backend/src/common/config/supabase.js](../backend/src/common/config/supabase.js)
+- [backend/src/common/database](../backend/src/common/database)
 
 ## Variáveis de ambiente relacionadas
 
@@ -21,5 +21,3 @@ A configuração de conexão e os arquivos relacionados ao banco estão localiza
 2. Configurar as tabelas e políticas necessárias.
 3. Preencher as variáveis de ambiente com as chaves corretas.
 4. Garantir que a aplicação backend esteja apontando para o projeto correto.
-
-> A documentação detalhada do esquema do banco pode ser expandida conforme o projeto evoluir.

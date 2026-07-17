@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import routerClients from "./api/clients/index.js";
+import {errorHandler} from "./api/common/middlewares/error.middleware.js";
 
 const app = express();
 
@@ -32,8 +33,15 @@ app.use(cookieParser());
 
 const PORT = process.env.PORT || 3000;
 
-app.use("/api", routerClients);
+app.use("/api/v1/clients", routerClients);
+
+app.get("/teste", (req, res) => res.send("Express está funcionando!"));
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
 });
+
+export default app;
+
