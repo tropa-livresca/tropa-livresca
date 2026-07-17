@@ -9,7 +9,7 @@ import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
 export default function AutorById() {
     const { id } = useParams(); 
-    const { autor, instagram, linkedin, facebook, email, redes, livros, carregando, meta, buscarAutorById } = useAutores();
+    const { autor, redesSociais, livros, carregando, meta, buscarAutorById } = useAutores();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
 
@@ -17,7 +17,10 @@ export default function AutorById() {
         if (id) buscarAutorById(id, paginaAtual, 3);
     }, [id, paginaAtual]);
 
-    if (carregando) return <p>Carregando...</p>
+    if (carregando) return <p>Carregando...</p>;
+
+    const { facebook, instagram, linkedin, email } = redesSociais;
+    const temRedesSociais = facebook || instagram || linkedin || email;
 
     return (
         <main className={styles.container}>
@@ -37,7 +40,7 @@ export default function AutorById() {
             <section className={styles.secao}>
                 <h2 className={styles.subtitulo}>Redes Sociais</h2>
 
-                {redes && redes.length > 0 ? (
+                {temRedesSociais ? (
                     <div className={styles.redes}>
                         {facebook && (
                             <a className={styles.rede} href={facebook} target="_blank" rel="noopener noreferrer">
@@ -82,8 +85,8 @@ export default function AutorById() {
                         {livros.map((livro) => {
                             return (
                                 <article className={styles.livro} key={livro.id}>
-                                    {livro.capa ? (
-                                        <img className={styles.capa} src={livro.capa} alt={livro.titulo} />
+                                    {livro.capa?.frente ? (
+                                        <img className={styles.capa} src={livro.capa.frente} alt={livro.titulo} />
                                     ) : (
                                         <div className={styles.semcapa}>Sem foto da capa</div>
                                     )}

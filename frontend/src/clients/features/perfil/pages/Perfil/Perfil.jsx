@@ -5,25 +5,9 @@ import { useEffect, useState } from "react";
 
 export default function Perfil() {
   const {
-    perfil,
-    nome,
-    telefone,
-    imagem,
-    descricao,
-    instagram,
-    facebook,
-    linkedin,
-    email,
-    setNome,
-    setTelefone,
-    setImagem,
-    setDescricao,
-    setInstagram,
-    setFacebook,
-    setLinkedin,
-    setEmail,
-    updatePerfil,
-    getPerfil,
+    perfil, nome, telefone, imagem, descricao, redesSociais,
+    setNome, setTelefone, setImagem, setDescricao, setRedesSociais,
+    updatePerfil, getPerfil,
   } = usePerfil();
 
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -38,14 +22,21 @@ export default function Perfil() {
   }, []);
 
   useEffect(() => {
-    if (perfil && perfil.imagem) {
-      setPreviewUrl(perfil.imagem);
+    if (perfil) {
+      if (perfil.imagem && imagem === "") {
+        setPreviewUrl(perfil.imagem);
+      } else if (imagem === "remover") {
+        setPreviewUrl(null);
+      }
+
+      if (perfil.nome && !nome) setNome(perfil.nome);
+      if (perfil.telefone && !telefone) setTelefone(perfil.telefone);
+      if (perfil.descricao && !descricao) setDescricao(perfil.descricao);
     }
-  }, [perfil]);
+  }, [perfil, imagem]);
 
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-
     if (file) {
       setImagem(file);
       if (previewUrl && previewUrl.startsWith("blob:")) {
@@ -53,6 +44,15 @@ export default function Perfil() {
       }
       setPreviewUrl(URL.createObjectURL(file));
     }
+  };
+
+  const handleRemoverImagem = (e) => {
+    e.preventDefault();
+    setImagem("remover");
+    if (previewUrl && previewUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(previewUrl);
+    }
+    setPreviewUrl(null);
   };
 
   useEffect(() => {
@@ -63,32 +63,23 @@ export default function Perfil() {
     };
   }, [previewUrl]);
 
+  const handleRedeChange = (plataforma, valor) => {
+    setRedesSociais((prev) => ({ ...prev, [plataforma]: valor }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const redesParaEnviar = [];
-
-    if (instagram)
-      redesParaEnviar.push({ plataforma: "Instagram", url: instagram });
-
-    if (facebook) 
-      redesParaEnviar.push({ plataforma: "Facebook", url: facebook });
-
-    if (linkedin)
-      redesParaEnviar.push({ plataforma: "LinkedIn", url: linkedin });
-
-    if (email) 
-      redesParaEnviar.push({ plataforma: "Email", url: email });
-
+    
     const resultado = await updatePerfil({
       nome,
       telefone,
-      imagem,
+      imagem: imagem === "remover" ? "" : imagem,
       descricao,
-      usu_redes: redesParaEnviar,
+      redes_sociais: redesSociais,
     });
 
-    if (resultado?.success) {
-      alert("Perfil updated com sucesso!");
+    if (resultado?.sucess) {
+      alert("Perfil atualizado com sucesso!");
     } else {
       alert(`Erro ao atualizar perfil: ${resultado?.error || "Erro desconhecido"}`);
     }
@@ -103,109 +94,85 @@ export default function Perfil() {
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Bem-vindo ao seu perfil!</h1>
       </div>
+
       {perfil && (
-        <div>
-          <p>Nome Atual: {perfil.nome}</p>
-          <p>Telefone Atual: {perfil.telefone}</p>
-          <p>Descrição atual: {perfil.descricao}</p>
-          <p>
-            Instagram:{" "}
-            {perfil.usu_redes?.find(
-              (r) => r.plataforma.toLowerCase() === "instagram",
-            )?.url || "Não informado"}
-          </p>
-
-          <p>
-            Facebook:{" "}
-            {perfil.usu_redes?.find(
-              (r) => r.plataforma.toLowerCase() === "facebook",
-            )?.url || "Não informado"}
-          </p>
-
-          <p>
-            LinkedIn:{" "}
-            {perfil.usu_redes?.find(
-              (r) => r.plataforma.toLowerCase() === "linkedin",
-            )?.url || "Não informado"}
-          </p>
-
-          <p>
-            E-mail:{" "}
-            {perfil.usu_redes?.find(
-              (r) => r.plataforma.toLowerCase() === "email",
-            )?.url || "Não informado"}
-          </p>
-
-          <form onSubmit={handleSubmit}>
-            <div>
-              {previewUrl ? (
-                <img src={previewUrl} alt="Pré-visualização" width="150" />
-              ) : (
-                <div>Sem foto</div>
-              )}
-            </div>
-
-            <Input
-              type="text"
-              placeholder="Nome"
-              value={nome}
-              handleOnChange={(e) => setNome(e.target.value)}
-            />
-            <Input
-              type="text"
-              placeholder="Telefone"
-              value={telefone}
-              handleOnChange={(e) => setTelefone(e.target.value)}
-            />
-
-            <Input
-              type="text"
-              placeholder="E-mail de contato"
-              value={email}
-              handleOnChange={(e) => setEmail(e.target.value)}
-            />
-
-            <Input
-              type="text"
-              placeholder="URL do Instagram"
-              value={instagram}
-              handleOnChange={(e) => setInstagram(e.target.value)}
-            />
-
-            <Input
-              type="text"
-              placeholder="URL do Facebook"
-              value={facebook}
-              handleOnChange={(e) => setFacebook(e.target.value)}
-            />
-
-            <Input
-              type="text"
-              placeholder="URL do LinkedIn"
-              value={linkedin}
-              handleOnChange={(e) => setLinkedin(e.target.value)}
-            />
-
-            <textarea
-              id="Descricao"
-              name="descricao"
-              rows="5"
-              cols="30"
-              placeholder="Digite sua descrição..."
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-            ></textarea>
-
-            <Input
-              type="file"
-              handleOnChange={handleFileChange}
-              accept="image/*"
-            />
-
-            <button type="submit">Atualizar Perfil</button>
-          </form>
+        <div className={styles.dadosAtuais}>
+          <p>Nome Atual: {perfil.nome || "Não informado"}</p>
+          <p>Telefone Atual: {perfil.telefone || "Não informado"}</p>
+          <p>Descrição atual: {perfil.descricao || "Não informado"}</p>
+          <p>Instagram: {perfil.redes_sociais?.instagram || "Não informado"}</p>
+          <p>Facebook: {perfil.redes_sociais?.facebook || "Não informado"}</p>
+          <p>LinkedIn: {perfil.redes_sociais?.linkedin || "Não informado"}</p>
+          <p>E-mail: {perfil.redes_sociais?.email || "Não informado"}</p>
         </div>
       )}
+
+      <form onSubmit={handleSubmit}>
+        <div>
+          {previewUrl ? (
+            <img src={previewUrl} alt="Pré-visualização" width="150" />
+          ) : (
+            <div>Sem foto</div>
+          )}
+        </div>
+
+        <Input
+          type="text"
+          placeholder="Nome"
+          value={nome}
+          handleOnChange={(e) => setNome(e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="Telefone"
+          value={telefone}
+          handleOnChange={(e) => setTelefone(e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="E-mail de contato"
+          value={redesSociais.email}
+          handleOnChange={(e) => handleRedeChange("email", e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="URL do Instagram"
+          value={redesSociais.instagram}
+          handleOnChange={(e) => handleRedeChange("instagram", e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="URL do Facebook"
+          value={redesSociais.facebook}
+          handleOnChange={(e) => handleRedeChange("facebook", e.target.value)}
+        />
+        <Input
+          type="text"
+          placeholder="URL do LinkedIn"
+          value={redesSociais.linkedin}
+          handleOnChange={(e) => handleRedeChange("linkedin", e.target.value)}
+        />
+
+        <textarea
+          id="Descricao"
+          name="descricao"
+          rows="5"
+          cols="30"
+          placeholder="Digite sua descrição..."
+          value={descricao}
+          onChange={(e) => setDescricao(e.target.value)}
+        ></textarea>
+
+        <Input
+          key={imagem === "" || imagem === "remover" ? "resetado" : "com-arquivo"}
+          type="file"
+          handleOnChange={handleFileChange}
+          accept="image/*"
+        />
+
+        <button type="button" onClick={handleRemoverImagem}>Tirar imagem do perfil</button>
+        <button type="submit">Atualizar Perfil</button>
+      </form>
     </main>
   );
 }

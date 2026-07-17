@@ -24,7 +24,7 @@ export const useSuporte = () => {
     };
 
     try {
-      const response = await apiFetch("/api/enviarEmail", {
+      const response = await apiFetch("/api/v1/clients/enviarEmail", {
         skipAuthRedirect: true,
         method: "POST",
         headers: {
@@ -78,4 +78,3 @@ export const useSuporte = () => {
 };
 
 export default useSuporte;
-

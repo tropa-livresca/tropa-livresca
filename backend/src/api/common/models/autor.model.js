@@ -7,7 +7,7 @@ export const AutorModel = {
 
     const camposSelect = apenasComLivrosAtivos
       ? "id, nome, imagem, descricao, livros!inner(id)"
-      : "id, nome, telefone, imagem, descricao, criado_em, livros(id, titulo, ativo)";
+      : "id, nome, telefone, imagem, descricao, criado_em, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)";
 
     let query = supabaseAdmin
       .from("users_profile")
@@ -31,7 +31,7 @@ export const AutorModel = {
   async buscarPorId(id) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select("id, nome, imagem, descricao, usu_redes(url, plataforma)")
+      .select("id, nome, imagem, descricao, redes_sociais")
       .eq("id", id)
       .maybeSingle();
 

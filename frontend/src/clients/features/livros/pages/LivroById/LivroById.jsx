@@ -20,17 +20,17 @@ export default function LivroById() {
     return (
         <main className={styles.container}>
             <section className={styles.hero}>
-                {livro?.capa ? (
+                {livro?.capa?.frente ? (
                     <img className={styles.foto}
-                        src={livro.capa} alt={livro.titulo} />
+                        src={livro.capa.frente} alt={livro.titulo} />
                 ) : (
                     <div className={styles.semfoto}>Sem foto</div>
                 )}
 
                 <div className={styles.heroinfo}>
-                    <h1 className={styles.titulo}>{livro?.titulo}</h1>
+                    <h1 className={styles.titulo}>Título:{livro?.titulo}</h1>
                     {livro?.subtitulo && (
-                        <h2 className = {styles.subtitulo}>{livro.subtitulo}</h2>
+                        <h2 className = {styles.subtitulo}>Subtítulo{livro.subtitulo}</h2>
                     )}
 
                     <span></span>
@@ -43,6 +43,14 @@ export default function LivroById() {
                     <p className={styles.descricao}>Publicado por: {autor?.nome || "Autor desconhecido"}</p>
                     <p className={styles.descricao}>Data de publicação: {livro?.data_de_publicacao}</p>
                     <p className={styles.descricao}>Público-alvo: {livro?.publico_alvo}</p>
+                </div>
+
+                <div>
+                    <p>Preço digital: {livro?.preco_digital || "Sem preço digital"}</p>
+                    <p>Preço físico: {livro?.preco_fisico || "Sem preço físico"}</p>
+                    <p>Número edição: {livro?.numero_edicao || "Sem número de edição"}</p>
+                    <p>Feito com IA?: {livro?.conteudo_por_IA ? "Sim" : "Não"}</p>
+                    <p>Idioma: {livro?.idioma || "Idioma não renderizado"}</p>
                 </div>
             </section>
 

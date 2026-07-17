@@ -88,15 +88,16 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 ```text
 .
 ├── backend/
-│   ├── src/
-│   │   ├── admin/
-│   │   ├── clients/
-│   │   └── common/
-│   │       ├── config/
-│   │       ├── database/
-│   │       ├── middlewares/
-│   │       └── models/
-│   ├── api.js
+│   ├── src /
+│   │   ├── api/
+│   │   │   ├── admin/
+│   │   │   ├── clients/
+│   │   │   └── common/
+│   │   │       ├── config/
+│   │   │       ├── database/
+│   │   │       ├── middlewares/
+│   │   │       └── models/
+│   │   └── api.js
 │   ├── README.md
 │   └── .env.example
 ├── docs/
@@ -111,6 +112,10 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 │   ├── public/
 │   └── src/
 │       ├── admin/
+|       |   ├── components/
+│       │   ├── context/
+│       │   ├── features/
+│       │   └── hooks/
 │       ├── clients/
 │       │   ├── components/
 │       │   ├── context/
@@ -124,11 +129,12 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 │       ├── services/
 │       ├── README.md
 │       └── .env.example
-├── .env.example
+├── .env.example 
 ├── LICENSE
 ├── CONTRIBUTING
 └── README.md
 ```
+
 ## Pré-requisitos
 
 As instruções completas de instalação e configuração estão em [docs/instalacao.md](docs/instalacao.md).
@@ -172,11 +178,6 @@ A autenticação é realizada por meio de sessão e cookies, com validação de 
 ## Como contribuir
 
 Contribuições são bem-vindas. Para colaborar, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
-
-1. Faça um fork do repositório.
-2. Crie uma branch para a sua alteração.
-3. Implemente a mudança com commits claros.
-4. Abra um pull request descrevendo o contexto e o objetivo da alteração.
 
 ## Licença
 

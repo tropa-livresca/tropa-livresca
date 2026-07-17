@@ -21,5 +21,3 @@ A configuração de conexão e os arquivos relacionados ao banco estão localiza
 2. Configurar as tabelas e políticas necessárias.
 3. Preencher as variáveis de ambiente com as chaves corretas.
 4. Garantir que a aplicação backend esteja apontando para o projeto correto.
-
-> A documentação detalhada do esquema do banco pode ser expandida conforme o projeto evoluir.

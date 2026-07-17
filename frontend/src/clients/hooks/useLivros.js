@@ -17,8 +17,8 @@ export const useLivros = () => {
 
     try {
       const res = await apiFetch(
-        `/api/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
-        { method: "GET", skipAuthRedirect: true }
+        `/api/v1/clients/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+        { method: "GET", skipAuthRedirect: true },
       );
 
       const result = await res.json();
@@ -44,32 +44,28 @@ export const useLivros = () => {
     }
   }, []);
 
-  const BuscarLivrosById = useCallback(async () => {
-    setCarregando(true);
-    setLivros([]);
-    try {
-      const res = await apiFetch("/api/meuslivros/", { method: "GET" });
-      const data = await res.json();
-
-      if (!res.ok) {
-        if (res.status === 404) {
-          setLivros([]);
-          setCarregando(false);
-          return;
+  const BuscarLivroByAutor = useCallback(async (id) => {
+      setLivro([]); setColaboradores(null); setAutor(null); setCarregando(true);
+      try {
+        const res = await apiFetch(`/api/v1/clients/livros/${id}`, { skipAuthRedirect: true });
+        const json = await res.json();
+        if (!res.ok) {
+          if (res.status === 404) {
+            setLivro([]); setAutor(null); setColaboradores(null); setCarregando(false);
+            return;
+          }
+          throw new Error(json.error || `Erro ${res.status}`);
         }
-        throw new Error(data.error || `Erro ${res.status}`);
+        setLivro(json.data);
+        setColaboradores(json.data.colaboradores);
+        setAutor(json.data.users_profile);
+        setCarregando(false);
+      } catch (err) {
+        console.error("Erro em BuscarLivroByAutor", err);
+        setLivro([]); setCarregando(false);
       }
-
-      const livrosData = data.data || data || [];
-      setLivros(livrosData);
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro em GetLivrosById", error);
-      setLivros([]);
-      setCarregando(false);
-    }
-  }, []);
-
+    }, []);
+  
   return {
     user,
     autor,
@@ -85,8 +81,6 @@ export const useLivros = () => {
     setColaboradores,
     setCarregando,
     BuscarLivros,
-    BuscarLivrosById,
+    BuscarLivroByAutor,
   };
 };
-
-

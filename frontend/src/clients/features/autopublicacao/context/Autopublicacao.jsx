@@ -18,7 +18,7 @@ const ESTADO_INICIAL_LIVRO = {
 
 export const AutopublicacaoProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
-  
+
   const [livro, setLivro] = useState([]);
   const [autor, setAutor] = useState(null);
   const [colaboradores, setColaboradores] = useState(null);
@@ -68,7 +68,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
   const irParaEtapaEspecifica = (numeroDaEtapa) => setEtapa(numeroDaEtapa);
   const voltarEtapa = () => setEtapa((atual) => Math.max(atual - 1, 1));
-  
+
   const irParaProximaEtapa = () => {
     if (validarEtapaAtual(etapa)) {
       setEtapa((atual) => Math.min(atual + 1, 4));
@@ -80,40 +80,6 @@ export const AutopublicacaoProvider = ({ children }) => {
   const atualizarEtapa = (chave) => (novosDados) => {
     setDadosLivro((atual) => ({ ...atual, [chave]: novosDados }));
   };
-
-  const UpdateStatusAtivo = useCallback(async (id, ativo) => {
-    setCarregando(true);
-    try {
-      const res = await apiFetch("/api/meuslivros/updateA/" + id, { method: "POST" });
-      if (!res.ok) throw new Error(`Erro ${res.status}`);
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro em UpdateStatusAtivo", error);
-      setCarregando(false);
-    }
-  }, []);
-
-  const BuscarLivroByAutor = useCallback(async (id) => {
-    setLivro([]); setColaboradores(null); setAutor(null); setCarregando(true);
-    try {
-      const res = await apiFetch(`/api/livros/${id}`, { skipAuthRedirect: true });
-      const json = await res.json();
-      if (!res.ok) {
-        if (res.status === 404) {
-          setLivro([]); setAutor(null); setColaboradores(null); setCarregando(false);
-          return;
-        }
-        throw new Error(json.error || `Erro ${res.status}`);
-      }
-      setLivro(json.data);
-      setColaboradores(json.data.colaboradores);
-      setAutor(json.data.users_profile);
-      setCarregando(false);
-    } catch (err) {
-      console.error("Erro em BuscarLivroByAutor", err);
-      setLivro([]); setCarregando(false);
-    }
-  }, []);
 
   const InsertLivro = useCallback(async (dadosDoLivro, publicar = true) => {
     setCarregando(true);
@@ -128,7 +94,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         if (!arquivo) return null;
         const extensao = arquivo.name?.split(".").pop() || arquivo.type?.split("/") || "bin";
 
-        const res = await apiFetch("/api/livros/upload-url", {
+        const res = await apiFetch("/api/v1/clients/autopublicacao/upload-url", {
           method: "POST",
           body: JSON.stringify({ tipo, extensao }),
         });
@@ -162,7 +128,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         manuscritoPath,
       };
 
-      const res = await apiFetch("/api/livros/insertLivro/", {
+      const res = await apiFetch("/api/v1/clients/autopublicacao/insertLivro/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -190,11 +156,25 @@ export const AutopublicacaoProvider = ({ children }) => {
   return (
     <AutopublicacaoContext.Provider
       value={{
-        autor, colaboradores, meta, carregando, livro, Livros,
-        dadosLivro, etapa, atualizarEtapa, irParaProximaEtapa, 
-        voltarEtapa, irParaEtapaEspecifica, publicarLivro: publicarLivroNoContexto,
-        setAutor, setMeta, setLivro, setLivros, setColaboradores, setCarregando,
-        UpdateStatusAtivo, BuscarLivroByAutor,
+        autor, 
+        colaboradores, 
+        meta, 
+        carregando, 
+        livro, 
+        Livros,
+        dadosLivro, 
+        etapa, 
+        atualizarEtapa, 
+        irParaProximaEtapa,
+        voltarEtapa, 
+        irParaEtapaEspecifica, 
+        publicarLivro: publicarLivroNoContexto,
+        setAutor, 
+        setMeta, 
+        setLivro, 
+        setLivros, 
+        setColaboradores, 
+        setCarregando,
       }}
     >
       {children}

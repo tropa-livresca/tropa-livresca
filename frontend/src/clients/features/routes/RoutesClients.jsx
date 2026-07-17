@@ -1,5 +1,5 @@
 ﻿import { Routes, Route, Navigate, useLocation } from "react-router-dom";
-import { AuthProvider } from "../../context/Auth"; // Ajuste o caminho relativo se necessÃ¡rio
+import { AuthProvider } from "../../context/Auth"; 
 import useAuth from "../../hooks/useAuth";
 import MainLayout from "../../components/MainLayout/MainLayout";
 
