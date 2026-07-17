@@ -88,15 +88,16 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 ```text
 .
 ├── backend/
-│   ├── api/
-│   │   ├── admin/
-│   │   ├── clients/
-│   │   └── common/
-│   │       ├── config/
-│   │       ├── database/
-│   │       ├── middlewares/
-│   │       └── models/
-│   ├── api.js
+│   ├── src /
+│   │   ├── api/
+│   │   │   ├── admin/
+│   │   │   ├── clients/
+│   │   │   └── common/
+│   │   │       ├── config/
+│   │   │       ├── database/
+│   │   │       ├── middlewares/
+│   │   │       └── models/
+│   │   └── api.js
 │   ├── README.md
 │   └── .env.example
 ├── docs/
@@ -111,6 +112,10 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 │   ├── public/
 │   └── src/
 │       ├── admin/
+|       |   ├── components/
+│       │   ├── context/
+│       │   ├── features/
+│       │   └── hooks/
 │       ├── clients/
 │       │   ├── components/
 │       │   ├── context/
@@ -124,11 +129,12 @@ O diagrama completo de casos de uso está em [docs/diagramas/caso-de-uso.puml](d
 │       ├── services/
 │       ├── README.md
 │       └── .env.example
-├── .env.example
+├── .env.example 
 ├── LICENSE
 ├── CONTRIBUTING
 └── README.md
 ```
+
 ## Pré-requisitos
 
 As instruções completas de instalação e configuração estão em [docs/instalacao.md](docs/instalacao.md).
