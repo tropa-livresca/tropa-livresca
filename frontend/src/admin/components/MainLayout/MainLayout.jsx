@@ -8,7 +8,7 @@ export default function MainLayout({children}) {
 
     return (
         <>
-            <Cabecalho aoAbrirMenu = {()=> setMenuAberto(true)}/>
+            <Cabecalho aoAbrirMenu = {()=> setMenuAberto(!menuAberto)}/>
 
             <NavBarLateral aberto = {menuAberto} aoFechar = {() => setMenuAberto(false)}/>
 
@@ -21,7 +21,7 @@ export default function MainLayout({children}) {
                         py: 2,
                         px: 4,
                         minHeight: "100vh",
-                        pt: 10,
+                        pt: 20,
                         minHeight: "100vh",
                     }
                 }

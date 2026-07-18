@@ -11,7 +11,8 @@ export default function Cabecalho({ aoAbrirMenu }) {
                 color: "custom.superficie", minWidth: "100%",
                 left: 0,
                 top: 0,
-                zIndex: (theme) => theme.zIndex.drawer + 1 
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+                padding: "2em" 
             }
             }>
             <Toolbar>
@@ -23,11 +24,11 @@ export default function Cabecalho({ aoAbrirMenu }) {
                     onClick={aoAbrirMenu}
                     sx={{ mr: 2 }}
                 >
-                    <MenuIcon />
+                    <MenuIcon sx = {{fontSize: "2.5rem"}}/>
                 </IconButton>
 
                 <Typography
-                    variant="h6"
+                    variant="h5"
                     component="div"
                     sx={{ flexGrow: 1, fontFamily: "Jacques rancois" }}>
                     Painel do Administrador
