@@ -1,5 +1,7 @@
-import NavBarLateral from "../../../../components/NavBarLateral/NavBarLateral";
+import MainLayout from "../../../../components/MainLayout/MainLayout";
 
-export default function Teste () {
-    return <>O mundo mágico...<NavBarLateral/></>
+import { Typography } from "@mui/material";
+
+export default function Teste() {
+    return <><Typography>Sou legal, mas infeliz.</Typography></>
 }
