@@ -56,13 +56,15 @@ export class AuthService {
     await AuthModel.signOut();
   }
 
-  static async signin(email, password) {
-    const { data, error } = await AuthModel.signInWithPassword(email, password);
-
-    if (error) {
+    static async signin(email, password) {
+    try {
+      const resultado = await AuthModel.signin(email, password);
+      
+      return resultado;
+    } catch (error) {
       error.statusCode = 400;
       throw error;
     }
-    return data;
   }
+
 }

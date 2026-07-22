@@ -1,8 +1,7 @@
 ﻿import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../common/hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
 import { useState, useEffect, useRef } from "react";
-import { perfilEvent } from "../../events/perfilEvent";
 import styles from "./NavBar.module.css";
 import logo from "../../../common/images/logo.png";
 
@@ -20,16 +19,6 @@ export default function NavBar() {
       getPerfil();
     }
   }, [loading, signed]);
-
-  useEffect(() => {
-    if (!signed) return;
-
-    const removerInscricao = perfilEvent.inscrever(() => {
-      getPerfil();
-    });
-
-    return () => removerInscricao();
-  }, [signed]);
 
   const sair = async () => {
     try {
@@ -67,21 +56,21 @@ export default function NavBar() {
               <li><Link to="">Depoimentos</Link></li>
             </ul>
           </li>
-          <li className={styles.item}><Link to="livros">Livros</Link></li>
-          <li className={styles.item}><Link to="">Loja</Link></li>
-          <li className={styles.item}><Link to="autores">Autores</Link></li>
-          <li className={styles.item}><Link to="">Blog</Link></li>
+          <li className={styles.item}><Link to="/livros">Livros</Link></li>
+          <li className={styles.item}><Link to="/">Loja</Link></li>
+          <li className={styles.item}><Link to="/autores">Autores</Link></li>
+          <li className={styles.item}><Link to="/">Blog</Link></li>
           <li className={styles.item}>
             <Link to="">Se Autopublique</Link>
             <ul className={styles.subtema}>
-              <li><Link to="meuslivros">Meus Livros</Link></li>
+              <li><Link to="/meuslivros">Meus Livros</Link></li>
             </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Suporte</Link>
             <ul className={styles.subtema}>
-              <li><Link to="FAQ">Perguntas Frequentes</Link></li>
-              <li><Link to="suporte">Contato</Link></li>
+              <li><Link to="/FAQ">Perguntas Frequentes</Link></li>
+              <li><Link to="/suporte">Contato</Link></li>
             </ul>
           </li>
         </ul>
@@ -111,7 +100,7 @@ export default function NavBar() {
               {menuUsuario && (
                 <div className={styles.menuDropdown}>
                   <Link
-                    to="perfil"
+                    to="/perfil"
                     className={styles.menuItem}
                     onClick={() => setMenuUsuario(false)}
                   >
@@ -135,8 +124,8 @@ export default function NavBar() {
           </div>
         ) : (
           <div className={styles.navbutton}>
-            <Link to="cadastro" className={styles.button}>Cadastro</Link>
-            <Link to="login" className={styles.button}>Login</Link>
+            <Link to="auth/cadastro" className={styles.button}>Cadastro</Link>
+            <Link to="auth/login" className={styles.button}>Login</Link>
           </div>
         )}
       </nav>

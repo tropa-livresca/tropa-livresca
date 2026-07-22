@@ -1,5 +1,5 @@
 ﻿import { createContext, useState, useEffect } from "react";
-import { apiFetch } from "../../services/api";
+import { apiFetch } from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -11,26 +11,34 @@ export const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    let isMounted = true;
+
     const checkSession = async () => {
       try {
         const res = await apiFetch("/api/v1/clients/auth/session", {
           skipAuthRedirect: true,
         });
 
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          setUser(null);
+        if (isMounted) {
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data.user);
+          } else {
+            setUser(null);
+          }
         }
       } catch (err) {
-        setUser(null);
+        if (isMounted) setUser(null);
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     checkSession();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const signin = async (email, password) => {
@@ -48,8 +56,10 @@ export const AuthProvider = ({ children }) => {
       }
 
       setUser(data.user);
+      return null;
     } catch (err) {
-      return "Erro de conexÃ£o com o servidor.";
+      console.error("Erro interno no signin:", err);
+      return "Erro de conexão com o servidor.";
     }
   };
 
@@ -71,9 +81,8 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.setItem("temp_email", email);
 
       return null;
-
     } catch (err) {
-      return "Erro de conexÃ£o com o servidor.";
+      return "Erro de conexão com o servidor.";
     }
   };
 
@@ -86,12 +95,12 @@ export const AuthProvider = ({ children }) => {
 
       const data = await res.json();
       if (!res.ok) {
-        return data.error || "Erro ao desconectar usuÃ¡rio.";
+        return data.error || "Erro ao desconectar usuário.";
       }
 
       setUser(null);
     } catch (err) {
-      return "Erro de conexÃ£o com o servidor.";
+      return "Erro de conexão com o servidor.";
     }
   };
 
@@ -112,5 +121,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-
-

@@ -1,6 +1,6 @@
 ﻿import { useState } from "react";
-import Input from "../../../../common/components/Input/Input";
-import SubmitButton from "../../../../common/components/Submit/SubmitButton";
+import Input from "../../components/Input/Input";
+import SubmitButton from "../../components/Submit/SubmitButton";
 
 import {useNavigate} from "react-router-dom";
  
@@ -31,9 +31,3 @@ export default function ConfirmacaoForm({text}) {
     </>
   );
 }
-
-
-
-
-
-

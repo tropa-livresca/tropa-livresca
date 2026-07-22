@@ -33,7 +33,7 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    return parseCapasArray(data);
+    return this._parseCapasArray(data);
   }
 
   static async updateEstadoService(livroId) {

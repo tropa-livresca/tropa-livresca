@@ -1,11 +1,11 @@
-﻿import Input from "../../../../../common/components/Input/Input";
-import SubmitButton from "../../../../../common/components/Submit/SubmitButton";
+﻿import Input from "../../../../components/Input/Input";
+import SubmitButton from "../../../../components/Submit/SubmitButton";
 import styles from "./Login.module.css";
 
 import useAuth from "../../../../hooks/useAuth";
 
 import logo from "../../images/login.jpg";
-import logo2 from "../../../../../common/images/logo.png";
+import logo2 from "../../../../images/logo.png";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";

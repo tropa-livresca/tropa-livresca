@@ -3,13 +3,19 @@ import { AuthService } from "./auth.service.js";
 export class AuthController {
   static COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production", 
     sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 
-  static async setSession(req, res, next) {
-    const { accessToken, refreshToken } = req.body;
+    static async setSession(req, res, next) {
+    const accessToken = req.body.accessToken || req.body.access_token;
+    const refreshToken = req.body.refreshToken || req.body.refresh_token;
+
+    if (!accessToken || !refreshToken) {
+      return res.status(400).json({ error: "Tokens não fornecidos para configuração de sessão." });
+    }
+
     try {
       const data = await AuthService.setSession(accessToken, refreshToken);
 
@@ -24,6 +30,7 @@ export class AuthController {
       next(err);
     }
   }
+
 
   static async refreshSession(req, res, next) {
     const refreshToken = req.cookies["refresh-token"];

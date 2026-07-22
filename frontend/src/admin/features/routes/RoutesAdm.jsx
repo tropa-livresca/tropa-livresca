@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MainLayout from "../../components/MainLayout/MainLayout";
+import useAuth from "../../../common/hooks/useAuth";
 import Teste from "../painelBlog/pages/Teste/Teste";
 
 const tema = createTheme({
@@ -39,6 +40,19 @@ const tema = createTheme({
         },
     },
 });
+
+const Private = ({ Item, redirectTo = "/auth/login" }) => {
+  const { signed, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) return null;
+
+  return signed ? (
+    <Item />
+  ) : (
+    <Navigate to={redirectTo} state={{ from: location }} replace />
+  );
+};
 
 const RoutesAdm = () => {
     return (
