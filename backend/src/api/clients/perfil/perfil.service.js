@@ -1,7 +1,8 @@
 import { supabaseAdmin } from "../../common/config/supabase.js";
 import { PerfilModel } from "../../common/models/perfil.model.js";
 
-export const getPerfilService = async (userId) => {
+export class PerfilService {
+  static async getPerfilService (userId) {
   if (!userId) {
     const erro401 = new Error("Usuário não autenticado ou token inválido.");
     erro401.statusCode = 401;
@@ -24,7 +25,7 @@ export const getPerfilService = async (userId) => {
   return perfil;
 };
 
-export const updatePerfilService = async ({ userId, dadosPerfil, file, redes_sociais }) => {
+static async updatePerfilService ({ userId, dadosPerfil, file, redes_sociais }){
   if (!userId) {
     const erro401 = new Error("Sessão expirada. Autentique-se novamente para salvar as alterações.");
     erro401.statusCode = 401;
@@ -73,3 +74,5 @@ export const updatePerfilService = async ({ userId, dadosPerfil, file, redes_soc
 
   return perfilData;
 };
+
+}

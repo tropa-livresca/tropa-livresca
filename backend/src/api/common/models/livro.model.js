@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
-export const LivroModel = {
-  async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasAtivos = true }) {
+export class LivroModel {
+  static async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasAtivos = true }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
@@ -22,9 +22,9 @@ export const LivroModel = {
     if (error) throw error;
 
     return { data: data || [], count: count || 0 };
-  },
+  }
 
-  async buscarPorPerfilUsuario(userId) {
+  static async buscarPorPerfilUsuario(userId) {
     let query = supabaseAdmin
       .from("livros")
       .select("*")
@@ -35,7 +35,7 @@ export const LivroModel = {
     if (error) throw error;
     
     return { data: data || [] };
-  },
+  }
 
   async buscarDetalhesPorId(id) {
     let query = supabaseAdmin
@@ -47,6 +47,6 @@ export const LivroModel = {
     const { data, error } = await query.maybeSingle();
     if (error) throw error;
     return data;
-  },
+  }
 
 };

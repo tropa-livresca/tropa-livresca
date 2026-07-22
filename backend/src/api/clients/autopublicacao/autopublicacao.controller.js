@@ -1,20 +1,21 @@
-import * as autopublicacaoService from "./autopublicacao.service.js";
+import {AutopublicacaoService} from "./autopublicacao.service.js";
 
-export const GetLivrosById = async (req, res, next) => {
+export class AutopublicacaoController{
+static async GetLivrosById (req, res, next) {
   try {
     const userId = req.user?.id;
-    const livrosComCapas = await autopublicacaoService.getLivrosByIdService(userId);
+    const livrosComCapas = await AutopublicacaoService.getLivrosByIdService(userId);
     
     return res.status(200).json(livrosComCapas);
   } catch (err) {
     next(err);
   }
-};
+}
 
-export const UpdateEstado = async (req, res, next) => {
+static async UpdateEstado (req, res, next) {
   try {
     const { id } = req.params;
-    await autopublicacaoService.updateEstadoService(id);
+    await AutopublicacaoService.updateEstadoService(id);
 
     return res.status(200).end();
   } catch (err) {
@@ -22,14 +23,14 @@ export const UpdateEstado = async (req, res, next) => {
   }
 };
 
-export const InsertLivro = async (req, res, next) => {
+static async InsertLivro (req, res, next) {
   try {
     const userId = req.user?.id;
     const { dadosLivro, publicar, capa, manuscritoPath } = req.body;
 
     console.time("Tempo do insert");
     
-    const resultado = await autopublicacaoService.insertLivroService({
+    const resultado = await AutopublicacaoService.insertLivroService({
       userId,
       dadosLivro,
       publicar,
@@ -45,12 +46,12 @@ export const InsertLivro = async (req, res, next) => {
   }
 };
 
-export const CriarUploadLivro = async (req, res, next) => {
+static async CriarUploadLivro (req, res, next) {
   try {
     const userId = req.user?.id;
     const { tipo, extensao } = req.body;
 
-    const resultado = await autopublicacaoService.criarUploadLivroService({
+    const resultado = await AutopublicacaoService.criarUploadLivroService({
       userId,
       tipo,
       extensao
@@ -61,3 +62,5 @@ export const CriarUploadLivro = async (req, res, next) => {
     next(error);
   }
 };
+
+}

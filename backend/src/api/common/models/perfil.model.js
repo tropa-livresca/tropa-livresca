@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
-export const PerfilModel = {
-  async buscarPorId(id) {
+export class PerfilModel {
+  static async buscarPorId(id) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
       .select("*")
@@ -11,9 +11,9 @@ export const PerfilModel = {
     if (error) throw error;
 
     return data;
-  },
+  }
 
-  async salvar(dados) {
+  static async salvar(dados) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
       .upsert(dados, { onConflict: "id" })
@@ -23,5 +23,5 @@ export const PerfilModel = {
     if (error) throw error;
 
     return data;
-  },
+  }
 };

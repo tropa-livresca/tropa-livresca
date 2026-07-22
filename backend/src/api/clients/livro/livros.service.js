@@ -2,7 +2,8 @@ import { supabaseAdmin } from "../../common/config/supabase.js";
 import { LivroModel } from "../../common/models/livro.model.js";
 import { ColaboradorModel } from "../../common/models/colaborador.model.js";
 
-const parseCapaUrls = (livro) => {
+export class LivrosService {
+  static _parseCapaUrls (livro) {
   if (!livro) return livro;
   try {
     if (typeof livro.capa === "string") {
@@ -14,11 +15,11 @@ const parseCapaUrls = (livro) => {
   return livro;
 };
 
-const parseCapasArray = (livros) => {
+static _parseCapasArray (livros) {
   return livros.map(parseCapaUrls);
 };
 
-export const getLivrosService = async ({ page, limit, busca }) => {
+static async getLivrosService  ({ page, limit, busca }) {
   const { data, count } = await LivroModel.buscarComFiltros({ page, limit, busca });
 
   if (!data || data.length === 0) {
@@ -41,7 +42,7 @@ export const getLivrosService = async ({ page, limit, busca }) => {
   };
 };
 
-export const getLivrosByAutorService = async (id) => {
+static async getLivrosByAutorService (id) {
   const livro = await LivroModel.buscarDetalhesPorId(id, false);
 
   if (!livro) {
@@ -60,3 +61,5 @@ export const getLivrosByAutorService = async (id) => {
     },
   };
 };
+
+}

@@ -1,8 +1,8 @@
 import express from "express";
-import { enviarEmail } from "./suporte.controller.js";
+import { SuporteController} from "./suporte.controller.js";
 
 const router = express.Router();
 
-router.post('/enviarEmail', enviarEmail);
+router.post('/enviarEmail', SuporteController.enviarEmail);
 
 export default router;

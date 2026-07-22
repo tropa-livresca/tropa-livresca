@@ -1,7 +1,8 @@
 import { AutorModel } from "../../common/models/autor.model.js";
 import { LivroModel } from "../../common/models/livro.model.js";
 
-export const getAutoresService = async ({ page, limit, busca }) => {
+export class AutorService {
+  static async getAutoresService  ({ page, limit, busca })  {
   const { data, count } = await AutorModel.buscarComFiltros({ page, limit, busca });
 
   if (!data || data.length === 0) {
@@ -21,7 +22,7 @@ export const getAutoresService = async ({ page, limit, busca }) => {
   };
 };
 
-export const getAutorByIdService = async ({ id, page, limit }) => {
+static async getAutorByIdService  ({ id, page, limit })  {
   const autor = await AutorModel.buscarPorId(id);
 
   if (!autor) {
@@ -45,3 +46,5 @@ export const getAutorByIdService = async ({ id, page, limit }) => {
     },
   };
 };
+
+}

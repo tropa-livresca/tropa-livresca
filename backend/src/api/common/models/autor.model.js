@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
-export const AutorModel = {
-  async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasComLivrosAtivos = true }) {
+export class AutorModel {
+  static async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasComLivrosAtivos = true }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
@@ -26,9 +26,9 @@ export const AutorModel = {
     if (error) throw error;
 
     return { data: data || [], count: count || 0 };
-  },
+  }
 
-  async buscarPorId(id) {
+  static async buscarPorId(id) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
       .select("id, nome, imagem, descricao, redes_sociais")
