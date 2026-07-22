@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { apiFetch } from "../../../../services/api";
+import { apiFetch } from "../../../../common/services/api";
 
 export const usePerfil = () => {
   const [perfil, setPerfil] = useState(null);

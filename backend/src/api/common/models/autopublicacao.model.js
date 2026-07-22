@@ -1,7 +1,7 @@
 import {supabaseAdmin} from "../config/supabase.js";
 
-export const AutopublicacaoModel = {
-      async buscarDetalhesPorId(id, apenasAtivos = true) {
+export class AutopublicacaoModel {
+      static async buscarDetalhesPorId(id, apenasAtivos = true) {
         let query = supabaseAdmin
           .from("livros")
           .select("id, publico_alvo, numero_edicao, data_de_publicacao, capa, titulo, subtitulo, descricao, autor_nome, autor_sobrenome, users_profile(id, nome, imagem)")
@@ -14,9 +14,9 @@ export const AutopublicacaoModel = {
         const { data, error } = await query.maybeSingle();
         if (error) throw error;
         return data;
-      },
+      }
     
-      async deixarRascunho(id) {
+      static async deixarRascunho(id) {
         const { error } = await supabaseAdmin
           .from("livros")
           .update({ estado: rascunho })
@@ -24,16 +24,16 @@ export const AutopublicacaoModel = {
     
         if (error) throw error;
         return true;
-      },
+      }
 
-      async publicarRascunho(id){
+      static async publicarRascunho(id){
         const {error} = await supabaseAdmin
         .from("livros")
         .update({estado: publicar})
         .eq("id", id);
-      },
+      }
     
-      async criar(dadosLivro) {
+      static async criar(dadosLivro) {
         const { data, error } = await supabaseAdmin
           .from("livros")
           .insert(dadosLivro)
@@ -43,6 +43,5 @@ export const AutopublicacaoModel = {
         if (error) throw error;
         return data;
       }
-
-      
+     
 }

@@ -1,28 +1,28 @@
 import express from "express";
-import {UpdateEstado, InsertLivro, CriarUploadLivro, GetLivrosById} from "./autopublicacao.controller.js";
+import {AutopublicacaoController} from "./autopublicacao.controller.js";
 import {checkAuth } from "../../common/middlewares/auth.middleware.js";
 import {upload} from "../../common/middlewares/upload.middleware.js";
 
 const router = express.Router();
 
-router.get("/", checkAuth, GetLivrosById);
+router.get("/", checkAuth, AutopublicacaoController.GetLivrosById);
 
 router.post(
   "/upload-url",
   checkAuth,
-  CriarUploadLivro,
+  AutopublicacaoController.CriarUploadLivro,
 );
 
 router.post(
   "/insertLivro",
   checkAuth,
-  InsertLivro,
+  AutopublicacaoController.InsertLivro,
 );
 
 router.patch(
     "/updateEstado/:id/", 
     checkAuth, 
-    UpdateEstado,
+    AutopublicacaoController.UpdateEstado,
 );
 
 export default router;

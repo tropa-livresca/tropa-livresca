@@ -1,6 +1,6 @@
-﻿import { apiFetch } from "../../services/api";
+﻿import { apiFetch } from "../../common/services/api";
 import { useState, useCallback, useContext } from "react";
-import { AuthContext } from "../context/Auth";
+import { AuthContext } from "../../common/context/Auth";
 
 export const useLivros = () => {
   const { user } = useContext(AuthContext);

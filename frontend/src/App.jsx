@@ -1,9 +1,13 @@
 ﻿import React from "react";
-import RoutesApp from "./routes/RoutesApp";
+import RoutesApp from "./common/routes/RoutesApp";
+import { AuthProvider } from "./common/context/Auth";
 
 function App() {
-  return <RoutesApp />;
+  return (
+    <AuthProvider>
+      <RoutesApp />
+    </AuthProvider>
+  );
 }
 
 export default App;
-

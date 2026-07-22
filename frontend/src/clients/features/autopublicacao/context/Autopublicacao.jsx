@@ -1,7 +1,7 @@
-﻿import { apiFetch } from "../../../../services/api";
+﻿import { apiFetch } from "../../../../common/services/api";
 import { createContext, useState, useCallback, useContext, useEffect } from "react";
-import { supabase } from "../../../../lib/supabaseClient.js";
-import { AuthContext } from "../../../context/Auth";
+import { supabase } from "../../../../common/lib/supabaseClient.js";
+import { AuthContext } from "../../../../common/context/Auth";
 
 export const AutopublicacaoContext = createContext();
 

@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
-export const ColaboradorModel = {
-  async buscarPorLivroId(livroId) {
+export class ColaboradorModel {
+  static async buscarPorLivroId(livroId) {
     const { data, error } = await supabaseAdmin
       .from("colaboradores")
       .select("nome, sobrenome, funcao")
