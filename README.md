@@ -125,26 +125,27 @@ O diagrama completo de casos de uso está disponível em [docs/diagramas/caso-de
 │   ├── deploy.md
 │   └── instalacao.md
 ├── frontend/
-│   ├── public/
-│   └── src/
-│       ├── admin/
-│       │   ├── components/
-│       │   ├── context/
-│       │   ├── features/
-│       │   └── hooks/
-│       ├── clients/
-│       │   ├── components/
-│       │   ├── context/
-│       │   ├── features/
-│       │   └── hooks/
-│       ├── common/
-│       │   ├── components/
-│       │   └── images/
-│       ├── lib/
-│       ├── routes/
-│       ├── services/
-│       ├── README.md
-│       └── .env.example
+│   ├── public
+│   ├── src/
+│   │   ├── admin/
+│   │   │   ├── components/
+│   │   │   └── features/
+│   │   ├── clients/
+│   │   │   ├── components/
+│   │   │   ├── features/
+│   │   │   └── hooks/
+│   │   ├── common/
+│   │   │   ├── components/
+│   │   │   ├── images/
+│   │   │   ├── hooks/
+│   │   │   ├── context/
+│   │   │   ├── lib/
+│   │   │   ├── service/
+│   │   │   └── routes/  
+│   │   ├── README.md
+│   │   └── .env.example
+│   ├── App.jsx
+│   └── main.jsx
 ├── .env.example 
 ├── LICENSE
 ├── CONTRIBUTING
