@@ -1,8 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import {CssBaseline} from "@mui/material";
-import { createTheme, ThemeProvider} from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MainLayout from "../../components/MainLayout/MainLayout";
-
 import Teste from "../painelBlog/pages/Teste/Teste";
 
 const tema = createTheme({
@@ -24,7 +23,6 @@ const tema = createTheme({
             textoMuted: "#7a6a5b",
         },
     },
-
     typography: {
         fontFamily: ["Inter", "sans-serif"].join(","),
         h1: {
@@ -40,22 +38,18 @@ const tema = createTheme({
             fontSize: "2rem",
         },
     },
-
-    bgcolor: {
-
-    },
 });
 
 const RoutesAdm = () => {
     return (
         <ThemeProvider theme={tema}>
             <CssBaseline />
-            <MainLayout>
+            <MainLayout>             
                 <Routes>
-                    <Route path="/painelBlog" element={<Teste />} />
+                    <Route path="painelBlog" element={<Teste />} />
                 </Routes>
             </MainLayout>
-        </ThemeProvider >
+        </ThemeProvider>
     );
 };
 
