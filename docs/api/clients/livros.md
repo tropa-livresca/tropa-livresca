@@ -4,11 +4,11 @@
 
 | Método | Endpoint                     | Descrição                               |
 | ------ | ---------------------------- | --------------------------------------- |
-| GET    | /api/livros/                 | Lista livros                            |
-| POST   | /api/livros/insertLivro      | Cadastro de livro                       |
-| GET    | /api/livros/:id              | Busca livros por autor ou identificador |
-| POST   | /api/meuslivros/updateA/:id/ | Atualiza o status de ativo de um livro  |
-| GET    | /api/meuslivros/             | Lista os livros do usuário autenticado  |
+| GET    | /api/v1/clients/livros/                 | Lista livros                            |
+| POST   | /api/v1/clients/livros/insertLivro      | Cadastro de livro                       |
+| GET    | /api/v1/clients/livros/:id              | Busca livros por autor ou identificador |
+| POST   | /api/v1/clients/meuslivros/updateA/:id/ | Atualiza o status de ativo de um livro  |
+| GET    | /api/v1/clients/meuslivros/             | Lista os livros do usuário autenticado  |
 
 ## Observações
 

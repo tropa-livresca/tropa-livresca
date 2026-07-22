@@ -4,5 +4,5 @@
 
 | Método | Endpoint         | Descrição            |
 | ------ | ---------------- | -------------------- |
-| GET    | /api/autores/    | Lista autores        |
-| GET    | /api/autores/:id | Detalhes de um autor |
+| GET    | /api/v1/clients/autores/    | Lista autores        |
+| GET    | /api/v1/clients/autores/:id | Detalhes de um autor |

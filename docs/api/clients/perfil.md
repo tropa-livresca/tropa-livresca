@@ -4,8 +4,8 @@
 
 | Método | Endpoint     | Descrição                                |
 | ------ | ------------ | ---------------------------------------- |
-| GET    | /api/perfil/ | Retorna o perfil do usuário autenticado  |
-| PUT    | /api/perfil/ | Atualiza o perfil do usuário autenticado |
+| GET    | /api/v1/clients/perfil/ | Retorna o perfil do usuário autenticado  |
+| PUT    | /api/v1/clients/perfil/ | Atualiza o perfil do usuário autenticado |
 
 ## Observações
 

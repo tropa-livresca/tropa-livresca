@@ -4,7 +4,7 @@
 
 | Método | Endpoint         | Descrição                  |
 | ------ | ---------------- | -------------------------- |
-| POST   | /api/enviarEmail | Envio de e-mail de suporte |
+| POST   | /api/v1/clients/enviarEmail | Envio de e-mail de suporte |
 
 ## Observações
 
