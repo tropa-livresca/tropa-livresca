@@ -4,9 +4,6 @@ import {
   LivrosController
 } from "./livros.controller.js";
 
-import { checkAuth } from "../../common/middlewares/auth.middleware.js";
-import {upload} from "../../common/middlewares/upload.middleware.js";
-
 const router = express.Router();
 
 router.get("/", LivrosController.GetLivros);
