@@ -1,122 +1,97 @@
-# 🤝 Contribuindo para a Tropa Livresca
+# Contribuindo para a Tropa Livresca
 
-Agradecemos pelo interesse em colaborar com o projeto.
+Agradecemos pelo seu interesse em colaborar com o desenvolvimento da plataforma Tropa Livresca. Este guia descreve o fluxo padronizado para submissão de melhorias, correções e novas funcionalidades, mantendo a integridade do histórico do repositório.
 
-Este guia descreve o fluxo recomendado para contribuir de forma organizada e alinhada com o restante da documentação.
+---
 
-## Índice
+## Tipos de Contribuição
 
-- [Como contribuir](#como-contribuir)
-- [Fluxo de contribuição](#fluxo-de-contribuição)
-- [Padrão de branches](#padrão-de-branches)
-- [Padrão de commits](#padrão-de-commits)
-- [Checklist antes de abrir um pull request](#checklist-antes-de-abrir-um-pull-request)
-- [Documentação](#documentação)
-- [Segurança](#segurança)
-- [Dúvidas](#dúvidas)
+As colaborações aceitas no projeto englobam os seguintes escopos:
+* Correções de bugs na interface ou em endpoints da API.
+* Implementação de novas funcionalidades acordadas no escopo do TCC.
+* Melhorias na documentação técnica, diagramas e comentários.
+* Refatorações de código voltadas para legibilidade e desempenho.
+* Inclusão de novos cenários na suíte de testes automatizados.
 
-## Como contribuir
+---
 
-As contribuições podem incluir:
+## Fluxo de Trabalho Recomendado
 
-- correções de bugs;
-- implementação de novas funcionalidades;
-- melhorias na documentação;
-- refatorações;
-- inclusão ou ajuste de testes.
+O ciclo de vida de uma contribuição segue estritamente o pipeline abaixo:
 
-## Fluxo de contribuição
-
-```text
-Fork
-  ↓
-Clone
-  ↓
-Nova branch
-  ↓
-Desenvolvimento
-  ↓
-Commit
-  ↓
-Push
-  ↓
-Pull request
-  ↓
-Revisão
-  ↓
-Merge
+```mermaid
+flowchart TD
+    Fork[1. Fork do Repositório] --> Clone[2. Clone Local]
+    Clone --> Branch[3. Criação de Branch Descritiva]
+    Branch --> Code[4. Desenvolvimento Isolado]
+    Code --> Test[5. Execução dos Testes Locais]
+    Test --> Commit[6. Commit Padronizado]
+    Commit --> Push[7. Push para o Fork]
+    Push --> PR[8. Abertura de Pull Request]
+    PR --> Review[9. Revisão de Código e Ajustes]
+    Review --> Merge[10. Merge na Branch Principal]
 ```
 
-1. Faça um fork do repositório.
-2. Crie uma branch com nome descritivo.
-3. Desenvolva a alteração com foco em uma única responsabilidade.
-4. Teste a mudança localmente.
-5. Faça o commit seguindo o padrão abaixo.
-6. Envie a branch para o seu fork.
-7. Abra um pull request descrevendo a mudança.
+---
 
-## Padrão de branches
+## Padrão de Branches
 
-Utilize prefixos claros para facilitar a leitura do histórico:
+Utilize nomenclaturas explícitas baseadas em prefixos para segmentar o histórico de ramificações:
 
-- feature/: para novas funcionalidades;
-- fix/: para correções;
-- docs/: para alterações de documentação;
-- refactor/: para reorganizações de código;
-- test/: para testes;
-- chore/: para manutenção geral.
+* `feature/`: Desenvolvimento de novas funcionalidades (ex: `feature/cadastro-livro`).
+* `fix/`: Correções de falhas ou bugs operacionais (ex: `fix/upload-capa`).
+* `docs/`: Atualizações e melhorias na documentação (ex: `docs/guia-contribuicao`).
+* `refactor/`: Alterações de código estrutural sem impacto no comportamento final (ex: `refactor/auth-controller`).
+* `test/`: Escrita ou ajustes na suíte de testes (ex: `test/integracao-livros`).
+* `chore/`: Alterações de manutenção geral de pacotes e build (ex: `chore/atualiza-dependencias`).
 
-Exemplos:
+---
 
-- feature/cadastro-livro
-- fix/upload-capa
-- docs/guia-contribuicao
-- refactor/auth-controller
+## Padrão de Commits
 
-## Padrão de commits
-
-A recomendação é seguir o modelo Conventional Commits, com a estrutura:
+O repositório adota estritamente a especificação Conventional Commits. As mensagens devem seguir a estrutura descrita abaixo:
 
 ```text
-tipo(escopo): descrição curta
+tipo(escopo): descrição curta em letras minúsculas
 ```
 
-Tipos comuns:
+Mapeamento de tipos comuns:
+* `feat`: Introdução de uma nova funcionalidade no sistema.
+* `fix`: Resolução de um bug ou comportamento incorreto.
+* `docs`: Modificações exclusivas em arquivos de documentação Markdown.
+* `refactor`: Alterações em código que não corrigem bugs nem adicionam recursos.
+* `test`: Adição ou correção de blocos de teste utilizando o node:test.
+* `chore`: Alterações em ferramentas, arquivos de build ou dependências do package.json.
+* `perf`: Mudanças de código focadas puramente em otimização de performance.
 
-- feat: nova funcionalidade;
-- fix: correção de bug;
-- docs: atualização de documentação;
-- refactor: melhoria de estrutura sem mudar comportamento;
-- test: inclusão ou ajuste de testes;
-- chore: manutenção e tarefas diversas;
-- perf: melhoria de desempenho.
-
-Exemplos:
-
+Exemplos práticos:
 ```text
-feat: adiciona fluxo de cadastro de livros
-fix: corrige upload de capa no perfil
-docs: atualiza guia de contribuição
-refactor: reorganiza autenticação do backend
-test: adiciona testes de integração para livros
-chore: atualiza dependências
+feat(clients): adiciona fluxo de cadastro de livros
+fix(perfil): corrige upload de capa no formulário de usuário
+docs(api): atualiza guia de contribuição e endpoints de admin
+refactor(auth): reorganiza tratamento de cookies HttpOnly no backend
+test(livros): adiciona testes de integração com supertest para vitrine
+chore(raiz): atualiza dependências e scripts do ecossistema
 ```
 
-## Checklist antes de abrir um pull request
+---
 
-- [ ] a alteração foi testada localmente;
-- [ ] a documentação foi atualizada quando necessário;
-- [ ] não foram incluídos arquivos sensíveis, como .env ou segredos;
-- [ ] o pull request descreve claramente o problema e a solução.
+## Checklist Antes de Abrir um Pull Request
 
-## Documentação
+* [ ] A alteração foi devidamente executada e validada em ambiente local.
+* [ ] A suíte de testes (`npm test`) roda com sucesso sem quebras ou regressões.
+* [ ] Os arquivos de documentação correspondentes foram atualizados.
+* [ ] Arquivos sensíveis de credenciais locais (`.env`) foram totalmente omitidos.
+* [ ] O pull request detalha de forma concisa o problema resolvido e a abordagem adotada.
 
-Sempre que alterar funcionalidades, API, banco de dados, autenticação ou arquitetura, atualize também a documentação correspondente.
+---
 
-## Segurança
+## Segurança e Tratamento de Dados
 
-Nunca envie arquivos .env, chaves do Supabase, tokens, senhas ou qualquer informação sensível.
+A inclusão de arquivos `.env`, chaves ativas do Supabase, tokens JWT, credenciais de e-mail ou segredos de banco de dados resulta na rejeição imediata do pull request. Certifique-se de que os tokens fictícios permaneçam restritos aos exemplos explicativos da documentação.
 
-## Dúvidas
+---
 
-Se tiver dúvidas, abra uma issue ou entre em contato com os mantenedores.
+## Dúvidas e Reporte de Erros
+
+Caso encontre dificuldades técnicas durante a ambientação ou queira sugerir mudanças estruturais, abra uma issue formal no repositório detalhando o cenário ou entre em contato direto com a equipe de mantenedores do projeto.
