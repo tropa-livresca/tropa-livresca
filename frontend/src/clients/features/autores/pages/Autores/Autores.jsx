@@ -81,7 +81,7 @@ export default function Autores() {
                     to={`/autores/${autor.id}`}
                     className={styles.btndetalhes}
                   >
-                    Ver Perfil
+                    Ver perfil
                   </Link>
                 </div>
               );

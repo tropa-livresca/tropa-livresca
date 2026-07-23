@@ -26,9 +26,9 @@ export function InputTelefone({ type = "text", text, name, placeholder, handleOn
     );
 }
 
-export default function Input({ type = "text", text, name, placeholder, handleOnChange, value, ...props }) {
+export default function Input({ type = "text", text, name, placeholder, handleOnChange, value, className = "", ...props }) {
     return (
-        <div className={styles.form_control}>
+        <div className={`${styles.form_control} ${className}`}>
             {text && <label htmlFor={name}>{text}</label>}
             <input
                 type={type}
