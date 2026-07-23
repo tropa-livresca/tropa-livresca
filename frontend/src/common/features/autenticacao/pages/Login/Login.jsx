@@ -24,7 +24,7 @@ export default function Login() {
 
   const handleSignin = async (e) => {
     e.preventDefault();
-    setError(""); //Limpa erros prévios
+    setError("");
 
     if (!email || !senha) {
       setError("Preencha todos os campos.");

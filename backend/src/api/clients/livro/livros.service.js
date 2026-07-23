@@ -58,4 +58,15 @@ export class LivrosService {
       },
     };
   }
+
+  static async getLivrosById(id){
+    const {data} = await LivroModel.buscarDetalhesPorId(id);
+
+    if(!data){
+      const erro404 = new Error("O livro solicitado não existe ou está indisponível");
+      throw erro404;
+    }
+    
+    return data;
+  }
 }

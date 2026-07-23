@@ -25,4 +25,9 @@ router.patch(
     AutopublicacaoController.UpdateEstado,
 );
 
+router.patch(
+  "/ativo/:id/", 
+  checkAuth, AutopublicacaoController.InativarLivro,
+);
+
 export default router;

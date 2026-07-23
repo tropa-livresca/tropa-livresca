@@ -7,6 +7,8 @@ import {
 const router = express.Router();
 
 router.get("/", LivrosController.GetLivros);
+
 router.get("/:id", LivrosController.GetLivrosByAutor);
+router.get("/detalhes/:id", LivrosController.GetLivrosById);
 
 export default router;

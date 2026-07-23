@@ -36,8 +36,12 @@ export class AutopublicacaoService {
     return this._parseCapasArray(data);
   }
 
-  static async updateEstadoService(livroId) {
-    await AutopublicacaoModel.deixarRascunho(livroId);
+  static async updateEstadoService(livroId, rascunho) {
+    await AutopublicacaoModel.updateEstado(livroId, rascunho);
+  }
+
+  static async inativarLivro(livroId){
+    await AutopublicacaoModel.inativarLivro(livroId);
   }
 
   static async insertLivroService({
