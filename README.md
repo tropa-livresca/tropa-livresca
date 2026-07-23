@@ -9,6 +9,7 @@ Aplicação full stack da editora de autopublicação Tropa Livresca, desenvolvi
 ## Índice
 
 * [Descrição do Projeto](#descrição-do-projeto)
+* [Documentação do TCC](#documentação-do-tcc)
 * [Demonstração](#demonstração)
 * [Funcionalidades](#funcionalidades)
 * [Tecnologias Utilizadas](#tecnologias-utilizadas)
@@ -32,13 +33,23 @@ Aplicação full stack da editora de autopublicação Tropa Livresca, desenvolvi
 
 ## Descrição do Projeto
 
-A Tropa Livresca é um projeto voltado para organizar e facilitar a publicação e a descoberta de obras, autores e conteúdos relacionados à editora. O sistema foi pensado como uma solução web completa, com:
+A Tropa Livresca é um projeto voltado para organizar e facilitar a publicação e a descoberta de obras, autores e conteúdos relacionados à editora fictícia Tropa Livresca. O sistema foi pensado como uma solução web completa, com:
 
 * Uma interface pública para navegação e consulta de obras e autores cadastrados.
 * Uma área privada para cadastro, gerenciamento e autopublicação de livros.
 * Fluxo de autenticação isolado para leitores/autores (Clients) e equipe de moderação (ADM).
 * Integração nativa com Supabase para persistência relacional e armazenamento de mídias (Storage).
 * Canal direto de suporte e contato integrado a disparos automáticos de e-mail.
+
+---
+
+## Documentação do TCC
+
+Os documentos acadêmicos e monografia associados a este trabalho de conclusão de curso estão hospedados externamente:
+
+* [Monografia / Artigo Técnico do TCC](https://docs.google.com/document/d/1GMXUJkjwNT6-E9qy1RS-Enduoet8U-gaKaqAYvay7hc/edit?usp=sharing)
+* [Pasta Compartilhada de Anexos e Entrega Acadêmica](https://google.com)//Em breve
+* [Slides da Apresentação da Banca](https://google.com)//Em breve
 
 ---
 
@@ -218,13 +229,13 @@ Para mais detalhes sobre as camadas de segurança, consulte [docs/autenticacao.m
 
 ## Como Contribuir
 
-Contribuições para correção de bugs ou desenvolvimento de novas features são bem-vindas. Para colaborar de forma padronizada, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
+Contribuições para correção de bugs ou desenvolvimento de novas features são bem-vem-vindas. Para colaborar de forma padronizada, consulte o guia em [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
 ## Licença
 
-Este projeto está licenciado sob os termos da GNU General Public License v3.0. Consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes de distribuição legal.
+Este projeto está licensed sob os termos da GNU General Public License v3.0. Consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes de distribuição legal.
 
 ---
 
@@ -235,4 +246,5 @@ Este projeto está licenciado sob os termos da GNU General Public License v3.0. 
 * Luís Fabiano da Silva: Desenvolvimento frontend e design de interface.
 * Lukas Soldera Markues: Escopo de documentação e validação.
 * Matheus Ruy de Almeida: Desenvolvimento backend e testes de integração.
+
 * Trabalho Acadêmico: Projeto idealizado e desenvolvido como Trabalho de Conclusão de Curso (TCC) para a Tropa Livresca.
