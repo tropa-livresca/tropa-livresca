@@ -1,6 +1,5 @@
 import { supabaseAdmin } from "../../common/config/supabase.js";
 import { LivroModel } from "../../common/models/livro.model.js";
-import { ColaboradorModel } from "../../common/models/colaborador.model.js";
 
 export class LivrosService {
   static _parseCapaUrls (livro) {
@@ -51,14 +50,23 @@ export class LivrosService {
       throw erro404;
     }
 
-    const { data: colaboradores } = await ColaboradorModel.buscarPorLivroId(id);
     const livroComCapa = this._parseCapaUrls(livro);
 
     return {
       data: {
         ...livroComCapa,
-        colaboradores: colaboradores || [],
       },
     };
+  }
+
+  static async getLivrosById(id){
+    const {data} = await LivroModel.buscarDetalhesPorId(id);
+
+    if(!data){
+      const erro404 = new Error("O livro solicitado não existe ou está indisponível");
+      throw erro404;
+    }
+    
+    return data;
   }
 }

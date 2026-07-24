@@ -2,7 +2,9 @@
 import Select from "../../../../../common/components/Select/Select";
 import Input from "../../../../../common/components/Input/Input";
 
-export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
+export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEtapa, estadoAtualLivro }) {
+  const deveBloquearCampos = estadoAtualLivro === "publicado";
+
   const listaIdiomas = [
     { id: "", label: "Selecione um idioma" },
     { id: "portugues", label: "PortuguÃªs" },
@@ -13,7 +15,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
     { id: "outro", label: "Outro" }
   ];
 
-  const funcaoOpcoes = ["Selecione a funÃ§Ã£o", "Coautor", "Ilustrador", "Revisor", "Tradutor", "Outro"];
+  const funcaoOpcoes = ["Selecione a função", "Coautor", "Ilustrador", "Revisor", "Tradutor", "Outro"];
   
   const [imagemExplicita, setImagemExplicita] = useState(() => {
     if (dados.imagensExplicitas === true) return "sim";
@@ -63,12 +65,17 @@ return (
 
         <fieldset>
           <legend>Título e subtítulo</legend>
+          {deveBloquearCampos && (
+            <p>Título e subtítulo não podem ser alterados após publicação.</p>
+          )}
           <label>
             *Título:
             <Input
               type="text"
               value={dados.titulo || ""}
               onChange={(e) => atualizarCampo("titulo", e.target.value)}
+              handleOnChange={(e) => atualizarCampo("titulo", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
           <label>
@@ -77,6 +84,8 @@ return (
               type="text"
               value={dados.subtitulo || ""}
               onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+              handleOnChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -89,26 +98,34 @@ return (
               type="text"
               value={dados.numeroEdicao || ""}
               onChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
+              handleOnChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
             />
           </label>
         </fieldset>
 
         <fieldset>
           <legend>Identificação do Autor no Livro</legend>
+          {deveBloquearCampos && (
+            <p>*Os daods do autor principal não podem ser alterados após a publicacação.</p>
+          )}
           <label>
             Nome:
             <Input
               type="text"
               value={dados.autor?.nome || ""}
               onChange={(e) => atualizarAutor("nome", e.target.value)}
+              handleOnChange={(e) => atualizarAutor("nome", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
           <label>
             Sobrenome:
-            <Input
+             <Input
               type="text"
               value={dados.autor?.sobrenome || ""}
               onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
+              handleOnChange={(e) => atualizarAutor("sobrenome", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -223,6 +240,14 @@ return (
                 categorias: ["Adulto"]
               });
             }}
+            handleOnChange={() => {
+              setImagemExplicita("sim");
+              onChange({
+                ...dados,
+                imagensExplicitas: true,
+                categorias: ["Adulto"]
+              });
+            }}
           />
           <label htmlFor="imagemExplicitaSim">Sim</label>
 
@@ -239,7 +264,16 @@ return (
                 categorias: []
               });
             }}
+            handleOnChange={() => {
+              setImagemExplicita("nao");
+              onChange({
+                ...dados,
+                imagensExplicitas: false,
+                categorias: []
+              });
+            }}
           />
+
           <label htmlFor="imagemExplicitaNao">Não</label>
         </fieldset>
 

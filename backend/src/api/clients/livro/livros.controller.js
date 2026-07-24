@@ -25,4 +25,15 @@ static async GetLivrosByAutor (req, res, next) {
     next(err);
   }
 };
+
+static async GetLivrosById(req, res, next){
+  try{
+    const {id} = req.params;
+    const livro = await LivrosService.getLivrosById(id);
+
+    return res.status(200).json(livro);
+  }catch(err){
+    next(err);
+  }
+}
 }

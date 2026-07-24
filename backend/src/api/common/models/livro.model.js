@@ -37,7 +37,7 @@ export class LivroModel {
     return { data: data || [] };
   }
 
-  async buscarDetalhesPorId(id) {
+  static async buscarDetalhesPorId(id) {
     let query = supabaseAdmin
       .from("livros")
       .select("*, users_profile(id, nome, imagem)")

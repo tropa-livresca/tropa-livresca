@@ -15,10 +15,25 @@ static async GetLivrosById (req, res, next) {
 static async UpdateEstado (req, res, next) {
   try {
     const { id } = req.params;
-    await AutopublicacaoService.updateEstadoService(id);
+    const { rascunho } = req.body; 
+    
+    const isRascunho = String(rascunho) === "true" || rascunho === true;
+
+    await AutopublicacaoService.updateEstadoService(id, isRascunho);
 
     return res.status(200).end();
   } catch (err) {
+    next(err);
+  }
+};
+
+static async InativarLivro(req, res, next){
+  try{
+    const { id } = req.params;
+    await AutopublicacaoService.inativarLivro(id);
+
+    return res.status(200).end();
+  }catch(err){
     next(err);
   }
 };
