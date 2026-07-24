@@ -90,7 +90,6 @@ Para detalhes completos, consulte a documentação específica em [docs/funciona
 * Supabase (PostgreSQL / Storage / Auth)
 * Módulo nativo `node:test` + `node:assert`
 * `supertest` (Simulação HTTP de contratos)
-* dotenv
 
 ---
 
