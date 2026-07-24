@@ -3,24 +3,34 @@ import { AuthService } from "./auth.service.js";
 export class AuthController {
   static COOKIE_OPTIONS = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", 
+    secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 
-    static async setSession(req, res, next) {
+  static async setSession(req, res, next) {
     const accessToken = req.body.accessToken || req.body.access_token;
     const refreshToken = req.body.refreshToken || req.body.refresh_token;
 
     if (!accessToken || !refreshToken) {
-      return res.status(400).json({ error: "Tokens não fornecidos para configuração de sessão." });
+      return res
+        .status(400)
+        .json({ error: "Tokens não fornecidos para configuração de sessão." });
     }
 
     try {
       const data = await AuthService.setSession(accessToken, refreshToken);
 
-      res.cookie("auth-token", data.session.access_token, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", data.session.refresh_token, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "auth-token",
+        data.session.access_token,
+        AuthController.COOKIE_OPTIONS,
+      );
+      res.cookie(
+        "refresh-token",
+        data.session.refresh_token,
+        AuthController.COOKIE_OPTIONS,
+      );
 
       return res.json({
         user: data.user,
@@ -31,14 +41,21 @@ export class AuthController {
     }
   }
 
-
   static async refreshSession(req, res, next) {
     const refreshToken = req.cookies["refresh-token"];
     try {
       const data = await AuthService.refreshSession(refreshToken);
 
-      res.cookie("auth-token", data.session.access_token, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", data.session.refresh_token, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "auth-token",
+        data.session.access_token,
+        AuthController.COOKIE_OPTIONS,
+      );
+      res.cookie(
+        "refresh-token",
+        data.session.refresh_token,
+        AuthController.COOKIE_OPTIONS,
+      );
 
       return res.status(200).json({ message: "Sessão renovada com sucesso." });
     } catch (err) {
@@ -53,7 +70,8 @@ export class AuthController {
 
       return res.status(201).json({
         user: data.user,
-        message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+        message:
+          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
     } catch (err) {
       next(err);
@@ -76,10 +94,20 @@ export class AuthController {
     try {
       const data = await AuthService.signin(email, password);
 
-      res.cookie("auth-token", data.session.access_token, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", data.session.refresh_token, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "auth-token",
+        data.session.access_token,
+        AuthController.COOKIE_OPTIONS,
+      );
+      res.cookie(
+        "refresh-token",
+        data.session.refresh_token,
+        AuthController.COOKIE_OPTIONS,
+      );
 
-      return res.status(200).json({ user: data.user, message: "Login realizado com sucesso!" });
+      return res
+        .status(200)
+        .json({ user: data.user, message: "Login realizado com sucesso!" });
     } catch (err) {
       next(err);
     }
