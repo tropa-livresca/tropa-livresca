@@ -2,12 +2,10 @@
 
 ## Recursos administrativos comuns
 
-- Gerenciamento de carrossel
 - Gerenciamento de categorias da loja
 - Gerenciamento de cupons
 - Monitoramento de entregas
 - Gerenciamento de pedidos
-- Criação e revisão de artigos
 - Visualização de relatórios gerais
 - Gerenciamento de autores e leitores
 - Gerenciamento de livros do catálogo

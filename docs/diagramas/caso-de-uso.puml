@@ -98,7 +98,6 @@ rectangle "Plataforma Literária" {
 
   package "Painel Admin: Operações da Loja" {
     usecase "Alterar Senha Painel" as UC_AdminSenha
-    usecase "Gerenciar Carrossel" as UC_AdminCarrossel
     usecase "Gerenciar Categorias da Loja" as UC_AdminCategorias
     usecase "Gerenciar Cupons" as UC_AdminCupons
     usecase "Editar Cupom" as UC_AdminEditarCupom
@@ -152,7 +151,6 @@ Autor --> UC_ConsultarVendas
 Autor --> UC_VisualizarSaldo
 
 Funcionario --> UC_AdminSenha
-Funcionario --> UC_AdminCarrossel
 Funcionario --> UC_AdminCategorias
 Funcionario --> UC_AdminCupons
 Funcionario --> UC_AdminEditarCupom

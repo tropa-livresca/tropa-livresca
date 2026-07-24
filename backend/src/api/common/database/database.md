@@ -50,15 +50,6 @@ CREATE TABLE public.adm_credenciais (
 );
 
 -- ==========================================
--- CRIAÇÃO DA TABELA: banner_config
--- ==========================================
-CREATE TABLE public.banner_config (
-    id integer NOT NULL,
-    carrossel_banners jsonb DEFAULT '[]'::jsonb,
-    CONSTRAINT banner_config_pkey PRIMARY KEY (id)
-);
-
--- ==========================================
 -- CRIAÇÃO DA TABELA: categorias
 -- ==========================================
 CREATE TABLE public.categorias (

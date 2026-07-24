@@ -20,11 +20,6 @@ Table adm_credenciais {
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
 }
 
-Table banner_config {
-  id integer [pk]
-  carrossel_banners jsonb [default: '[]']
-}
-
 Table categorias {
   id bigint [pk, increment]
   nome text [not null]
