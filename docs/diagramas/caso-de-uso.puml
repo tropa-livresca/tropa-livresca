@@ -74,8 +74,6 @@ rectangle "Plataforma Literária" {
   package "Área do Leitor: Comunidade & Suporte" {
     usecase "Seguir Autor" as UC_Seguir
     usecase "Visualizar Perfil do Autor" as UC_PerfilAutor
-    usecase "Ler e Filtrar Blogs" as UC_Blog
-    usecase "Manter Depoimentos" as UC_Depoimentos
     usecase "Contato via Formulário" as UC_FormContato
     usecase "Gerenciar Notificações" as UC_Notificacoes
     usecase "Interagir com FAQ" as UC_FAQ
@@ -109,21 +107,12 @@ rectangle "Plataforma Literária" {
   }
 
   package "Painel Admin: Moderação & Conteúdo" {
-    usecase "Gerenciar Publicações do Blog" as UC_AdminBlog
-    usecase "Criar/Editar Artigo do Blog" as UC_AdminCriarBlog
-    usecase "Pré-visualizar Artigo" as UC_AdminPreviaBlog
     usecase "Visualizar Relatórios Gerais" as UC_AdminRelatorios
     usecase "Gerenciar Autores (Painel)" as UC_AdminAutores
     usecase "Gerenciar Usuários/Leitores" as UC_AdminLeitores
     usecase "Gerenciar Livros do Catálogo" as UC_AdminCatalogo
-    usecase "Definir Detalhes" as UC_IncludeDetBlog
-    usecase "Selecionar Categoria" as UC_IncludeCatBlog
-    usecase "Escrever Conteúdo" as UC_IncludeContBlog
     usecase "Calcular Faturamento Total" as UC_IncludeFaturamento
 
-    UC_AdminCriarBlog ..> UC_IncludeDetBlog : <<include>>
-    UC_AdminCriarBlog ..> UC_IncludeCatBlog : <<include>>
-    UC_AdminCriarBlog ..> UC_IncludeContBlog : <<include>>
     UC_AdminRelatorios ..> UC_IncludeFaturamento : <<include>>
   }
 
@@ -151,8 +140,6 @@ Leitor --> UC_AvaliarLivro
 Leitor --> UC_Carrinho
 Leitor --> UC_Seguir
 Leitor --> UC_PerfilAutor
-Leitor --> UC_Blog
-Leitor --> UC_Depoimentos
 Leitor --> UC_FormContato
 Leitor --> UC_Notificacoes
 Leitor --> UC_Pedidos
@@ -171,9 +158,6 @@ Funcionario --> UC_AdminCupons
 Funcionario --> UC_AdminEditarCupom
 Funcionario --> UC_AdminEntregas
 Funcionario --> UC_AdminPedidos
-Funcionario --> UC_AdminBlog
-Funcionario --> UC_AdminCriarBlog
-Funcionario --> UC_AdminPreviaBlog
 Funcionario --> UC_AdminRelatorios
 Funcionario --> UC_AdminAutores
 Funcionario --> UC_AdminLeitores

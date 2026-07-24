@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   static async signout() {
-    await AuthModel.signOut();
+    await AuthModel.signout();
   }
 
     static async signin(email, password) {

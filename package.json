@@ -1,27 +1,16 @@
 {
+  "name": "monorepo-projeto",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "server": "npm run dev -w backend",
+    "client": "npm run dev -w frontend",
+    "dev": "concurrently \"npm:server\" \"npm:client\""
+  },
   "devDependencies": {
     "concurrently": "^9.2.1"
-  },
-  "scripts": {
-    "server": "cd backend && npm run dev",
-    "client": "cd frontend && npm run dev",
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
-  },
-  "dependencies": {
-    "@react-input/mask": "^2.0.4",
-    "@supabase/supabase-js": "^2.108.1",
-    "@vitejs/plugin-react": "^6.0.2",
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.6",
-    "dotenv": "^17.4.2",
-    "express": "^5.2.1",
-    "multer": "^2.1.1",
-    "nodemon": "^3.1.14",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-icons": "^5.7.0",
-    "react-router-dom": "^7.17.0",
-    "vite": "^8.0.16"
   }
 }

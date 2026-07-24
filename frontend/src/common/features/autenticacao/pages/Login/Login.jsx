@@ -119,7 +119,7 @@ export default function Login() {
             </div>
 
             <p>
-              <Link to="/cadastro">Esqueceu a senha?</Link>
+              <Link to="/auth/cadastro">Esqueceu a senha?</Link>
             </p>
 
             <div className={styles.informacoes}>
