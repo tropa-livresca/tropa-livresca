@@ -17,7 +17,7 @@ export class AuthModel {
   }
 
   static async atualizarSenha(userId, novaSenhaCriptografada) {
-    const { data, error } = supabase
+    const { data, error } = await supabase
       .from("adm_credenciais")
       .update({
         senha_adm: novaSenhaCriptografada,

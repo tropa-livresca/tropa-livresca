@@ -8,7 +8,7 @@ import {errorHandler} from "./api/common/middlewares/error.middleware.js";
 const app = express();
 
 const allowedOrigins = [
-  "https://vercel.app",
+  "https://tropa-livresca.vercel.app/",
   "http://localhost:5173",
 ];
 
@@ -41,4 +41,3 @@ app.listen(PORT, () => {
 });
 
 export default app;
-

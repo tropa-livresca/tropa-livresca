@@ -42,17 +42,17 @@ export default function Perfil() {
   }, []);
 
   useEffect(() => {
-    if (perfil) {
-      if (perfil.imagem && imagem === "") {
-        setPreviewUrl(perfil.imagem);
-      } else if (imagem === "remover") {
-        setPreviewUrl(null);
-      }
+    if (!perfil) return;
 
-      if (perfil.nome && !nome) setNome(perfil.nome);
-      if (perfil.telefone && !telefone) setTelefone(perfil.telefone);
-      if (perfil.descricao && !descricao) setDescricao(perfil.descricao);
+    if (imagem === "") {
+      setPreviewUrl(perfil.imagem || null);
+    } else if (imagem === "remover") {
+      setPreviewUrl(null);
     }
+
+    setNome((prev) => prev || perfil.nome || "");
+    setTelefone((prev) => prev || perfil.telefone || "");
+    setDescricao((prev) => prev || perfil.descricao || "");
   }, [perfil, imagem]);
 
   const handleFileChange = (e) => {

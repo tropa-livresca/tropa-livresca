@@ -3,19 +3,25 @@
 import { useAutores } from "../../../../hooks/useAutores";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaEnvelope } from "react-icons/fa";
+import {
+    FaFacebookF,
+    FaInstagram,
+    FaLinkedinIn,
+    FaEnvelope,
+} from "react-icons/fa";
 
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
 export default function AutorById() {
-    const { id } = useParams(); 
-    const { autor, redesSociais, livros, carregando, meta, buscarAutorById } = useAutores();
+    const { id } = useParams();
+    const { autor, redesSociais, livros, carregando, meta, buscarAutorById } =
+        useAutores();
 
     const [paginaAtual, setPaginaAtual] = useState(1);
 
     useEffect(() => {
         if (id) buscarAutorById(id, paginaAtual, 3);
-    }, [id, paginaAtual]);
+    }, [id, paginaAtual, buscarAutorById]);
 
     if (carregando) return <p>Carregando...</p>;
 
@@ -33,7 +39,9 @@ export default function AutorById() {
 
                 <div className={styles.heroinfo}>
                     <h1 className={styles.titulo}>{autor?.nome}</h1>
-                    <p className={styles.descricao}>{autor?.descricao || "Sem descrição."}</p>
+                    <p className={styles.descricao}>
+                        {autor?.descricao || "Sem descrição."}
+                    </p>
                 </div>
             </section>
 
@@ -43,21 +51,36 @@ export default function AutorById() {
                 {temRedesSociais ? (
                     <div className={styles.redes}>
                         {facebook && (
-                            <a className={styles.rede} href={facebook} target="_blank" rel="noopener noreferrer">
+                            <a
+                                className={styles.rede}
+                                href={facebook}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 <FaFacebookF aria-hidden="true" />
                                 Facebook
                             </a>
                         )}
 
                         {instagram && (
-                            <a className={styles.rede} href={instagram} target="_blank" rel="noopener noreferrer">
+                            <a
+                                className={styles.rede}
+                                href={instagram}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 <FaInstagram aria-hidden="true" />
                                 Instagram
                             </a>
                         )}
 
                         {linkedin && (
-                            <a className={styles.rede} href={linkedin} target="_blank" rel="noopener noreferrer">
+                            <a
+                                className={styles.rede}
+                                href={linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
                                 <FaLinkedinIn aria-hidden="true" />
                                 LinkedIn
                             </a>
@@ -86,7 +109,11 @@ export default function AutorById() {
                             return (
                                 <article className={styles.livro} key={livro.id}>
                                     {livro.capa?.frente ? (
-                                        <img className={styles.capa} src={livro.capa.frente} alt={livro.titulo} />
+                                        <img
+                                            className={styles.capa}
+                                            src={livro.capa.frente}
+                                            alt={livro.titulo}
+                                        />
                                     ) : (
                                         <div className={styles.semcapa}>Sem foto da capa</div>
                                     )}
@@ -94,7 +121,9 @@ export default function AutorById() {
                                     <h3 className={styles.livrotitulo}>{livro.titulo}</h3>
                                     <p className={styles.livrosubtitulo}>{livro.subtitulo}</p>
 
-                                    <Link to={`/livros/${livro.id}`} className={styles.btnlivro}>Ver Livro</Link>
+                                    <Link to={`/livros/${livro.id}`} className={styles.btnlivro}>
+                                        Ver Livro
+                                    </Link>
                                 </article>
                             );
                         })}

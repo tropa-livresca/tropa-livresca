@@ -6,7 +6,9 @@ export class AuthController {
       const { username, senha } = req.body;
 
       if (!username || !senha) {
-        return res.status(400).json({ error: "Username e senha são obrigatórios." });
+        return res
+          .status(400)
+          .json({ error: "Username e senha são obrigatórios." });
       }
 
       const resultado = await AuthService.autenticar(username, senha);
@@ -18,19 +20,20 @@ export class AuthController {
       if (resultado.status === "Troca_obrigatoria") {
         return res.status(200).json({
           status: "Troca_obrigatoria",
-          message: "Primeiro acesso detectado. Altere sua senha antes de prosseguir.",
-          userId: resultado.userId    
+          message:
+            "Primeiro acesso detectado. Altere sua senha antes de prosseguir.",
+          userId: resultado.userId,
         });
       }
 
       return res.status(200).json({
         status: "Sucesso",
         token: resultado.token,
-        usuario: resultado.usuario
+        usuario: resultado.usuario,
       });
     } catch (err) {
       return res.status(500).json({
-        error: "Erro interno no servidor ao tentar efetuar login"
+        error: "Erro interno no servidor ao tentar efetuar login",
       });
     }
   }
@@ -40,17 +43,21 @@ export class AuthController {
       const { userId, novaSenha } = req.body;
 
       if (!userId || !novaSenha) {
-        return res.status(400).json({ error: "Id do usuário e nova são obrigatórias." });
+        return res
+          .status(400)
+          .json({ error: "Id do usuário e nova são obrigatórias." });
       }
 
       await AuthService.trocarSenhaObrigatoria(userId, novaSenha);
 
       return res.status(200).json({
         status: "Sucesso",
-        message: "Senha atualizada com sucesso pelo utilitário."
+        message: "Senha atualizada com sucesso pelo utilitário.",
       });
     } catch (error) {
-      return res.status(500).json({ error: 'Erro interno ao atualizar a senha do utilitário.' });
+      return res
+        .status(500)
+        .json({ error: "Erro interno ao atualizar a senha do utilitário." });
     }
   }
 }

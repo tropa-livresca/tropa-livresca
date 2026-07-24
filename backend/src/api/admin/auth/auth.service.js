@@ -1,4 +1,4 @@
-import {AuthModel} from "../../common/models/auth.model.js";
+import { AuthModel } from "../../common/models/auth.model.js";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
@@ -21,7 +21,7 @@ export class AuthService {
     return limpo;
   }
 
-  static _criptografar(texto){
+  static _criptografar(texto) {
     const iv = crypto.randomBytes(12);
     const cipher = crypto.createCipheriv(ALGORITMO, CHAVE_SECRETA, iv);
 
@@ -29,47 +29,50 @@ export class AuthService {
     criptografado += cipher.final("hex");
 
     const tag = cipher.getAuthTag().toString("hex");
-    return `${iv.toString('hex')}:${tag}:${criptografado}`;
+    return `${iv.toString("hex")}:${tag}:${criptografado}`;
   }
 
-  static async autenticar(username, senha){
+  static async autenticar(username, senha) {
     const usuario = await AuthModel.buscarPorUsername(username);
-    if(!usuario) return {autenticado: false};
+    if (!usuario) return { autenticado: false };
 
     let senhaSalvaTextoPlano;
 
     try {
-        senhaSalvaTextoPlano = this._descriptografar(usuario.senha_criptografada);
-    }
-    catch(err){
-        throw new Error("Falha crítica de descriptografia");
+      senhaSalvaTextoPlano = this._descriptografar(usuario.senha_criptografada);
+    } catch (err) {
+      throw new Error("Falha crítica de descriptografia");
     }
 
-    if(senha !== senhaSalvaTextoPlano) return {autenticado: false};
+    if (senha !== senhaSalvaTextoPlano) return { autenticado: false };
 
-    if(usuario.forcar_troca_senha){
-        return {status: 'Troca_obrigatoria', userId: usuario.user_id};
+    if (usuario.forcar_troca_senha) {
+      return { status: "Troca_obrigatoria", userId: usuario.user_id };
     }
 
     const token = jwt.sign(
-        {id: usuario.user_id, username: usuario.username, funcao: usuario.funcao},
-        JWT_SECRET,
-        {expiresIn: "8h"}
+      {
+        id: usuario.user_id,
+        username: usuario.username,
+        funcao: usuario.funcao,
+      },
+      JWT_SECRET,
+      { expiresIn: "8h" },
     );
 
     return {
-        status: "Sucesso",
-        token,
-        usuario: {
-            id: usuario.user_id,
-            nome: usuario.nome_completo,
-            username: usuario.username,
-            funcao: usuario.funcao
-        }
-    }
+      status: "Sucesso",
+      token,
+      usuario: {
+        id: usuario.user_id,
+        nome: usuario.nome_completo,
+        username: usuario.username,
+        funcao: usuario.funcao,
+      },
+    };
   }
 
-  static async trocarSenhaObrigatoria(userId, novaSenha){
+  static async trocarSenhaObrigatoria(userId, novaSenha) {
     const senhaCripto = this._criptografar(novaSenha);
     return await AuthModel.atualizarSenha(userId, senhaCripto);
   }

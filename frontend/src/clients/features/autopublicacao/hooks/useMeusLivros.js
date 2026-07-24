@@ -1,5 +1,5 @@
 import { apiFetch } from "../../../../common/services/api";
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback } from "react";
 
 export const useMeusLivros = () => {
   const [livro, setLivro] = useState([]);
@@ -10,7 +10,7 @@ export const useMeusLivros = () => {
     setCarregando(true);
     setLivros([]);
     try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/" , {
+      const res = await apiFetch("/api/v1/clients/autopublicacao/", {
         method: "GET",
       });
       const data = await res.json();
@@ -35,17 +35,17 @@ export const useMeusLivros = () => {
   }, []);
 
   const BuscarLivroById = useCallback(async (id) => {
-    try{
+    try {
       const res = await apiFetch("/api/v1/clients/livros/detalhes/" + id, {
         method: "GET",
       });
 
       const data = await res.json();
 
-      if(!res.ok) throw new Erro(data.error || `Erro ${res.status}`);
+      if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
 
       return data.data;
-    }catch(error){
+    } catch (error) {
       console.error("Erro em BuscarLivroById", error);
       throw error;
     }
@@ -54,9 +54,12 @@ export const useMeusLivros = () => {
   const UpdateEstado = useCallback(async (id, estado) => {
     setCarregando(true);
     try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/updateEstado/" + id, {
-        method: "PATCH",
-      });
+      const res = await apiFetch(
+        "/api/v1/clients/autopublicacao/updateEstado/" + id + "/" + estado,
+        {
+          method: "PATCH",
+        },
+      );
       if (!res.ok) throw new Error(`Erro ${res.status}`);
       setCarregando(false);
     } catch (error) {
@@ -65,15 +68,15 @@ export const useMeusLivros = () => {
     }
   }, []);
 
-  const InativarLivro = useCallback(async(id) => {
+  const InativarLivro = useCallback(async (id) => {
     setCarregando(true);
-    try{
+    try {
       const res = await apiFetch("/api/v1/clients/autopublicacao/ativo/" + id, {
         method: "PATCH",
       });
-      if(!res.ok) throw new Error(`Erro ${res.status}`);
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
       setCarregando(false);
-    }catch(error){
+    } catch (error) {
       console.error("Erro em InativarLivro", error);
       setCarregando(false);
     }

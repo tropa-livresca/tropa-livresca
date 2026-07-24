@@ -42,8 +42,6 @@ static async InsertLivro (req, res, next) {
   try {
     const userId = req.user?.id;
     const { dadosLivro, publicar, capa, manuscritoPath } = req.body;
-
-    console.time("Tempo do insert");
     
     const resultado = await AutopublicacaoService.insertLivroService({
       userId,
@@ -52,8 +50,6 @@ static async InsertLivro (req, res, next) {
       capa,
       manuscritoPath
     });
-
-    console.timeEnd("Tempo do insert");
 
     return res.status(201).json(resultado);
   } catch (err) {

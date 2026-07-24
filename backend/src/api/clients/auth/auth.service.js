@@ -38,7 +38,7 @@ export class AuthService {
     const redirectUrl = process.env.SUPABASE_REDIRECT_URL || "http://localhost:5173/confirmacao-email";
     const metadata = { nome, telephone: telefone };
 
-    const { data, error } = await AuthModel.signUp(email, password, redirectUrl, metadata);
+    const { data, error } = await AuthModel.signup(email, password, redirectUrl, metadata);
 
     if (error) {
       if (error.message?.includes("already registered") || error.status === 422) {

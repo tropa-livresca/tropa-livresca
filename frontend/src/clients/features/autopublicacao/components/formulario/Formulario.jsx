@@ -19,7 +19,7 @@ export default function FormularioGerenciarLivro({ idLivroEdicao }) {
         irParaProximaEtapa,
         voltarEtapa,
         irParaEtapaEspecifica,
-        publicarLivro
+        publicarLivro,
     } = useAutopublicacao();
 
     const { BuscarLivroById } = useMeusLivros();
@@ -51,7 +51,7 @@ export default function FormularioGerenciarLivro({ idLivroEdicao }) {
     }, [idLivroEdicao, carregarDadosParaEdicao, BuscarLivroById]);
 
     if (carregandoLivro) {
-        return <div >Carregando dados do livro para edição...</div>;
+        return <div>Carregando dados do livro para edição...</div>;
     }
 
     const tituloFormulario = isEdicao ? "Editar Livro" : "Novo Livro";
@@ -96,7 +96,11 @@ export default function FormularioGerenciarLivro({ idLivroEdicao }) {
                     publicarLivro={publicarLivro}
                 />
             )}
-            <button onClick={() => { window.location.href = "/meuslivros"; }}>
+            <button
+                onClick={() => {
+                    window.location.href = "/meuslivros";
+                }}
+            >
                 Voltar a Meus Livros
             </button>
         </main>
