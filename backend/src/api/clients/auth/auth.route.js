@@ -10,6 +10,8 @@ router.post("/signout", AuthController.signout);
 router.post("/refresh", AuthController.refreshSession);
 router.post("/session", AuthController.setSession);
 
+router.patch("/senha", checkAuth, AuthController.atualizarSenha);
+
 router.get("/session", checkAuth, (req, res) => {
   return res.status(200).json({ user: req.user });
 });

@@ -85,4 +85,20 @@ export class AuthService {
       throw error;
     }
   }
+
+  static async atualizarSenha(novaSenha) {
+    if (!novaSenha) {
+      const erroSenha = new Error("Nenhuma nova senha informada.");
+      throw erroSenha;
+    }
+
+    try {
+      const resultado = await AuthModel.atualizarSenha(novaSenha);
+
+      return resultado;
+    } catch (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+  }
 }

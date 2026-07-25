@@ -40,7 +40,7 @@ export class AutopublicacaoService {
     await AutopublicacaoModel.updateEstado(livroId, rascunho);
   }
 
-  static async inativarLivro(livroId){
+  static async inativarLivro(livroId) {
     await AutopublicacaoModel.inativarLivro(livroId);
   }
 

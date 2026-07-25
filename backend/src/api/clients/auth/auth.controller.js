@@ -112,4 +112,18 @@ export class AuthController {
       next(err);
     }
   }
+
+  static async atualizarSenha(req, res, next) {
+    const { senha } = req.body;
+
+    try {
+      const resultado = await AuthService.atualizarSenha(senha);
+
+      return res
+        .status(200)
+        .json({ user: resultado.user, message: "Alteração na senha realizada!" });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
