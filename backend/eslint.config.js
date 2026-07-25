@@ -3,6 +3,7 @@ import globals from "globals";
 
 export default [
   js.configs.recommended,
+
   {
     languageOptions: {
       ecmaVersion: "latest",
@@ -14,6 +15,15 @@ export default [
     rules: {
       "no-undef": "error",
       "no-unused-vars": "warn",
+    },
+  },
+
+  {
+    files: ["tests/**/*.js", "**/*.test.js", "**/*.spec.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest,
+      },
     },
   },
 ];
