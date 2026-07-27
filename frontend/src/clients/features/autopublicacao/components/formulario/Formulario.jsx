@@ -8,7 +8,7 @@ import Conteudo from "../../pages/Conteudo/Conteudo";
 import Orcamento from "../../pages/Orcamento/Orcamento";
 import Confirmacao from "../../pages/Confirmacao/Confirmacao";
 
-export default function FormularioGerenciarLivro({ idLivroEdicao }) {
+export default function Formulario({ idLivroEdicao }) {
     const {
         dadosLivro,
         etapa,

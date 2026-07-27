@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import FormularioGerenciarLivro from "../../components/Formulario/Formulario";
+import Formulario from "../../components/formulario/Formulario";
 import { AutopublicacaoProvider } from "../../context/Autopublicacao";
 
 export default function EditarLivro() {
@@ -7,7 +7,7 @@ export default function EditarLivro() {
 
   return (
     <AutopublicacaoProvider>
-      <FormularioGerenciarLivro idLivroEdicao={id} />
+      <Formulario idLivroEdicao={id} />
     </AutopublicacaoProvider>
   );
 }

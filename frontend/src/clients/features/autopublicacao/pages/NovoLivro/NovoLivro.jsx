@@ -1,11 +1,10 @@
-﻿import styles from "./NovoLivro.module.css";
-import { AutopublicacaoProvider } from "../../context/Autopublicacao";
-import FormularioGerenciarLivro from "../../components/Formulario/Formulario";
+﻿import { AutopublicacaoProvider } from "../../context/Autopublicacao";
+import Formulario from "../../components/formulario/Formulario";
 
 export default function NovoLivro({ id }) {
   return (
     <AutopublicacaoProvider>
-      <FormularioGerenciarLivro idLivroEdicao={id} />
+      <Formulario idLivroEdicao={id} />
     </AutopublicacaoProvider>
   );
 }
