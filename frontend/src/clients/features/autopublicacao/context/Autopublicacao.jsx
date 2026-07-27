@@ -2,7 +2,7 @@
 import { useState, useCallback, useContext, useEffect } from "react";
 import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
-import { AuthContext } from "../../../../common/context/Auth";
+import { AuthContext } from "../../../../common/context/AuthContext";
 
 const ESTADO_INICIAL_LIVRO = {
   detalhes: {

@@ -15,8 +15,8 @@ describe("PerfilModel - Testes Unitários", () => {
 
   describe("buscarPorId", () => {
     it("Deve estruturar a query corretamente e retornar o perfil se ele existir", async () => {
-      builder.resolve(perfilCompleto, null); // Usando a Fixture
-
+      builder.resolve(perfilCompleto, null);
+      
       const resultado = await PerfilModel.buscarPorId("user-integration-123");
 
       expect(resultado).toEqual(perfilCompleto);
@@ -25,7 +25,7 @@ describe("PerfilModel - Testes Unitários", () => {
 
   describe("salvar", () => {
     it("Deve chamar o upsert com as opções de conflito corretas e retornar o perfil salvo", async () => {
-      builder.resolve(perfilAtualizado, null); // Usando a Fixture
+      builder.resolve(perfilAtualizado, null); 
 
       const resultado = await PerfilModel.salvar({ id: "user-integration-123", nome: "Carlos Atualizado" });
 

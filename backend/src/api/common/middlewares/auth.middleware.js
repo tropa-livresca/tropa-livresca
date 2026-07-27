@@ -65,3 +65,5 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
     next(err);
   }
 };
+
+export const verificarCargo = () =>{}

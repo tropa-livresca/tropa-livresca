@@ -10,7 +10,7 @@
     "dev": "nodemon --env-file=.env.development src/api.js",
     "start": "node src/api.js",
     "test": "jest",
-    "test:watch": "node --experimental-vm-modules jest --watch",
+    "test:watch": "jest --watchAll",
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "lint": "eslint ."
   },

@@ -1,7 +1,6 @@
 import express from "express";
 import { AuthController } from "./auth.controller.js";
 import { checkAuth } from "../../common/middlewares/auth.middleware.js";
-
 const router = express.Router();
 
 router.post("/signup", AuthController.signup);
