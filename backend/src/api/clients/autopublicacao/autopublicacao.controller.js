@@ -3,7 +3,7 @@ import {AutopublicacaoService} from "./autopublicacao.service.js";
 export class AutopublicacaoController{
 static async GetLivrosById (req, res, next) {
   try {
-    const userId = req.user?.id;
+    const userId = req.user.id;
     const livrosComCapas = await AutopublicacaoService.getLivrosByIdService(userId);
     
     return res.status(200).json(livrosComCapas);
