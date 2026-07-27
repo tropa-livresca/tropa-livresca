@@ -1,5 +1,5 @@
 import { apiFetch } from "../../../../common/services/api";
-import { useState, useCallback, useContext } from "react";
+import { useState, useCallback } from "react";
 
 export const useMeusLivros = () => {
   const [livro, setLivro] = useState([]);
@@ -10,7 +10,7 @@ export const useMeusLivros = () => {
     setCarregando(true);
     setLivros([]);
     try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/" , {
+      const res = await apiFetch("/api/v1/clients/autopublicacao/", {
         method: "GET",
       });
       const data = await res.json();
@@ -34,16 +34,50 @@ export const useMeusLivros = () => {
     }
   }, []);
 
-  const UpdateEstado = useCallback(async (id, ativo) => {
+  const BuscarLivroById = useCallback(async (id) => {
+    try {
+      const res = await apiFetch("/api/v1/clients/livros/detalhes/" + id, {
+        method: "GET",
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
+
+      return data.data;
+    } catch (error) {
+      console.error("Erro em BuscarLivroById", error);
+      throw error;
+    }
+  }, []);
+
+  const UpdateEstado = useCallback(async (id, estado) => {
     setCarregando(true);
     try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/updateEstado/" + id, {
+      const res = await apiFetch(
+        "/api/v1/clients/autopublicacao/updateEstado/" + id + "/" + estado,
+        {
+          method: "PATCH",
+        },
+      );
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+      setCarregando(false);
+    } catch (error) {
+      console.error("Erro em UpdateStatusAtivo", error);
+      setCarregando(false);
+    }
+  }, []);
+
+  const InativarLivro = useCallback(async (id) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch("/api/v1/clients/autopublicacao/ativo/" + id, {
         method: "PATCH",
       });
       if (!res.ok) throw new Error(`Erro ${res.status}`);
       setCarregando(false);
     } catch (error) {
-      console.error("Erro em UpdateStatusAtivo", error);
+      console.error("Erro em InativarLivro", error);
       setCarregando(false);
     }
   }, []);
@@ -56,6 +90,8 @@ export const useMeusLivros = () => {
     setLivro,
     setLivros,
     BuscarLivrosById,
+    BuscarLivroById,
     UpdateEstado,
+    InativarLivro,
   };
 };

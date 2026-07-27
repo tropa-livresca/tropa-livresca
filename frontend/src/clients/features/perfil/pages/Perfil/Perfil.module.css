@@ -2,31 +2,367 @@
 
 .container {
   width: 100%;
-  min-height: auto;
-  padding: 4rem 5%;
-  display: grid;
-  gap: 4rem;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
 }
 
 .topo {
   width: 100%;
-  display: grid;
-  gap: 1.5rem;
+  margin-bottom: 8%;
 }
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: 4rem;
-  text-align: left;
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
   content: "";
   display: block;
-  width: 10rem;
-  height: 3px;
+  width: 8rem;
+  height: 4px;
   margin-top: 1rem;
-  background-color: #d4b46a;
+  background: #d4b46a;
   border-radius: 999px;
+}
+
+.topo p {
+  color: #67170c;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.containerperfil {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+}
+
+.perfilesq,
+.formulario {
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.perfilesq {
+  text-align: center;
+  display: grid;
+  gap: 1.5rem;
+  align-content: start;
+}
+
+.fotocontainer {
+  position: relative;
+  display: grid;
+  justify-content: center;
+}
+
+.foto,
+.semFoto {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #c8a45c;
+  margin-top: 5%;
+  overflow: hidden;
+}
+
+.semFoto {
+  display: grid;
+  place-items: center;
+  background: #fff8e7;
+  color: #c8a45c;
+}
+
+.semFoto svg {
+  width: 5rem;
+  height: 5rem;
+  color: #c8a45c;
+}
+
+.perfilesq h2 {
+  font-family: "Jacques Francois";
+  color: #67170c;
+}
+
+.linha {
+  width: 3rem;
+  height: 2px;
+  background: #d4b46a;
+  margin: auto;
+}
+
+.descricaoPerfil {
+  margin-top: 1%;
+  color: #67170c;
+}
+
+.contatos {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.contatos span {
+  padding: 0.6rem 1rem;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-align: left;
+  color: #67170c;
+}
+
+.telefone {
+  font-family: none;
+}
+
+#telefone {
+  font-family: none;
+}
+
+.redes {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 10%;
+  cursor: pointer;
+}
+
+.redes span {
+  background: #fff8d7;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: 0.3s;
+  font-size: 1rem;
+  border: 1px solid #e2c77c;
+}
+
+.redes svg {
+  color: #67170c;
+  transition: 0.3s;
+}
+
+.redes span:hover {
+  transform: translateY(-0.2rem);
+  background: #67170c;
+}
+
+.redes span:hover svg {
+  color: #ede6b3;
+}
+
+.botaoEditar,
+.atualizar {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem 2rem;
+  cursor: pointer;
+}
+
+.botaoEditar:hover,
+.atualizar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.formulario {
+  display: grid;
+  gap: 2rem;
+}
+
+.formulario section {
+  display: grid;
+  gap: 1rem;
+  border-bottom: 1px solid #e3d5ad;
+  padding-bottom: 1.5rem;
+}
+
+.formulario h3 {
+  margin: 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.8rem;
+}
+
+.formulario label {
+  color: #67170c;
+  font-size: 1.2rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.subtitulo {
+  margin: 0;
+  margin-bottom: 1%;
+  color: #67170c;
+  opacity: 0.8;
+  font-size: 1.2rem;
+  text-align: left;
+  line-height: 1.6;
+}
+
+.inputmodificado input {
+  width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+}
+
+.formulario input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.inputs div:last-child {
+  grid-column: 1 / -1;
+}
+
+.inputs > div {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.campo {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.formulario textarea {
+  width: 100%;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem;
+}
+
+textarea {
+  font-size: 1rem;
+  resize: none;
+  height: 5rem;
+  color: #67170c !important;
+}
+
+.carregarsvg {
+  font-size: 2rem;
+  color: #67170c;
+  flex-shrink: 0;
+}
+
+.carregar {
+  border: 1px dashed #d4b46a;
+  color: #67170c;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
+}
+
+.carregar span {
+  display: grid;
+}
+
+#clique {
+  font-size: 1rem;
+  color: #67170c;
+}
+
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.cancelar {
+  border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+}
+
+.cancelar:hover {
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.formulario input:disabled,
+.formulario textarea:disabled {
+  background: #eee8c8 !important;
+  cursor: default !important;
+  opacity: 0.7 !important;
+  color: #806f60 !important;
+}
+
+.formulario button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.carregardesabilitado {
+  cursor: default;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.formularioBloqueado h3,
+.formularioBloqueado label,
+.formularioBloqueado .subtitulo {
+  opacity: 0.6;
+  color: #806f60;
+}
+
+.carregardesabilitado .carregarsvg,
+.carregardesabilitado span {
+  opacity: 0.6;
+}
+
+.formulario button:disabled,
+.formulario button:disabled:hover {
+  opacity: 0.5;
+  cursor: default;
+  background: #67170c;
+  color: #ede6b3;
+  transform: none;
+}
+
+.formulario input:disabled::placeholder,
+.formulario textarea:disabled::placeholder {
+  color: #806f60 !important;
+}
+
+@media (max-width: 900px) {
+  .containerperfil {
+    grid-template-columns: 1fr;
+  }
+
+  .inputs {
+    grid-template-columns: 1fr;
+  }
 }

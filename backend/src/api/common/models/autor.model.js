@@ -11,8 +11,7 @@ export class AutorModel {
 
     let query = supabaseAdmin
       .from("users_profile")
-      .select(camposSelect, { count: "exact" })
-      .order("nome", { ascending: true });
+      .select(camposSelect, { count: "exact" });
 
     if (apenasComLivrosAtivos) {
       query = query.eq("livros.ativo", true);
@@ -22,8 +21,14 @@ export class AutorModel {
       query = query.ilike("nome", `%${busca}%`);
     }
 
-    const { data, error, count } = await query.range(start, end);
-    if (error) throw error;
+    const { data, error, count } = await query
+      .order("nome", { ascending: true })
+      .range(start, end);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
 
     return { data: data || [], count: count || 0 };
   }
@@ -35,7 +40,10 @@ export class AutorModel {
       .eq("id", id)
       .maybeSingle();
 
-    if (error) throw error;
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
     return data;
   }
-};
+}

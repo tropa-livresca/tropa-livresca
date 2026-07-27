@@ -53,13 +53,11 @@ export default function NavBar() {
             <ul className={styles.subtema}>
               <li><Link to="historia">Quem Somos</Link></li>
               <li><Link to="">O Que Fazemos</Link></li>
-              <li><Link to="">Depoimentos</Link></li>
             </ul>
           </li>
           <li className={styles.item}><Link to="/livros">Livros</Link></li>
           <li className={styles.item}><Link to="/">Loja</Link></li>
           <li className={styles.item}><Link to="/autores">Autores</Link></li>
-          <li className={styles.item}><Link to="/">Blog</Link></li>
           <li className={styles.item}>
             <Link to="">Se Autopublique</Link>
             <ul className={styles.subtema}>

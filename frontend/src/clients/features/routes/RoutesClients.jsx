@@ -11,7 +11,7 @@ import Historia from "../institucional/pages/Historia/Historia";
 import Autores from "../autores/pages/Autores/Autores";
 import AutorById from "../autores/pages/AutorById/AutorById";
 import MeusLivros from "../autopublicacao/pages/MeusLivros/MeusLivros";
-
+import EditarLivro from "../autopublicacao/pages/EditarLivro/EditarLivro";
 import Livros from "../livros/pages/Livros/Livros";
 import NovoLivro from "../autopublicacao/pages/NovoLivro/NovoLivro";
 import LivroById from "../livros/pages/LivroById/LivroById";
@@ -51,6 +51,7 @@ const RoutesClients = () => {
 
           <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
 
+          <Route path = "/editar-livro/:id" element = {<Private Item = {EditarLivro}/>}/>
         </Route>
       </Routes>
   );

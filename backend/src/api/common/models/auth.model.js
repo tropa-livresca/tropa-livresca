@@ -1,32 +1,65 @@
 import supabase from "../config/supabase.js";
 
 export class AuthModel {
-  //Administrador
+  static async signInAdministrador(usernameDigitado, senhaAdm) {
+    const emailVirtual = `${usernameDigitado.toLowerCase()}@adm.sistema.internal`;
 
-  static async buscarPorUsername(username) {
-    const { data, error } = await supabase
-      .from("vw_auth_adm")
-      .select("*")
-      .eq("username", username.toLowerCase().trim())
-      .single();
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: emailVirtual,
+      password: senhaAdm,
+    });
 
-    if (error && error.code !== "PGRST116") {
+    if (error) {
+      error.statusCode = 400;
       throw error;
     }
+
     return data;
   }
 
-  static async atualizarSenha(userId, novaSenhaCriptografada) {
-    const { data, error } = supabase
-      .from("adm_credenciais")
-      .update({
-        senha_adm: novaSenhaCriptografada,
-        forcar_troca_senha: false,
-      })
-      .eq("fk_user_profile_id", userId)
-      .select();
+  static async signOutAdministrador() {
+    await supabase.auth.signOut();
+  }
 
-    if (error) throw error;
+  static async conferirAdministrador(userId) {
+    const { data, error } = await supabase
+      .from("adm_credenciais")
+      .select("funcao, ativo, primeiro_acesso")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async atualizarSenha(novaSenha) {
+    const { data, error } = await supabase.auth.updateUser({
+      password: novaSenha,
+    });
+
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async atualizarPrimeiroAcesso(userId) {
+    const { data, error} = await supabase
+      .from("adm_credenciais")
+      .update({ primeiro_acesso: false })
+      .eq("id", userId);
+
+    if (error) {
+      error.statusCode = 400;
+      throw error; 
+    }
+
     return data;
   }
 

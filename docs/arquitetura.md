@@ -60,7 +60,7 @@ A estrutura de diretórios do servidor isola de forma estrita cada responsabilid
 
 ## Estratégia de Testes
 
-A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes automatizados construída sem dependências pesadas, utilizando ferramentas integradas do ecossistema Node.js.
+A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes automatizados construída com uso de Jest e Supertest, utilizando ferramentas integradas do ecossistema Node.js.
 
 ### 1. Testes de Integração (Routes & Controllers)
 Focados em testar o comportamento dos endpoints de ponta a ponta a partir da camada HTTP.
@@ -68,7 +68,7 @@ Focados em testar o comportamento dos endpoints de ponta a ponta a partir da cam
 * O que validam: Garantem que os status codes (200, 201, 400, 404, 500) retornem conforme o cenário. Validam se os cookies de sessão (auth-token e refresh-token) são injetados ou limpos corretamente e se os parâmetros de query e rota são devidamente higienizados e convertidos.
 * Isolamento: Os middlewares originais e serviços são substituídos por dublês (mocks) em tempo de execução usando o recurso nativo mock.module do Node.js, isolando completamente o controlador de efeitos colaterais de rede ou upload de arquivos em disco.
 
-### 2. Testes Unitários (Services & Helpers)
+### 2. Testes Unitários (Services & Models)
 Focados em garantir que as funções lógicas funcionem perfeitamente diante de qualquer variação de dados.
 * Ferramentas: node:test e node:assert.
 * O que validam: Testam o processamento interno de métodos (como conversão de formatos de texto ou objetos). Garantem que os cálculos matemáticos de paginação de dados (cálculo de totalPages e totalItems) devolvam números exatos para o cliente.
