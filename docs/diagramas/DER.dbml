@@ -20,11 +20,6 @@ Table adm_credenciais {
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
 }
 
-Table banner_config {
-  id integer [pk]
-  carrossel_banners jsonb [default: '[]']
-}
-
 Table categorias {
   id bigint [pk, increment]
   nome text [not null]
@@ -32,16 +27,6 @@ Table categorias {
   data_criacao timestamp [default: `now()`, not null]
   slug text [not null]
   fk_adms_id uuid [not null]
-}
-
-Table blogs {
-  id bigint [pk, increment]
-  data date [not null]
-  texto text [not null]
-  titulo text [not null]
-  subtitulo text
-  fk_adms_id bigint [ref: > adm_credenciais.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id]
 }
 
 Table livros {
@@ -75,7 +60,6 @@ Table comentarios {
   texto text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
   fk_livros_id bigint [ref: > livros.id]
-  fk_blog_id bigint [ref: > blogs.id]
 }
 
 Table denuncias {

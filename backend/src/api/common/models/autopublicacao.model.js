@@ -2,13 +2,13 @@ import { supabaseAdmin } from "../config/supabase.js";
 
 export class AutopublicacaoModel {
   static async buscarDetalhesPorId(id) {
-    let query = supabaseAdmin
+    const{data, error} = await supabaseAdmin
       .from("livros")
       .select("*")
       .eq("id", id)
-      .eq("ativo", true);
+      .eq("ativo", true)
+      .maybeSingle();
 
-    const { data, error } = await query.maybeSingle();
     if (error) throw error;
     return data;
   }
@@ -19,7 +19,7 @@ export class AutopublicacaoModel {
     .from("livros")
     .select("estado")
     .eq("id", id)
-    .single();
+    .maybeSingle();
 
     if (fetchError) throw fetchError;
 
@@ -33,8 +33,7 @@ export class AutopublicacaoModel {
       .from("livros")
       .update({ estado: novoEstado })
       .eq("id", id);
-    queryError = error;
-
+    
     if(updateError) throw updateError;
     return true;
   }

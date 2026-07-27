@@ -3,7 +3,7 @@ import {AutopublicacaoService} from "./autopublicacao.service.js";
 export class AutopublicacaoController{
 static async GetLivrosById (req, res, next) {
   try {
-    const userId = req.user?.id;
+    const userId = req.user.id;
     const livrosComCapas = await AutopublicacaoService.getLivrosByIdService(userId);
     
     return res.status(200).json(livrosComCapas);
@@ -42,8 +42,6 @@ static async InsertLivro (req, res, next) {
   try {
     const userId = req.user?.id;
     const { dadosLivro, publicar, capa, manuscritoPath } = req.body;
-
-    console.time("Tempo do insert");
     
     const resultado = await AutopublicacaoService.insertLivroService({
       userId,
@@ -52,8 +50,6 @@ static async InsertLivro (req, res, next) {
       capa,
       manuscritoPath
     });
-
-    console.timeEnd("Tempo do insert");
 
     return res.status(201).json(resultado);
   } catch (err) {

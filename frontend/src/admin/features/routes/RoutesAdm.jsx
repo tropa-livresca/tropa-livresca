@@ -3,7 +3,6 @@ import { CssBaseline } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
-import Teste from "../painelBlog/pages/Teste/Teste";
 
 const tema = createTheme({
     palette: {
@@ -60,7 +59,7 @@ const RoutesAdm = () => {
             <CssBaseline />
             <MainLayout>             
                 <Routes>
-                    <Route path="painelBlog" element={<Teste />} />
+                    <Route/>
                 </Routes>
             </MainLayout>
         </ThemeProvider>

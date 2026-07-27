@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { AutopublicacaoContext } from "../context/Autopublicacao";
+import { AutopublicacaoContext } from "../context/AutopublicacaoContext";
 
 export const useAutopublicacao = () => {
   const context = useContext(AutopublicacaoContext);
