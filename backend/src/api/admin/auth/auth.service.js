@@ -1,76 +1,82 @@
-import {AuthModel} from "../../common/models/auth.model.js";
-import crypto from "crypto";
-import jwt from "jsonwebtoken";
-
-const ALGORITMO = "aes-256-gcm";
-const CHAVE_SECRETA = Buffer.from(process.env.MINHA_CHAVE_SUPER_SECRETA, "hex");
-const JWT_SECRET = process.env.JWT_SECRET;
+import { AuthModel } from "../../common/models/auth.model.js";
 
 export class AuthService {
-  static _descriptografar(textoCriptografado) {
-    const [ivHex, tagHex, dadoHex] = textoCriptografado.split(":");
-    const decoder = crypto.createDecipheriv(
-      ALGORITMO,
-      CHAVE_SECRETA,
-      Buffer.from(ivHex, "hex"),
-    );
-    decoder.setAuthTag(Buffer.from(tagHex, "hex"));
-
-    let limpo = decoder.update(dadoHex, "hex", "utf8");
-    limpo += decoder.final("utf8");
-    return limpo;
-  }
-
-  static _criptografar(texto){
-    const iv = crypto.randomBytes(12);
-    const cipher = crypto.createCipheriv(ALGORITMO, CHAVE_SECRETA, iv);
-
-    let criptografado = cipher.update(texto, "utf-8", "hex");
-    criptografado += cipher.final("hex");
-
-    const tag = cipher.getAuthTag().toString("hex");
-    return `${iv.toString('hex')}:${tag}:${criptografado}`;
-  }
-
-  static async autenticar(username, senha){
-    const usuario = await AuthModel.buscarPorUsername(username);
-    if(!usuario) return {autenticado: false};
-
-    let senhaSalvaTextoPlano;
+  static async signInAdministrador(usernameDigitado, senhaAdm) {
+    if (!usernameDigitado || !senhaAdm) {
+      const erroCredenciais = new Error("Credenciais não informadas.");
+      erroCredenciais.statusCode = 400;
+      throw erroCredenciais;
+    }
 
     try {
-        senhaSalvaTextoPlano = this._descriptografar(usuario.senha_criptografada);
-    }
-    catch(err){
-        throw new Error("Falha crítica de descriptografia");
-    }
+      const resultado = await AuthModel.signInAdministrador(
+        usernameDigitado,
+        senhaAdm,
+      );
 
-    if(senha !== senhaSalvaTextoPlano) return {autenticado: false};
+      const userId = resultado?.data?.user?.id;
+      if (!userId) {
+        const erroAuth = new Error("Senha ou usuário incorretos.");
+        erroAuth.statusCode = 400;
+        throw erroAuth;
+      }
 
-    if(usuario.forcar_troca_senha){
-        return {status: 'Troca_obrigatoria', userId: usuario.user_id};
-    }
+      const { data: adm, error: dbError } =
+        await AuthModel.conferirAdministrador(userId);
 
-    const token = jwt.sign(
-        {id: usuario.user_id, username: usuario.username, funcao: usuario.funcao},
-        JWT_SECRET,
-        {expiresIn: "8h"}
-    );
+      if (dbError) {
+        const erroBanco = new Error("Erro interno ao validar permissões.");
+        erroBanco.statusCode = 500;
+        throw erroBanco;
+      }
 
-    return {
-        status: "Sucesso",
-        token,
-        usuario: {
-            id: usuario.user_id,
-            nome: usuario.nome_completo,
-            username: usuario.username,
-            funcao: usuario.funcao
-        }
+      if (!adm || !adm.ativo) {
+        const erroValidacao = new Error("Senha ou usuário incorretos.");
+        erroValidacao.statusCode = 400;
+        throw erroValidacao;
+      }
+
+      if (adm.primeiro_acesso) {
+        return {
+          status: "EXIGIR_TROCA_DE_SENHA",
+          userId: userId,
+        };
+      }
+
+      return resultado;
+    } catch (error) {
+      error.statusCode = error.statusCode || 400;
+      throw error;
     }
   }
 
-  static async trocarSenhaObrigatoria(userId, novaSenha){
-    const senhaCripto = this._criptografar(novaSenha);
-    return await AuthModel.atualizarSenha(userId, senhaCripto);
+  static async atualizarSenha(userId, novaSenha) {
+    if (!userId || !novaSenha) {
+      const erroCredenciais = new Error(
+        "Dados para atualização não fornecidos.",
+      );
+      erroCredenciais.statusCode = 400;
+      throw erroCredenciais;
+    }
+
+    const { data, error } = await AuthModel.atualizarSenha(novaSenha);
+
+    if (error) {
+      const erroAlteracao = new Error("Erro na alteração da senha.");
+      erroAlteracao.statusCode = 400;
+      throw erroAlteracao;
+    }
+
+    const { error: dbError } = await AuthModel.atualizarPrimeiroAcesso(userId);
+
+    if (dbError) {
+      const erroAcesso = new Error(
+        "Erro ao atualizar o status de primeiro acesso.",
+      );
+      erroAcesso.statusCode = 500;
+      throw erroAcesso;
+    }
+
+    return data;
   }
 }

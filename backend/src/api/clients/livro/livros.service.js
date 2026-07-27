@@ -1,6 +1,4 @@
-import { supabaseAdmin } from "../../common/config/supabase.js";
 import { LivroModel } from "../../common/models/livro.model.js";
-import { ColaboradorModel } from "../../common/models/colaborador.model.js";
 
 export class LivrosService {
   static _parseCapaUrls (livro) {
@@ -19,46 +17,78 @@ export class LivrosService {
     return livros.map(livro => this._parseCapaUrls(livro));
   }
 
-  static async getLivrosService ({ page, limit, busca }) {
-    const { data, count } = await LivroModel.buscarComFiltros({ page, limit, busca });
+  static async getLivros ({ page, limit, busca }) {
+    try {
+      const { data, count } = await LivroModel.buscarComFiltros({ page, limit, busca });
 
-    if (!data || data.length === 0) {
-      const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
-      erro404.statusCode = 404;
-      throw erro404; 
+      if (!data || data.length === 0) {
+        const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
+        erro404.statusCode = 404;
+        throw erro404; 
+      }
+
+      const livrosComCapas = this._parseCapasArray(data);
+      const totalItems = count || livrosComCapas.length;
+
+      return {
+        data: livrosComCapas,
+        meta: {
+          page,
+          limit,
+          totalItems,
+          totalPages: Math.ceil(totalItems / limit),
+        },
+      };
+    } catch (error) {
+      if (error.statusCode) throw error;
+      const erroBanco = new Error("Erro ao buscar livros na vitrine.");
+      erroBanco.statusCode = 500;
+      throw erroBanco;
     }
-
-    const livrosComCapas = this._parseCapasArray(data);
-    const totalItems = count || livrosComCapas.length;
-
-    return {
-      data: livrosComCapas,
-      meta: {
-        page,
-        limit,
-        totalItems,
-        totalPages: Math.ceil(totalItems / limit),
-      },
-    };
   }
 
-  static async getLivrosByAutorService (id) {
-    const livro = await LivroModel.buscarDetalhesPorId(id, false);
+  static async getLivrosByAutor (id) {
+    try {
+      const livro = await LivroModel.buscarDetalhesPorId(id, false);
 
-    if (!livro) {
-      const erro404 = new Error("O livro solicitado não existe ou está indisponível.");
-      erro404.statusCode = 404;
-      throw erro404;
+      if (!livro) {
+        const erro404 = new Error("O livro solicitado não existe ou está indisponível.");
+        erro404.statusCode = 404;
+        throw erro404;
+      }
+
+      const livroComCapa = this._parseCapaUrls(livro);
+
+      return {
+        data: {
+          ...livroComCapa,
+        },
+      };
+    } catch (error) {
+      if (error.statusCode) throw error;
+      const erroBanco = new Error("Erro ao buscar livros do autor.");
+      erroBanco.statusCode = 500;
+      throw erroBanco;
     }
+  }
 
-    const { data: colaboradores } = await ColaboradorModel.buscarPorLivroId(id);
-    const livroComCapa = this._parseCapaUrls(livro);
+  static async getLivrosById(id) {
+    try {
+      const data = await LivroModel.buscarDetalhesPorId(id);
 
-    return {
-      data: {
-        ...livroComCapa,
-        colaboradores: colaboradores || [],
-      },
-    };
+      if (!data) {
+        const erro404 = new Error("O livro solicitado não existe ou está indisponível.");
+        erro404.statusCode = 404;
+        throw erro404;
+      }
+      
+      const livroComCapa = this._parseCapaUrls(data);
+      return livroComCapa;
+    } catch (error) {
+      if (error.statusCode) throw error;
+      const erroBanco = new Error("Erro ao buscar detalhes do livro.");
+      erroBanco.statusCode = 500;
+      throw erroBanco;
+    }
   }
 }

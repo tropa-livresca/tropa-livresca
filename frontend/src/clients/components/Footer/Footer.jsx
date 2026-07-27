@@ -43,9 +43,6 @@ export default function Footer() {
             <li>
               <Link to="/">Autores</Link>
             </li>
-            <li>
-              <Link to="/">Blog</Link>
-            </li>
           </ul>
         </div>
 

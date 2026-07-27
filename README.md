@@ -90,7 +90,6 @@ Para detalhes completos, consulte a documentação específica em [docs/funciona
 * Supabase (PostgreSQL / Storage / Auth)
 * Módulo nativo `node:test` + `node:assert`
 * `supertest` (Simulação HTTP de contratos)
-* dotenv
 
 ---
 
@@ -123,6 +122,17 @@ O diagrama completo de casos de uso está disponível em [docs/diagramas/caso-de
 │   │   │       ├── middlewares/
 │   │   │       └── models/
 │   │   └── api.js
+│   ├── tests/
+│   │   ├── unit/
+│   │   │   ├── controllers/
+│   │   │   ├── services/
+│   │   │   └── models/
+│   │   ├── integration/
+│   │   │   └── routes/
+│   │   ├── helpers/
+│   │   ├── fixtures/
+│   │   ├── mocks/
+│   │   └── setup/
 │   ├── README.md
 │   └── .env.example
 ├── docs/
@@ -241,10 +251,10 @@ Este projeto está licensed sob os termos da GNU General Public License v3.0. Co
 
 ## Autores
 
-* David Gabriel Cardoso Pereira: Escopo de documentação e análise.
+* David Gabriel Cardoso Pereira: Documentação interna e externa.
 * Gabriel Rodrigues Duarte: Desenvolvimento fullstack e infraestrutura.
 * Luís Fabiano da Silva: Desenvolvimento frontend e design de interface.
-* Lukas Soldera Markues: Escopo de documentação e validação.
-* Matheus Ruy de Almeida: Desenvolvimento backend e testes de integração.
+* Lukas Soldera Markues: Documentação externa.
+* Matheus Ruy de Almeida: Desenvolvimento backend e testes unitários e de integração.
 
 * Trabalho Acadêmico: Projeto idealizado e desenvolvido como Trabalho de Conclusão de Curso (TCC) para a Tropa Livresca.

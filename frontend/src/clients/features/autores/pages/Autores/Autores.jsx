@@ -19,7 +19,7 @@ export default function Autores() {
 
   useEffect(() => {
     buscarAutores(paginaAtual, 12, busca);
-  }, [paginaAtual]);
+  }, [paginaAtual, busca, buscarAutores]);
 
   if (carregando) return <p>Carregando...</p>;
 

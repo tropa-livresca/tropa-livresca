@@ -1,56 +1,46 @@
 import { AuthService } from "./auth.service.js";
 
 export class AuthController {
-  static async signin(req, res) {
+  static async signin(req, res, next) {
+    const { username, senha } = req.body;
+
     try {
-      const { username, senha } = req.body;
+      const data = await AuthService.signInAdministrador(username, senha);
 
-      if (!username || !senha) {
-        return res.status(400).json({ error: "Username e senha são obrigatórios." });
-      }
-
-      const resultado = await AuthService.autenticar(username, senha);
-
-      if (resultado.autenticado === false || resultado.status === undefined) {
-        return res.status(401).json({ error: "Usuário ou senha incorretos." });
-      }
-
-      if (resultado.status === "Troca_obrigatoria") {
+      if (data?.status === "EXIGIR_TROCA_DE_SENHA") {
         return res.status(200).json({
-          status: "Troca_obrigatoria",
-          message: "Primeiro acesso detectado. Altere sua senha antes de prosseguir.",
-          userId: resultado.userId    
+          status: "EXIGIR_TROCA_DE_SENHA",
+          userId: data.userId,
+          message: "Primeiro acesso detectado. Alteração de senha obrigatória.",
         });
       }
 
+      const sessionData = data?.data;
+
       return res.status(200).json({
-        status: "Sucesso",
-        token: resultado.token,
-        usuario: resultado.usuario
+        user: sessionData?.user,
+        session: sessionData?.session,
+        message: "Login realizado com sucesso!",
       });
     } catch (err) {
-      return res.status(500).json({
-        error: "Erro interno no servidor ao tentar efetuar login"
-      });
+      next(err);
     }
   }
 
-  static async atualizarSenhaPrimeiroAcesso(req, res) {
+  static async atualizarSenha(req, res, next) {
+    const userId = req.user?.id || req.body.userId;
+    const { novaSenha } = req.body;
+
     try {
-      const { userId, novaSenha } = req.body;
-
-      if (!userId || !novaSenha) {
-        return res.status(400).json({ error: "Id do usuário e nova são obrigatórias." });
-      }
-
-      await AuthService.trocarSenhaObrigatoria(userId, novaSenha);
+      const data = await AuthService.atualizarSenha(userId, novaSenha);
 
       return res.status(200).json({
-        status: "Sucesso",
-        message: "Senha atualizada com sucesso pelo utilitário."
+        message: "Senha atualizada com sucesso!",
+        user: data?.user
       });
-    } catch (error) {
-      return res.status(500).json({ error: 'Erro interno ao atualizar a senha do utilitário.' });
+      
+    } catch (err) {
+      next(err);
     }
   }
 }

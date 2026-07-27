@@ -75,10 +75,10 @@ A tabela abaixo descreve as ferramentas de execução configuradas no projeto:
 | Raiz | npm run dev | Inicializa o ecossistema (backend e frontend) em paralelo |
 | Raiz | npm run server | Inicializa exclusivamente o servidor backend |
 | Raiz | npm run client | Inicializa exclusivamente a aplicação frontend |
-| Raiz | npm test | Executa a suíte completa de testes automatizados com node:test |
 | backend | npm run dev | Inicializa a API em modo de desenvolvimento utilizando nodemon |
 | backend | npm start | Inicializa a API em modo de produção puro através do Node.js |
 | backend | npm test | Executa de forma isolada os testes de integração e unitários do backend |
+| backend | npm run test:watch | Executa de forma isolada os testes de integração e unitários do backend em tempo real |
 | frontend | npm run dev | Inicializa o servidor de desenvolvimento do Vite |
 | frontend | npm run build | Compila a aplicação gerando o pacote otimizado de produção |
 | frontend | npm run preview | Executa um servidor local para visualizar a build de produção gerada |
