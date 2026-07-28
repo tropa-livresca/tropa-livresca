@@ -47,29 +47,31 @@ flowchart LR
 
 ## Organização do Backend
 
-A estrutura de diretórios do servidor isola de forma estrita cada responsabilidade de desenvolvimento:
+A estrutura de diretórios do servidor separa, a princípio, a pasta src de tests. Dentro de src, encontram-se as pastas Admin, Clients e Common, cada uma reunindo funcionalidades. Assim, arquivos próximos de mesma funcionalidade tendem a estarem juntos. Nas duas primeiras, há três arquivos:
 
-* routes/: Mapeia e define os endpoints expostos da API pública e privada.
-* controllers/: Gerencia exclusivamente o ciclo de vida HTTP (req, res, next).
-* middlewares/: Interceptores de segurança, uploads e o manipulador global de erros (errorHandler).
+* *.route.js: Mapeia e define os endpoints expostos da API pública e privada.
+* *.controller/: Gerencia exclusivamente o ciclo de vida HTTP (req, res, next).
 * services/: Centraliza o núcleo das lógicas de negócio e as orquestrações de regras.
-* models/: Centraliza as queries, views e mutations de dados.
+
+Enquanto que em Common, ficam:
+* *.middleware.js: Interceptores de segurança, uploads e o manipulador global de erros (errorHandler).
+* *.model.js: Centraliza as queries, views e mutations de dados.
 * config/: Arquivos de inicialização de infraestrutura (como conexões com o Supabase).
 
 ---
 
 ## Estratégia de Testes
 
-A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes automatizados construída com uso de Jest e Supertest, utilizando ferramentas integradas do ecossistema Node.js.
+A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes no backend automatizados construída com uso de Jest e Supertest. Todos eles se encontram isolados na pasta tests [backend/tests]. 
 
-### 1. Testes de Integração (Routes & Controllers)
+### 1. Testes de Integração (Routes)
 Focados em testar o comportamento dos endpoints de ponta a ponta a partir da camada HTTP.
 * Ferramentas: supertest para simulação de requisições de rede.
 * O que validam: Garantem que os status codes (200, 201, 400, 404, 500) retornem conforme o cenário. Validam se os cookies de sessão (auth-token e refresh-token) são injetados ou limpos corretamente e se os parâmetros de query e rota são devidamente higienizados e convertidos.
 * Isolamento: Os middlewares originais e serviços são substituídos por dublês (mocks) em tempo de execução usando o recurso nativo mock.module do Node.js, isolando completamente o controlador de efeitos colaterais de rede ou upload de arquivos em disco.
 
-### 2. Testes Unitários (Services & Models)
+### 2. Testes Unitários (Services, Controllers e Models)
 Focados em garantir que as funções lógicas funcionem perfeitamente diante de qualquer variação de dados.
-* Ferramentas: node:test e node:assert.
-* O que validam: Testam o processamento interno de métodos (como conversão de formatos de texto ou objetos). Garantem que os cálculos matemáticos de paginação de dados (cálculo de totalPages e totalItems) devolvam números exatos para o cliente.
+* Ferramentas: Jest.
+* O que validam: Testam o processamento interno de métodos (como conversão de formatos de texto ou objetos). Garantem que os cálculos matemáticos de paginação de dados (cálculo de totalPages e totalItems) devolvam números exatos para o cliente. Asseguram os retornos de erro e sucesso esperados.
 * Isolamento: As chamadas para os modelos de dados (AuthModel, LivroModel, AutorModel) são interceptadas e mockadas com retornos falsos estruturados, permitindo testar caminhos de falhas no banco sem precisar se conectar a um banco real durante os testes.
