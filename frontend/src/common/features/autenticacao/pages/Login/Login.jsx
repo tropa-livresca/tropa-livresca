@@ -1,5 +1,6 @@
 ﻿import Input from "../../../../components/Input/Input";
 import SubmitButton from "../../../../components/Submit/SubmitButton";
+import BotaoGoogle from "../../components/BotaoGoogle/BotaoGoogle";
 import styles from "./Login.module.css";
 
 import useAuth from "../../../../hooks/useAuth";
@@ -8,7 +9,7 @@ import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { FaEye, FaEyeSlash} from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
 export default function Login() {
@@ -42,10 +43,6 @@ export default function Login() {
   };
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
-
-  const loginGoogle = () => {
-    // aaa
-  };
 
   return (
     <div className={styles.container}>
@@ -92,10 +89,7 @@ export default function Login() {
               </button>
             </div>
 
-            <div id={styles.checkbox}>
-              <input type="checkbox" />
-              <label>Lembrar por 30 dias</label>
-            </div>
+            <BotaoGoogle/>
 
             <SubmitButton text="ENTRAR" id={styles.btn} />
 
@@ -104,15 +98,6 @@ export default function Login() {
               <p>ou</p>
               <span></span>
             </div>
-
-            <button
-              type="button"
-              className={styles.google}
-              onClick={loginGoogle}
-            >
-              <FaGoogle />
-              Entrar com Google
-            </button>
 
             <div className={styles.errinho}>
               {error.length > 0 && <p>{error}</p>}

@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/signup", AuthController.signup);
 router.post("/signin", AuthController.signin);
+router.post("/signin/google", AuthController.signinComGoogle);
 router.post("/signout", AuthController.signout);
 router.post("/refresh", AuthController.refreshSession);
 router.post("/session", AuthController.setSession);

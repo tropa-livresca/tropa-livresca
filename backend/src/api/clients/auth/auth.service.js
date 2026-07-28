@@ -1,6 +1,27 @@
 import { AuthModel } from "../../common/models/auth.model.js";
 
 export class AuthService {
+    static async signinComGoogle(idToken) {
+    if (!idToken) {
+      const erroToken = new Error("Token de autenticação do Google não fornecido.");
+      erroToken.statusCode = 400;
+      throw erroToken;
+    }
+
+    try {
+      const { data, error } = await AuthModel.signinComGoogle(idToken);
+
+      if (error) {
+        error.statusCode = 401;
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      error.statusCode = error.statusCode || 500;
+      throw error;
+    }
+  }
+
   static async setSession(accessToken, refreshToken) {
     const { data, error } = await AuthModel.setSession(
       accessToken,

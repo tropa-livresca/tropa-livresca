@@ -69,7 +69,7 @@ export default function Cadastro() {
       "Cadastro realizado! Verifique sua caixa de entrada para confirmar o e-mail.",
     );
 
-    navigate("/login");
+    navigate("/auth/login");
   };
 
   const [mostrarSenha, setMostrarSenha] = useState(false);

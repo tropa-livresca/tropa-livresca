@@ -63,13 +63,28 @@ export class AuthController {
     }
   }
 
+  static async signinComGoogle(req, res, next){
+    const idToken = req.body.token;
+  
+    try {
+      const data = await AuthService.signinComGoogle(idToken);
+
+      return res.status(201).json({
+        data: data,
+        message: "Login com Google efetuado com sucesso!",
+      });
+    } catch (err){
+      next(err);
+    }
+  }
+
   static async signup(req, res, next) {
     const { email, password, telefone, nome } = req.body;
     try {
       const data = await AuthService.signup(email, password, nome, telefone);
 
       return res.status(201).json({
-        user: data.user,
+        data: data,
         message:
           "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });

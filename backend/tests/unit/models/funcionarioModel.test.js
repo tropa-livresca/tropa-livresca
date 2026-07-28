@@ -67,7 +67,7 @@ describe("Funcionários Model - Testes Unitários", () => {
     });
 
     it("Deve lançar o erro 500 se a RPC falhar", async () => {
-        expect.assertions(2);
+      expect.assertions(2);
       const erroBancoMock = { message: "Erro interno na execução da RPC" };
       builder.resolve(null, erroBancoMock);
 
