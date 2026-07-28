@@ -12,6 +12,9 @@ router.post("/session", AuthController.setSession);
 
 router.patch("/senha", checkAuth, AuthController.atualizarSenha);
 
+router.post("/redefinir-senha", AuthController.redefinirSenha);
+router.post("/esquecer-senha", AuthController.esqueciSenha);
+
 router.get("/session", checkAuth, (req, res) => {
   return res.status(200).json({ user: req.user });
 });

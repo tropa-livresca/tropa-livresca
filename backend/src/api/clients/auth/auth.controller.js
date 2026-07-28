@@ -141,4 +141,31 @@ export class AuthController {
       next(err);
     }
   }
+
+  static async esqueciSenha(req, res, next){
+    try{
+      const {email} = req.body;
+
+      await AuthService.esqueciSenha(email);
+
+      return res.status(200).json({
+        message: "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+      });
+    }catch(err){next(err)}
+  }
+
+  static async redefinirSenha(req, res, next){
+    try{
+      const{accessToken, refreshToken, novaSenha} = req.body;
+
+      await AuthService.confirmarNovaSenha(accessToken, refreshToken, novaSenha);
+
+      return res.status(200).json({
+        message: "Senha atualizada com sucesso! Você já pode fazer login.",
+      });
+    }
+    catch(err){
+      next(err);
+    }
+  }
 }

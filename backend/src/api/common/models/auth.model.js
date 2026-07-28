@@ -60,6 +60,18 @@ export class AuthModel {
   }
 
   //Usuários comuns
+  static async enviarEmailRecuperacao(email, redirectUrl) {
+  const {data, error} = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectUrl,
+  });
+
+  if(error){
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return data;
+}
 
   static async signinComGoogle(idToken) {
     const {data, error} = await supabase.auth.signInWithIdToken({

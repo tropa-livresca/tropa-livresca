@@ -174,7 +174,7 @@ export default function Cadastro() {
             </div>
 
             <span className={styles.span}>
-              Já tem cadastro? <Link to="/login">Clique aqui.</Link>
+              Já tem cadastro? <Link to="/auth/login">Clique aqui.</Link>
             </span>
 
             <SubmitButton text="CADASTRAR" />
