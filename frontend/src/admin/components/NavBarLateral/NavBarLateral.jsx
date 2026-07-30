@@ -1,82 +1,105 @@
-import { useState } from "react";
-import {
-  LayoutDashboard,
-  FileText,
-  Users,
-  UserCog,
-  BookOpen,
-  Bell,
-  Settings,
-  ChevronRight,
-} from "lucide-react";
-import styles from "./NavBarLateral.module.css";
+import { useState } from "react"; 
+import { 
+  Drawer, 
+  List, 
+  ListItem, 
+  ListItemButton, 
+  ListItemText, 
+  Box,
+  Collapse
+} from "@mui/material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
 
-const NAV_ITEMS = [
-  { key: "geral",         label: "Painel Geral",        icon: LayoutDashboard },
-  { key: "blog",          label: "Painel Blog",          icon: FileText },
-  { key: "autores",       label: "Painel Autores",       icon: Users },
-  { key: "funcionarios",  label: "Painel Funcionários",  icon: UserCog },
-  { key: "livros",        label: "Painel Livros",        icon: BookOpen },
-  { key: "notificacoes",  label: "Notificações",         icon: Bell },
-  { key: "configuracoes", label: "Configurações",        icon: Settings },
-];
+export default function NavBarLateral({ aberto, aoFechar }) {
+  const [funcionariosAberta, setFuncionariosAberta] = useState(false);
 
-const UNREAD = 3;
-
-export default function NavBarLateral() {
-  const [active, setActive] = useState(null);
+  const handleToggleFuncionarios = () => {
+    setFuncionariosAberta(!funcionariosAberta);
+  };
 
   return (
-    <aside className={styles.aside}>
+    <Box>
+      <Drawer 
+        anchor="left" 
+        open={aberto} 
+        onClose={aoFechar}
+        sx={{
+          [`& .MuiDrawer-paper`]: {
+            pt: "120px",
+            width: 250,
+            bgcolor: "custom.superficie",
+            height: "100%"
+          },
+        }} 
+      >
+        <Box
+          sx={{ width: 250, bgcolor: "custom.superficie", height: "100%" }}
+          role="presentation"
+        >
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemText 
+                  primary="Geral" 
+                  sx={{ color: "custom.texto", paddingTop: "0.5em", paddingBottom: "0.5em" }}
+                />
+              </ListItemButton>
+            </ListItem>
 
-      <div className={styles.logo}>
-        <div className={styles.logoIcon}>
-          <BookOpen />
-        </div>
-        <div>
-          <p className={styles.logoTitle}>Editora</p>
-          <p className={styles.logoSubtitle}>Painel Admin</p>
-        </div>
-      </div>
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleToggleFuncionarios}>
+                <ListItemText 
+                  primary="Usuários" 
+                  sx={{ color: "custom.texto", paddingTop: "0.5em", paddingBottom: "0.5em" }}
+                />
+                {funcionariosAberta ? (
+                  <ExpandLess sx={{ color: "custom.textoMuted" }} />
+                ) : (
+                  <ExpandMore sx={{ color: "custom.textoMuted" }} />
+                )}
+              </ListItemButton>
+            </ListItem>
 
-      <nav className={styles.nav}>
-        <span className={styles.navLabel}>Menu</span>
+            <Collapse in={funcionariosAberta} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="Nova Postagem" sx={{ color: "custom.textoMuted" }} />
+                </ListItemButton>
+                
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="Gerenciar Posts" sx={{ color: "custom.textoMuted" }} />
+                </ListItemButton>
+              </List>
+            </Collapse>
 
-        {NAV_ITEMS.map(({ key, label, icon: Icon }) => {
-          const isActive = active === key;
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleToggleFuncionarios}>
+                <ListItemText 
+                  primary="Funcionarios" 
+                  sx={{ color: "custom.texto", paddingTop: "0.5em", paddingBottom: "0.5em" }}
+                />
+                {funcionariosAberta ? (
+                  <ExpandLess sx={{ color: "custom.textoMuted" }} />
+                ) : (
+                  <ExpandMore sx={{ color: "custom.textoMuted" }} />
+                )}
+              </ListItemButton>
+            </ListItem>
 
-          return (
-            <div key={key}>
-              {key === "configuracoes" && <hr className={styles.divider} />}
-
-              <button
-                className={`${styles.navButton} ${isActive ? styles.active : ""}`}
-                onClick={() => setActive(isActive ? null : key)}
-              >
-                <span className={styles.iconWrap}>
-                  <Icon />
-                  {key === "notificacoes" && UNREAD > 0 && (
-                    <span className={styles.badge}>{UNREAD}</span>
-                  )}
-                </span>
-
-                <span className={styles.navLabel2}>{label}</span>
-
-                <ChevronRight className={styles.chevron} />
-              </button>
-            </div>
-          );
-        })}
-      </nav>
-
-      <div className={styles.user}>
-        <div className={styles.avatar}>A</div>
-        <div style={{ minWidth: 0 }}>
-          <p className={styles.userName}>Admin Geral</p>
-          <p className={styles.userEmail}>admin@editora.com.br</p>
-        </div>
-      </div>
-
-    </aside>
+            <Collapse in={funcionariosAberta} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="Nova Postagem" sx={{ color: "custom.textoMuted" }} />
+                </ListItemButton>
+                
+                <ListItemButton sx={{ pl: 4 }}>
+                  <ListItemText primary="Gerenciar Posts" sx={{ color: "custom.textoMuted" }} />
+                </ListItemButton>
+              </List>
+            </Collapse>
+          </List>
+        </Box>
+      </Drawer>
+    </Box>
   );
 }

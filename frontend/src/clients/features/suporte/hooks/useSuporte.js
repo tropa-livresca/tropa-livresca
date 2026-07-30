@@ -1,4 +1,4 @@
-﻿import { apiFetch } from "../../../../services/api";
+﻿import { apiFetch } from "../../../../common/services/api";
 import { useState } from "react";
 
 export const useSuporte = () => {

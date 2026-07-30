@@ -1,14 +1,19 @@
 import express from "express";
-import { signup, signin, signout, refreshSession, setSession } from "./auth.controller.js";
+import { AuthController } from "./auth.controller.js";
 import { checkAuth } from "../../common/middlewares/auth.middleware.js";
-
 const router = express.Router();
 
-router.post("/signup", signup);
-router.post("/signin", signin);
-router.post("/signout", signout);
-router.post("/refresh", refreshSession);
-router.post("/session", setSession);
+router.post("/signup", AuthController.signup);
+router.post("/signin", AuthController.signin);
+router.post("/signin/google", AuthController.signinComGoogle);
+router.post("/signout", AuthController.signout);
+router.post("/refresh", AuthController.refreshSession);
+router.post("/session", AuthController.setSession);
+
+router.patch("/senha", checkAuth, AuthController.atualizarSenha);
+
+router.post("/redefinir-senha", AuthController.redefinirSenha);
+router.post("/esquecer-senha", AuthController.esqueciSenha);
 
 router.get("/session", checkAuth, (req, res) => {
   return res.status(200).json({ user: req.user });

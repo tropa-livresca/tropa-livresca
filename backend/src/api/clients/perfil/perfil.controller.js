@@ -1,9 +1,10 @@
-import * as perfilService from "./perfil.service.js";
+import {PerfilService} from "./perfil.service.js";
 
-export const GetPerfil = async (req, res, next) => {
+export class PerfilController{
+  static async GetPerfil (req, res, next) {
   try {
     const userId = req.user?.id;
-    const perfil = await perfilService.getPerfilService(userId);
+    const perfil = await PerfilService.getPerfilService(userId);
 
     return res.status(200).json(perfil);
   } catch (err) {
@@ -11,13 +12,13 @@ export const GetPerfil = async (req, res, next) => {
   }
 };
 
-export const UpdatePerfil = async (req, res, next) => {
+static async UpdatePerfil (req, res, next) {
   try {
     const userId = req.user?.id;
     const { nome, telefone, descricao, redes_sociais } = req.body;
     const file = req.file;
 
-    const perfilAtualizado = await perfilService.updatePerfilService({
+    const perfilAtualizado = await PerfilService.updatePerfilService({
       userId,
       dadosPerfil: { nome, telefone, descricao },
       file,
@@ -29,3 +30,4 @@ export const UpdatePerfil = async (req, res, next) => {
     next(err);
   }
 };
+}

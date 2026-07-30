@@ -1,9 +1,9 @@
 import express from "express";
-import {GetAutores, GetAutorById} from "./autor.controller.js";
+import {AutorController} from "./autor.controller.js";
 
 const router = express.Router();
 
-router.get("/", GetAutores);
-router.get("/:id", GetAutorById);
+router.get("/", AutorController.GetAutores);
+router.get("/:id", AutorController.GetAutorById);
 
 export default router;

@@ -19,7 +19,7 @@ export default function Autores() {
 
   useEffect(() => {
     buscarAutores(paginaAtual, 12, busca);
-  }, [paginaAtual]);
+  }, [paginaAtual, busca, buscarAutores]);
 
   if (carregando) return <p>Carregando...</p>;
 
@@ -81,7 +81,7 @@ export default function Autores() {
                     to={`/autores/${autor.id}`}
                     className={styles.btndetalhes}
                   >
-                    Ver Perfil
+                    Ver perfil
                   </Link>
                 </div>
               );

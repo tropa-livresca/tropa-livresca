@@ -1,84 +1,157 @@
-import * as authService from "./auth.service.js";
+import { AuthModel } from "../../common/models/auth.model.js";
 
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 dias
-};
+export class AuthService {
+  static async signinComGoogle(idToken) {
+    if (!idToken) {
+      const erroToken = new Error(
+        "Token de autenticação do Google não fornecido.",
+      );
+      erroToken.statusCode = 400;
+      throw erroToken;
+    }
 
-export const setSession = async (req, res, next) => {
-  try {
-    const { accessToken, refreshToken } = req.body;
-    
-    const data = await authService.setSessionService({ accessToken, refreshToken });
+    try {
+      const { data, error } = await AuthModel.signinComGoogle(idToken);
 
-    res.cookie("auth-token", data.session.access_token, COOKIE_OPTIONS);
-    res.cookie("refresh-token", data.session.refresh_token, COOKIE_OPTIONS);
-
-    return res.status(200).json({
-      user: data.user,
-      message: "Sessão definida com sucesso e cookies configurados.",
-    });
-  } catch (err) {
-    next(err);
+      if (error) {
+        error.statusCode = 401;
+        throw error;
+      }
+      return data;
+    } catch (error) {
+      error.statusCode = error.statusCode || 500;
+      throw error;
+    }
   }
-};
 
-export const refreshSession = async (req, res, next) => {
-  try {
-    const refreshToken = req.cookies["refresh-token"];
-    
-    const data = await authService.refreshSessionService(refreshToken);
+  static async esqueciSenha(email) {
+    if (!email) {
+      const erroEmail = new Error("O e-mail é obrigatório.");
+      erroEmail.statusCode = 500;
+      throw erroEmail;
+    }
 
-    res.cookie("auth-token", data.session.access_token, COOKIE_OPTIONS);
-    res.cookie("refresh-token", data.session.refresh_token, COOKIE_OPTIONS);
+    const redirectUrl = process.env.SUPABASE_RESET_PASSWORD_URL || "https://localhost:5173/auth/redefinir-senha";
 
-    return res.status(200).json({ message: "Sessão renovada com sucesso." });
-  } catch (err) {
-    next(err);
+    const { data, error } = await AuthModel.enviarEmailRecuperacao(
+      email,
+      redirectUrl,
+    );
+
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return data;
   }
-};
 
-export const signup = async (req, res, next) => {
-  try {
-    const { email, password, telefone, nome } = req.body;
-    
-    const data = await authService.signupService({ email, password, telefone, nome });
+  static async confirmarNovaSenha(accessToken, refreshToken, novaSenha) {
+    if (!accessToken || !novaSenha) {
+      const erroDados = new Error("Dados de validação ou nova senha ausentes.");
+      erroDados.statusCode = 400;
+      throw erroDados;
+    }
 
-    return res.status(201).json({
-      user: data.user,
-      message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
-    });
-  } catch (err) {
-    next(err);
+    await AuthModel.setSession(accessToken, refreshToken);
+
+    return await AuthModel.atualizarSenha(novaSenha);
   }
-};
 
-export const signin = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    
-    const data = await authService.signinService({ email, password });
+  static async setSession(accessToken, refreshToken) {
+    const { data, error } = await AuthModel.setSession(
+      accessToken,
+      refreshToken,
+    );
 
-    res.cookie("auth-token", data.session.access_token, COOKIE_OPTIONS);
-    res.cookie("refresh-token", data.session.refresh_token, COOKIE_OPTIONS);
-
-    return res.status(200).json({ user: data.user, message: "Login realizado com sucesso!" });
-  } catch (err) {
-    next(err);
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+    return data;
   }
-};
 
-export const signout = async (req, res, next) => {
-  try {
-    await authService.signoutService();
-    
-    res.clearCookie("auth-token", COOKIE_OPTIONS);
-    res.clearCookie("refresh-token", COOKIE_OPTIONS);
-    
-    return res.status(200).json({ message: "Desconectado com sucesso." });
-  } catch (err) {
-    next(err);
+  static async refreshSession(refreshToken) {
+    if (!refreshToken) {
+      const erroToken = new Error("Token de atualização não fornecido.");
+      erroToken.statusCode = 401;
+      throw erroToken;
+    }
+
+    const { data, error } = await AuthModel.refreshSession(refreshToken);
+
+    if (error || !data.session) {
+      const erroValidacao = new Error(
+        "Token de atualização inválido ou expirado.",
+      );
+      erroValidacao.statusCode = 401;
+      throw erroValidacao;
+    }
+    return data;
   }
-};
+
+  static async signup(email, password, nome, telefone) {
+    if (!email || !password || !nome || !telefone) {
+      const erroCampos = new Error(
+        "Todos os campos são obrigatórios para o cadastro.",
+      );
+      erroCampos.statusCode = 400;
+      throw erroCampos;
+    }
+
+    const metadata = { nome, telephone: telefone };
+
+    const { data, error } = await AuthModel.signup(
+      email,
+      password,
+      metadata,
+    );
+
+    if (error) {
+      if (
+        error.message?.includes("already registered") ||
+        error.status === 422
+      ) {
+        const erroDuplicado = new Error(
+          "O e-mail informado já está cadastrado no sistema.",
+        );
+        erroDuplicado.statusCode = 400;
+        throw erroDuplicado;
+      }
+      error.statusCode = 400;
+      throw error;
+    }
+    return data;
+  }
+
+  static async signout() {
+    await AuthModel.signout();
+  }
+
+  static async signin(email, password) {
+    try {
+      const resultado = await AuthModel.signin(email, password);
+
+      return resultado;
+    } catch (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
+  static async atualizarSenha(novaSenha) {
+    if (!novaSenha) {
+      const erroSenha = new Error("Nenhuma nova senha informada.");
+      throw erroSenha;
+    }
+
+    try {
+      const resultado = await AuthModel.atualizarSenha(novaSenha);
+
+      return resultado;
+    } catch (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+  }
+}

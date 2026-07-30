@@ -1,0 +1,31 @@
+export const livroCompletoMock = {
+  id: 1,
+  direitos_de_publicacao: true,
+  conteudo_por_IA: false,
+  imagens_explicitas: false,
+  publico_alvo: "Geral, entusiastas de literatura de ficção",
+  numero_edicao: 2,
+  data_de_publicacao: "2026-07-26",
+  preco_digital: 29.9,
+  preco_fisico: 49.9,
+  titulo: "Crônicas da Tropa Livresca",
+  subtitulo: "A Arquitetura Oculta do Código",
+  descricao:
+    "Uma jornada técnica sobre engenharia de software e testes robustos.",
+  autor_nome: "Carlos",
+  autor_sobrenome: "Silva",
+  fk_user_profile_id: "user-integration-123",
+  ativo: true,
+  estado: "rascunho",
+  idioma: "Português",
+  manuscrito: "https://supabase.co",
+  colaboradores: [
+    { nome: "Ana Souza", funcao: "Revisora" },
+    { nome: "Bruno Lima", funcao: "Designer" },
+  ],
+  capa: {
+    url: "https://supabase.co",
+    posicao: "central",
+  },
+  fk_categorias_id: 42,
+};

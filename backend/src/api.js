@@ -1,15 +1,14 @@
-import "dotenv/config";
-
 import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import routerClients from "./api/clients/index.js";
+import routerAdmin from "./api/admin/index.js";
 import {errorHandler} from "./api/common/middlewares/error.middleware.js";
 
 const app = express();
 
 const allowedOrigins = [
-  "https://vercel.app",
+  "https://tropa-livresca.vercel.app/",
   "http://localhost:5173",
 ];
 
@@ -30,18 +29,15 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
-
-const PORT = process.env.PORT || 3000;
+app.use(errorHandler);
 
 app.use("/api/v1/clients", routerClients);
+app.use("/api/v1/admin", routerAdmin);
 
-app.get("/teste", (req, res) => res.send("Express está funcionando!"));
-
-app.use(errorHandler);
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta: ${PORT}`);
 });
 
 export default app;
-

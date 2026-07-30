@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { apiFetch } from "../../../../services/api";
+import { apiFetch } from "../../../../common/services/api";
 
 export const usePerfil = () => {
   const [perfil, setPerfil] = useState(null);
@@ -63,7 +63,7 @@ export const usePerfil = () => {
       formData.append("nome", dados.nome || "");
       formData.append("telefone", dados.telefone || "");
       if (dados.descricao) formData.append("descricao", dados.descricao);
-      
+
       if (dados.imagem === "") {
         formData.append("imagem", "");
       } else if (dados.imagem) {
@@ -79,7 +79,9 @@ export const usePerfil = () => {
 
       if (!response.ok) {
         const errorJson = await response.json().catch(() => ({}));
-        throw new Error(errorJson.error || `Erro ${response.status} ao atualizar perfil`);
+        throw new Error(
+          errorJson.error || `Erro ${response.status} ao atualizar perfil`,
+        );
       }
 
       const json = await response.json();
@@ -108,8 +110,19 @@ export const usePerfil = () => {
   };
 
   return {
-    perfil, nome, telefone, imagem, descricao, redesSociais,
-    setNome, setTelefone, setImagem, setDescricao, setRedesSociais,
-    updatePerfil, tirarImagemPerfil, getPerfil,
+    perfil,
+    nome,
+    telefone,
+    imagem,
+    descricao,
+    redesSociais,
+    setNome,
+    setTelefone,
+    setImagem,
+    setDescricao,
+    setRedesSociais,
+    updatePerfil,
+    tirarImagemPerfil,
+    getPerfil,
   };
 };

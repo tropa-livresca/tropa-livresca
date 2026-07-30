@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
-export const AutorModel = {
-  async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasComLivrosAtivos = true }) {
+export class AutorModel {
+  static async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasComLivrosAtivos = true }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
@@ -11,8 +11,7 @@ export const AutorModel = {
 
     let query = supabaseAdmin
       .from("users_profile")
-      .select(camposSelect, { count: "exact" })
-      .order("nome", { ascending: true });
+      .select(camposSelect, { count: "exact" });
 
     if (apenasComLivrosAtivos) {
       query = query.eq("livros.ativo", true);
@@ -22,20 +21,29 @@ export const AutorModel = {
       query = query.ilike("nome", `%${busca}%`);
     }
 
-    const { data, error, count } = await query.range(start, end);
-    if (error) throw error;
+    const { data, error, count } = await query
+      .order("nome", { ascending: true })
+      .range(start, end);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
 
     return { data: data || [], count: count || 0 };
-  },
+  }
 
-  async buscarPorId(id) {
+  static async buscarPorId(id) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
       .select("id, nome, imagem, descricao, redes_sociais")
       .eq("id", id)
       .maybeSingle();
 
-    if (error) throw error;
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
     return data;
   }
-};
+}

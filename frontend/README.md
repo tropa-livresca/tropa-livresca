@@ -1,40 +1,49 @@
-# React + Vite
+# Frontend React e Vite
 
-Este template fornece uma configuração mínima para iniciar um projeto React com Vite, incluindo HMR e algumas regras do ESLint.
+Este documento descreve a configuração, variáveis de ambiente e diretrizes de desenvolvimento do ecossistema do cliente web do projeto Tropa Livresca.
 
-Atualmente, dois plugins oficiais estão disponíveis:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) utiliza [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) utiliza [SWC](https://swc.rs/)
+## Visão Geral do Template
 
-## Configuração do arquivo .env
+O frontend é construído sobre o ecossistema React e Vite, fornecendo suporte nativo a Hot Module Replacement (HMR) e análise de código com regras estruturadas do ESLint.
 
-Para configurar variáveis de ambiente no projeto, crie um arquivo `.env` na raiz do diretório `frontend`. Exemplo de conteúdo:
+A compilação utiliza plugins oficiais baseados nas seguintes tecnologias:
+* `@vitejs/plugin-react`: Processamento de alta velocidade utilizando a ferramenta Oxc.
+* `@vitejs/plugin-react-swc`: Alternativa estável baseada em compilação nativa com SWC.
+
+---
+
+## Configuração do Arquivo .env
+
+Para configurar o ambiente de desenvolvimento do cliente, siga os passos abaixo:
+
+1. Criação do Arquivo: Crie um novo arquivo chamado `.env` diretamente no diretório raiz do frontend.
+2. Inserção de Chaves: Adicione as variáveis de infraestrutura necessárias baseando-se no modelo de propriedades listado abaixo.
+3. Convenção de Prefixos: Todas as variáveis devem obrigatoriamente iniciar com o prefixo `VITE_` para que fiquem expostas ao escopo do cliente.
+4. Consumo em Código: Acesse os valores de configuração ao longo do projeto utilizando a sintaxe nativa `import.meta.env.NOME_DA_VARIAVEL`.
+
+### Modelo de Configuração (`frontend/.env`)
 
 ```env
+# Integração com o Servidor Local Express
 VITE_API_URL=http://localhost:3000
+
+# Integração com os Serviços do Supabase
+VITE_SUPABASE_URL=https://supabase.co
+VITE_SUPABASE_ANON_KEY=sua_chave_publica_anonima_ficticia
 ```
 
-As variáveis devem ser prefixadas com `VITE_` para serem acessíveis no código React via `import.meta.env`.
+---
 
 ## React Compiler
 
-O React Compiler não está habilitado neste template devido ao impacto no desempenho de desenvolvimento e build. Para adicioná-lo, consulte [esta documentação](https://react.dev/learn/react-compiler/installation).
+O React Compiler não está habilitado neste template por razões de performance e tempos de resposta durante os processos locais de build e desenvolvimento. Caso necessite introduzir a compilação automática de memoização, consulte as instruções oficiais fornecidas na documentação do React Core.
 
-## Expandindo a configuração do ESLint
+---
 
-Se você está desenvolvendo uma aplicação para produção, recomendamos o uso do TypeScript com regras de lint baseadas em tipos ativadas. Veja o [template TS](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) para informações sobre como integrar TypeScript e [`typescript-eslint`](https://typescript-eslint.io) no seu projeto.
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Expansão da Configuração do ESLint
 
-Currently, two official plugins are available:
+A análise estática do projeto adota regras focadas em manter a consistência de escrita e exportação de componentes. Se houver interesse em migrar ou expandir o projeto para uma aplicação de produção tipada em TypeScript, certifique-se de adotar as regras de checagem baseadas em tipos ativando o pacote de utilitários `typescript-eslint`.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+> Lembrete de Arquitetura: Conforme definido no fluxo do sistema, o cliente web não consome as credenciais de sessão do Supabase de forma local. Mantenha a flag `persistSession` em false no seu cliente JavaScript para delegar a segurança exclusivamente aos cookies geridos pelo backend.

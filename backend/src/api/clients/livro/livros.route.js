@@ -1,16 +1,14 @@
 import express from "express";
  
 import {
-  GetLivros,
-  GetLivrosByAutor,
+  LivrosController
 } from "./livros.controller.js";
-
-import { checkAuth } from "../../common/middlewares/auth.middleware.js";
-import {upload} from "../../common/middlewares/upload.middleware.js";
 
 const router = express.Router();
 
-router.get("/", GetLivros);
-router.get("/:id", GetLivrosByAutor);
+router.get("/", LivrosController.GetLivros);
+
+router.get("/:id", LivrosController.GetLivrosByAutor);
+router.get("/detalhes/:id", LivrosController.GetLivrosById);
 
 export default router;

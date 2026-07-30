@@ -46,14 +46,12 @@ export default function Livros() {
             {!Livros || Livros.length === 0 ? (<p>Nenhum livro encontrado</p>) : (
                 Livros.map((livro) => {
                     return (
-                        <div>
-                            <div key={livro.id}>
-                                {livro?.capa?.frente ? (<img src={livro.capa.frente} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
-                                <h3>{livro.titulo || "Sem tÃ­tulo"}</h3>
-                                <p>{livro.autor_nome || "Sem autor"}</p>
-                                <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
-                                <Link to={`/livros/${livro.id}`}>Ver Livro</Link>
-                            </div>
+                        <div key={livro.id}>
+                            {livro?.capa?.frente ? (<img src={livro.capa.frente} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
+                            <h3>{livro.titulo || "Sem tÃ­tulo"}</h3>
+                            <p>{livro.autor_nome || "Sem autor"}</p>
+                            <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
+                            <Link to={`/livros/${livro.id}`}>Ver Livro</Link>
                         </div>
                     );
                 })
