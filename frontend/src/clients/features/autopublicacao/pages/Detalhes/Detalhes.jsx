@@ -2,7 +2,12 @@
 import Select from "../../../../../common/components/Select/Select";
 import Input from "../../../../../common/components/Input/Input";
 
-export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEtapa, estadoAtualLivro }) {
+export default function Detalhes({
+  dados,
+  onChange,
+  irParaProximaEtapa,
+  estadoAtualLivro,
+}) {
   const deveBloquearCampos = estadoAtualLivro === "publicado";
 
   const listaIdiomas = [
@@ -10,13 +15,26 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
     { id: "portugues", label: "PortuguÃªs" },
     { id: "ingles", label: "InglÃªs" },
     { id: "espanhol", label: "Espanhol" },
-    { id: "bilingue-portugues-ingles", label: "BilÃ­ngue: PortuguÃªs e InglÃªs" },
-    { id: "bilingue-portugues-espanhol", label: "BilÃ­ngue: PortuguÃªs e Espanhol" },
-    { id: "outro", label: "Outro" }
+    {
+      id: "bilingue-portugues-ingles",
+      label: "BilÃ­ngue: PortuguÃªs e InglÃªs",
+    },
+    {
+      id: "bilingue-portugues-espanhol",
+      label: "BilÃ­ngue: PortuguÃªs e Espanhol",
+    },
+    { id: "outro", label: "Outro" },
   ];
 
-  const funcaoOpcoes = ["Selecione a função", "Coautor", "Ilustrador", "Revisor", "Tradutor", "Outro"];
-  
+  const funcaoOpcoes = [
+    "Selecione a função",
+    "Coautor",
+    "Ilustrador",
+    "Revisor",
+    "Tradutor",
+    "Outro",
+  ];
+
   const [imagemExplicita, setImagemExplicita] = useState(() => {
     if (dados.imagensExplicitas === true) return "sim";
     if (dados.imagensExplicitas === false) return "nao";
@@ -32,7 +50,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
   const atualizarAutor = (chave, valor) => {
     onChange({
       ...dados,
-      autor: { ...dados.autor, [chave]: valor }
+      autor: { ...dados.autor, [chave]: valor },
     });
   };
 
@@ -40,7 +58,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
     const novosColaboradores = [...listaColaboradores];
     novosColaboradores[index] = {
       ...novosColaboradores[index],
-      [chave]: valor
+      [chave]: valor,
     };
     atualizarCampo("colaboradores", novosColaboradores);
   };
@@ -48,17 +66,19 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
   const adicionarColaborador = () => {
     const novosColaboradores = [
       ...listaColaboradores,
-      { funcao: "", nome: "", sobrenome: "" }
+      { funcao: "", nome: "", sobrenome: "" },
     ];
     atualizarCampo("colaboradores", novosColaboradores);
   };
 
   const removerColaborador = (indexParaRemover) => {
-    const novosColaboradores = listaColaboradores.filter((_, index) => index !== indexParaRemover);
+    const novosColaboradores = listaColaboradores.filter(
+      (_, index) => index !== indexParaRemover,
+    );
     atualizarCampo("colaboradores", novosColaboradores);
   };
 
-return (
+  return (
     <main>
       <form onSubmit={(e) => e.preventDefault()}>
         <h1>Detalhes</h1>
@@ -84,7 +104,9 @@ return (
               type="text"
               value={dados.subtitulo || ""}
               onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
-              handleOnChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("subtitulo", e.target.value)
+              }
               disabled={deveBloquearCampos}
             />
           </label>
@@ -98,7 +120,26 @@ return (
               type="text"
               value={dados.numeroEdicao || ""}
               onChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
-              handleOnChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("numeroEdicao", e.target.value)
+              }
+            />
+          </label>
+        </fieldset>
+
+        <fieldset>
+          <legend>ISBN do livro</legend>
+          {deveBloquearCampos && (
+            <p>*O ISBN não pode ser alterado após a publicação.*</p>
+          )}
+          <label>
+            ISBN:{" "}
+            <Input
+              type="text"
+              value={dados.ISBN || ""}
+              onChange={(e) => atualizarCampo("ISBN", e.target.value)}
+              handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -106,7 +147,10 @@ return (
         <fieldset>
           <legend>Identificação do Autor no Livro</legend>
           {deveBloquearCampos && (
-            <p>*Os daods do autor principal não podem ser alterados após a publicacação.</p>
+            <p>
+              *Os daods do autor principal não podem ser alterados após a
+              publicacação.
+            </p>
           )}
           <label>
             Nome:
@@ -120,11 +164,13 @@ return (
           </label>
           <label>
             Sobrenome:
-             <Input
+            <Input
               type="text"
               value={dados.autor?.sobrenome || ""}
               onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
-              handleOnChange={(e) => atualizarAutor("sobrenome", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarAutor("sobrenome", e.target.value)
+              }
               disabled={deveBloquearCampos}
             />
           </label>
@@ -141,8 +187,12 @@ return (
               <Select
                 name={`funcao-${index}`}
                 value={colaborador.funcao || ""}
-                onChange={(e) => atualizarColaborador(index, "funcao", e.target.value || e)}
-                handleOnChange={(e) => atualizarColaborador(index, "funcao", e.target.value || e)}
+                onChange={(e) =>
+                  atualizarColaborador(index, "funcao", e.target.value || e)
+                }
+                handleOnChange={(e) =>
+                  atualizarColaborador(index, "funcao", e.target.value || e)
+                }
                 options={funcaoOpcoes}
               />
 
@@ -151,7 +201,9 @@ return (
                 <Input
                   type="text"
                   value={colaborador.nome || ""}
-                  onChange={(e) => atualizarColaborador(index, "nome", e.target.value)}
+                  onChange={(e) =>
+                    atualizarColaborador(index, "nome", e.target.value)
+                  }
                 />
               </label>
 
@@ -160,14 +212,13 @@ return (
                 <Input
                   type="text"
                   value={colaborador.sobrenome || ""}
-                  onChange={(e) => atualizarColaborador(index, "sobrenome", e.target.value)}
+                  onChange={(e) =>
+                    atualizarColaborador(index, "sobrenome", e.target.value)
+                  }
                 />
               </label>
 
-              <button
-                type="button"
-                onClick={() => removerColaborador(index)}
-              >
+              <button type="button" onClick={() => removerColaborador(index)}>
                 Remover este colaborador
               </button>
             </div>
@@ -186,7 +237,9 @@ return (
               name="idioma"
               value={dados.idioma || ""}
               onChange={(e) => atualizarCampo("idioma", e.target.value || e)}
-              handleOnChange={(e) => atualizarCampo("idioma", e.target.value || e)}
+              handleOnChange={(e) =>
+                atualizarCampo("idioma", e.target.value || e)
+              }
               options={listaIdiomas}
             />
           </label>
@@ -237,7 +290,7 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: true,
-                categorias: ["Adulto"]
+                categorias: ["Adulto"],
               });
             }}
             handleOnChange={() => {
@@ -245,7 +298,7 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: true,
-                categorias: ["Adulto"]
+                categorias: ["Adulto"],
               });
             }}
           />
@@ -261,7 +314,7 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: false,
-                categorias: []
+                categorias: [],
               });
             }}
             handleOnChange={() => {
@@ -269,7 +322,7 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: false,
-                categorias: []
+                categorias: [],
               });
             }}
           />
@@ -283,8 +336,14 @@ return (
             <label>Categoria do Livro</label>
             <Input
               type="text"
-              value={Array.isArray(dados.categorias) ? dados.categorias.join(", ") : ""}
-              onChange={(e) => atualizarCampo("categorias", e.target.value.split(", "))}
+              value={
+                Array.isArray(dados.categorias)
+                  ? dados.categorias.join(", ")
+                  : ""
+              }
+              onChange={(e) =>
+                atualizarCampo("categorias", e.target.value.split(", "))
+              }
             />
           </fieldset>
         ) : imagemExplicita === "sim" ? (
@@ -299,16 +358,24 @@ return (
             Palavras-chave (separadas por ponto e vírgula)
             <Input
               type="text"
-              value={Array.isArray(dados.palavrasChave) ? dados.palavrasChave.join("; ") : ""}
-              onChange={(e) => atualizarCampo("palavrasChave", e.target.value.split("; "))}
+              value={
+                Array.isArray(dados.palavrasChave)
+                  ? dados.palavrasChave.join("; ")
+                  : ""
+              }
+              onChange={(e) =>
+                atualizarCampo("palavrasChave", e.target.value.split("; "))
+              }
             />
           </label>
         </fieldset>
 
         <div>
-          <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
+          <button type="button" onClick={irParaProximaEtapa}>
+            Posterior
+          </button>
         </div>
       </form>
     </main>
   );
-};
+}
