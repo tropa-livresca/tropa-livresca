@@ -9,6 +9,7 @@ const ESTADO_INICIAL_LIVRO = {
     idioma: "",
     titulo: "",
     subtitulo: "",
+    ISBN: "",
     numeroEdicao: "",
     autor: { nome: "", sobrenome: "" },
     colaboradores: [],
@@ -70,6 +71,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         titulo: dadosBanco.titulo || "",
         subtitulo: dadosBanco.subtitulo || "",
         numeroEdicao: dadosBanco.numeroEdicao || dadosBanco.numero_edicao || "",
+        ISBN: dadosBanco.ISBN || "",
         autor: dadosBanco.autor || { nome: "", sobrenome: "" },
         colaboradores: dadosBanco.colaboradores || [],
         descricao: dadosBanco.descricao || "",
@@ -104,7 +106,7 @@ export const AutopublicacaoProvider = ({ children }) => {
   const validarEtapaAtual = (etapaAtual) => {
     switch (etapaAtual) {
       case 1:
-        if (!d?.titulo || !d?.idioma || !d?.descricao || !d?.direitoPublicacao)
+        if (!d?.titulo || !d?.idioma || !d?.descricao || !d?.direitoPublicacao || !d?.ISBN)
           return false;
         if (!d.autor?.nome || !d.autor?.sobrenome) return false;
         if (d.colaboradores?.length > 0) {
