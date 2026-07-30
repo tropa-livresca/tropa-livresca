@@ -1,5 +1,5 @@
 import { GoogleLogin } from "@react-oauth/google";
-import { useGoogle } from "../hooks/useGoogle.js";
+import { useGoogle } from "../../hooks/useGoogle.js";
 import styles from "./BotaoGoogle.module.css";
 
 export default function BotaoGoogle() {
