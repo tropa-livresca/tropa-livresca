@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import styles from "./Formulario.module.css";
 
 import { useAutopublicacao } from "../../hooks/useAutopublicacao";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
@@ -57,9 +58,10 @@ export default function Formulario({ idLivroEdicao }) {
     const tituloFormulario = isEdicao ? "Editar Livro" : "Novo Livro";
 
     return (
-        <main>
-            <h1>{tituloFormulario}</h1>
-            <span>Etapa {etapa} de 4</span>
+        <main className={styles.container}>
+            <div className={styles.topo}><h1 className={styles.titulo}>{tituloFormulario}</h1>
+            <span className={styles.descricao}>Etapa <span className={styles.numero}>{etapa}</span> de <span className={styles.numero}>4</span></span>
+            </div>
 
             {etapa === 1 && (
                 <Detalhes

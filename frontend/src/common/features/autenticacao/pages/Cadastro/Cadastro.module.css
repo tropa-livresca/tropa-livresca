@@ -60,7 +60,9 @@ form {
   border-radius: 3rem;
   padding: 2rem 1rem;
   display: grid;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18);
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .span {

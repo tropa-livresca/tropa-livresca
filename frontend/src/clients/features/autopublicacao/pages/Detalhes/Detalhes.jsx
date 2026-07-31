@@ -1,6 +1,7 @@
 ﻿import { useState } from "react";
 import Select from "../../../../../common/components/Select/Select";
 import Input from "../../../../../common/components/Input/Input";
+import styles from "./Detalhes.module.css";
 
 export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEtapa, estadoAtualLivro }) {
   const deveBloquearCampos = estadoAtualLivro === "publicado";
