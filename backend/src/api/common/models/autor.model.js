@@ -1,22 +1,16 @@
-import { supabaseAdmin } from "../config/supabase.js";
+import supabase from "../config/supabase.js";
 
 export class AutorModel {
-  static async buscarComFiltros({ page = 1, limit = 12, busca = "", apenasComLivrosAtivos = true }) {
+  static async buscarComFiltros({ page = 1, limit = 12, busca = ""}) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
-    const camposSelect = apenasComLivrosAtivos
-      ? "id, nome, imagem, descricao, livros!inner(id)"
-      : "id, nome, telefone, imagem, descricao, criado_em, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)";
-
-    let query = supabaseAdmin
+    let query = supabase
       .from("users_profile")
-      .select(camposSelect, { count: "exact" });
-
-    if (apenasComLivrosAtivos) {
-      query = query.eq("livros.ativo", true);
-    }
-
+      .select("nome, telefone, imagem, descricao, livros!inner(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)", { count: "exact" })
+      .eq("livros.ativo", true)
+      .eq("livros.estado", "publicado");
+    
     if (busca) {
       query = query.ilike("nome", `%${busca}%`);
     }
@@ -34,7 +28,7 @@ export class AutorModel {
   }
 
   static async buscarPorId(id) {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabase
       .from("users_profile")
       .select("id, nome, imagem, descricao, redes_sociais")
       .eq("id", id)

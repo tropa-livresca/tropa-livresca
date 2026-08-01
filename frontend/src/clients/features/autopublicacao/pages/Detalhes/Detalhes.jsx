@@ -8,20 +8,21 @@ export default function Detalhes({
   irParaProximaEtapa,
   estadoAtualLivro,
 }) {
-  const deveBloquearCampos = estadoAtualLivro === "publicado";
+  const deveBloquearCampos =
+    estadoAtualLivro === "publicado" || estadoAtualLivro === "em_revisao";
 
   const listaIdiomas = [
     { id: "", label: "Selecione um idioma" },
-    { id: "portugues", label: "PortuguÃªs" },
-    { id: "ingles", label: "InglÃªs" },
+    { id: "portugues", label: "Português" },
+    { id: "ingles", label: "Inglês" },
     { id: "espanhol", label: "Espanhol" },
     {
       id: "bilingue-portugues-ingles",
-      label: "BilÃ­ngue: PortuguÃªs e InglÃªs",
+      label: "Bilíngue: Português e Inglês",
     },
     {
       id: "bilingue-portugues-espanhol",
-      label: "BilÃ­ngue: PortuguÃªs e Espanhol",
+      label: "Bilíngue: Português e Espanhol",
     },
     { id: "outro", label: "Outro" },
   ];
@@ -86,7 +87,10 @@ export default function Detalhes({
         <fieldset>
           <legend>Título e subtítulo</legend>
           {deveBloquearCampos && (
-            <p>Título e subtítulo não podem ser alterados após publicação.</p>
+            <p>
+              Título e subtítulo não podem ser alterados em revisão ou após
+              publicação.
+            </p>
           )}
           <label>
             *Título:
@@ -123,6 +127,7 @@ export default function Detalhes({
               handleOnChange={(e) =>
                 atualizarCampo("numeroEdicao", e.target.value)
               }
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -130,7 +135,9 @@ export default function Detalhes({
         <fieldset>
           <legend>ISBN do livro</legend>
           {deveBloquearCampos && (
-            <p>*O ISBN não pode ser alterado após a publicação.*</p>
+            <p>
+              *O ISBN não pode ser alterado em revisão ou após a publicação.*
+            </p>
           )}
           <label>
             ISBN:{" "}
@@ -143,13 +150,12 @@ export default function Detalhes({
             />
           </label>
         </fieldset>
-
         <fieldset>
           <legend>Identificação do Autor no Livro</legend>
           {deveBloquearCampos && (
             <p>
-              *Os daods do autor principal não podem ser alterados após a
-              publicacação.
+              *Os dados do autor principal não podem ser alterados em revisão ou
+              após a publicação.*
             </p>
           )}
           <label>
@@ -194,6 +200,7 @@ export default function Detalhes({
                   atualizarColaborador(index, "funcao", e.target.value || e)
                 }
                 options={funcaoOpcoes}
+                disabled={deveBloquearCampos}
               />
 
               <label>
@@ -204,6 +211,7 @@ export default function Detalhes({
                   onChange={(e) =>
                     atualizarColaborador(index, "nome", e.target.value)
                   }
+                  disabled={deveBloquearCampos}
                 />
               </label>
 
@@ -215,18 +223,23 @@ export default function Detalhes({
                   onChange={(e) =>
                     atualizarColaborador(index, "sobrenome", e.target.value)
                   }
+                  disabled={deveBloquearCampos}
                 />
               </label>
 
-              <button type="button" onClick={() => removerColaborador(index)}>
-                Remover este colaborador
-              </button>
+              {!deveBloquearCampos && (
+                <button type="button" onClick={() => removerColaborador(index)}>
+                  Remover este colaborador
+                </button>
+              )}
             </div>
           ))}
 
-          <button type="button" onClick={adicionarColaborador}>
-            + Adicionar colaborador
-          </button>
+          {!deveBloquearCampos && (
+            <button type="button" onClick={adicionarColaborador}>
+              + Adicionar colaborador
+            </button>
+          )}
         </fieldset>
 
         <fieldset>
@@ -241,6 +254,7 @@ export default function Detalhes({
                 atualizarCampo("idioma", e.target.value || e)
               }
               options={listaIdiomas}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -252,6 +266,7 @@ export default function Detalhes({
             <textarea
               value={dados.descricao || ""}
               onChange={(e) => atualizarCampo("descricao", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -264,6 +279,7 @@ export default function Detalhes({
             name="direitoPublicacao"
             checked={dados.direitoPublicacao === "sim"}
             onChange={() => atualizarCampo("direitoPublicacao", "sim")}
+            disabled={deveBloquearCampos}
           />
           <label htmlFor="direitoPublicacaoSim">Sim</label>
 
@@ -273,6 +289,7 @@ export default function Detalhes({
             name="direitoPublicacao"
             checked={dados.direitoPublicacao === "nao"}
             onChange={() => atualizarCampo("direitoPublicacao", "nao")}
+            disabled={deveBloquearCampos}
           />
           <label htmlFor="direitoPublicacaoNao">Não</label>
         </fieldset>
@@ -301,6 +318,7 @@ export default function Detalhes({
                 categorias: ["Adulto"],
               });
             }}
+            disabled={deveBloquearCampos}
           />
           <label htmlFor="imagemExplicitaSim">Sim</label>
 
@@ -325,8 +343,8 @@ export default function Detalhes({
                 categorias: [],
               });
             }}
+            disabled={deveBloquearCampos}
           />
-
           <label htmlFor="imagemExplicitaNao">Não</label>
         </fieldset>
 
@@ -344,6 +362,7 @@ export default function Detalhes({
               onChange={(e) =>
                 atualizarCampo("categorias", e.target.value.split(", "))
               }
+              disabled={deveBloquearCampos}
             />
           </fieldset>
         ) : imagemExplicita === "sim" ? (
@@ -366,6 +385,7 @@ export default function Detalhes({
               onChange={(e) =>
                 atualizarCampo("palavrasChave", e.target.value.split("; "))
               }
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>

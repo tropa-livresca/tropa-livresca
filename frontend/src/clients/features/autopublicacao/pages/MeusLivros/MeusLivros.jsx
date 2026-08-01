@@ -1,64 +1,94 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
 
 export default function MeusLivros() {
-   const {
-      Livros,
-      carregando,
-      BuscarLivrosById,
-      UpdateEstado,
-      InativarLivro,
-   } = useMeusLivros();
+  const { Livros, carregando, BuscarLivrosById, UpdateEstado, InativarLivro } =
+    useMeusLivros();
 
-   useEffect(() => {
-      BuscarLivrosById();
-   }, [BuscarLivrosById]);
+  useEffect(() => {
+    BuscarLivrosById();
+  }, [BuscarLivrosById]);
 
-   const possuiLivros = Array.isArray(Livros) && Livros.length > 0;
+  const possuiLivros = Array.isArray(Livros) && Livros.length > 0;
 
-   if (carregando) return <div>Carregando seus livros...</div>;
+  if (carregando) return <div>Carregando seus livros...</div>;
 
-   return (
-      <div>
-         {possuiLivros ? (
-            <div>
-               {Livros.map(livro => (
-                  <div key={livro.id} style={{ marginBottom: "20px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
-                     <div>
-                        {livro.capa?.frente && (
-                           <img src={livro.capa.frente} alt={livro.titulo} style={{ width: "50px" }} />
-                        )}
-                        <br />
-                        <strong>{livro.titulo}</strong> — <span>{livro.estado}</span>
-                     </div>
-                     <div>
-                        <button onClick={() => { window.location.href = `/editar-livro/${livro.id}`; }}>
-                           Editar
-                        </button>
-                        <button>Visualizar</button>
+  return (
+    <div>
+      {possuiLivros ? (
+        <div>
+          {Livros.map((livro) => (
+            <div
+              key={livro.id}
+              style={{
+                marginBottom: "20px",
+                borderBottom: "1px solid #ccc",
+                paddingBottom: "10px",
+              }}
+            >
+              <div>
+                {livro.capa?.frente && (
+                  <img
+                    src={livro.capa.frente}
+                    alt={livro.titulo}
+                    style={{ width: "50px" }}
+                  />
+                )}
+                <br />
+                <strong>{livro.titulo || "Sem título"}</strong> —{" "}
+                <span>{livro.estado}</span>
+              </div>
+              <div>
+                <Link to={`/editar-livro/${livro.id}`}>Editar</Link>
 
-                        {livro.estado === "rascunho" ? (
-                           <button onClick={() => UpdateEstado(livro.id, false)}>
-                              Publicar Livro
-                           </button>
-                        ) : (
-                           <span>Publicado</span>
-                        )}
+                {livro.estado === "rascunho" && (
+                  <button
+                    onClick={() => UpdateEstado(livro.id, "em_revisao")}
+                  >
+                    Enviar para Revisão
+                  </button>
+                )}
 
-                        <button onClick={() => InativarLivro(livro.id)}>
-                           Inativar Livro Permanentemente
-                        </button>
-                     </div>
-                  </div>
-               ))}
+                {livro.estado === "em_revisao" && (
+                  <button onClick={() => UpdateEstado(livro.id, "rascunho")}>
+                    Cancelar Revisão (Voltar para Rascunho)
+                  </button>
+                )}
+
+                {livro.estado === "publicado" && (
+                  <span
+                    style={{
+                      color: "green",
+                      fontWeight: "bold",
+                      marginLeft: "8px",
+                    }}
+                  >
+                    Publicado
+                  </span>
+                )}
+
+                {livro.estado !== "em_revisao" && (
+                  <button
+                    onClick={() => {
+                      if (confirm("Deseja inativar este livro?"))
+                        InativarLivro(livro.id);
+                    }}
+                  >
+                    Inativar Livro Permanentemente
+                  </button>
+                )}
+              </div>
             </div>
-         ) : (
-            <div>Nenhum livro encontrado</div>
-         )}
+          ))}
+        </div>
+      ) : (
+        <div>Nenhum livro encontrado</div>
+      )}
 
-         <button onClick={() => { window.location.href = "/novo-livro"; }} style={{ marginTop: "20px" }}>
-            Novo Livro
-         </button>
-      </div>
-   );
+      <Link to="/novo-livro" style={{ marginTop: "20px" }}>
+        Novo Livro
+      </Link>
+    </div>
+  );
 }

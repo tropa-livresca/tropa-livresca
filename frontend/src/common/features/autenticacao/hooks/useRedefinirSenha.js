@@ -1,10 +1,12 @@
 import { useState, useCallback } from "react";
+import {useNavigate} from "react-router-dom";
 import { apiFetch } from "../../../services/api";
 
 export const useRedefinirSenha = () => {
   const [novaSenha, setNovaSenha] = useState("");
   const [tokens, setTokens] = useState({ accessToken: "", refreshToken: "" });
   const [mensagem, setMensagem] = useState("");
+  const navigate = useNavigate();
 
   const encontrarHash = useCallback(() => {
     const hash = window.location.hash;
@@ -35,7 +37,7 @@ export const useRedefinirSenha = () => {
 
       if (response.ok) {
         setNovaSenha("");
-        setTimeout(() => (window.location.href = "/auth/login"), 3000);
+        setTimeout(() => navigate("/auth/login"), 3000);
       }
     } catch (err) {
       console.log(err);

@@ -161,10 +161,17 @@ export class AuthModel {
   }
 
   static async signout() {
-    await supabase.auth.signOut();
+    const {error} = await supabase.auth.signOut();
+    
+    if(error){
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return true;
   }
 
-  static async signin(email, password) {
+static async signin(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

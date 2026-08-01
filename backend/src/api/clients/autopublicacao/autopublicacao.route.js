@@ -1,11 +1,12 @@
 import express from "express";
-import {AutopublicacaoController} from "./autopublicacao.controller.js";
-import {checkAuth } from "../../common/middlewares/auth.middleware.js";
-import {upload} from "../../common/middlewares/upload.middleware.js";
+import { AutopublicacaoController } from "./autopublicacao.controller.js";
+import { checkAuth } from "../../common/middlewares/auth.middleware.js";
 
 const router = express.Router();
 
 router.get("/", checkAuth, AutopublicacaoController.GetLivrosById);
+
+router.get("/buscar", checkAuth, AutopublicacaoController.BuscarComFiltros);
 
 router.post(
   "/upload-url",
@@ -20,14 +21,21 @@ router.post(
 );
 
 router.patch(
-    "/updateEstado/:id/", 
-    checkAuth, 
-    AutopublicacaoController.UpdateEstado,
+  "/updateEstado/:id",
+  checkAuth,
+  AutopublicacaoController.UpdateEstado,
 );
 
 router.patch(
-  "/ativo/:id/", 
-  checkAuth, AutopublicacaoController.InativarLivro,
+  "/ativo/:id",
+  checkAuth,
+  AutopublicacaoController.InativarLivro,
+);
+
+router.delete(
+  "/rascunho/:id",
+  checkAuth,
+  AutopublicacaoController.DeletarLivroRascunho,
 );
 
 export default router;

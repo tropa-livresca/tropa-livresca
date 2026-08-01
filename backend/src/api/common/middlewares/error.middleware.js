@@ -1,9 +1,9 @@
 export const errorHandler = (err, req, res, next) => {
-    console.error("Erro detectado no servidor", err.stack || err.message);
+console.error("Erro detectado no servidor (Detalhado):", JSON.stringify(err, null, 2));
+console.error("Stack do Erro:", err.stack || err);
 
     const statusCode = err.statusCode || 500;
-
-    let mensagem = err.message || "Ocorreu um erro interno inesperado no servidor.";
+    let mensagem = typeof err.message === "string" ? err.message : "Ocorreu um erro interno inesperado no servidor.";
 
     if (err.code && err.code.startsWith("22")) {
         return res.status(400).json({
