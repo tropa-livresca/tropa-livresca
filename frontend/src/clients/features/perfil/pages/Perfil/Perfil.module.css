@@ -227,6 +227,11 @@
   color: #67170c !important;
 }
 
+.inputmodificado input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
 .formulario input::placeholder {
   color: var(--cor-texto-muted) !important;
 }

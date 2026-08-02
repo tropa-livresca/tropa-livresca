@@ -99,6 +99,7 @@ export default function Formulario({ idLivroEdicao }) {
                 />
             )}
             <button
+                className={styles.btn}
                 onClick={() => {
                     window.location.href = "/meuslivros";
                 }}

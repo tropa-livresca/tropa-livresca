@@ -43,3 +43,17 @@ main {
 font-family: none;
 }
 
+.btn{
+    background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  margin-top: 5%;
+}
+
+.btn:hover{
+    background-color: #ffbb33;
+  transition: 0.3s;
+}

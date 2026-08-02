@@ -1,0 +1,168 @@
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  margin-bottom: 3%;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form {
+  background: #fffdf7 !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem !important;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+}
+
+.inputmodificado input {
+  width: 95% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: center !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-top: 0.3rem !important;
+}
+
+.form input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.inputmodificado input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 2%;
+}
+
+legend {
+  color: #67170c;
+  padding: 1rem;
+}
+
+label {
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+h4 {
+  color: #67170c;
+  margin-left: 2%;
+  margin-bottom: 0.5%;
+}
+
+.btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-left: 2.5%;
+  margin-bottom: 1.5%;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btn2 {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-right: 2.5%;
+  margin-bottom: 1.5%;
+}
+
+.btn2:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.posterior {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+#btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.select option {
+  background: yellow;
+}
+
+.selectContainer {
+  position: relative;
+}
+
+.select select {
+  width: 95% !important;
+  justify-self: center !important;
+  padding: 0.8rem !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  margin-top: 0.3rem !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  background: #fff8d7 !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+}
+
+.select select:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.arrow {
+  position: absolute;
+  right: 4%;
+  top: 22%;
+  transform: translateY(-50%);
+  color: #7a1b0c;
+  font-size: 1.2rem;
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.arrowAberta {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.numero {
+  font-family: none;
+}
