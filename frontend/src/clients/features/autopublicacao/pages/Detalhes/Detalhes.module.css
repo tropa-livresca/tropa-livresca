@@ -25,6 +25,25 @@
     0 2px 6px rgba(103, 23, 12, 0.05) !important;
 }
 
+.form textarea {
+  width: 95%;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem;
+  margin: 0 auto;
+  display: block;
+  margin-top: 0.3rem;
+  margin-bottom: 1.4%;
+}
+
+.form textarea {
+  font-size: 1rem;
+  resize: none;
+  height: 5rem;
+  color: #67170c !important;
+}
+
 .inputmodificado input {
   width: 95% !important;
   background: #fff8d7 !important;
@@ -53,14 +72,14 @@
   margin-bottom: 2%;
 }
 
-legend {
+.form legend {
   color: #67170c;
   padding: 1rem;
   font-size: 1.2rem;
   font-weight: 600;
 }
 
-legend::after {
+.form legend::after {
   content: "";
   display: block;
   width: 2.5rem;
@@ -70,12 +89,19 @@ legend::after {
   border-radius: 999px;
 }
 
-label {
+.form label {
   color: #67170c;
   margin-left: 2.5%;
 }
 
-h4 {
+.labelTitulo {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+.form h4 {
   color: #67170c;
   margin-left: 2%;
   margin-bottom: 0.5%;
@@ -198,6 +224,42 @@ h4 {
 
 .setaAberta {
   transform: rotate(180deg);
+}
+
+.radioOpcao {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  cursor: pointer !important;
+  width: 95%;
+  margin: 0 auto !important;
+}
+
+.radioOpcao input {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  accent-color: #67170c !important;
+  border: 1.5px solid #67170c;
+  cursor: pointer !important;
+}
+
+.radioOpcao label {
+  color: #67170c !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  margin-top: -1.5%;
+  margin-left: 0.7rem !important;
+}
+
+.avisoAdulto {
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+  color: #67170c !important;
+  text-align: center !important;
+  margin-bottom: 2%;
+  margin-top: -1%;
 }
 
 @keyframes abrir {

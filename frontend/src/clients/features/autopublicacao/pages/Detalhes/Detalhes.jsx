@@ -322,7 +322,7 @@ export default function Detalhes({
         <div className={styles.card}>
           <legend>Descrição</legend>
           <label>
-            Descrição do livro
+            Descrição do livro:
             <textarea
               placeholder="Inserir descrição do livro"
               value={dados.descricao || ""}
@@ -333,76 +333,84 @@ export default function Detalhes({
 
         <div className={styles.card}>
           <legend>Direitos de Publicação e Uso de IA</legend>
-          <Input
-            id="direitoPublicacaoSim"
-            type="radio"
-            name="direitoPublicacao"
-            checked={dados.direitoPublicacao === "sim"}
-            onChange={() => atualizarCampo("direitoPublicacao", "sim")}
-          />
-          <label htmlFor="direitoPublicacaoSim">Sim</label>
 
-          <Input
-            id="direitoPublicacaoNao"
-            type="radio"
-            name="direitoPublicacao"
-            checked={dados.direitoPublicacao === "nao"}
-            onChange={() => atualizarCampo("direitoPublicacao", "nao")}
-          />
-          <label htmlFor="direitoPublicacaoNao">Não</label>
+          <div className={styles.radioOpcao}>
+            <Input
+              id="direitoPublicacaoSim"
+              type="radio"
+              name="direitoPublicacao"
+              checked={dados.direitoPublicacao === "sim"}
+              onChange={() => atualizarCampo("direitoPublicacao", "sim")}
+            />
+            <label htmlFor="direitoPublicacaoSim">Sim</label>
+          </div>
+
+          <div className={styles.radioOpcao}>
+            <Input
+              id="direitoPublicacaoNao"
+              type="radio"
+              name="direitoPublicacao"
+              checked={dados.direitoPublicacao === "nao"}
+              onChange={() => atualizarCampo("direitoPublicacao", "nao")}
+            />
+            <label htmlFor="direitoPublicacaoNao">Não</label>
+          </div>
         </div>
 
         <div className={styles.card}>
           <legend>Restrições de Conteúdo</legend>
-          <label>Há imagens explícitas?</label>
-          <Input
-            id="imagemExplicitaSim"
-            type="radio"
-            name="imagemExplicita"
-            checked={imagemExplicita === "sim"}
-            onChange={() => {
-              setImagemExplicita("sim");
-              onChange({
-                ...dados,
-                imagensExplicitas: true,
-                categorias: ["Adulto"],
-              });
-            }}
-            handleOnChange={() => {
-              setImagemExplicita("sim");
-              onChange({
-                ...dados,
-                imagensExplicitas: true,
-                categorias: ["Adulto"],
-              });
-            }}
-          />
-          <label htmlFor="imagemExplicitaSim">Sim</label>
+          <label className={styles.labelTitulo}>Há imagens explícitas?</label>
+          <div className={styles.radioOpcao}>
+            <Input
+              id="imagemExplicitaSim"
+              type="radio"
+              name="imagemExplicita"
+              checked={imagemExplicita === "sim"}
+              onChange={() => {
+                setImagemExplicita("sim");
+                onChange({
+                  ...dados,
+                  imagensExplicitas: true,
+                  categorias: ["Adulto"],
+                });
+              }}
+              handleOnChange={() => {
+                setImagemExplicita("sim");
+                onChange({
+                  ...dados,
+                  imagensExplicitas: true,
+                  categorias: ["Adulto"],
+                });
+              }}
+            />
+            <label htmlFor="imagemExplicitaSim">Sim</label>
+          </div>
+          <div className={styles.radioOpcao}>
+            <Input
+              id="imagemExplicitaNao"
+              type="radio"
+              name="imagemExplicita"
+              checked={imagemExplicita === "nao"}
+              onChange={() => {
+                setImagemExplicita("nao");
+                onChange({
+                  ...dados,
+                  imagensExplicitas: false,
+                  categorias: [],
+                });
+              }}
+              handleOnChange={() => {
+                setImagemExplicita("nao");
+                onChange({
+                  ...dados,
+                  imagensExplicitas: false,
+                  categorias: [],
+                });
+              }}
+            />
 
-          <Input
-            id="imagemExplicitaNao"
-            type="radio"
-            name="imagemExplicita"
-            checked={imagemExplicita === "nao"}
-            onChange={() => {
-              setImagemExplicita("nao");
-              onChange({
-                ...dados,
-                imagensExplicitas: false,
-                categorias: [],
-              });
-            }}
-            handleOnChange={() => {
-              setImagemExplicita("nao");
-              onChange({
-                ...dados,
-                imagensExplicitas: false,
-                categorias: [],
-              });
-            }}
-          />
-
-          <label htmlFor="imagemExplicitaNao">Não</label>
+            <label htmlFor="imagemExplicitaNao">Não</label>
+          </div>
         </div>
 
         {imagemExplicita === "nao" ? (
@@ -424,7 +432,7 @@ export default function Detalhes({
             />
           </div>
         ) : imagemExplicita === "sim" ? (
-          <div>
+          <div className={styles.avisoAdulto}>
             <p>O livro será incluído automaticamente na categoria Adulto.</p>
           </div>
         ) : null}

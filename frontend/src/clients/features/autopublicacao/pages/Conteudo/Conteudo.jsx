@@ -1,8 +1,14 @@
 ﻿import { useEffect } from "react";
 import Input from "../../../../../common/components/Input/Input";
+import styles from "./Conteudo.module.css";
+import { FaFilePdf, FaImage } from "react-icons/fa";
 
-export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
-  
+export default function Conteudo({
+  dados,
+  onChange,
+  irParaProximaEtapa,
+  voltarEtapa,
+}) {
   const atualizarCampo = (chave, e) => {
     const arquivo = e.target.files?.[0];
     if (arquivo) {
@@ -17,8 +23,8 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
         ...dados,
         capa: {
           ...(dados.capa || {}),
-          [parte]: arquivo
-        }
+          [parte]: arquivo,
+        },
       });
     }
   };
@@ -47,33 +53,55 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
 
   return (
     <main>
-      <h1>Conteúdo</h1>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <fieldset>
+      <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
+        <h1 className={styles.titulo}>Conteúdo</h1>
+        <div className={styles.card}>
           <legend>Manuscrito</legend>
-          <label>
-            Subir arquivo do livro (Aceitamos formatos .pdf)
+          <label className={styles.carregar}>
+            <FaFilePdf className={styles.carregarsvg} />
+
+            <span>
+              Subir arquivo do livro
+              <span className={styles.clique}>
+                Aceitamos apenas arquivos .pdf
+              </span>
+            </span>
+
             <input
-              accept=".pdf"
               type="file"
+              hidden
+              accept=".pdf"
               onChange={(e) => atualizarCampo("manuscrito", e)}
             />
           </label>
-          {dados.manuscrito && <p style={{ color: "green" }}>✓ Manuscrito carregado</p>}
-        </fieldset>
 
-        <fieldset>
+          {dados.manuscrito && (
+            <p style={{ color: "green" }}>✓ Manuscrito carregado</p>
+          )}
+        </div>
+
+        <div className={styles.card}>
           <legend>Capa do Livro</legend>
 
           <div>
-            <label>
-              Frente da capa (.jpg, .png)
+            <label className={styles.carregar}>
+              <FaImage className={styles.carregarsvg} />
+
+              <span>
+                Frente da capa
+                <span className={styles.clique}>
+                  Aceitamos arquivos .jpg e .png
+                </span>
+              </span>
+
               <input
-                accept=".jpg,.jpeg,.png"
                 type="file"
-                onChange={(e) => atualizarCapa("frente", e)}   
+                hidden
+                accept=".jpg,.jpeg,.png"
+                onChange={(e) => atualizarCapa("frente", e)}
               />
             </label>
+
             {previewFrente && (
               <div>
                 <img src={previewFrente} alt="Preview da Frente" width="150" />
@@ -82,14 +110,24 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
           </div>
 
           <div>
-            <label>
-              Verso / Trás da capa (.jpg, .png)
+            <label className={styles.carregar}>
+              <FaImage className={styles.carregarsvg} />
+
+              <span>
+                Verso da capa
+                <span className={styles.clique}>
+                  Aceitamos arquivos .jpg e .png
+                </span>
+              </span>
+
               <input
-                accept=".jpg,.jpeg,.png"
                 type="file"
+                hidden
+                accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("verso", e)}
               />
             </label>
+
             {previewVerso && (
               <div>
                 <img src={previewVerso} alt="Preview do Verso" width="150" />
@@ -98,25 +136,42 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
           </div>
 
           <div>
-            <label>
-              Orelhas da capa (.jpg, .png)
+            <label className={styles.carregar}>
+              <FaImage className={styles.carregarsvg} />
+              <span>
+                Orelhas da capa
+                <span className={styles.clique}>
+                  Aceitamos arquivos .jpg e .png
+                </span>
+              </span>
+
               <input
-                accept=".jpg,.jpeg,.png"
                 type="file"
+                hidden
+                accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("orelhas", e)}
               />
             </label>
+
             {previewOrelhas && (
               <div>
-                <img src={previewOrelhas} alt="Preview das Orelhas" width="150" />
+                <img
+                  src={previewOrelhas}
+                  alt="Preview das Orelhas"
+                  width="150"
+                />
               </div>
             )}
           </div>
-        </fieldset>
+        </div>
 
-        <div>
-          <button type="button" onClick={voltarEtapa}>Anterior</button>
-          <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
+        <div className={styles.posterior}>
+          <button type="button" onClick={voltarEtapa} id={styles.btn}>
+            Anterior
+          </button>
+          <button type="button" onClick={irParaProximaEtapa} id={styles.btn2}>
+            Posterior
+          </button>
         </div>
       </form>
     </main>
