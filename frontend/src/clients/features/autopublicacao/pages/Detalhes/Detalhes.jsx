@@ -15,16 +15,16 @@ export default function Detalhes({
 
   const listaIdiomas = [
     { id: "", label: "Selecione um idioma" },
-    { id: "portugues", label: "PortuguÃªs" },
-    { id: "ingles", label: "InglÃªs" },
+    { id: "portugues", label: "Português" },
+    { id: "ingles", label: "Inglês" },
     { id: "espanhol", label: "Espanhol" },
     {
       id: "bilingue-portugues-ingles",
-      label: "BilÃ­ngue: PortuguÃªs e InglÃªs",
+      label: "Bilingue: Português e Inglês",
     },
     {
       id: "bilingue-portugues-espanhol",
-      label: "BilÃ­ngue: PortuguÃªs e Espanhol",
+      label: "Bilingue: Português e Espanhol",
     },
     { id: "outro", label: "Outro" },
   ];
@@ -82,6 +82,8 @@ export default function Detalhes({
   };
 
   const [funcoesAbertas, setFuncoesAbertas] = useState({});
+
+  const [idiomaAberto, setIdiomaAberto] = useState(false);
 
   return (
     <main>
@@ -184,27 +186,50 @@ export default function Detalhes({
               </h4>
 
               <label>Função:</label>
-              <Select
-                className={styles.select}
-                name={`funcao-${index}`}
-                value={colaborador.funcao || ""}
-                onChange={(e) =>
-                  atualizarColaborador(index, "funcao", e.target.value || e)
-                }
-                handleOnChange={(e) =>
-                  atualizarColaborador(index, "funcao", e.target.value || e)
-                }
-                options={funcaoOpcoes}
-                onToggle={(aberto) =>
-                  setFuncoesAbertas((prev) => ({ ...prev, [index]: aberto }))
-                }
-              />
+              <div className={styles.selectContainer}>
+                <div
+                  className={styles.select}
+                  onClick={() =>
+                    setFuncoesAbertas((prev) => ({
+                      ...prev,
+                      [index]: !prev[index],
+                    }))
+                  }
+                >
+                  <span>{colaborador.funcao || "Selecione a função"}</span>
 
-              <FiChevronDown
-                className={`${styles.arrow} ${
-                  funcoesAbertas[index] ? styles.arrowAberta : ""
-                }`}
-              />
+                  <FiChevronDown
+                    className={`${styles.seta} ${
+                      funcoesAbertas[index] ? styles.setaAberta : ""
+                    }`}
+                  />
+                </div>
+
+                {funcoesAbertas[index] && (
+                  <div className={styles.opcoes}>
+                    {funcaoOpcoes.map((opcao) => (
+                      <div
+                        key={opcao.value || opcao}
+                        className={styles.opcao}
+                        onClick={() => {
+                          atualizarColaborador(
+                            index,
+                            "funcao",
+                            opcao.value || opcao,
+                          );
+
+                          setFuncoesAbertas((prev) => ({
+                            ...prev,
+                            [index]: false,
+                          }));
+                        }}
+                      >
+                        {opcao.label || opcao}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               <label>
                 Nome:
@@ -257,15 +282,40 @@ export default function Detalhes({
           <legend>Idioma</legend>
           <label>
             Idioma:
-            <Select
-              name="idioma"
-              value={dados.idioma || ""}
-              onChange={(e) => atualizarCampo("idioma", e.target.value || e)}
-              handleOnChange={(e) =>
-                atualizarCampo("idioma", e.target.value || e)
-              }
-              options={listaIdiomas}
-            />
+            <div className={styles.selectContainer}>
+              <div
+                className={styles.select}
+                onClick={() => setIdiomaAberto(!idiomaAberto)}
+              >
+                <span>
+                  {listaIdiomas.find((idioma) => idioma.id === dados.idioma)
+                    ?.label || "Selecione um idioma"}
+                </span>
+
+                <FiChevronDown
+                  className={`${styles.seta} ${
+                    idiomaAberto ? styles.setaAberta : ""
+                  }`}
+                />
+              </div>
+
+              {idiomaAberto && (
+                <div className={styles.opcoes}>
+                  {listaIdiomas.map((idioma) => (
+                    <div
+                      key={idioma.id}
+                      className={styles.opcao}
+                      onClick={() => {
+                        atualizarCampo("idioma", idioma.id);
+                        setIdiomaAberto(false);
+                      }}
+                    >
+                      {idioma.label}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </label>
         </div>
 
