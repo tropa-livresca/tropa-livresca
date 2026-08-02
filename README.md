@@ -88,7 +88,7 @@ Para detalhes completos, consulte a documentação específica em [docs/funciona
 
 ### Infraestrutura, Testes e Dados
 * Supabase (PostgreSQL / Storage / Auth)
-* Módulo nativo `node:test` + `node:assert`
+* `jest` (Testes unitários)
 * `supertest` (Simulação HTTP de contratos)
 
 ---

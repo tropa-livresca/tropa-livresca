@@ -2,21 +2,40 @@
 import Select from "../../../../../common/components/Select/Select";
 import Input from "../../../../../common/components/Input/Input";
 
-export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEtapa, estadoAtualLivro }) {
-  const deveBloquearCampos = estadoAtualLivro === "publicado";
+export default function Detalhes({
+  dados,
+  onChange,
+  irParaProximaEtapa,
+  estadoAtualLivro,
+}) {
+  const deveBloquearCampos =
+    estadoAtualLivro === "publicado" || estadoAtualLivro === "em_revisao";
 
   const listaIdiomas = [
     { id: "", label: "Selecione um idioma" },
-    { id: "portugues", label: "PortuguÃªs" },
-    { id: "ingles", label: "InglÃªs" },
+    { id: "portugues", label: "Português" },
+    { id: "ingles", label: "Inglês" },
     { id: "espanhol", label: "Espanhol" },
-    { id: "bilingue-portugues-ingles", label: "BilÃ­ngue: PortuguÃªs e InglÃªs" },
-    { id: "bilingue-portugues-espanhol", label: "BilÃ­ngue: PortuguÃªs e Espanhol" },
-    { id: "outro", label: "Outro" }
+    {
+      id: "bilingue-portugues-ingles",
+      label: "Bilíngue: Português e Inglês",
+    },
+    {
+      id: "bilingue-portugues-espanhol",
+      label: "Bilíngue: Português e Espanhol",
+    },
+    { id: "outro", label: "Outro" },
   ];
 
-  const funcaoOpcoes = ["Selecione a função", "Coautor", "Ilustrador", "Revisor", "Tradutor", "Outro"];
-  
+  const funcaoOpcoes = [
+    "Selecione a função",
+    "Coautor",
+    "Ilustrador",
+    "Revisor",
+    "Tradutor",
+    "Outro",
+  ];
+
   const [imagemExplicita, setImagemExplicita] = useState(() => {
     if (dados.imagensExplicitas === true) return "sim";
     if (dados.imagensExplicitas === false) return "nao";
@@ -32,7 +51,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
   const atualizarAutor = (chave, valor) => {
     onChange({
       ...dados,
-      autor: { ...dados.autor, [chave]: valor }
+      autor: { ...dados.autor, [chave]: valor },
     });
   };
 
@@ -40,7 +59,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
     const novosColaboradores = [...listaColaboradores];
     novosColaboradores[index] = {
       ...novosColaboradores[index],
-      [chave]: valor
+      [chave]: valor,
     };
     atualizarCampo("colaboradores", novosColaboradores);
   };
@@ -48,17 +67,19 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa, voltarEt
   const adicionarColaborador = () => {
     const novosColaboradores = [
       ...listaColaboradores,
-      { funcao: "", nome: "", sobrenome: "" }
+      { funcao: "", nome: "", sobrenome: "" },
     ];
     atualizarCampo("colaboradores", novosColaboradores);
   };
 
   const removerColaborador = (indexParaRemover) => {
-    const novosColaboradores = listaColaboradores.filter((_, index) => index !== indexParaRemover);
+    const novosColaboradores = listaColaboradores.filter(
+      (_, index) => index !== indexParaRemover,
+    );
     atualizarCampo("colaboradores", novosColaboradores);
   };
 
-return (
+  return (
     <main>
       <form onSubmit={(e) => e.preventDefault()}>
         <h1>Detalhes</h1>
@@ -66,7 +87,10 @@ return (
         <fieldset>
           <legend>Título e subtítulo</legend>
           {deveBloquearCampos && (
-            <p>Título e subtítulo não podem ser alterados após publicação.</p>
+            <p>
+              Título e subtítulo não podem ser alterados em revisão ou após
+              publicação.
+            </p>
           )}
           <label>
             *Título:
@@ -84,7 +108,9 @@ return (
               type="text"
               value={dados.subtitulo || ""}
               onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
-              handleOnChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("subtitulo", e.target.value)
+              }
               disabled={deveBloquearCampos}
             />
           </label>
@@ -98,15 +124,39 @@ return (
               type="text"
               value={dados.numeroEdicao || ""}
               onChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
-              handleOnChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("numeroEdicao", e.target.value)
+              }
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
 
         <fieldset>
+          <legend>ISBN do livro</legend>
+          {deveBloquearCampos && (
+            <p>
+              *O ISBN não pode ser alterado em revisão ou após a publicação.*
+            </p>
+          )}
+          <label>
+            ISBN:{" "}
+            <Input
+              type="text"
+              value={dados.ISBN || ""}
+              onChange={(e) => atualizarCampo("ISBN", e.target.value)}
+              handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
+              disabled={deveBloquearCampos}
+            />
+          </label>
+        </fieldset>
+        <fieldset>
           <legend>Identificação do Autor no Livro</legend>
           {deveBloquearCampos && (
-            <p>*Os daods do autor principal não podem ser alterados após a publicacação.</p>
+            <p>
+              *Os dados do autor principal não podem ser alterados em revisão ou
+              após a publicação.*
+            </p>
           )}
           <label>
             Nome:
@@ -120,11 +170,13 @@ return (
           </label>
           <label>
             Sobrenome:
-             <Input
+            <Input
               type="text"
               value={dados.autor?.sobrenome || ""}
               onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
-              handleOnChange={(e) => atualizarAutor("sobrenome", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarAutor("sobrenome", e.target.value)
+              }
               disabled={deveBloquearCampos}
             />
           </label>
@@ -141,9 +193,14 @@ return (
               <Select
                 name={`funcao-${index}`}
                 value={colaborador.funcao || ""}
-                onChange={(e) => atualizarColaborador(index, "funcao", e.target.value || e)}
-                handleOnChange={(e) => atualizarColaborador(index, "funcao", e.target.value || e)}
+                onChange={(e) =>
+                  atualizarColaborador(index, "funcao", e.target.value || e)
+                }
+                handleOnChange={(e) =>
+                  atualizarColaborador(index, "funcao", e.target.value || e)
+                }
                 options={funcaoOpcoes}
+                disabled={deveBloquearCampos}
               />
 
               <label>
@@ -151,7 +208,10 @@ return (
                 <Input
                   type="text"
                   value={colaborador.nome || ""}
-                  onChange={(e) => atualizarColaborador(index, "nome", e.target.value)}
+                  onChange={(e) =>
+                    atualizarColaborador(index, "nome", e.target.value)
+                  }
+                  disabled={deveBloquearCampos}
                 />
               </label>
 
@@ -160,22 +220,26 @@ return (
                 <Input
                   type="text"
                   value={colaborador.sobrenome || ""}
-                  onChange={(e) => atualizarColaborador(index, "sobrenome", e.target.value)}
+                  onChange={(e) =>
+                    atualizarColaborador(index, "sobrenome", e.target.value)
+                  }
+                  disabled={deveBloquearCampos}
                 />
               </label>
 
-              <button
-                type="button"
-                onClick={() => removerColaborador(index)}
-              >
-                Remover este colaborador
-              </button>
+              {!deveBloquearCampos && (
+                <button type="button" onClick={() => removerColaborador(index)}>
+                  Remover este colaborador
+                </button>
+              )}
             </div>
           ))}
 
-          <button type="button" onClick={adicionarColaborador}>
-            + Adicionar colaborador
-          </button>
+          {!deveBloquearCampos && (
+            <button type="button" onClick={adicionarColaborador}>
+              + Adicionar colaborador
+            </button>
+          )}
         </fieldset>
 
         <fieldset>
@@ -186,8 +250,11 @@ return (
               name="idioma"
               value={dados.idioma || ""}
               onChange={(e) => atualizarCampo("idioma", e.target.value || e)}
-              handleOnChange={(e) => atualizarCampo("idioma", e.target.value || e)}
+              handleOnChange={(e) =>
+                atualizarCampo("idioma", e.target.value || e)
+              }
               options={listaIdiomas}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -199,6 +266,7 @@ return (
             <textarea
               value={dados.descricao || ""}
               onChange={(e) => atualizarCampo("descricao", e.target.value)}
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
@@ -211,6 +279,7 @@ return (
             name="direitoPublicacao"
             checked={dados.direitoPublicacao === "sim"}
             onChange={() => atualizarCampo("direitoPublicacao", "sim")}
+            disabled={deveBloquearCampos}
           />
           <label htmlFor="direitoPublicacaoSim">Sim</label>
 
@@ -220,6 +289,7 @@ return (
             name="direitoPublicacao"
             checked={dados.direitoPublicacao === "nao"}
             onChange={() => atualizarCampo("direitoPublicacao", "nao")}
+            disabled={deveBloquearCampos}
           />
           <label htmlFor="direitoPublicacaoNao">Não</label>
         </fieldset>
@@ -237,7 +307,7 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: true,
-                categorias: ["Adulto"]
+                categorias: ["Adulto"],
               });
             }}
             handleOnChange={() => {
@@ -245,9 +315,10 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: true,
-                categorias: ["Adulto"]
+                categorias: ["Adulto"],
               });
             }}
+            disabled={deveBloquearCampos}
           />
           <label htmlFor="imagemExplicitaSim">Sim</label>
 
@@ -261,7 +332,7 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: false,
-                categorias: []
+                categorias: [],
               });
             }}
             handleOnChange={() => {
@@ -269,11 +340,11 @@ return (
               onChange({
                 ...dados,
                 imagensExplicitas: false,
-                categorias: []
+                categorias: [],
               });
             }}
+            disabled={deveBloquearCampos}
           />
-
           <label htmlFor="imagemExplicitaNao">Não</label>
         </fieldset>
 
@@ -283,8 +354,15 @@ return (
             <label>Categoria do Livro</label>
             <Input
               type="text"
-              value={Array.isArray(dados.categorias) ? dados.categorias.join(", ") : ""}
-              onChange={(e) => atualizarCampo("categorias", e.target.value.split(", "))}
+              value={
+                Array.isArray(dados.categorias)
+                  ? dados.categorias.join(", ")
+                  : ""
+              }
+              onChange={(e) =>
+                atualizarCampo("categorias", e.target.value.split(", "))
+              }
+              disabled={deveBloquearCampos}
             />
           </fieldset>
         ) : imagemExplicita === "sim" ? (
@@ -299,16 +377,25 @@ return (
             Palavras-chave (separadas por ponto e vírgula)
             <Input
               type="text"
-              value={Array.isArray(dados.palavrasChave) ? dados.palavrasChave.join("; ") : ""}
-              onChange={(e) => atualizarCampo("palavrasChave", e.target.value.split("; "))}
+              value={
+                Array.isArray(dados.palavrasChave)
+                  ? dados.palavrasChave.join("; ")
+                  : ""
+              }
+              onChange={(e) =>
+                atualizarCampo("palavrasChave", e.target.value.split("; "))
+              }
+              disabled={deveBloquearCampos}
             />
           </label>
         </fieldset>
 
         <div>
-          <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
+          <button type="button" onClick={irParaProximaEtapa}>
+            Posterior
+          </button>
         </div>
       </form>
     </main>
   );
-};
+}

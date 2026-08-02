@@ -9,7 +9,7 @@ const RoutesApp = () => {
       <Routes>
         <Route path="/admin/*" element={<RoutesAdm />} />
         <Route path="/*" element={<RoutesClients />} />
-        <Route path = "/auth/*" element = {<RoutesAutenticacao/>}/>
+        <Route path="/auth/*" element={<RoutesAutenticacao />} />
       </Routes>
     </BrowserRouter>
   );

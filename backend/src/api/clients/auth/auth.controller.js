@@ -63,13 +63,28 @@ export class AuthController {
     }
   }
 
+  static async signinComGoogle(req, res, next) {
+    const idToken = req.body.token;
+
+    try {
+      const data = await AuthService.signinComGoogle(idToken);
+
+      return res.status(201).json({
+        data: data,
+        message: "Login com Google efetuado com sucesso!",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async signup(req, res, next) {
     const { email, password, telefone, nome } = req.body;
     try {
       const data = await AuthService.signup(email, password, nome, telefone);
 
       return res.status(201).json({
-        user: data.user,
+        data: data,
         message:
           "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
@@ -94,16 +109,20 @@ export class AuthController {
     try {
       const data = await AuthService.signin(email, password);
 
-      res.cookie(
-        "auth-token",
-        data.session.access_token,
-        AuthController.COOKIE_OPTIONS,
-      );
-      res.cookie(
-        "refresh-token",
-        data.session.refresh_token,
-        AuthController.COOKIE_OPTIONS,
-      );
+      if (!data || !data.session) {
+        const error = new Error("E-mail ou senha incorretos.");
+        error.statusCode = 401;
+        throw error;
+      }
+
+      const cookieOptions = AuthController.COOKIE_OPTIONS || {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+      };
+
+      res.cookie("auth-token", data.session.access_token, cookieOptions);
+      res.cookie("refresh-token", data.session.refresh_token, cookieOptions);
 
       return res
         .status(200)
@@ -119,9 +138,43 @@ export class AuthController {
     try {
       const resultado = await AuthService.atualizarSenha(senha);
 
-      return res
-        .status(200)
-        .json({ user: resultado.user, message: "Alteração na senha realizada!" });
+      return res.status(200).json({
+        user: resultado.user,
+        message: "Alteração na senha realizada!",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async esqueciSenha(req, res, next) {
+    try {
+      const { email } = req.body;
+
+      await AuthService.esqueciSenha(email);
+
+      return res.status(200).json({
+        message:
+          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async redefinirSenha(req, res, next) {
+    try {
+      const { accessToken, refreshToken, novaSenha } = req.body;
+
+      await AuthService.confirmarNovaSenha(
+        accessToken,
+        refreshToken,
+        novaSenha,
+      );
+
+      return res.status(200).json({
+        message: "Senha atualizada com sucesso! Você já pode fazer login.",
+      });
     } catch (err) {
       next(err);
     }

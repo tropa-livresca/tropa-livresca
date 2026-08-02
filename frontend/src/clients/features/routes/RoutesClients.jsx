@@ -3,9 +3,7 @@ import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 
 import Inicio from "../institucional/pages/Inicio/Inicio";
-
 import Perfil from "../perfil/pages/Perfil/Perfil";
-
 import FAQ from "../suporte/pages/FAQ/FAQ";
 import Historia from "../institucional/pages/Historia/Historia";
 import Autores from "../autores/pages/Autores/Autores";
@@ -32,28 +30,27 @@ const Private = ({ Item, redirectTo = "/auth/login" }) => {
 
 const RoutesClients = () => {
   return (
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<Inicio />} />
-          <Route path="/historia" element={<Historia />} />
-          <Route path="/autores" element={<Autores />} />
-          <Route path="/autores/:id" element={<AutorById />} />
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<Inicio />} />
+        <Route path="/historia" element={<Historia />} />
+        <Route path="/autores" element={<Autores />} />
+        <Route path="/autores/:id" element={<AutorById />} />
 
-          <Route path="/FAQ" element={<FAQ />} />
-          <Route path="/suporte" element={<Suporte />} />
+        <Route path="/FAQ" element={<FAQ />} />
+        <Route path="/suporte" element={<Suporte />} />
 
-          <Route path="/meuslivros" element={<Private Item={MeusLivros} />} />
+        <Route path="/meuslivros" element={<Private Item={MeusLivros} />} />
 
-          <Route path="/livros" element={<Livros />} />
-          <Route path="/livros/:id" element={<LivroById />} />
-          
-          <Route path="/perfil" element={<Private Item={Perfil} />} />
+        <Route path="/livros" element={<Livros />} />
+        <Route path="/livros/:id" element={<LivroById />} />
+        
+        <Route path="/perfil" element={<Private Item={Perfil} />} />
 
-          <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
-
-          <Route path = "/editar-livro/:id" element = {<Private Item = {EditarLivro}/>}/>
-        </Route>
-      </Routes>
+        <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
+        <Route path="/editar-livro/:id" element={<Private Item={EditarLivro} />} />
+      </Route>
+    </Routes>
   );
 };
 

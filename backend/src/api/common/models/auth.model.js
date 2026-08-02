@@ -17,10 +17,6 @@ export class AuthModel {
     return data;
   }
 
-  static async signOutAdministrador() {
-    await supabase.auth.signOut();
-  }
-
   static async conferirAdministrador(userId) {
     const { data, error } = await supabase
       .from("adm_credenciais")
@@ -50,20 +46,47 @@ export class AuthModel {
   }
 
   static async atualizarPrimeiroAcesso(userId) {
-    const { data, error} = await supabase
+    const { data, error } = await supabase
       .from("adm_credenciais")
       .update({ primeiro_acesso: false })
       .eq("id", userId);
 
     if (error) {
       error.statusCode = 400;
-      throw error; 
+      throw error;
     }
 
     return data;
   }
 
   //Usuários comuns
+  static async enviarEmailRecuperacao(email, redirectUrl) {
+  const {data, error} = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectUrl,
+  });
+
+  if(error){
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return data;
+}
+
+  static async signinComGoogle(idToken) {
+    const {data, error} = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: idToken,
+    });
+
+    if(error){
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async setSession(accessToken, refreshToken) {
     const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
@@ -138,10 +161,17 @@ export class AuthModel {
   }
 
   static async signout() {
-    await supabase.auth.signOut();
+    const {error} = await supabase.auth.signOut();
+    
+    if(error){
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return true;
   }
 
-  static async signin(email, password) {
+static async signin(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

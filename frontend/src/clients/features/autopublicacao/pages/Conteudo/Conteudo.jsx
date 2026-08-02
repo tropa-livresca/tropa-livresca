@@ -1,7 +1,6 @@
 ﻿import { useEffect } from "react";
-import Input from "../../../../../common/components/Input/Input";
 
-export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
+export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEtapa, isBloqueadoParaEdicao }) {
   
   const atualizarCampo = (chave, e) => {
     const arquivo = e.target.files?.[0];
@@ -57,6 +56,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
               accept=".pdf"
               type="file"
               onChange={(e) => atualizarCampo("manuscrito", e)}
+              disabled={isBloqueadoParaEdicao}
             />
           </label>
           {dados.manuscrito && <p style={{ color: "green" }}>✓ Manuscrito carregado</p>}
@@ -72,6 +72,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
                 accept=".jpg,.jpeg,.png"
                 type="file"
                 onChange={(e) => atualizarCapa("frente", e)}   
+                disabled={isBloqueadoParaEdicao}
               />
             </label>
             {previewFrente && (
@@ -88,6 +89,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
                 accept=".jpg,.jpeg,.png"
                 type="file"
                 onChange={(e) => atualizarCapa("verso", e)}
+                disabled={isBloqueadoParaEdicao}
               />
             </label>
             {previewVerso && (
@@ -104,6 +106,7 @@ export default function Conteudo({ dados, onChange, irParaProximaEtapa, voltarEt
                 accept=".jpg,.jpeg,.png"
                 type="file"
                 onChange={(e) => atualizarCapa("orelhas", e)}
+                disabled={isBloqueadoParaEdicao}
               />
             </label>
             {previewOrelhas && (
