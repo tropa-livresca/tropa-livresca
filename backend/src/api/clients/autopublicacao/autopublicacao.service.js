@@ -1,4 +1,4 @@
-import supabase, {supabaseAdmin} from "../../common/config/supabase.js";
+import {supabaseAdmin} from "../../common/config/supabase.js";
 import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js";
 
 export class AutopublicacaoService {
