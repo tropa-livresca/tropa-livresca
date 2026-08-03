@@ -63,49 +63,183 @@ export const AutopublicacaoProvider = ({ children }) => {
   const carregarDadosParaEdicao = useCallback((dadosBanco) => {
     if (!dadosBanco) return;
 
+    console.debug("carregarDadosParaEdicao payload:", dadosBanco);
+
     setIsEdicao(true);
-    setEstadoAtualLivro(dadosBanco.estado || "rascunho");
+    setEstadoAtualLivro(
+      dadosBanco.estado ||
+      dadosBanco.estado_atual ||
+      dadosBanco.estadoAtual ||
+      "rascunho",
+    );
     setEtapa(1);
+
+    const pick = (...keys) => {
+      for (const k of keys) {
+        if (k in dadosBanco && dadosBanco[k] != null) return dadosBanco[k];
+      }
+      return undefined;
+    };
+
+    const autorNome =
+      (dadosBanco.autor &&
+        (dadosBanco.autor.nome || dadosBanco.autor.nome === ""
+          ? dadosBanco.autor.nome
+          : undefined)) ||
+      pick("autor_nome", "autorNome", "autorNome") ||
+      "";
+
+    const autorSobrenome =
+      (dadosBanco.autor &&
+        (dadosBanco.autor.sobrenome || dadosBanco.autor.sobrenome === ""
+          ? dadosBanco.autor.sobrenome
+          : undefined)) ||
+      pick("autor_sobrenome", "autorSobrenome") ||
+      "";
+
+    let palavras = pick(
+      "palavras_chave",
+      "palavrasChave",
+      "keywords",
+      "tags",
+      "palavras",
+    );
+    if (typeof palavras === "string") {
+      palavras = palavras
+        .split(/,|;|\n/)
+        .map((p) => p.trim())
+        .filter(Boolean);
+    }
+    if (!Array.isArray(palavras)) palavras = palavras || [];
+
+    const manuscrito =
+      pick(
+        "manuscrito",
+        "manuscrito_path",
+        "manuscritoPath",
+        "manuscrito_url",
+        "manuscritoUrl",
+        "arquivo",
+        "file",
+      ) || null;
+
+    let capa = pick("capa", "cover", "capa_json");
+    if (typeof capa === "string") {
+      try {
+        capa = JSON.parse(capa);
+      } catch (e) {
+        capa = null;
+      }
+    }
+
+    if (!capa) {
+      const frente = pick(
+        "capa_frente",
+        "capaFrente",
+        "cover_front",
+        "coverFront",
+      );
+      const verso = pick("capa_verso", "capaVerso", "cover_back", "coverBack");
+      const orelhas = pick(
+        "capa_orelhas",
+        "capaOrelhas",
+        "cover_flaps",
+        "coverFlaps",
+      );
+      if (frente || verso || orelhas) {
+        capa = {
+          frente: frente || null,
+          verso: verso || null,
+          orelhas: orelhas || null,
+        };
+      }
+    }
+
+    if (!capa) capa = { frente: null, verso: null, orelhas: null };
+
+    const direitoRaw = pick(
+      "direitos_de_publicacao",
+      "direitoPublicacao",
+      "direito_publicacao",
+      "direito",
+      "has_publication_rights",
+    );
+
+    const imagensExplicitasRaw = pick(
+      "imagens_explicitas",
+      "imagensExplicitas",
+      "imagens_explicitas",
+      "has_explicit_images",
+    );
+
+    const normalizeBool = (v) => {
+      if (v === true || v === "true" || v === "sim" || v === "1" || v === 1)
+        return true;
+      if (
+        v === false ||
+        v === "false" ||
+        v === "nao" ||
+        v === "não" ||
+        v === "0" ||
+        v === 0
+      )
+        return false;
+      return undefined;
+    };
+
+    const direitoNorm = (() => {
+      if (typeof direitoRaw === "string") {
+        const low = direitoRaw.toLowerCase();
+        if (low === "sim" || low === "true" || low === "1") return "sim";
+        if (low === "nao" || low === "não" || low === "false" || low === "0")
+          return "nao";
+      }
+      if (typeof direitoRaw === "boolean") return direitoRaw ? "sim" : "nao";
+      return direitoRaw || "";
+    })();
+
+    const imagensExplicitasNorm = (() => {
+      const b = normalizeBool(imagensExplicitasRaw);
+      if (b === true) return true;
+      if (b === false) return false;
+      // also accept explicit string values inside detalhes
+      if (typeof imagensExplicitasRaw === "string") {
+        const low = imagensExplicitasRaw.toLowerCase();
+        if (low === "sim" || low === "true") return true;
+        if (low === "nao" || low === "não" || low === "false") return false;
+      }
+      return undefined;
+    })();
 
     setDadosLivro({
       id: dadosBanco.id,
       detalhes: {
-        idioma: dadosBanco.idioma || "",
-        titulo: dadosBanco.titulo || "",
-        subtitulo: dadosBanco.subtitulo || "",
-        numeroEdicao: dadosBanco.numero_edicao || dadosBanco.numeroEdicao || "",
-        ISBN: dadosBanco.ISBN || dadosBanco.isbn || "",
+        idioma: pick("idioma", "language") || "",
+        titulo: pick("titulo", "title") || "",
+        subtitulo: pick("subtitulo", "subTitle") || "",
+        numeroEdicao: pick("numero_edicao", "numeroEdicao") || "",
+        ISBN: pick("ISBN", "isbn") || "",
         autor: {
-          nome: dadosBanco.autor_nome || dadosBanco.autor?.nome || "",
-          sobrenome:
-            dadosBanco.autor_sobrenome || dadosBanco.autor?.sobrenome || "",
+          nome: autorNome,
+          sobrenome: autorSobrenome,
         },
-        colaboradores: dadosBanco.colaboradores || [],
-        descricao: dadosBanco.descricao || "",
-        direitoPublicacao:
-          dadosBanco.direitos_de_publicacao ||
-          dadosBanco.direitoPublicacao ||
-          "",
+        colaboradores: pick("colaboradores", "contributors") || [],
+        descricao: pick("descricao", "description") || "",
+        direitoPublicacao: direitoNorm || "",
+        imagensExplicitas: imagensExplicitasNorm,
         publicoPrincipal:
-          dadosBanco.publico_alvo || dadosBanco.publicoPrincipal || "",
-        categorias: dadosBanco.categorias || [],
-        palavrasChave:
-          dadosBanco.palavras_chave || dadosBanco.palavrasChave || [],
+          pick("publico_alvo", "publicoPrincipal", "publico") || "",
+        categorias: pick("categorias", "categories") || [],
+        palavrasChave: palavras,
       },
       conteudo: {
-        manuscrito: dadosBanco.manuscrito || null,
-        capa:
-          typeof dadosBanco.capa === "string"
-            ? JSON.parse(dadosBanco.capa)
-            : dadosBanco.capa || { frente: null, verso: null, orelhas: null },
+        manuscrito,
+        capa,
       },
       orcamento: {
-        valorLivroFisico:
-          dadosBanco.preco_fisico || dadosBanco.valorLivroFisico || "",
-        valorLivroDigital:
-          dadosBanco.preco_digital || dadosBanco.valorLivroDigital || "",
-        numeroPaginas:
-          dadosBanco.numero_paginas || dadosBanco.numeroPaginas || "",
+        valorLivroFisico: pick("preco_fisico", "valorLivroFisico") || "",
+        valorLivroDigital: pick("preco_digital", "valorLivroDigital") || "",
+        numeroPaginas: pick("numero_paginas", "numeroPaginas") || "",
       },
     });
   }, []);

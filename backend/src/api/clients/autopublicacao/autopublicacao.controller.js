@@ -106,4 +106,24 @@ export class AutopublicacaoController {
       next(err);
     }
   }
+
+  static async UpdateLivro(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { id } = req.params;
+      const { dadosLivro, capa, manuscritoPath } = req.body;
+
+      const resultado = await AutopublicacaoService.updateLivroService({
+        userId,
+        livroId: id,
+        dadosLivro,
+        capa,
+        manuscritoPath,
+      });
+
+      return res.status(200).json(resultado);
+    } catch (err) {
+      next(err);
+    }
+  }
 }
