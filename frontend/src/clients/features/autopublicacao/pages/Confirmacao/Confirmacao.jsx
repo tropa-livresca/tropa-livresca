@@ -70,8 +70,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
     };
   }, [dados.conteudo]);
 
-  const temAlgumaCapa = dados.conteudo?.capa?.frente || dados.conteudo?.capa?.verso || dados.conteudo?.capa?.orelhas;
-
   return (
     <main>
       <h1>Confirmação</h1>

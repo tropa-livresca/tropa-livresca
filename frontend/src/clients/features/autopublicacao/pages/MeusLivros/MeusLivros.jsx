@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
+import styles from "./MeusLivros.module.css";
+import { IoLibraryOutline } from "react-icons/io5";
 
 export default function MeusLivros() {
   const { Livros, carregando, BuscarLivrosById, UpdateEstado, InativarLivro } =
@@ -15,7 +17,7 @@ export default function MeusLivros() {
   if (carregando) return <div>Carregando seus livros...</div>;
 
   return (
-    <div>
+    <main className={styles.container}>
       {possuiLivros ? (
         <div>
           {Livros.map((livro) => (
@@ -36,22 +38,35 @@ export default function MeusLivros() {
                   />
                 )}
                 <br />
-                <strong>{livro.titulo || "Sem título"}</strong> —{" "}
-                <span>{livro.estado}</span>
+                <strong>{livro.titulo}</strong> — <span>{livro.estado}</span>
               </div>
+
               <div>
-                <Link to={`/editar-livro/${livro.id}`}>Editar</Link>
+                <button className={`${styles.btn} ${styles.btnVisualizar}`}>
+                  Visualizar
+                </button>
+
+                <Link
+                  to={`/editar-livro/${livro.id}`}
+                  className={`${styles.btn} ${styles.btnEditar}`}
+                >
+                  Editar
+                </Link>
 
                 {livro.estado === "rascunho" && (
                   <button
                     onClick={() => UpdateEstado(livro.id, "em_revisao")}
+                    className={`${styles.btn} ${styles.btnPublicar}`}
                   >
                     Enviar para Revisão
                   </button>
                 )}
 
                 {livro.estado === "em_revisao" && (
-                  <button onClick={() => UpdateEstado(livro.id, "rascunho")}>
+                  <button
+                    onClick={() => UpdateEstado(livro.id, "rascunho")}
+                    className={`${styles.btn} ${styles.btnPublicar}`}
+                  >
                     Cancelar Revisão (Voltar para Rascunho)
                   </button>
                 )}
@@ -74,6 +89,7 @@ export default function MeusLivros() {
                       if (confirm("Deseja inativar este livro?"))
                         InativarLivro(livro.id);
                     }}
+                    className={`${styles.btn} ${styles.btnInativar}`}
                   >
                     Inativar Livro Permanentemente
                   </button>
@@ -83,12 +99,21 @@ export default function MeusLivros() {
           ))}
         </div>
       ) : (
-        <div>Nenhum livro encontrado</div>
+        <div className={styles.cardnenhumlivro}>
+          <IoLibraryOutline size={60} />
+          <h1 className={styles.titulon}>
+            Sua estante está esperando por você.
+          </h1>
+          <span className={styles.sub}>
+            Dê o primeiro passo na sua carreira de escritor. Autopublique seu
+            livro e compartilhe sua obra com novos leitores.
+          </span>
+        </div>
       )}
 
-      <Link to="/novo-livro" style={{ marginTop: "20px" }}>
+      <Link to="/novo-livro" className={styles.btn}>
         Novo Livro
       </Link>
-    </div>
+    </main>
   );
 }

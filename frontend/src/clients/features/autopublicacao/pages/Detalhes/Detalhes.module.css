@@ -1,0 +1,275 @@
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  margin-bottom: 3%;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form {
+  background: #fffdf7 !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem !important;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+}
+
+.form textarea {
+  width: 95%;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem;
+  margin: 0 auto;
+  display: block;
+  margin-top: 0.3rem;
+  margin-bottom: 1.4%;
+}
+
+.form textarea {
+  font-size: 1rem;
+  resize: none;
+  height: 5rem;
+  color: #67170c !important;
+}
+
+.inputmodificado input {
+  width: 95% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: center !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-top: 0.3rem !important;
+}
+
+.form input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.inputmodificado input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 2%;
+}
+
+.form legend {
+  color: #67170c;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form legend::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form label {
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+.labelTitulo {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+.form h4 {
+  color: #67170c;
+  margin-left: 2%;
+  margin-bottom: 0.5%;
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+.numero {
+  font-family: none;
+  font-size: 1.1rem;
+}
+
+.btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-left: 2.5%;
+  margin-bottom: 2%;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btn2 {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-right: 2.5%;
+  margin-bottom: 1.5%;
+}
+
+.btn2:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.posterior {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+#btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.selectContainer {
+  width: 100%;
+}
+
+.select {
+  width: 95%;
+  padding: 0.8rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  margin-bottom: 1.4%;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  background: #fff8d7;
+  color: #67170c;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.select:hover {
+  border: 2px solid #67170c;
+}
+
+.opcoes {
+  top: calc(100% + 0.4rem);
+  width: 95%;
+  background: #fffdf4;
+  transform: translate(2.5%, -3%);
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  overflow: hidden;
+  z-index: 100;
+  max-height: 350px;
+  animation: abrir 0.2s ease;
+}
+
+.opcao {
+  padding: 0.8rem 1rem;
+  color: #67170c;
+  cursor: pointer;
+}
+
+.opcao:not(:last-child) {
+  border-bottom: 1px solid #e2c77c;
+}
+
+.opcao:hover {
+  background: #fff8d767;
+  color: #ffbb33;
+}
+
+.seta {
+  transition: transform 0.2s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.radioOpcao {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  cursor: pointer !important;
+  width: 95%;
+  margin: 0 auto !important;
+}
+
+.radioOpcao input {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  accent-color: #67170c !important;
+  border: 1.5px solid #67170c;
+  cursor: pointer !important;
+}
+
+.radioOpcao label {
+  color: #67170c !important;
+  font-size: 1rem !important;
+  cursor: pointer !important;
+  margin-top: -1.5%;
+  margin-left: 0.7rem !important;
+}
+
+.avisoAdulto {
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+  color: #67170c !important;
+  text-align: center !important;
+  margin-bottom: 2%;
+  margin-top: -1%;
+}
+
+@keyframes abrir {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+
+  to {
+    opacity: 1;
+    max-height: 300px;
+  }
+}

@@ -1,14 +1,38 @@
+import { useState } from "react";
 import styles from "./Select.module.css";
 
-export default function Select({ text, name, options, handleOnChange, value }) {
+export default function Select({
+  text,
+  name,
+  options,
+  handleOnChange,
+  value,
+  className,
+  onToggle,
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const definirAberto = (novoValor) => {
+    setIsOpen(novoValor);
+    onToggle?.(novoValor);
+  };
+
   return (
-    <div className={styles.form_control}>
+    <div className={`${styles.form_control} ${className || ""}`}>
       {text && <label htmlFor={name}>{text}</label>}
 
       <select
         id={name}
         name={name}
-        onChange={handleOnChange}
+        onMouseDown={() => definirAberto(!isOpen)}
+        onChange={(e) => {
+          definirAberto(false);
+          handleOnChange?.(e);
+        }}
+        onBlur={() => definirAberto(false)}
+        onKeyDown={(e) => {
+          if (e.key === "Escape") definirAberto(false);
+        }}
         value={value || ""}
       >
         <option value="">Selecione uma opção</option>

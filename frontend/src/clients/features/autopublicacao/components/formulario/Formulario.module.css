@@ -1,0 +1,66 @@
+main {
+  background-color: #fff8c9;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
+}
+
+.topo {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 4%;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(3rem, 5vw, 5rem);
+  text-align: left;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 7rem;
+  height: 3px;
+  margin-top: 1rem;
+  background-color: #d4b46a;
+  border-radius: 999px;
+}
+
+.descricao{
+  color: #67170c;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.numero{
+font-family: none;
+}
+
+.btn{
+    background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  margin-top: 5%;
+}
+
+.btn:hover{
+    background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+
+@media (min-width: 1920px) {
+  .container {
+  max-width: 1800px;
+}
+}

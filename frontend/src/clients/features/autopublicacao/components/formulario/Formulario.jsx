@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import {Link} from "react-router-dom";
+import styles from "./Formulario.module.css";
+
+import { Link } from "react-router-dom";
 import { useAutopublicacao } from "../../hooks/useAutopublicacao";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
 
@@ -62,17 +64,26 @@ export default function Formulario({ idLivroEdicao }) {
     : "Novo Livro";
 
   return (
-    <main>
-      <h1>{tituloFormulario}</h1>
-      {isBloqueadoParaEdicao && (
-        <div
-          style={{ color: "orange", fontWeight: "bold", marginBottom: "1rem" }}
-        >
-          Este livro está em modo de leitura (revisado ou publicado) e não pode
-          ser alterado.
-        </div>
-      )}
-      <span>Etapa {etapa} de 4</span>
+    <main className={styles.container}>
+      <div className={styles.topo}>
+        <h1 className={styles.titulo}>{tituloFormulario}</h1>
+        {isBloqueadoParaEdicao && (
+          <div
+            style={{
+              color: "orange",
+              fontWeight: "bold",
+              marginBottom: "1rem",
+            }}
+          >
+            Este livro está em modo de leitura (revisado ou publicado) e não
+            pode ser alterado.
+          </div>
+        )}
+        <span className={styles.descricao}>
+          Etapa <span className={styles.numero}>{etapa}</span> de{" "}
+          <span className={styles.numero}>4</span>
+        </span>
+      </div>
 
       {etapa === 1 && (
         <Detalhes
@@ -113,8 +124,10 @@ export default function Formulario({ idLivroEdicao }) {
           publicarLivro={publicarLivro}
         />
       )}
-      
-      <Link to="/meuslivros">Voltar a Meus Livros</Link>
+
+      <Link to="/meuslivros" className={styles.btn}>
+        Voltar a Meus Livros
+      </Link>
     </main>
   );
 }
