@@ -172,33 +172,6 @@ a {
   font-size: 0.9rem;
 }
 
-.google {
-  width: 90%;
-  height: 3rem;
-  margin: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.8rem;
-  background-color: #ede6b3;
-  border-radius: 0.7rem;
-  border: 0.2em solid beige;
-  color: #67170c;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.google:hover {
-  background-color: #ffbb33;
-  color: #ede6b3;
-  transition: 0.3s;
-}
-
-.google svg {
-  font-size: 1.25rem;
-}
-
 @media (max-width: 1024px) {
   .container {
     grid-template-columns: 1fr;
@@ -270,10 +243,6 @@ a {
   .voltar {
     width: 2.5rem;
     height: 2.5rem;
-  }
-
-  .google {
-    width: 90%;
   }
 
   .divisor {

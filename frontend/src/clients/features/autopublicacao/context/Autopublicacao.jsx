@@ -9,6 +9,7 @@ const ESTADO_INICIAL_LIVRO = {
     idioma: "",
     titulo: "",
     subtitulo: "",
+    ISBN: "",
     numeroEdicao: "",
     autor: { nome: "", sobrenome: "" },
     colaboradores: [],
@@ -45,8 +46,11 @@ export const AutopublicacaoProvider = ({ children }) => {
     return etapaSalva ? Number(etapaSalva) : 1;
   });
 
+  const isBloqueadoParaEdicao =
+    estadoAtualLivro === "em_revisao" || estadoAtualLivro === "publicado";
+
   useEffect(() => {
-    if (isEdicao) return;
+    if (isEdicao || isBloqueadoParaEdicao) return;
 
     localStorage.setItem("rascunhoEtapaLivro", etapa.toString());
     const dadosParaSalvar = {
@@ -54,7 +58,7 @@ export const AutopublicacaoProvider = ({ children }) => {
       conteudo: { manuscrito: null, capa: null },
     };
     localStorage.setItem("rascunhoDadosLivro", JSON.stringify(dadosParaSalvar));
-  }, [dadosLivro, etapa, isEdicao]);
+  }, [dadosLivro, etapa, isEdicao, isBloqueadoParaEdicao]);
 
   const carregarDadosParaEdicao = useCallback((dadosBanco) => {
     if (!dadosBanco) return;
@@ -69,30 +73,39 @@ export const AutopublicacaoProvider = ({ children }) => {
         idioma: dadosBanco.idioma || "",
         titulo: dadosBanco.titulo || "",
         subtitulo: dadosBanco.subtitulo || "",
-        numeroEdicao: dadosBanco.numeroEdicao || dadosBanco.numero_edicao || "",
-        autor: dadosBanco.autor || { nome: "", sobrenome: "" },
+        numeroEdicao: dadosBanco.numero_edicao || dadosBanco.numeroEdicao || "",
+        ISBN: dadosBanco.ISBN || dadosBanco.isbn || "",
+        autor: {
+          nome: dadosBanco.autor_nome || dadosBanco.autor?.nome || "",
+          sobrenome:
+            dadosBanco.autor_sobrenome || dadosBanco.autor?.sobrenome || "",
+        },
         colaboradores: dadosBanco.colaboradores || [],
         descricao: dadosBanco.descricao || "",
         direitoPublicacao:
-          dadosBanco.direitoPublicacao || dadosBanco.direito_publicacao || "",
+          dadosBanco.direitos_de_publicacao ||
+          dadosBanco.direitoPublicacao ||
+          "",
         publicoPrincipal:
-          dadosBanco.publicoPrincipal || dadosBanco.publico_principal || "",
+          dadosBanco.publico_alvo || dadosBanco.publicoPrincipal || "",
         categorias: dadosBanco.categorias || [],
         palavrasChave:
-          dadosBanco.palavrasChave || dadosBanco.palavras_chave || [],
+          dadosBanco.palavras_chave || dadosBanco.palavrasChave || [],
       },
       conteudo: {
-        manuscrito:
-          dadosBanco.manuscritoPath || dadosBanco.manuscrito_path || null,
-        capa: dadosBanco.capa || { frente: null, verso: null, orelhas: null },
+        manuscrito: dadosBanco.manuscrito || null,
+        capa:
+          typeof dadosBanco.capa === "string"
+            ? JSON.parse(dadosBanco.capa)
+            : dadosBanco.capa || { frente: null, verso: null, orelhas: null },
       },
       orcamento: {
         valorLivroFisico:
-          dadosBanco.valorLivroFisico || dadosBanco.valor_livro_fisico || "",
+          dadosBanco.preco_fisico || dadosBanco.valorLivroFisico || "",
         valorLivroDigital:
-          dadosBanco.valorLivroDigital || dadosBanco.valor_livro_digital || "",
+          dadosBanco.preco_digital || dadosBanco.valorLivroDigital || "",
         numeroPaginas:
-          dadosBanco.numeroPaginas || dadosBanco.numero_paginas || "",
+          dadosBanco.numero_paginas || dadosBanco.numeroPaginas || "",
       },
     });
   }, []);
@@ -104,7 +117,13 @@ export const AutopublicacaoProvider = ({ children }) => {
   const validarEtapaAtual = (etapaAtual) => {
     switch (etapaAtual) {
       case 1:
-        if (!d?.titulo || !d?.idioma || !d?.descricao || !d?.direitoPublicacao)
+        if (
+          !d?.titulo ||
+          !d?.idioma ||
+          !d?.descricao ||
+          !d?.direitoPublicacao ||
+          !d?.ISBN
+        )
           return false;
         if (!d.autor?.nome || !d.autor?.sobrenome) return false;
         if (d.colaboradores?.length > 0) {
@@ -161,7 +180,14 @@ export const AutopublicacaoProvider = ({ children }) => {
   };
 
   const InsertLivro = useCallback(
-    async (dadosDoLivro, publicar = true) => {
+    async (dadosDoLivro, estadoDesejado = "rascunho") => {
+      if (
+        estadoAtualLivro === "em_revisao" ||
+        estadoAtualLivro === "publicado"
+      ) {
+        throw new Error("Este livro está travado para alterações no momento.");
+      }
+
       setCarregando(true);
       try {
         const userId = user?.id;
@@ -218,7 +244,7 @@ export const AutopublicacaoProvider = ({ children }) => {
             detalhes: dadosDoLivro.detalhes,
             orcamento: dadosDoLivro.orcamento,
           },
-          publicar: estadoAtualLivro === "publicado" ? true : publicar,
+          estadoInicial: isEdicao ? estadoAtualLivro : estadoDesejado,
           capa: {
             frente: capaFrenteUrl,
             verso: capaVersoUrl,
@@ -252,8 +278,8 @@ export const AutopublicacaoProvider = ({ children }) => {
     [user, isEdicao, estadoAtualLivro],
   );
 
-  const publicarLivroNoContexto = async (publicar = true) => {
-    await InsertLivro(dadosLivro, publicar);
+  const publicarLivroNoContexto = async (estadoDesejado = "rascunho") => {
+    await InsertLivro(dadosLivro, estadoDesejado);
 
     localStorage.removeItem("rascunhoDadosLivro");
     localStorage.removeItem("rascunhoEtapaLivro");
@@ -276,6 +302,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         etapa,
         isEdicao,
         estadoAtualLivro,
+        isBloqueadoParaEdicao,
         carregarDadosParaEdicao,
         atualizarEtapa,
         irParaProximaEtapa,

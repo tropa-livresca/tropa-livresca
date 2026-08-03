@@ -1,5 +1,4 @@
 ﻿import { useEffect } from "react";
-import Input from "../../../../../common/components/Input/Input";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 
@@ -8,6 +7,7 @@ export default function Conteudo({
   onChange,
   irParaProximaEtapa,
   voltarEtapa,
+  isBloqueadoParaEdicao,
 }) {
   const atualizarCampo = (chave, e) => {
     const arquivo = e.target.files?.[0];
@@ -72,6 +72,7 @@ export default function Conteudo({
               hidden
               accept=".pdf"
               onChange={(e) => atualizarCampo("manuscrito", e)}
+              disabled={isBloqueadoParaEdicao}
             />
           </label>
 
@@ -99,6 +100,7 @@ export default function Conteudo({
                 hidden
                 accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("frente", e)}
+                disabled={isBloqueadoParaEdicao}
               />
             </label>
 
@@ -125,6 +127,7 @@ export default function Conteudo({
                 hidden
                 accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("verso", e)}
+                disabled={isBloqueadoParaEdicao}
               />
             </label>
 
@@ -150,6 +153,7 @@ export default function Conteudo({
                 hidden
                 accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("orelhas", e)}
+                disabled={isBloqueadoParaEdicao}
               />
             </label>
 

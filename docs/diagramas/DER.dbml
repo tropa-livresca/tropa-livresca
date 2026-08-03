@@ -13,10 +13,11 @@ Table users_profile {
 
 Table adm_credenciais {
   id bigint [pk, increment]
-  codigo_especial text [not null]
-  senha_adm text [not null]
+  username text [not null]
+  primeiro_acesso boolean [default: false]
   ativo boolean [default: true]
-  funcao text
+  funcao text [not null]
+  email text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
 }
 
@@ -31,6 +32,7 @@ Table categorias {
 
 Table livros {
   id bigint [pk, increment]
+  ISBN text [not null]
   direitos_de_publicacao boolean [not null]
   conteudo_por_IA boolean [not null]
   imagens_explicitas boolean [not null]
@@ -51,7 +53,7 @@ Table livros {
   colaboradores jsonb [default: '[]']
   capa jsonb [default: '{}']
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id]
+  fk_categorias_id bigint [ref: > categorias.id, not null]
 }
 
 Table comentarios {
@@ -59,7 +61,7 @@ Table comentarios {
   data timestamp [default: `now()`, not null]
   texto text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_livros_id bigint [ref: > livros.id]
+  fk_livros_id bigint [ref: > livros.id, not null]
 }
 
 Table denuncias {
@@ -67,7 +69,7 @@ Table denuncias {
   data timestamp [default: `now()`, not null]
   descricao text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id]
+  fk_categorias_id bigint [ref: > categorias.id, not null]
 }
 
 Table enderecos {
@@ -131,8 +133,8 @@ Table cupons {
   valor_minimo_compra numeric [default: 0]
   data_criacao timestamp [default: `now()`]
   data_atualizacao timestamp [default: `now()`]
-  fk_livros_id bigint [ref: > livros.id]
-  fk_adm_credenciais_id bigint [ref: > adm_credenciais.id]
+  fk_livros_id bigint [ref: > livros.id, not null]
+  fk_adm_credenciais_id bigint [ref: > adm_credenciais.id, not null]
 }
 
 Table revisoes {
@@ -152,7 +154,7 @@ Table notificacoes {
   data timestamp [default: `now()`, not null]
   ADM boolean [default: false, not null]
   metadados jsonb [default: '{}']
-  fk_user_profile_id uuid [ref: > users_profile.id]
+  fk_user_profile_id uuid [ref: > users_profile.id, not null]
 }
 
 Table notificacoes_lidas {

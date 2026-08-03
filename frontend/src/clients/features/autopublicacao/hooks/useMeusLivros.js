@@ -51,22 +51,24 @@ export const useMeusLivros = () => {
     }
   }, []);
 
-  const UpdateEstado = useCallback(async (id, estado) => {
+  const UpdateEstado = useCallback(async (id, novoEstado) => {
     setCarregando(true);
     try {
       const res = await apiFetch(
-        "/api/v1/clients/autopublicacao/updateEstado/" + id + "/" + estado,
+        "/api/v1/clients/autopublicacao/updateEstado/" + id,
         {
           method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ novoEstado }),
         },
       );
       if (!res.ok) throw new Error(`Erro ${res.status}`);
-      setCarregando(false);
+      await BuscarLivrosById();
     } catch (error) {
-      console.error("Erro em UpdateStatusAtivo", error);
+      console.error("Erro em UpdateEstado", error);
       setCarregando(false);
     }
-  }, []);
+  }, [BuscarLivrosById]);
 
   const InativarLivro = useCallback(async (id) => {
     setCarregando(true);
@@ -75,12 +77,12 @@ export const useMeusLivros = () => {
         method: "PATCH",
       });
       if (!res.ok) throw new Error(`Erro ${res.status}`);
-      setCarregando(false);
+      await BuscarLivrosById();
     } catch (error) {
       console.error("Erro em InativarLivro", error);
       setCarregando(false);
     }
-  }, []);
+  }, [BuscarLivrosById]);
 
   return {
     carregando,

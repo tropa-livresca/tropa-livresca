@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
 import styles from "./MeusLivros.module.css";
 import { IoLibraryOutline } from "react-icons/io5";
@@ -39,36 +40,60 @@ export default function MeusLivros() {
                 <br />
                 <strong>{livro.titulo}</strong> — <span>{livro.estado}</span>
               </div>
+
               <div>
-                <button
-                  onClick={() => {
-                    window.location.href = `/editar-livro/${livro.id}`;
-                  }}
-                  className={`${styles.btn} ${styles.btnEditar}`}
-                >
-                  Editar
-                </button>
                 <button className={`${styles.btn} ${styles.btnVisualizar}`}>
                   Visualizar
                 </button>
 
-                {livro.estado === "rascunho" ? (
+                <Link
+                  to={`/editar-livro/${livro.id}`}
+                  className={`${styles.btn} ${styles.btnEditar}`}
+                >
+                  Editar
+                </Link>
+
+                {livro.estado === "rascunho" && (
                   <button
-                    onClick={() => UpdateEstado(livro.id, false)}
+                    onClick={() => UpdateEstado(livro.id, "em_revisao")}
                     className={`${styles.btn} ${styles.btnPublicar}`}
                   >
-                    Publicar Livro
+                    Enviar para Revisão
                   </button>
-                ) : (
-                  <span>Publicado</span>
                 )}
 
-                <button
-                  onClick={() => InativarLivro(livro.id)}
-                  className={`${styles.btn} ${styles.btnInativar}`}
-                >
-                  Inativar Livro Permanentemente
-                </button>
+                {livro.estado === "em_revisao" && (
+                  <button
+                    onClick={() => UpdateEstado(livro.id, "rascunho")}
+                    className={`${styles.btn} ${styles.btnPublicar}`}
+                  >
+                    Cancelar Revisão (Voltar para Rascunho)
+                  </button>
+                )}
+
+                {livro.estado === "publicado" && (
+                  <span
+                    style={{
+                      color: "green",
+                      fontWeight: "bold",
+                      marginLeft: "8px",
+                    }}
+                  >
+                    Publicado
+                  </span>
+                )}
+
+                {livro.estado !== "em_revisao" && (
+                  <button
+                    onClick={() => {
+                      if (confirm("Deseja inativar este livro?"))
+                        InativarLivro(livro.id);
+                    }}
+                    className={`${styles.btn} ${styles.btnInativar}`}
+                  >
+                    Inativar Livro Permanentemente
+                  </button>
+                )}
               </div>
             </div>
           ))}
@@ -86,14 +111,9 @@ export default function MeusLivros() {
         </div>
       )}
 
-      <button
-        onClick={() => {
-          window.location.href = "/novo-livro";
-        }}
-        className={styles.btn}
-      >
+      <Link to="/novo-livro" className={styles.btn}>
         Novo Livro
-      </button>
+      </Link>
     </main>
   );
 }

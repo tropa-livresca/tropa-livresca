@@ -1,7 +1,7 @@
 ﻿import { Link } from "react-router-dom";
 import useAuth from "../../../common/hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import styles from "./NavBar.module.css";
 import logo from "../../../common/images/logo.png";
 
@@ -18,7 +18,7 @@ export default function NavBar() {
     if (!loading && signed) {
       getPerfil();
     }
-  }, [loading, signed]);
+  }, [loading, signed, getPerfil]);
 
   const sair = async () => {
     try {
@@ -51,15 +51,15 @@ export default function NavBar() {
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
             <ul className={styles.subtema}>
-              <li><Link to="historia">Quem Somos</Link></li>
-              <li><Link to="">O Que Fazemos</Link></li>
+              <li><Link to="/historia">Quem Somos</Link></li>
+              <li><Link to="/">O Que Fazemos</Link></li>
             </ul>
           </li>
           <li className={styles.item}><Link to="/livros">Livros</Link></li>
           <li className={styles.item}><Link to="/">Loja</Link></li>
           <li className={styles.item}><Link to="/autores">Autores</Link></li>
           <li className={styles.item}>
-            <Link to="">Se Autopublique</Link>
+            <Link to="/meuslivros">Se Autopublique</Link>
             <ul className={styles.subtema}>
               <li><Link to="/meuslivros">Meus Livros</Link></li>
             </ul>
@@ -122,8 +122,8 @@ export default function NavBar() {
           </div>
         ) : (
           <div className={styles.navbutton}>
-            <Link to="auth/cadastro" className={styles.button}>Cadastro</Link>
-            <Link to="auth/login" className={styles.button}>Login</Link>
+            <Link to="/auth/cadastro" className={styles.button}>Cadastro</Link>
+            <Link to="/auth/login" className={styles.button}>Login</Link>
           </div>
         )}
       </nav>
