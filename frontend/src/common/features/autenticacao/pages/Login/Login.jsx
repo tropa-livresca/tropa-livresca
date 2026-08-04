@@ -104,16 +104,16 @@ export default function Login() {
             </div>
 
             <p>
-              <Link to="/auth/cadastro">Esqueceu a senha?</Link>
+              <Link to="/auth/esqueceu-senha">Esqueceu a senha?</Link>
             </p>
 
             <div className={styles.informacoes}>
               <div className={styles.para}>
                 <p>
-                  Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
+                  Não tem uma conta? <Link to="/auth/cadastro">Crie uma.</Link>
                 </p>
                 <p>
-                  É funcionário? <Link to="/cadastro">Clique aqui.</Link>
+                  É funcionário? <Link to="/auth/cadastro">Clique aqui.</Link>
                 </p>
               </div>
             </div>

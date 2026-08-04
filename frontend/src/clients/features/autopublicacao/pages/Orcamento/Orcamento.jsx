@@ -1,6 +1,6 @@
 ﻿import Input from "../../../../../common/components/Input/Input";
 
-export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa }) {
+export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa, isBloqueadoParaEdicao }) {
   const numeroPaginas = Number(dados.numeroPaginas) || 100;
 
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
@@ -54,6 +54,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               min="1"
               value={dados.numeroPaginas || ""}
               handleOnChange={(e) => atualizarCampo("numeroPaginas", e.target.value)}
+              disabled={isBloqueadoParaEdicao}
             />
           </label>
         </fieldset>
@@ -68,6 +69,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               placeholder="0,00"
               value={dados.valorLivroFisico || ""}
               handleOnChange={(e) => atualizarCampo("valorLivroFisico", e.target.value)}
+              disabled={isBloqueadoParaEdicao}
             />
           </label>
           <div>
@@ -86,6 +88,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               placeholder="0,00"
               value={dados.valorLivroDigital || ""}
               handleOnChange={(e) => atualizarCampo("valorLivroDigital", e.target.value)}
+              disabled={isBloqueadoParaEdicao}
             />
           </label>
           <div>

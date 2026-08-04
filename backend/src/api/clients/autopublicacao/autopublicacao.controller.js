@@ -1,77 +1,129 @@
-import {AutopublicacaoService} from "./autopublicacao.service.js";
+import { AutopublicacaoService } from "./autopublicacao.service.js";
 
-export class AutopublicacaoController{
-static async GetLivrosById (req, res, next) {
-  try {
-    const userId = req.user.id;
-    const livrosComCapas = await AutopublicacaoService.getLivrosByIdService(userId);
-    
-    return res.status(200).json(livrosComCapas);
-  } catch (err) {
-    next(err);
+export class AutopublicacaoController {
+  static async GetLivrosById(req, res, next) {
+    try {
+      const userId = req.user.id;
+      const livrosComCapas = await AutopublicacaoService.getLivrosById(userId);
+
+      return res.status(200).json(livrosComCapas);
+    } catch (err) {
+      next(err);
+    }
   }
-}
 
-static async UpdateEstado (req, res, next) {
-  try {
-    const { id } = req.params;
-    const { rascunho } = req.body; 
-    
-    const isRascunho = String(rascunho) === "true" || rascunho === true;
+  static async UpdateEstado(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { novoEstado } = req.body;
 
-    await AutopublicacaoService.updateEstadoService(id, isRascunho);
+      await AutopublicacaoService.updateEstado(id, novoEstado);
 
-    return res.status(200).end();
-  } catch (err) {
-    next(err);
+      return res.status(200).end();
+    } catch (err) {
+      next(err);
+    }
   }
-};
 
-static async InativarLivro(req, res, next){
-  try{
-    const { id } = req.params;
-    await AutopublicacaoService.inativarLivro(id);
+  static async InativarLivro(req, res, next) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
 
-    return res.status(200).end();
-  }catch(err){
-    next(err);
+      await AutopublicacaoService.inativarLivro(id, userId);
+
+      return res.status(200).end();
+    } catch (err) {
+      next(err);
+    }
   }
-};
 
-static async InsertLivro (req, res, next) {
-  try {
-    const userId = req.user?.id;
-    const { dadosLivro, publicar, capa, manuscritoPath } = req.body;
-    
-    const resultado = await AutopublicacaoService.insertLivroService({
-      userId,
-      dadosLivro,
-      publicar,
-      capa,
-      manuscritoPath
-    });
+  static async DeletarLivroRascunho(req, res, next) {
+    try {
+      const { id } = req.params;
+      const userId = req.user.id;
 
-    return res.status(201).json(resultado);
-  } catch (err) {
-    next(err);
+      await AutopublicacaoService.deletarLivroRascunho(id, userId);
+
+      return res.status(200).end();
+    } catch (err) {
+      next(err);
+    }
   }
-};
 
-static async CriarUploadLivro (req, res, next) {
-  try {
-    const userId = req.user?.id;
-    const { tipo, extensao } = req.body;
+  static async InsertLivro(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { dadosLivro, estadoInicial, capa, manuscritoPath } = req.body;
 
-    const resultado = await AutopublicacaoService.criarUploadLivroService({
-      userId,
-      tipo,
-      extensao
-    });
+      const resultado = await AutopublicacaoService.insertLivroService({
+        userId,
+        dadosLivro,
+        estadoInicial,
+        capa,
+        manuscritoPath,
+      });
 
-    return res.status(200).json(resultado);
-  } catch (error) {
-    next(error);
+      return res.status(201).json(resultado);
+    } catch (err) {
+      next(err);
+    }
   }
-};
 
+  static async CriarUploadLivro(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { tipo, extensao } = req.body;
+
+      const resultado = await AutopublicacaoService.criarUploadLivroService({
+        userId,
+        tipo,
+        extensao,
+      });
+
+      return res.status(200).json(resultado);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async BuscarComFiltros(req, res, next) {
+    try {
+      const userId = req.user.id;
+      const { page, limit, busca, filtro, ordem } = req.query;
+
+      const resultado = await AutopublicacaoService.buscarComFiltros({
+        userId,
+        page: page ? parseInt(page, 10) : undefined,
+        limit: limit ? parseInt(limit, 10) : undefined,
+        busca,
+        filtro,
+        ordem,
+      });
+
+      return res.status(200).json(resultado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async UpdateLivro(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { id } = req.params;
+      const { dadosLivro, capa, manuscritoPath } = req.body;
+
+      const resultado = await AutopublicacaoService.updateLivroService({
+        userId,
+        livroId: id,
+        dadosLivro,
+        capa,
+        manuscritoPath,
+      });
+
+      return res.status(200).json(resultado);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

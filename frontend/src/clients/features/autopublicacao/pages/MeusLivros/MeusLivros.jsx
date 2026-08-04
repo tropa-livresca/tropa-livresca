@@ -1,64 +1,119 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
+import styles from "./MeusLivros.module.css";
+import { IoLibraryOutline } from "react-icons/io5";
 
 export default function MeusLivros() {
-   const {
-      Livros,
-      carregando,
-      BuscarLivrosById,
-      UpdateEstado,
-      InativarLivro,
-   } = useMeusLivros();
+  const { Livros, carregando, BuscarLivrosById, UpdateEstado, InativarLivro } =
+    useMeusLivros();
 
-   useEffect(() => {
-      BuscarLivrosById();
-   }, [BuscarLivrosById]);
+  useEffect(() => {
+    BuscarLivrosById();
+  }, [BuscarLivrosById]);
 
-   const possuiLivros = Array.isArray(Livros) && Livros.length > 0;
+  const possuiLivros = Array.isArray(Livros) && Livros.length > 0;
 
-   if (carregando) return <div>Carregando seus livros...</div>;
+  if (carregando) return <div>Carregando seus livros...</div>;
 
-   return (
-      <div>
-         {possuiLivros ? (
-            <div>
-               {Livros.map(livro => (
-                  <div key={livro.id} style={{ marginBottom: "20px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
-                     <div>
-                        {livro.capa?.frente && (
-                           <img src={livro.capa.frente} alt={livro.titulo} style={{ width: "50px" }} />
-                        )}
-                        <br />
-                        <strong>{livro.titulo}</strong> — <span>{livro.estado}</span>
-                     </div>
-                     <div>
-                        <button onClick={() => { window.location.href = `/editar-livro/${livro.id}`; }}>
-                           Editar
-                        </button>
-                        <button>Visualizar</button>
+  return (
+    <main className={styles.container}>
+      {possuiLivros ? (
+        <div>
+          {Livros.map((livro) => (
+            <div
+              key={livro.id}
+              style={{
+                marginBottom: "20px",
+                borderBottom: "1px solid #ccc",
+                paddingBottom: "10px",
+              }}
+            >
+              <div>
+                {livro.capa?.frente && (
+                  <img
+                    src={livro.capa.frente}
+                    alt={livro.titulo}
+                    style={{ width: "50px" }}
+                  />
+                )}
+                <br />
+                <strong>{livro.titulo}</strong> — <span>{livro.estado}</span>
+              </div>
 
-                        {livro.estado === "rascunho" ? (
-                           <button onClick={() => UpdateEstado(livro.id, false)}>
-                              Publicar Livro
-                           </button>
-                        ) : (
-                           <span>Publicado</span>
-                        )}
+              <div>
+                <button className={`${styles.btn} ${styles.btnVisualizar}`}>
+                  Visualizar
+                </button>
 
-                        <button onClick={() => InativarLivro(livro.id)}>
-                           Inativar Livro Permanentemente
-                        </button>
-                     </div>
-                  </div>
-               ))}
+                <Link
+                  to={`/editar-livro/${livro.id}`}
+                  className={`${styles.btn} ${styles.btnEditar}`}
+                >
+                  Editar
+                </Link>
+
+                {livro.estado === "rascunho" && (
+                  <button
+                    onClick={() => UpdateEstado(livro.id, "em_revisao")}
+                    className={`${styles.btn} ${styles.btnPublicar}`}
+                  >
+                    Enviar para Revisão
+                  </button>
+                )}
+
+                {livro.estado === "em_revisao" && (
+                  <button
+                    onClick={() => UpdateEstado(livro.id, "rascunho")}
+                    className={`${styles.btn} ${styles.btnPublicar}`}
+                  >
+                    Cancelar Revisão (Voltar para Rascunho)
+                  </button>
+                )}
+
+                {livro.estado === "publicado" && (
+                  <span
+                    style={{
+                      color: "green",
+                      fontWeight: "bold",
+                      marginLeft: "8px",
+                    }}
+                  >
+                    Publicado
+                  </span>
+                )}
+
+                {livro.estado !== "em_revisao" && (
+                  <button
+                    onClick={() => {
+                      if (confirm("Deseja inativar este livro?"))
+                        InativarLivro(livro.id);
+                    }}
+                    className={`${styles.btn} ${styles.btnInativar}`}
+                  >
+                    Inativar Livro Permanentemente
+                  </button>
+                )}
+              </div>
             </div>
-         ) : (
-            <div>Nenhum livro encontrado</div>
-         )}
+          ))}
+        </div>
+      ) : (
+        <div className={styles.cardnenhumlivro}>
+          <IoLibraryOutline size={60} />
+          <h1 className={styles.titulon}>
+            Sua estante está esperando por você.
+          </h1>
+          <span className={styles.sub}>
+            Dê o primeiro passo na sua carreira de escritor. Autopublique seu
+            livro e compartilhe sua obra com novos leitores.
+          </span>
+        </div>
+      )}
 
-         <button onClick={() => { window.location.href = "/novo-livro"; }} style={{ marginTop: "20px" }}>
-            Novo Livro
-         </button>
-      </div>
-   );
+      <Link to="/novo-livro" className={styles.btn}>
+        Novo Livro
+      </Link>
+    </main>
+  );
 }

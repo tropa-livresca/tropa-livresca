@@ -27,7 +27,7 @@ export const useEsqueceuSenha = () => {
       }
 
       setSucesso(dados.message || "E-mail de recuperação enviado com sucesso!");
-      setEmail(""); // Limpa o campo de texto após o sucesso
+      setEmail("");
     } catch (err) {
       console.error(err);
       setError(err.message || "Erro ao conectar com o servidor.");

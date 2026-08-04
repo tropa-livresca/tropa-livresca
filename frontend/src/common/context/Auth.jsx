@@ -1,6 +1,6 @@
-﻿import {useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { apiFetch } from "../services/api";
-import {AuthContext} from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -23,11 +23,13 @@ export const AuthProvider = ({ children }) => {
             const data = await res.json();
             setUser(data.user);
           } else {
+            const data = await res.json().catch(() => ({}));
+            console.error(`Falha na sessão (${res.status}):`, data.error || res.statusText);
             setUser(null);
           }
         }
       } catch (err) {
-        console.error("Erro interno em CheckSession:", err);
+        console.error("Erro de conexão em checkSession:", err);
         if (isMounted) setUser(null);
       } finally {
         if (isMounted) setLoading(false);
@@ -53,13 +55,14 @@ const signin = async (email, password) => {
       const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
+        console.error(`Falha na autenticação (${res.status}):`, data.error || res.statusText);
         return data.error || "Erro ao fazer login";
       }
 
       setUser(data.user);
       return null;
     } catch (err) {
-      console.error("Erro interno no signin:", err);
+      console.error("Erro de rede no método signin:", err);
       return "Erro de conexão com o servidor.";
     }
   };
@@ -76,6 +79,7 @@ const signin = async (email, password) => {
       const data = await res.json();
 
       if (!res.ok) {
+        console.error(`Falha no cadastro (${res.status}):`, data.error || res.statusText);
         return data.error || "Erro ao criar conta";
       }
 
@@ -84,7 +88,7 @@ const signin = async (email, password) => {
 
       return null;
     } catch (err) {
-      console.error("Erro interno no signup:", err);
+      console.error("Erro de rede no método signup:", err);
       return "Erro de conexão com o servidor.";
     }
   };
@@ -98,12 +102,13 @@ const signin = async (email, password) => {
 
       const data = await res.json();
       if (!res.ok) {
+        console.error(`Falha no encerramento de sessão (${res.status}):`, data.error || res.statusText);
         return data.error || "Erro ao desconectar usuário.";
       }
 
       setUser(null);
     } catch (err) {
-      console.error("Erro interno no signout:", err);
+      console.error("Erro de rede no método signout:", err);
       return "Erro de conexão com o servidor.";
     }
   };
