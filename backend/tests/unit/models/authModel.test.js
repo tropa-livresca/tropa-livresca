@@ -5,7 +5,7 @@ import {
     resetSupabaseMock,
 } from "../../mocks/supabase.mock.js";
 import {funcionarioAtualizado} from "../../fixtures/funcionario.fixture.js";
-import {authModel} from "../../../src/api/common/models/auth.model.js";
+import {AuthModel} from "../../../src/api/common/models/auth.model.js";
 
 jest.mock("../../../src/api/common/config/supabase.js", () => {
   const originalMockSupabase =
@@ -19,7 +19,7 @@ jest.mock("../../../src/api/common/config/supabase.js", () => {
   };
 })
 
-describe("Funcionários Model - Testes Unitários", () => {
+describe("Auth Model - Testes Unitários", () => {
   beforeEach(() => {
     resetSupabaseMock();
   });
@@ -28,15 +28,28 @@ describe("Funcionários Model - Testes Unitários", () => {
     it('loga o usuario e retorna seus dados', async () => {
       builder.resolve(funcionarioAtualizado, null);
         
-      const username = funcionarioAtualizado.username_adm
+      const username = "1";
       
-      const response = await  authModel.signInAdministrador({funcionarioAtualizado, }); 
+      const response = await  AuthModel.signInAdministrador(username, "123"); 
 
       console.log(response);
 
-      expect(response)
-
+      expect(response).toEqual(funcionarioAtualizado)
       
+    })
+  })
+
+   describe('conferir adminstrador', () => {
+    it('loga o usuario e retorna seus dados', async () => {
+      builder.resolve(funcionarioAtualizado, null);
+        
+      const username = "1";
+      
+      const response = await  AuthModel.signInAdministrador(username, "123"); 
+
+      console.log(response);
+
+      expect(response).toEqual(funcionarioAtualizado)
       
     })
   })
