@@ -1,4 +1,5 @@
 import { AuthService } from "./auth.service.js";
+import supabase from "../../common/config/supabase.js"; 
 
 export class AuthController {
   static COOKIE_OPTIONS = {
@@ -25,38 +26,48 @@ export class AuthController {
         ? await AuthService.setSessionWithCode(code)
         : await AuthService.setSession(accessToken, refreshToken);
 
-      if (!data?.session) {
+      const finalAccessToken = data?.session?.access_token || accessToken;
+      const finalRefreshToken = data?.session?.refresh_token || refreshToken;
+      
+      let finalUser = data?.user || data?.session?.user;
+
+      if (!finalUser && finalAccessToken) {
+        const { data: userData } = await supabase.auth.getUser(finalAccessToken);
+        finalUser = userData?.user;
+      }
+
+      if (!finalAccessToken || !finalRefreshToken || !finalUser) {
         return res.status(502).json({
-          error:
-            "Não foi possível finalizar a sessão do Google. Sessão não retornada pelo provedor.",
+          error: "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
         });
       }
 
       res.cookie(
         "auth-token",
-        data.session.access_token,
+        finalAccessToken,
         AuthController.COOKIE_OPTIONS,
       );
       res.cookie(
         "refresh-token",
-        data.session.refresh_token,
+        finalRefreshToken,
         AuthController.COOKIE_OPTIONS,
       );
 
       return res.json({
-        user: data.user,
+        user: finalUser,
+        session: {
+          access_token: finalAccessToken,
+          refresh_token: finalRefreshToken
+        },
         message: "Sessão definida com sucesso e cookies configurados.",
-      });
+      });     
     } catch (err) {
-      if (
-        err?.code === "invalid_jwt" ||
-        err?.message?.includes("Invalid JWT")
-      ) {
+      if (err?.code === "invalid_jwt" || err?.message?.includes("Invalid JWT") || err?.statusCode === 401) {
         return res.status(401).json({
-          error:
-            "Os tokens recebidos do Google não são válidos para finalizar a sessão.",
+          error: "Os tokens recebidos do Google não são válidos para finalizar a sessão.",
         });
       }
+      
       next(err);
     }
   }
@@ -104,8 +115,7 @@ export class AuthController {
 
       if (!data?.url) {
         return res.status(502).json({
-          error:
-            "Não foi possível gerar a URL de autenticação com Google no momento.",
+          error: "Não foi possível gerar a URL de autenticação com Google no momento.",
         });
       }
 
@@ -125,8 +135,7 @@ export class AuthController {
 
       return res.status(201).json({
         data: data,
-        message:
-          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+        message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
     } catch (err) {
       next(err);
@@ -154,12 +163,6 @@ export class AuthController {
         error.statusCode = 401;
         throw error;
       }
-
-      const cookieOptions = AuthController.COOKIE_OPTIONS || {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-      };
 
       res.cookie("auth-token", data.session.access_token, cookieOptions);
       res.cookie("refresh-token", data.session.refresh_token, cookieOptions);
@@ -194,8 +197,7 @@ export class AuthController {
       await AuthService.esqueciSenha(email);
 
       return res.status(200).json({
-        message:
-          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+        message: "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
       });
     } catch (err) {
       next(err);

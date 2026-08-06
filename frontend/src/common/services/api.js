@@ -7,7 +7,7 @@ export const apiFetch = async (endpoint, options = {}) => {
     fetchOptions.headers["Content-Type"] = "application/json";
   }
 
-  const fallbackUrlBase = import.meta.env.DEV ? "http://localhost:3000" : "";
+  const fallbackUrlBase = import.meta.env.DEV ? "" : "";
   const urlBase = import.meta.env.VITE_API_URL
     ? import.meta.env.VITE_API_URL.replace(/\/$/, "")
     : fallbackUrlBase;
