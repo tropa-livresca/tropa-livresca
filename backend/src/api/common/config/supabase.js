@@ -12,13 +12,13 @@ const supabaseOptions = {
   },
 };
 
-const supabaseAdmin = createClient(
+const supabaseAdmin = await createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
   supabaseOptions
 );
 
-const supabase = createClient(
+const supabase = await createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY,
   supabaseOptions

@@ -11,9 +11,17 @@ import {
 import { AutorModel } from "../../../src/api/common/models/autor.model.js";
 import { supabaseAdmin } from "../../../src/api/common/config/supabase";
 
-jest.mock("../../../src/api/common/config/supabase.js", () => ({
+jest.mock("../../../src/api/common/config/supabase.js", () => {
+
+  const originalMockSupabase =
+    require("../../mocks/supabase.mock.js").supabaseMock;
+  originalMockSupabase.rpc = (fnName, params) => builder;
+
+  return{
+  __esModule: true,
+    default: originalMockSupabase,
   supabaseAdmin: mockSupabaseAdmin,
-}));
+}});
 
 describe("AutorModel = Testes Unitários", () => {
   beforeEach(() => {

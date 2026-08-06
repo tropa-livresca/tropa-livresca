@@ -6,10 +6,18 @@ import {
 import { livroCompletoMock } from "../../fixtures/livros.fixture.js";
 import { LivroModel } from "../../../src/api/common/models/livro.model.js";
 
-jest.mock("../../../src/api/common/config/supabase.js", () => ({
-  __esModule: true,
+jest.mock("../../../src/api/common/config/supabase.js", () => {
+  const originalMockSupabase =
+    require("../../mocks/supabase.mock.js").supabaseMock;
+  originalMockSupabase.rpc = (fnName, params) => builder;
+
+
+  return {
+    __esModule: true,
+    default: originalMockSupabase,
   supabaseAdmin: mockSupabaseAdmin,
-}));
+  }
+});
 
 describe("LivroModel - Testes Unitários", () => {
   beforeEach(() => {
@@ -19,12 +27,13 @@ describe("LivroModel - Testes Unitários", () => {
   describe("buscarComFiltros", () => {
     it("Deve paginar, filtrar por livros ativos e retornar a lista com o count", async () => {
       const mockLista = [livroCompletoMock];
-      
+
       jest.spyOn(builder, "range").mockResolvedValueOnce({
         data: mockLista,
         error: null,
         count: 1
       });
+
 
       const resultado = await LivroModel.buscarComFiltros({
         page: 1,
