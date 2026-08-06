@@ -97,9 +97,11 @@ export class AuthController {
 
       return res.status(200).json({ message: "Sessão renovada com sucesso." });
     } catch (err) {
-      return res.status(err?.statusCode || 401).json({
+      res.status(err?.statusCode || 401).json({
         error: err?.message || "Não foi possível renovar a sessão.",
       });
+
+      next(err);
     }
   }
 
@@ -164,8 +166,8 @@ export class AuthController {
         throw error;
       }
 
-      res.cookie("auth-token", data.session.access_token, cookieOptions);
-      res.cookie("refresh-token", data.session.refresh_token, cookieOptions);
+      res.cookie("auth-token", data.session.access_token, this.COOKIE_OPTIONS);
+      res.cookie("refresh-token", data.session.refresh_token, this.COOKIE_OPTIONS);
 
       return res
         .status(200)

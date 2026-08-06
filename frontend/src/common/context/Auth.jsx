@@ -9,6 +9,10 @@ export const AuthProvider = ({ children }) => {
     return sessionStorage.getItem("temp_email") || "";
   });
 
+  const setUser = (value) => {
+    setUserState(value);
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -45,8 +49,8 @@ export const AuthProvider = ({ children }) => {
       isMounted = false;
     };
   }, []);
-  
-const signin = async (email, password) => {
+
+  const signin = async (email, password) => {
     try {
       const res = await apiFetch("/api/v1/clients/auth/signin", {
         skipAuthRedirect: true,
@@ -124,10 +128,6 @@ const signin = async (email, password) => {
       console.error("Erro de rede no método signout:", err);
       return "Erro de conexão com o servidor.";
     }
-  };
-
-  const setUser = (value) => {
-    setUserState(value);
   };
 
   return (
