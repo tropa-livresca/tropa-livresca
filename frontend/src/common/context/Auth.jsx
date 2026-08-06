@@ -45,8 +45,8 @@ export const AuthProvider = ({ children }) => {
       isMounted = false;
     };
   }, []);
-
-  const signin = async (email, password) => {
+  
+const signin = async (email, password) => {
     try {
       const res = await apiFetch("/api/v1/clients/auth/signin", {
         skipAuthRedirect: true,
@@ -54,7 +54,8 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
         console.error(
@@ -71,6 +72,7 @@ export const AuthProvider = ({ children }) => {
       return "Erro de conexão com o servidor.";
     }
   };
+
 
   const signup = async (email, password, telefone, nome) => {
     try {
