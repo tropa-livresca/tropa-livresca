@@ -44,11 +44,6 @@ export const useMeusLivros = () => {
 
       if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
 
-      // A API pode retornar o payload dentro de `data` ou diretamente no corpo.
-      // Suporte ambos os formatos e registre o retorno para depuração.
-      // Exemplo de formas aceitas: { data: { ... } }  ou  { id: ..., titulo: ... }
-      // Retorna `data.data` se existir, caso contrário retorna `data`.
-
       console.debug("BuscarLivroById response:", data);
       return data.data ?? data;
     } catch (error) {

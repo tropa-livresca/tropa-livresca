@@ -3,7 +3,7 @@ import { apiFetch } from "../services/api";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUserState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tempEmail, setTempEmail] = useState(() => {
     return sessionStorage.getItem("temp_email") || "";
@@ -24,13 +24,16 @@ export const AuthProvider = ({ children }) => {
             setUser(data.user);
           } else {
             const data = await res.json().catch(() => ({}));
-            console.error(`Falha na sessão (${res.status}):`, data.error || res.statusText);
+            console.error(
+              `Falha na sessão (${res.status}):`,
+              data.error || res.statusText,
+            );
             setUser(null);
           }
         }
       } catch (err) {
         console.error("Erro de conexão em checkSession:", err);
-        if (isMounted) setUser(null);
+        if (isMounted) setUserState(null);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -55,7 +58,10 @@ const signin = async (email, password) => {
       const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
-        console.error(`Falha na autenticação (${res.status}):`, data.error || res.statusText);
+        console.error(
+          `Falha na autenticação (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao fazer login";
       }
 
@@ -73,13 +79,17 @@ const signin = async (email, password) => {
       const res = await apiFetch("/api/v1/clients/auth/signup", {
         skipAuthRedirect: true,
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, telefone, nome }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        console.error(`Falha no cadastro (${res.status}):`, data.error || res.statusText);
+        console.error(
+          `Falha no cadastro (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao criar conta";
       }
 
@@ -102,7 +112,10 @@ const signin = async (email, password) => {
 
       const data = await res.json();
       if (!res.ok) {
-        console.error(`Falha no encerramento de sessão (${res.status}):`, data.error || res.statusText);
+        console.error(
+          `Falha no encerramento de sessão (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao desconectar usuário.";
       }
 
@@ -111,6 +124,10 @@ const signin = async (email, password) => {
       console.error("Erro de rede no método signout:", err);
       return "Erro de conexão com o servidor.";
     }
+  };
+
+  const setUser = (value) => {
+    setUserState(value);
   };
 
   return (
@@ -124,6 +141,7 @@ const signin = async (email, password) => {
         signout,
         tempEmail,
         setTempEmail,
+        setUser,
       }}
     >
       {children}

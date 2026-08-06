@@ -4,22 +4,33 @@ export class AuthController {
   static COOKIE_OPTIONS = {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    path: "/",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 
   static async setSession(req, res, next) {
+    const code = req.body.code;
     const accessToken = req.body.accessToken || req.body.access_token;
     const refreshToken = req.body.refreshToken || req.body.refresh_token;
 
-    if (!accessToken || !refreshToken) {
-      return res
-        .status(400)
-        .json({ error: "Tokens não fornecidos para configuração de sessão." });
+    if (!code && (!accessToken || !refreshToken)) {
+      return res.status(400).json({
+        error: "Código ou tokens não fornecidos para configuração de sessão.",
+      });
     }
 
     try {
-      const data = await AuthService.setSession(accessToken, refreshToken);
+      const data = code
+        ? await AuthService.setSessionWithCode(code)
+        : await AuthService.setSession(accessToken, refreshToken);
+
+      if (!data?.session) {
+        return res.status(502).json({
+          error:
+            "Não foi possível finalizar a sessão do Google. Sessão não retornada pelo provedor.",
+        });
+      }
 
       res.cookie(
         "auth-token",
@@ -37,12 +48,28 @@ export class AuthController {
         message: "Sessão definida com sucesso e cookies configurados.",
       });
     } catch (err) {
+      if (
+        err?.code === "invalid_jwt" ||
+        err?.message?.includes("Invalid JWT")
+      ) {
+        return res.status(401).json({
+          error:
+            "Os tokens recebidos do Google não são válidos para finalizar a sessão.",
+        });
+      }
       next(err);
     }
   }
 
   static async refreshSession(req, res, next) {
     const refreshToken = req.cookies["refresh-token"];
+
+    if (!refreshToken) {
+      return res.status(401).json({
+        error: "Token de atualização não fornecido.",
+      });
+    }
+
     try {
       const data = await AuthService.refreshSession(refreshToken);
 
@@ -59,18 +86,31 @@ export class AuthController {
 
       return res.status(200).json({ message: "Sessão renovada com sucesso." });
     } catch (err) {
-      next(err);
+      return res.status(err?.statusCode || 401).json({
+        error: err?.message || "Não foi possível renovar a sessão.",
+      });
     }
   }
 
   static async signinComGoogle(req, res, next) {
-    const idToken = req.body.token;
-
     try {
-      const data = await AuthService.signinComGoogle(idToken);
+      const redirectTo =
+        req.body?.redirectTo ||
+        req.query?.redirectTo ||
+        process.env.SUPABASE_AUTH_REDIRECT_URL ||
+        `${req.protocol}://${req.get("host")}/auth/callback`;
 
-      return res.status(201).json({
-        data: data,
+      const data = await AuthService.signinComGoogle(redirectTo);
+
+      if (!data?.url) {
+        return res.status(502).json({
+          error:
+            "Não foi possível gerar a URL de autenticação com Google no momento.",
+        });
+      }
+
+      return res.status(200).json({
+        data: { url: data.url },
         message: "Login com Google efetuado com sucesso!",
       });
     } catch (err) {
