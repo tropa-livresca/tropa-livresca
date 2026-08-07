@@ -1,51 +1,22 @@
 ﻿import Input from "../../../../components/Input/Input";
 import SubmitButton from "../../../../components/Submit/SubmitButton";
+import BotaoGoogle from "../../components/BotaoGoogle/BotaoGoogle";
 import styles from "./Login.module.css";
 
-import useAuth from "../../../../hooks/useAuth";
+import {useLogin} from "../../hooks/useLogin";
 
 import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
+
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash, FaGoogle } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash} from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [error, setError] = useState("");
-
-  const { signin } = useAuth();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
-  const handleSignin = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !senha) {
-      setError("Preencha todos os campos.");
-      return;
-    }
-
-    const res = await signin(email, senha);
-
-    if (res) {
-      setError(res);
-      return;
-    }
-
-    navigate(from, { replace: true });
-  };
+  const {senha, setSenha, error, email, setEmail, handleSignin, navigate} = useLogin();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
-
-  const loginGoogle = () => {
-    // aaa
-  };
 
   return (
     <div className={styles.container}>
@@ -92,10 +63,7 @@ export default function Login() {
               </button>
             </div>
 
-            <div id={styles.checkbox}>
-              <input type="checkbox" />
-              <label>Lembrar por 30 dias</label>
-            </div>
+            <BotaoGoogle/>
 
             <SubmitButton text="ENTRAR" id={styles.btn} />
 
@@ -105,30 +73,21 @@ export default function Login() {
               <span></span>
             </div>
 
-            <button
-              type="button"
-              className={styles.google}
-              onClick={loginGoogle}
-            >
-              <FaGoogle />
-              Entrar com Google
-            </button>
-
             <div className={styles.errinho}>
               {error.length > 0 && <p>{error}</p>}
             </div>
 
             <p>
-              <Link to="/auth/cadastro">Esqueceu a senha?</Link>
+              <Link to="/auth/esqueceu-senha">Esqueceu a senha?</Link>
             </p>
 
             <div className={styles.informacoes}>
               <div className={styles.para}>
                 <p>
-                  Não tem uma conta? <Link to="/cadastro">Crie uma.</Link>
+                  Não tem uma conta? <Link to="/auth/cadastro">Crie uma.</Link>
                 </p>
                 <p>
-                  É funcionário? <Link to="/cadastro">Clique aqui.</Link>
+                  É funcionário? <Link to="/auth/admin">Clique aqui.</Link>
                 </p>
               </div>
             </div>

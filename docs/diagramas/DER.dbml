@@ -69,7 +69,6 @@ Table denuncias {
   data timestamp [default: `now()`, not null]
   descricao text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_adm_credenciais_id uuid [ref: > users_profile.id, null]
   fk_categorias_id bigint [ref: > categorias.id, not null]
 }
 

@@ -1,0 +1,130 @@
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  margin-bottom: 3%;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form {
+  background: #fffdf7 !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem !important;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+}
+
+.form legend {
+  color: #67170c;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form legend::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 2%;
+}
+
+.carregar {
+  width: 97%;
+  border: 1px dashed #d4b46a;
+  color: #67170c;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
+  background: #fffdf7;
+  margin: 0 auto;
+  transition: 0.3s ease;
+  margin-bottom: 1.4rem;
+}
+
+.carregarsvg {
+  font-size: 2rem;
+  color: #67170c;
+  flex-shrink: 0;
+}
+
+.carregar span {
+  display: flex;
+  flex-direction: column;
+  font-family: "Jacques Francois", serif;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+.carregar > span > .clique {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  font-weight: normal;
+  color: #67170c;
+}
+
+.arquivocarregado {
+  margin-top: 1rem;
+  color: #3b7d2a;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.posterior {
+  display: flex;
+  justify-content: flex-end;
+}
+
+#btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  margin-right: 1%;
+}
+
+#btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+#btn2 {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+#btn2:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}

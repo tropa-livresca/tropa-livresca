@@ -1,11 +1,74 @@
 import { AuthModel } from "../../common/models/auth.model.js";
 
 export class AuthService {
+  static async signinComGoogle(redirectTo) {
+    try {
+      const result = await AuthModel.signinComGoogle(redirectTo);
+
+      if (!result) {
+        const error = new Error("Resposta vazia ao iniciar login com Google.");
+        error.statusCode = 502;
+        throw error;
+      }
+
+      return result;
+    } catch (error) {
+      error.statusCode = error.statusCode || 500;
+      throw error;
+    }
+  }
+
+  static async esqueciSenha(email) {
+    if (!email) {
+      const erroEmail = new Error("O e-mail é obrigatório.");
+      erroEmail.statusCode = 500;
+      throw erroEmail;
+    }
+
+    const redirectUrl =
+      process.env.SUPABASE_RESET_PASSWORD_URL ||
+      "https://localhost:5173/auth/redefinir-senha";
+
+    const { data, error } = await AuthModel.enviarEmailRecuperacao(
+      email,
+      redirectUrl,
+    );
+
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async confirmarNovaSenha(accessToken, refreshToken, novaSenha) {
+    if (!accessToken || !novaSenha) {
+      const erroDados = new Error("Dados de validação ou nova senha ausentes.");
+      erroDados.statusCode = 400;
+      throw erroDados;
+    }
+
+    await AuthModel.setSession(accessToken, refreshToken);
+
+    return await AuthModel.atualizarSenha(novaSenha);
+  }
+
   static async setSession(accessToken, refreshToken) {
     const { data, error } = await AuthModel.setSession(
       accessToken,
       refreshToken,
     );
+
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+    return data;
+  }
+
+  static async setSessionWithCode(code) {
+    const { data, error } = await AuthModel.setSessionWithCode(code);
 
     if (error) {
       error.statusCode = 400;
@@ -42,17 +105,7 @@ export class AuthService {
       throw erroCampos;
     }
 
-    const redirectUrl =
-      process.env.SUPABASE_REDIRECT_URL ||
-      "http://localhost:5173/confirmacao-email";
-    const metadata = { nome, telephone: telefone };
-
-    const { data, error } = await AuthModel.signup(
-      email,
-      password,
-      redirectUrl,
-      metadata,
-    );
+    const { data, error } = await AuthModel.signup(email, password, nome, telefone);
 
     if (error) {
       if (

@@ -14,11 +14,12 @@ export const checkAuth = async (req, res, next) => {
     if (error) {
       return res.status(401).json({ error: "Token de autenticação inválido." });
     }
+
     req.user = data.user;
-    next();
+    return next();
   } catch (err) {
-    err.status(500).json({ error: "Erro ao verificar autenticação." });
-    next(err);
+    console.error("Erro ao verificar autenticação:", err);
+    return res.status(500).json({ error: "Erro ao verificar autenticação." });
   }
 };
 
@@ -50,11 +51,9 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
       .single();
 
     if (dbError || !adm || !adm.ativo) {
-      return res
-        .status(403)
-        .json({
-          error: "Acesso negado: Recursos restritos a administradores ativos.",
-        });
+      return res.status(403).json({
+        error: "Acesso negado: Recursos restritos a administradores ativos.",
+      });
     }
 
     req.user = user;
@@ -66,4 +65,4 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
   }
 };
 
-export const verificarCargo = () =>{}
+export const verificarCargo = () => {};

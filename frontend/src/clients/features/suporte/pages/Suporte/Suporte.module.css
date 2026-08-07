@@ -1,0 +1,136 @@
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
+}
+
+.topo {
+  width: 100%;
+  margin-bottom: 8%;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(3rem, 5vw, 5rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.inputmodificado {
+  width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+}
+
+.form {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.form textarea {
+  width: 100%;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem;
+}
+
+.form input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.form textarea::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+textarea {
+  font-size: 1rem;
+  resize: none;
+  height: 5rem;
+  color: #67170c !important;
+}
+
+.selectContainer {
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.9rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #67170c;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: #7a4d38;
+  transition: transform 0.3s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.35s ease,
+    margin-top 0.35s ease;
+  border-radius: 1rem;
+}
+
+.opcoesAbertas {
+  max-height: 300px;
+  margin-top: 0.5rem;
+  border: 1px solid #e2c77c;
+}
+
+.opcao {
+  background: #fffdf4;
+  border: none;
+  border-bottom: 1px solid #f1d892;
+  color: #67170c;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.opcao:last-child {
+  border-bottom: none;
+}
+
+button{
+  background-color: #67170c;
+  color:white;
+}

@@ -1,3 +1,9 @@
+
+
+
+
+
+
 import { jest } from "@jest/globals";
 
 class SupabaseQueryBuilder {
@@ -28,6 +34,8 @@ class SupabaseQueryBuilder {
     this.range = jest.fn(() => this);
     this.limit = jest.fn(() => this);
 
+    this.signInWithPassword = jest.fn(() => this);
+
     this.single = jest.fn(() => Promise.resolve(this.result));
     this.maybeSingle = jest.fn(() => Promise.resolve(this.result));
 
@@ -53,6 +61,7 @@ export const supabaseAdminMock = {
 
 export const supabaseMock = {
   from: jest.fn(() => builder),
+  auth: {signInWithPassword: jest.fn(() => builder)}, 
 };
 
 export function resetSupabaseMock() {

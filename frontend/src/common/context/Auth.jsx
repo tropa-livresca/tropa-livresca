@@ -1,13 +1,17 @@
-﻿import {useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { apiFetch } from "../services/api";
-import {AuthContext} from "./AuthContext";
+import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUserState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tempEmail, setTempEmail] = useState(() => {
     return sessionStorage.getItem("temp_email") || "";
   });
+
+  const setUser = (value) => {
+    setUserState(value);
+  };
 
   useEffect(() => {
     let isMounted = true;
@@ -23,12 +27,17 @@ export const AuthProvider = ({ children }) => {
             const data = await res.json();
             setUser(data.user);
           } else {
+            const data = await res.json().catch(() => ({}));
+            console.error(
+              `Falha na sessão (${res.status}):`,
+              data.error || res.statusText,
+            );
             setUser(null);
           }
         }
       } catch (err) {
-        console.error("Erro interno em CheckSession:", err);
-        if (isMounted) setUser(null);
+        console.error("Erro de conexão em checkSession:", err);
+        if (isMounted) setUserState(null);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -49,31 +58,42 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
+        console.error(
+          `Falha na autenticação (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao fazer login";
       }
 
       setUser(data.user);
       return null;
     } catch (err) {
-      console.error("Erro interno no signin:", err);
+      console.error("Erro de rede no método signin:", err);
       return "Erro de conexão com o servidor.";
     }
   };
+
 
   const signup = async (email, password, telefone, nome) => {
     try {
       const res = await apiFetch("/api/v1/clients/auth/signup", {
         skipAuthRedirect: true,
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, telefone, nome }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
+        console.error(
+          `Falha no cadastro (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao criar conta";
       }
 
@@ -82,7 +102,7 @@ export const AuthProvider = ({ children }) => {
 
       return null;
     } catch (err) {
-      console.error("Erro interno no signup:", err);
+      console.error("Erro de rede no método signup:", err);
       return "Erro de conexão com o servidor.";
     }
   };
@@ -96,12 +116,16 @@ export const AuthProvider = ({ children }) => {
 
       const data = await res.json();
       if (!res.ok) {
+        console.error(
+          `Falha no encerramento de sessão (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao desconectar usuário.";
       }
 
       setUser(null);
     } catch (err) {
-      console.error("Erro interno no signout:", err);
+      console.error("Erro de rede no método signout:", err);
       return "Erro de conexão com o servidor.";
     }
   };
@@ -117,6 +141,7 @@ export const AuthProvider = ({ children }) => {
         signout,
         tempEmail,
         setTempEmail,
+        setUser,
       }}
     >
       {children}

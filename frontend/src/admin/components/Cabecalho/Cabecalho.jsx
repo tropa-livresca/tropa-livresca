@@ -1,8 +1,8 @@
-import { useState } from "react";
-import { AppBar, Toolbar, IconButton, Typography, Button, Box } from "@mui/material";
+import { AppBar, Toolbar, IconButton, Typography, Button } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 
-export default function Cabecalho({ aoAbrirMenu }) {
+
+export default function Cabecalho({ aoAbrirMenu, signoutAdmin }) {
 
     return (
         <AppBar position="fixed" sx={
@@ -34,7 +34,9 @@ export default function Cabecalho({ aoAbrirMenu }) {
                     Painel do Administrador
                 </Typography>
 
-                <Button color="inherit">Sair</Button>
+                <Button color="inherit" onClick={signoutAdmin}>
+                    Sair
+                </Button>
             </Toolbar>
         </AppBar>
     );

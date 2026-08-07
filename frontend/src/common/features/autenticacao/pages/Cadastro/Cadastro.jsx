@@ -6,71 +6,15 @@ import logo from "../../images/cadastro.png";
 import logo2 from "../../../../images/logo.png";
 
 import styles from "./Cadastro.module.css";
-import useAuth from "../../../../hooks/useAuth";
-import { Link, useNavigate } from "react-router-dom";
+
+import { useCadastro } from "../../hooks/useCadastro";
+import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
 export default function Cadastro() {
-  const [nome, setNome] = useState("");
-  const [senha, setSenha] = useState("");
-  const [confSenha, setConfSenha] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
-
-  const { signup } = useAuth();
-
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !senha || !confSenha || !telefone || !nome) {
-      setError("Preencha todos os campos.");
-      return;
-    }
-
-    let novosErros = [];
-
-    if (senha.length < 8) {
-      novosErros.push("A senha precisa ter, no mínimo, 8 caracteres.");
-    }
-
-    const regexSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
-
-    if (!regexSenha.test(senha)) {
-      novosErros.push(
-        "A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais.",
-      );
-    }
-
-    if (senha !== confSenha) {
-      novosErros.push("As senhas não são iguais.");
-    }
-
-    if (telefone.length !== 15) {
-      novosErros.push("Número de telefone incorreto.");
-    }
-
-    if (novosErros.length > 0) {
-      setError(novosErros);
-      return;
-    }
-
-    const resError = await signup(email, senha, telefone, nome);
-
-    if (resError) {
-      setError(resError);
-      return;
-    }
-
-    alert(
-      "Cadastro realizado! Verifique sua caixa de entrada para confirmar o e-mail.",
-    );
-
-    navigate("/login");
-  };
+  
+  const { email, setEmail, senha, setSenha, error, nome, setNome, confSenha, setConfSenha, telefone, setTelefone, navigate, handleSignup } = useCadastro();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfSenha, setMostrarConfSenha] = useState(false);
@@ -174,7 +118,7 @@ export default function Cadastro() {
             </div>
 
             <span className={styles.span}>
-              Já tem cadastro? <Link to="/login">Clique aqui.</Link>
+              Já tem cadastro? <Link to="/auth/login">Clique aqui.</Link>
             </span>
 
             <SubmitButton text="CADASTRAR" />

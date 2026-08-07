@@ -1,8 +1,6 @@
 ﻿import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Input from "../../../../../common/components/Input/Input";
 
-export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivro }) {
+export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivro, isBloqueadoParaEdicao }) {
   const [urlPreviewManga, setUrlPreviewManga] = useState(null);
   const [urlPreviewFrente, setUrlPreviewFrente] = useState(null);
   const [urlPreviewVerso, setUrlPreviewVerso] = useState(null);
@@ -16,15 +14,10 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
 
     const extrairArquivo = (dado) => {
       if (!dado) return null;
-
       if (dado instanceof File) return dado;
-
       if (dado instanceof FileList && dado.length > 0) return dado[0];
-
       if (Array.isArray(dado) && dado.length > 0) return dado[0];
-
       if (dado[0] instanceof File) return dado[0];
-
       return null;
     };
 
@@ -77,8 +70,6 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
     };
   }, [dados.conteudo]);
 
-  const temAlgumaCapa = dados.conteudo?.capa?.frente || dados.conteudo?.capa?.verso || dados.conteudo?.capa?.orelhas;
-
   return (
     <main>
       <h1>Confirmação</h1>
@@ -100,7 +91,7 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
             <li>Palavras-chave: {dados.detalhes.palavrasChave?.join(", ")}</li>
           </ul>
         )}
-        <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>
+        {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>}
       </div>
       <div>
         <div>
@@ -131,7 +122,7 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
               </div>
             )}
           </div>
-          <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>
+          {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>}
         </div>
       </div>
       <div>
@@ -142,11 +133,17 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
             <li>Valor do Livro Digital: {dados.orcamento.valorLivroDigital}</li>
           </ul>
         )}
-        <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>
+        {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>}
       </div>
       <div>
-        <button type="button" onClick={() => publicarLivro(true)}>Publicar Livro</button>
-        <button type="button" onClick={() => publicarLivro(false)}>Salvar como Rascunho</button>
+        {!isBloqueadoParaEdicao ? (
+          <>
+            <button type="button" onClick={() => publicarLivro("em_revisao")}>Enviar para Revisão</button>
+            <button type="button" onClick={() => publicarLivro("rascunho")}>Salvar como Rascunho</button>
+          </>
+        ) : (
+          <p style={{ color: "orange", fontWeight: "bold" }}>Este livro está em modo de leitura e não pode receber ações de envio.</p>
+        )}
       </div>
     </main>
   );

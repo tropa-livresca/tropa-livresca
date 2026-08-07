@@ -44,43 +44,55 @@ export const useMeusLivros = () => {
 
       if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
 
-      return data.data;
+      console.debug("BuscarLivroById response:", data);
+      return data.data ?? data;
     } catch (error) {
       console.error("Erro em BuscarLivroById", error);
       throw error;
     }
   }, []);
 
-  const UpdateEstado = useCallback(async (id, estado) => {
-    setCarregando(true);
-    try {
-      const res = await apiFetch(
-        "/api/v1/clients/autopublicacao/updateEstado/" + id + "/" + estado,
-        {
-          method: "PATCH",
-        },
-      );
-      if (!res.ok) throw new Error(`Erro ${res.status}`);
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro em UpdateStatusAtivo", error);
-      setCarregando(false);
-    }
-  }, []);
+  const UpdateEstado = useCallback(
+    async (id, novoEstado) => {
+      setCarregando(true);
+      try {
+        const res = await apiFetch(
+          "/api/v1/clients/autopublicacao/updateEstado/" + id,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ novoEstado }),
+          },
+        );
+        if (!res.ok) throw new Error(`Erro ${res.status}`);
+        await BuscarLivrosById();
+      } catch (error) {
+        console.error("Erro em UpdateEstado", error);
+        setCarregando(false);
+      }
+    },
+    [BuscarLivrosById],
+  );
 
-  const InativarLivro = useCallback(async (id) => {
-    setCarregando(true);
-    try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/ativo/" + id, {
-        method: "PATCH",
-      });
-      if (!res.ok) throw new Error(`Erro ${res.status}`);
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro em InativarLivro", error);
-      setCarregando(false);
-    }
-  }, []);
+  const InativarLivro = useCallback(
+    async (id) => {
+      setCarregando(true);
+      try {
+        const res = await apiFetch(
+          "/api/v1/clients/autopublicacao/ativo/" + id,
+          {
+            method: "PATCH",
+          },
+        );
+        if (!res.ok) throw new Error(`Erro ${res.status}`);
+        await BuscarLivrosById();
+      } catch (error) {
+        console.error("Erro em InativarLivro", error);
+        setCarregando(false);
+      }
+    },
+    [BuscarLivrosById],
+  );
 
   return {
     carregando,
