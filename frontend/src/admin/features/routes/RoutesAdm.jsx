@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 
-import BoasVindas from "../painelGeral/pages/boasVindas/BoasVindas";
+import BoasVindas from "../painelGeral/pages/BoasVindas/BoasVindas";
 
 const tema = createTheme({
   palette: {
