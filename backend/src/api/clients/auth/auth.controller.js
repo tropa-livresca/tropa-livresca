@@ -166,8 +166,8 @@ export class AuthController {
         throw error;
       }
 
-      res.cookie("auth-token", data.session.access_token, this.COOKIE_OPTIONS);
-      res.cookie("refresh-token", data.session.refresh_token, this.COOKIE_OPTIONS);
+      res.cookie("auth-token", data.session.access_token, AuthController.COOKIE_OPTIONS);
+      res.cookie("refresh-token", data.session.refresh_token, AuthController.COOKIE_OPTIONS);
 
       return res
         .status(200)

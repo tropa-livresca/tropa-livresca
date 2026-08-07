@@ -10,7 +10,7 @@ export default function RoutesAutenticacao() {
     return (
         <Routes>
             <Route path="login" element={<Login />} />
-            <Route path = "auth/login" element={<LoginAdmin />} />
+            <Route path = "admin" element={<LoginAdmin />} />
             <Route path="cadastro" element={<Cadastro />} />
             <Route path="callback" element={<Callback />} />
             <Route path="esqueceu-senha" element={<EsqueceuSenha />} />

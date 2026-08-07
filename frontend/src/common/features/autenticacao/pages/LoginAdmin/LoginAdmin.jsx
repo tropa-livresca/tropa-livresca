@@ -1,32 +1,26 @@
 ﻿import Input from "../../../../components/Input/Input";
 import SubmitButton from "../../../../components/Submit/SubmitButton";
-import BotaoGoogle from "../../components/BotaoGoogle/BotaoGoogle";
-import styles from "./Login.module.css";
+import styles from "./LoginAdmin.module.css";
 
 import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FaEye, FaEyeSlash} from "react-icons/fa";
+import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
-export default function Login() {
-  //const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [error, setError] = useState("");
+import { useLoginAdmin } from "../../hooks/useLoginAdmin";
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
-  const handleSignin = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    navigate(from, { replace: true });
-  };
-
+export default function LoginAdmin() {
+  const {
+    username,
+    setUsername,
+    senha,
+    setSenha,
+    error,
+    handleLoginAdmin,
+    navigate,
+  } = useLoginAdmin();
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   return (
@@ -42,21 +36,20 @@ export default function Login() {
           </button>
 
           <img src={logo2} alt="Tropa Livresca" width="100" />
-          <form onSubmit={handleSignin}>
-            <h1>LOGIN</h1>
+          <form onSubmit={handleLoginAdmin}>
+            <h1>LOGIN ADMINISTRADOR</h1>
             <h2>Bem-vindo de volta</h2>
             <h3>Insira seus dados para acessar sua conta</h3>
-            <label>E-mail</label>
+            
+            <label>Usuário</label>
             <Input
-              type="email"
-              placeholder="Digite seu e-mail"
-              handleOnChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              value={email}
+              type="text"
+              placeholder="Digite seu usuário"
+              handleOnChange={(e) => setUsername(e.target.value)}
+              value={username}
             />
+            
             <label>Senha</label>
-
             <div className={styles.inputSenha}>
               <Input
                 type={mostrarSenha ? "text" : "password"}
@@ -73,32 +66,17 @@ export default function Login() {
                 {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-
-            <BotaoGoogle/>
-
+              
             <SubmitButton text="ENTRAR" id={styles.btn} />
-
-            <div className={styles.divisor}>
-              <span></span>
-              <p>ou</p>
-              <span></span>
-            </div>
 
             <div className={styles.errinho}>
               {error.length > 0 && <p>{error}</p>}
             </div>
 
-            <p>
-              <Link to="/auth/esqueceu-senha">Esqueceu a senha?</Link>
-            </p>
-
             <div className={styles.informacoes}>
               <div className={styles.para}>
                 <p>
-                  Não tem uma conta? <Link to="/auth/cadastro">Crie uma.</Link>
-                </p>
-                <p>
-                  É funcionário? <Link to="/auth/cadastro">Clique aqui.</Link>
+                  Não é funcionário? <Link to="/auth/login"> Clique aqui.</Link>
                 </p>
               </div>
             </div>

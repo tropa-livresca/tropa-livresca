@@ -3,7 +3,7 @@ import SubmitButton from "../../../../components/Submit/SubmitButton";
 import BotaoGoogle from "../../components/BotaoGoogle/BotaoGoogle";
 import styles from "./Login.module.css";
 
-import useLogin from "../../hooks/useLogin";
+import {useLogin} from "../../hooks/useLogin";
 
 import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
@@ -87,7 +87,7 @@ export default function Login() {
                   Não tem uma conta? <Link to="/auth/cadastro">Crie uma.</Link>
                 </p>
                 <p>
-                  É funcionário? <Link to="/auth/cadastro">Clique aqui.</Link>
+                  É funcionário? <Link to="/auth/admin">Clique aqui.</Link>
                 </p>
               </div>
             </div>
