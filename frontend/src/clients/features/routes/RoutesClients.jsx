@@ -5,6 +5,7 @@ import { PerfilProvider } from "../../context/Perfil.jsx";
 
 import Inicio from "../institucional/pages/Inicio/Inicio";
 import Perfil from "../perfil/pages/Perfil/Perfil";
+import Endereco from "../perfil/pages/Endereco/Endereco";
 import FAQ from "../suporte/pages/FAQ/FAQ";
 import Historia from "../institucional/pages/Historia/Historia";
 import Autores from "../autores/pages/Autores/Autores";
@@ -48,6 +49,7 @@ const RoutesClients = () => {
           <Route path="/livros/:id" element={<LivroById />} />
           
           <Route path="/perfil" element={<Private Item={Perfil} />} />
+          <Route path = "/perfil/endereco" element = {<Private Item = {Endereco}/>}/>
 
           <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
           <Route path="/editar-livro/:id" element={<Private Item={EditarLivro} />} />

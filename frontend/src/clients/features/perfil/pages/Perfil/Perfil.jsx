@@ -2,6 +2,8 @@
 import { usePerfil } from "../../hooks/usePerfil";
 import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
+import { useEndereco } from "../../hooks/useEndereco";
+import { Link } from "react-router-dom";
 import {
   FaUserCircle,
   FaEnvelope,
@@ -10,6 +12,7 @@ import {
   FaFacebookF,
   FaLinkedinIn,
   FaImage,
+  FaMapMarkerAlt,
 } from "react-icons/fa";
 
 export default function Perfil() {
@@ -32,6 +35,12 @@ export default function Perfil() {
     handleCancelar,
     updatePerfil,
   } = usePerfil();
+
+  const { endereco, BuscarEnderecoPrincipal } = useEndereco();
+
+  useEffect(() => {
+    BuscarEnderecoPrincipal();
+  }, [BuscarEnderecoPrincipal]);
 
   useEffect(() => {
     getPerfil();
@@ -85,6 +94,29 @@ export default function Perfil() {
               <FaPhone />
               {telefone || "(00) 00000-0000"}
             </span>
+
+            {endereco ? (
+              <span className={styles.enderecoPrincipal}>
+                <FaMapMarkerAlt />
+                <div>
+                  <strong>Endereço Padrão:</strong>
+                  <br />
+                  {`${endereco.rua || ""}, ${endereco.num || "S/N"}`}
+                  <br />
+                  {`${endereco.bairro || ""} - ${endereco.cidade}/${endereco.estado}`}
+                </div>
+                <Link to = "/perfil/endereco">Alterar endereço principal</Link>
+              </span>
+            ) : (
+              <span className={styles.semEndereco}>
+                <FaMapMarkerAlt />
+                <div>
+                  <Link to="/perfil/endereco" className={styles.linkEndereco}>
+                    Cadastrar endereço padrão
+                  </Link>
+                </div>
+              </span>
+            )}
           </div>
 
           <div className={styles.redes}>
