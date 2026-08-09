@@ -26,8 +26,8 @@ export class AuthService {
     }
 
     const redirectUrl =
-      process.env.SUPABASE_RESET_PASSWORD_URL ||
-      "https://localhost:5173/auth/redefinir-senha";
+      process.env.SUPABASE_RESET_PASSWORD_CALLBACK_URL ||
+      "http://localhost:3000/api/v1/clients/auth/callback-redefinir-senha";
 
     const { data, error } = await AuthModel.enviarEmailRecuperacao(
       email,

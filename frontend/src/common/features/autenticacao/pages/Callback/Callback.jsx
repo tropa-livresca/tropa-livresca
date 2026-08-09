@@ -15,6 +15,7 @@ export default function Callback() {
                 let code = null;
                 let accessToken = null;
                 let refreshToken = null;
+                let type = null;
 
                 const searchParams = new URLSearchParams(location.search);
                 code = searchParams.get("code") || searchParams.get("token");
@@ -27,6 +28,11 @@ export default function Callback() {
                     const hashParams = new URLSearchParams(hashClean);
                     accessToken = hashParams.get("access_token");
                     refreshToken = hashParams.get("refresh_token");
+                    type = hashParams.get("type");
+                }
+
+                if (!type && (location.search.includes("recovery") || location.hash.includes("recovery"))) {
+                    type = "recovery";
                 }
 
                 if (!code && !accessToken) {
@@ -38,13 +44,10 @@ export default function Callback() {
                 }
 
                 if (!code && !accessToken) {
-                    throw new Error(
-                        "Nenhum código ou token de autenticação foi encontrado na URL de retorno.",
-                    );
+                    throw new Error("Nenhum código ou token foi encontrado na URL.");
                 }
 
                 let response;
-
                 if (code) {
                     response = await apiFetch("/api/v1/clients/auth/session", {
                         method: "POST",
@@ -60,9 +63,7 @@ export default function Callback() {
                 const payload = await response.json().catch(() => ({}));
 
                 if (!response.ok) {
-                    throw new Error(
-                        payload?.error || "Não foi possível finalizar a sessão do Google.",
-                    );
+                    throw new Error(payload?.error || "Falha ao sincronizar a sessão no servidor.");
                 }
 
                 if (payload?.user) {
@@ -78,15 +79,19 @@ export default function Callback() {
                     throw new Error("Dados de usuário não fornecidos pelo servidor.");
                 }
 
-                navigate("/", { replace: true });
+                if (type === "recovery") {
+                    navigate("/auth/redefinir-senha", { replace: true });
+                } else {
+                    navigate("/", { replace: true });
+                }
             } catch (error) {
-                console.error("Erro ao finalizar login com Google:", error);
-                navigate("/auth/login", { replace: true });
+                console.error("Erro no fluxo de Callback:", error);
+                navigate("/auth/login?error=Erro_na_autenticacao", { replace: true });
             }
         };
 
         finalizarLogin();
     }, [location.search, location.hash, navigate, setUser]);
 
-    return null;
+  return null;
 }

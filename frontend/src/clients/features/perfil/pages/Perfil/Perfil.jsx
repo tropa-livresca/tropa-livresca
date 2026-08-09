@@ -1,7 +1,7 @@
-﻿import { usePerfil } from "../../hooks/usePerfil";
+﻿import { useEffect } from "react";
+import { usePerfil } from "../../hooks/usePerfil";
 import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
-import { useEffect, useState } from "react";
 import {
   FaUserCircle,
   FaEnvelope,
@@ -14,127 +14,37 @@ import {
 
 export default function Perfil() {
   const {
-    perfil,
+    getPerfil,
     nome,
     telefone,
-    imagem,
     descricao,
     redesSociais,
+    previewUrl,
+    carregando,
+    editando,
     setNome,
     setTelefone,
-    setImagem,
     setDescricao,
-    setRedesSociais,
+    setEditando,
+    handleFileChange,
+    handleRemoverImagem,
+    handleRedeChange,
+    handleCancelar,
     updatePerfil,
-    getPerfil,
   } = usePerfil();
 
-  const [previewUrl, setPreviewUrl] = useState(null);
-  const [carregando, setCarregando] = useState(true);
-  const [editando, setEditando] = useState(false);
-
   useEffect(() => {
-    const carregarDados = async () => {
-      await getPerfil();
-      setCarregando(false);
-    };
-    carregarDados();
-  }, []);
-
-  useEffect(() => {
-    if (!perfil) return;
-
-    if (imagem === "") {
-      setPreviewUrl(perfil.imagem || null);
-    } else if (imagem === "remover") {
-      setPreviewUrl(null);
-    }
-
-    setNome((prev) => prev || perfil.nome || "");
-    setTelefone((prev) => prev || perfil.telefone || "");
-    setDescricao((prev) => prev || perfil.descricao || "");
-  }, [perfil, imagem]);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagem(file);
-      if (previewUrl && previewUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(previewUrl);
-      }
-      setPreviewUrl(URL.createObjectURL(file));
-    }
-  };
-
-  const handleRemoverImagem = (e) => {
-    e.preventDefault();
-    setImagem("remover");
-    if (previewUrl && previewUrl.startsWith("blob:")) {
-      URL.revokeObjectURL(previewUrl);
-    }
-    setPreviewUrl(null);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl && previewUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
-  const handleRedeChange = (plataforma, valor) => {
-    setRedesSociais((prev) => ({ ...prev, [plataforma]: valor }));
-  };
-
-  const handleCancelar = () => {
-    setEditando(false);
-
-    if (perfil) {
-      setNome(perfil.nome || "");
-      setTelefone(perfil.telefone || "");
-      setDescricao(perfil.descricao || "");
-
-      setRedesSociais({
-        email: perfil.redes_sociais?.email || "",
-        instagram: perfil.redes_sociais?.instagram || "",
-        facebook: perfil.redes_sociais?.facebook || "",
-        linkedin: perfil.redes_sociais?.linkedin || "",
-      });
-
-      if (perfil.imagem) {
-        setPreviewUrl(perfil.imagem);
-        setImagem("");
-      } else {
-        setPreviewUrl(null);
-      }
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const resultado = await updatePerfil({
-      nome,
-      telefone,
-      imagem: imagem === "remover" ? "" : imagem,
-      descricao,
-      redes_sociais: redesSociais,
-    });
-
-    if (resultado?.sucess) {
-      alert("Perfil atualizado com sucesso!");
-      setEditando(false);
-    } else {
-      alert(
-        `Erro ao atualizar perfil: ${resultado?.error || "Erro desconhecido"}`,
-      );
-    }
-  };
+    getPerfil();
+  }, [getPerfil]);
 
   if (carregando) {
     return <p>Carregando...</p>;
   }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    updatePerfil();
+  };
 
   return (
     <main className={styles.container}>
@@ -306,24 +216,40 @@ export default function Perfil() {
 
             <p className={styles.subtitulo}>PNG ou JPG, até 5MB.</p>
 
-            <label
-              className={`${styles.carregar} ${!editando ? styles.carregardesabilitado : ""}`}
-            >
-              <FaImage className={styles.carregarsvg} />
+            <div className={styles.containerFotoBotoes}>
+              <label
+                className={`${styles.carregar} ${!editando ? styles.carregardesabilitado : ""}`}
+              >
+                <FaImage className={styles.carregarsvg} />
 
-              <span>
-                Selecionar imagem
-                <span id={styles.clique}>Clique para escolher um arquivo</span>
-              </span>
+                <span>
+                  Selecionar imagem
+                  <span id={styles.clique}>
+                    Clique para escolher um arquivo
+                  </span>
+                </span>
 
-              <input
-                type="file"
-                hidden
-                disabled={!editando}
-                accept="image/*"
-                onChange={handleFileChange}
-              />
-            </label>
+                <input
+                  type="file"
+                  name="imagem"
+                  hidden
+                  disabled={!editando}
+                  accept="image/*"
+                  onChange={handleFileChange}
+                />
+              </label>
+
+              {previewUrl && (
+                <button
+                  type="button"
+                  disabled={!editando}
+                  className={styles.removerFoto}
+                  onClick={handleRemoverImagem}
+                >
+                  Remover Foto
+                </button>
+              )}
+            </div>
           </section>
 
           <div className={styles.acoes}>
