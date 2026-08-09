@@ -128,3 +128,13 @@
   background-color: #ffbb33;
   transition: 0.3s;
 }
+
+.preview img{
+  height:50%;
+  width:50%;
+  display: flex;
+  margin :0 auto;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 1.5%;
+}

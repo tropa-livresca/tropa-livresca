@@ -1,12 +1,141 @@
-.pdfPreview { 
-    width: 100%; 
-    height: 200px; 
-    border: 1px solid #ddd; 
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: "Jacques Francois", serif;
 }
 
-.imgPreview { 
-    max-width: 100%;
-    max-height: 200px; 
-    object-fit: contain; 
-    border: 1px solid #ddd;
+.titulo::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  margin-bottom: 3%;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.card legend,
+.form legend {
+  color: #67170c;
+  padding-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: "Jacques Francois", serif;
+}
+
+.card legend::after,
+.form legend::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 2px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.containergrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+label {
+  display: block;
+  color: #67170c;
+  margin-bottom: 0.3rem;
+}
+
+.liinput {
+  width: 100%;
+  min-height: 3.5rem;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  color: #67170c;
+  box-sizing: border-box;
+}
+
+.liinput span {
+  color: #67170c;
+}
+
+.card ul {
+  padding: 0;
+  margin: 0;
+}
+
+.card li {
+  list-style: none;
+}
+
+.form {
+  background: #fffdf7 !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem !important;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+}
+
+.btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.7rem 1.5rem;
+  cursor: pointer;
+  margin-left: 1.5%;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.colunaCompleta {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1200px) {
+  .containergrid {
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .containergrid {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .titulo {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    border-radius: 0.8rem;
+  }
+
+  .liinput {
+    font-size: 0.9rem;
+  }
 }

@@ -97,7 +97,7 @@ export default function Detalhes({
             </p>
           )}
           <label>
-            Título:
+            Título:</label>
             <Input
               placeholder="Inserir título"
               type="text"
@@ -107,9 +107,9 @@ export default function Detalhes({
               disabled={deveBloquearCampos}
               className={styles.inputmodificado}
             />
-          </label>
+          
           <label>
-            Subtítulo:
+            Subtítulo:</label>
             <Input
               placeholder="Inserir subtítulo"
               type="text"
@@ -121,13 +121,13 @@ export default function Detalhes({
               disabled={deveBloquearCampos}
               className={styles.inputmodificado}
             />
-          </label>
+          
         </div>
 
         <div className={styles.card}>
           <legend>Edição</legend>
           <label>
-            Número da edição:
+            Número da edição:</label>
             <Input
               placeholder="Inserir numero da edição"
               type="text"
@@ -139,10 +139,10 @@ export default function Detalhes({
               className={styles.inputmodificado}
               disabled={deveBloquearCampos}
             />
-          </label>
+          
         </div>
 
-        <fieldset>
+        <div className={styles.card}>
           <legend>ISBN do livro</legend>
           {deveBloquearCampos && (
             <p>
@@ -150,16 +150,18 @@ export default function Detalhes({
             </p>
           )}
           <label>
-            ISBN:{" "}
+            ISBN:{" "}</label>
             <Input
+             placeholder="Inserir numero da edição"
               type="text"
               value={dados.ISBN || ""}
               onChange={(e) => atualizarCampo("ISBN", e.target.value)}
               handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
+               className={styles.inputmodificado}
               disabled={deveBloquearCampos}
             />
-          </label>
-        </fieldset>
+          
+        </div>
 
         <div className={styles.card}>
           <legend>Identificação do Autor no Livro</legend>
@@ -170,7 +172,7 @@ export default function Detalhes({
             </p>
           )}
           <label>
-            Nome:
+            Nome:</label>
             <Input
               placeholder="Inserir nome do autor"
               type="text"
@@ -180,9 +182,9 @@ export default function Detalhes({
               disabled={deveBloquearCampos}
               className={styles.inputmodificado}
             />
-          </label>
+          
           <label>
-            Sobrenome:
+            Sobrenome: </label>
             <Input
               placeholder="Inserir sobrenome do autor"
               type="text"
@@ -194,7 +196,7 @@ export default function Detalhes({
               disabled={deveBloquearCampos}
               className={styles.inputmodificado}
             />
-          </label>
+         
         </div>
 
         <div className={styles.card}>
@@ -253,7 +255,7 @@ export default function Detalhes({
               </div>
 
               <label>
-                Nome:
+                Nome:</label>
                 <Input
                   placeholder="Inserir nome do colaborador"
                   type="text"
@@ -264,10 +266,10 @@ export default function Detalhes({
                   className={styles.inputmodificado}
                   disabled={deveBloquearCampos}
                 />
-              </label>
+              
 
               <label>
-                Sobrenome:
+                Sobrenome:</label>
                 <Input
                   placeholder="Inserir sobrenome do colaborador"
                   type="text"
@@ -278,7 +280,7 @@ export default function Detalhes({
                   className={styles.inputmodificado}
                   disabled={deveBloquearCampos}
                 />
-              </label>
+              
 
               {!deveBloquearCampos && (
                 <button
@@ -308,7 +310,7 @@ export default function Detalhes({
         <div className={styles.card}>
           <legend>Idioma</legend>
           <label>
-            Idioma:
+            Idioma:</label>
             <div className={styles.selectContainer}>
               <div
                 className={styles.select}
@@ -344,20 +346,20 @@ export default function Detalhes({
                 </div>
               )}
             </div>
-          </label>
+          
         </div>
 
         <div className={styles.card}>
           <legend>Descrição</legend>
           <label>
-            Descrição do livro:
+            Descrição do livro: </label>
             <textarea
               placeholder="Inserir descrição do livro"
               value={dados.descricao || ""}
               onChange={(e) => atualizarCampo("descricao", e.target.value)}
               disabled={deveBloquearCampos}
             />
-          </label>
+         
         </div>
 
         <div className={styles.card}>
@@ -474,7 +476,7 @@ export default function Detalhes({
         <div className={styles.card}>
           <legend>Tags</legend>
           <label>
-            Palavras-chave (separadas por ponto e vírgula)
+            Palavras-chave (separadas por ponto e vírgula)          </label>
             <Input
               placeholder="Inserir palavras-chave"
               type="text"
@@ -489,7 +491,7 @@ export default function Detalhes({
               className={styles.inputmodificado}
               disabled={deveBloquearCampos}
             />
-          </label>
+
         </div>
 
         <div className={styles.posterior}>

@@ -124,10 +124,11 @@ export default function Formulario({ idLivroEdicao }) {
           publicarLivro={publicarLivro}
         />
       )}
-
-      <Link to="/meuslivros" className={styles.btn}>
+  <button className={styles.btn}>
+      <Link to="/meuslivros" >
         Voltar a Meus Livros
       </Link>
+      </button>
     </main>
   );
 }
