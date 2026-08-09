@@ -1,7 +1,7 @@
 ﻿import { Link } from "react-router-dom";
 import useAuth from "../../../common/hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
-import { useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import styles from "./NavBar.module.css";
 import logo from "../../../common/images/logo.png";
 

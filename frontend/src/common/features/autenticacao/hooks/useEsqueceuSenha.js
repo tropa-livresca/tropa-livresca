@@ -14,10 +14,13 @@ export const useEsqueceuSenha = () => {
     setCarregando(true);
 
     try {
-      const response = await apiFetch("/api/v1/clients/auth/esqueci-senha", {
+      const response = await apiFetch("/api/v1/clients/auth/esquecer-senha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          email,
+          redirectTo: `${window.location.origin}/auth/redefinir-senha`,
+        }),
       });
 
       const dados = await response.json();

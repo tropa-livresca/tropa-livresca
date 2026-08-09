@@ -362,6 +362,29 @@ textarea {
   color: #806f60 !important;
 }
 
+.enderecoPrincipal, .semEndereco {
+  padding: 0.8rem 1rem !important;
+  align-items: flex-start !important;
+  line-height: 1.4;
+  font-size: 0.9rem !important;
+}
+
+.enderecoPrincipal strong {
+  font-family: "Jacques Francois", serif;
+  color: #67170c;
+}
+
+.linkEndereco {
+  color: #67170c;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.linkEndereco:hover {
+  color: #ffbb33;
+}
+
+
 @media (max-width: 900px) {
   .containerperfil {
     grid-template-columns: 1fr;

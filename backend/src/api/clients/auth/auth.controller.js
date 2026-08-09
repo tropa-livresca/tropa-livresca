@@ -1,5 +1,5 @@
 import { AuthService } from "./auth.service.js";
-import supabase from "../../common/config/supabase.js"; 
+import supabase from "../../common/config/supabase.js";
 
 export class AuthController {
   static COOKIE_OPTIONS = {
@@ -28,25 +28,23 @@ export class AuthController {
 
       const finalAccessToken = data?.session?.access_token || accessToken;
       const finalRefreshToken = data?.session?.refresh_token || refreshToken;
-      
+
       let finalUser = data?.user || data?.session?.user;
 
       if (!finalUser && finalAccessToken) {
-        const { data: userData } = await supabase.auth.getUser(finalAccessToken);
+        const { data: userData } =
+          await supabase.auth.getUser(finalAccessToken);
         finalUser = userData?.user;
       }
 
       if (!finalAccessToken || !finalRefreshToken || !finalUser) {
         return res.status(502).json({
-          error: "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
+          error:
+            "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
         });
       }
 
-      res.cookie(
-        "auth-token",
-        finalAccessToken,
-        AuthController.COOKIE_OPTIONS,
-      );
+      res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
       res.cookie(
         "refresh-token",
         finalRefreshToken,
@@ -57,17 +55,22 @@ export class AuthController {
         user: finalUser,
         session: {
           access_token: finalAccessToken,
-          refresh_token: finalRefreshToken
+          refresh_token: finalRefreshToken,
         },
         message: "Sessão definida com sucesso e cookies configurados.",
-      });     
+      });
     } catch (err) {
-      if (err?.code === "invalid_jwt" || err?.message?.includes("Invalid JWT") || err?.statusCode === 401) {
+      if (
+        err?.code === "invalid_jwt" ||
+        err?.message?.includes("Invalid JWT") ||
+        err?.statusCode === 401
+      ) {
         return res.status(401).json({
-          error: "Os tokens recebidos do Google não são válidos para finalizar a sessão.",
+          error:
+            "Os tokens recebidos do Google não são válidos para finalizar a sessão.",
         });
       }
-      
+
       next(err);
     }
   }
@@ -117,7 +120,8 @@ export class AuthController {
 
       if (!data?.url) {
         return res.status(502).json({
-          error: "Não foi possível gerar a URL de autenticação com Google no momento.",
+          error:
+            "Não foi possível gerar a URL de autenticação com Google no momento.",
         });
       }
 
@@ -137,7 +141,8 @@ export class AuthController {
 
       return res.status(201).json({
         data: data,
-        message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+        message:
+          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
     } catch (err) {
       next(err);
@@ -166,8 +171,16 @@ export class AuthController {
         throw error;
       }
 
-      res.cookie("auth-token", data.session.access_token, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", data.session.refresh_token, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "auth-token",
+        data.session.access_token,
+        AuthController.COOKIE_OPTIONS,
+      );
+      res.cookie(
+        "refresh-token",
+        data.session.refresh_token,
+        AuthController.COOKIE_OPTIONS,
+      );
 
       return res
         .status(200)
@@ -199,28 +212,71 @@ export class AuthController {
       await AuthService.esqueciSenha(email);
 
       return res.status(200).json({
-        message: "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+        message:
+          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
       });
     } catch (err) {
       next(err);
     }
   }
 
+  static async callbackRedefinirSenha(req, res, next) {
+    const code = req.query.code;
+
+    if (!code) {
+      return res.redirect(
+        "http://localhost:5173/auth/login?error=Link_invalido",
+      );
+    }
+
+    try {
+      const data = await AuthService.setSessionWithCode(code);
+
+      const accessToken = data?.session?.access_token;
+      const refreshToken = data?.session?.refresh_token;
+
+      if (!accessToken || !refreshToken) {
+        throw new Error("Dados de sessao ausentes no retorno do provedor.");
+      }
+
+      res.cookie("auth-token", accessToken, AuthController.COOKIE_OPTIONS);
+      res.cookie("refresh-token", refreshToken, AuthController.COOKIE_OPTIONS);
+
+      return res.redirect(
+        "http://localhost:5173/auth/redefinir-senha",
+      );
+    } catch (err) {
+      return res.redirect(
+        "http://localhost:5173/auth/login?error=Erro_na_autenticacao",
+      );
+    }
+  }
+
   static async redefinirSenha(req, res, next) {
     try {
-      const { accessToken, refreshToken, novaSenha } = req.body;
+      const { novaSenha, accessToken, refreshToken } = req.body;
 
-      await AuthService.confirmarNovaSenha(
-        accessToken,
-        refreshToken,
-        novaSenha,
-      );
+      if (!accessToken || !refreshToken) {
+        return res.status(401).json({
+          error: "Tokens de autenticação ausentes no corpo da requisição.",
+        });
+      }
+
+      if (!novaSenha) {
+        return res.status(400).json({ error: "A nova senha é obrigatória." });
+      }
+
+      await AuthService.setSession(accessToken, refreshToken);
+      await AuthService.atualizarSenha(novaSenha);
 
       return res.status(200).json({
-        message: "Senha atualizada com sucesso! Você já pode fazer login.",
+        message: "Senha atualizada com sucesso! Voce ja pode fazer login.",
       });
     } catch (err) {
-      next(err);
+      console.error("ERRO REAL DO SUPABASE NO BACKEND:", err);
+      return res.status(err.statusCode || 401).json({
+        error: err.message || "Erro na validação do token.",
+      });
     }
   }
 }

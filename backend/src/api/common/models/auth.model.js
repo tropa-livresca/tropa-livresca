@@ -10,72 +10,64 @@ export class AuthModel {
     });
 
     if (error) {
-      const appError = new Error(error.message || "Erro na autenticação.");
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
 
     return data;
   }
 
   static async conferirAdministrador(userId) {
-    try {
-      const { data, error } = await supabase
-        .from("adm_credenciais")
-        .select("funcao, ativo, primeiro_acesso")
-        .eq("fk_user_profile_id", userId)
-        .single();
+    const { data, error } = await supabase
+      .from("adm_credenciais")
+      .select("funcao, ativo, primeiro_acesso")
+      .eq("id", userId)
+      .single();
 
-      if (error) {
-        return { data: null, error };
-      }
-
-      return { data, error: null };
-    } catch (err) {
-      return { data: null, error: err };
+    if (error) {
+      error.statusCode = 404;
+      throw error;
     }
+
+    return data;
   }
 
-  static async atualizarSenha(userId, novaSenha) {
+  static async atualizarSenha(novaSenha) {
     const { data, error } = await supabase.auth.updateUser({
       password: novaSenha,
     });
 
     if (error) {
-      const appError = new Error(error.message || "Erro ao atualizar senha.");
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
 
-    return { data, error: null };
+    return data;
   }
 
   static async atualizarPrimeiroAcesso(userId) {
-    try {
-      const { data, error } = await supabase
-        .from("adm_credenciais")
-        .update({ primeiro_acesso: false })
-        .eq("fk_user_profile_id", userId);
+    const { data, error } = await supabase
+      .from("adm_credenciais")
+      .update({ primeiro_acesso: false })
+      .eq("id", userId);
 
-      if (error) {
-        return { data: null, error };
-      }
-
-      return { data, error: null };
-    } catch (err) {
-      return { data: null, error: err };
+    if (error) {
+      error.statusCode = 400;
+      throw error;
     }
+
+    return data;
   }
 
+  //Usuários comuns
   static async enviarEmailRecuperacao(email, redirectUrl) {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,
     });
 
     if (error) {
-      const appError = new Error(error.message || "Erro ao enviar e-mail.");
-      appError.statusCode = 500;
-      throw appError;
+      error.statusCode = 500;
+      throw error;
     }
 
     return data;
@@ -112,9 +104,10 @@ export class AuthModel {
         url: data?.url || callbackUrl,
       };
     } catch (error) {
-      const appError = new Error(error.message || "Erro no provedor OAuth.");
-      appError.statusCode = error.statusCode || 502;
-      throw appError;
+      if (!error.statusCode) {
+        error.statusCode = 502;
+      }
+      throw error;
     }
   }
 
@@ -125,32 +118,27 @@ export class AuthModel {
     });
 
     if (error) {
-      const appError = new Error(error.message || "Erro ao definir sessão.");
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
-    return { data, error: null };
+    return data;
   }
 
   static async setSessionWithCode(code) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
-      const appError = new Error(
-        error.message || "Erro ao trocar código por sessão.",
-      );
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
-    return { data, error: null };
+    return data;
   }
 
   static async refreshSession(refreshToken) {
     if (!refreshToken) {
-      return {
-        data: null,
-        error: new Error("Token de atualização não fornecido."),
-      };
+      const erroToken = new Error("Token de atualização não fornecido.");
+      erroToken.statusCode = 401;
+      throw erroToken;
     }
 
     const { data, error } = await supabase.auth.refreshSession({
@@ -158,9 +146,13 @@ export class AuthModel {
     });
 
     if (error || !data.session) {
-      return { data: null, error: error || new Error("Sessão inválida.") };
+      const erroValidacao = new Error(
+        "Token de atualização inválido ou expirado.",
+      );
+      erroValidacao.statusCode = 401;
+      throw erroValidacao;
     }
-    return { data, error: null };
+    return data;
   }
 
   static async signup(email, password, nome, telefone) {
@@ -196,9 +188,8 @@ export class AuthModel {
         erroDuplicado.statusCode = 400;
         throw erroDuplicado;
       }
-      const appError = new Error(error.message || "Erro no cadastro.");
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
     return data;
   }
@@ -207,9 +198,8 @@ export class AuthModel {
     const { error } = await supabase.auth.signOut();
 
     if (error) {
-      const appError = new Error(error.message || "Erro ao sair.");
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
 
     return true;
@@ -222,9 +212,8 @@ export class AuthModel {
     });
 
     if (error) {
-      const appError = new Error(error.message || "Erro no login.");
-      appError.statusCode = 400;
-      throw appError;
+      error.statusCode = 400;
+      throw error;
     }
     return data;
   }

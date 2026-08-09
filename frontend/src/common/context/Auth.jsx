@@ -16,6 +16,20 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     let isMounted = true;
 
+    const hash = window.location.hash;
+    const search = window.location.search;
+    const pathname = window.location.pathname;
+
+    const temTokens = hash.includes("access_token") || search.includes("code") || search.includes("token");
+    const ehRotaAuth = pathname.includes("/auth/");
+
+    if (temTokens || ehRotaAuth) {
+      if (isMounted) {
+        setLoading(false);
+      }
+      return;
+    }
+
     const checkSession = async () => {
       try {
         const res = await apiFetch("/api/v1/clients/auth/session", {
@@ -27,16 +41,10 @@ export const AuthProvider = ({ children }) => {
             const data = await res.json();
             setUser(data.user);
           } else {
-            const data = await res.json().catch(() => ({}));
-            console.error(
-              `Falha na sessão (${res.status}):`,
-              data.error || res.statusText,
-            );
             setUser(null);
           }
         }
       } catch (err) {
-        console.error("Erro de conexão em checkSession:", err);
         if (isMounted) setUserState(null);
       } finally {
         if (isMounted) setLoading(false);
@@ -76,7 +84,6 @@ export const AuthProvider = ({ children }) => {
       return "Erro de conexão com o servidor.";
     }
   };
-
 
   const signup = async (email, password, telefone, nome) => {
     try {

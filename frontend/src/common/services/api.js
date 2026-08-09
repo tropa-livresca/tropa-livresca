@@ -5,6 +5,16 @@ export const apiFetch = async (endpoint, options = {}) => {
 
   if (!(fetchOptions.body instanceof FormData)) {
     fetchOptions.headers["Content-Type"] = "application/json";
+  } else {
+    delete fetchOptions.headers["Content-Type"];
+  }
+
+  let backupFormData = null;
+  if (fetchOptions.body instanceof FormData) {
+    backupFormData = new FormData();
+    for (const [key, value] of fetchOptions.body.entries()) {
+      backupFormData.append(key, value);
+    }
   }
 
   const fallbackUrlBase = import.meta.env.DEV ? "" : "";
@@ -17,11 +27,13 @@ export const apiFetch = async (endpoint, options = {}) => {
 
   let response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
 
-  const ehRotaRefresh =
+  const ehRotaIgnorada =
     caminhoEndpoint.endsWith("/auth/refresh") ||
-    caminhoEndpoint.endsWith("/refresh");
+    caminhoEndpoint.endsWith("/refresh") ||
+    caminhoEndpoint.endsWith("/auth/session") ||
+    caminhoEndpoint.endsWith("/session");
 
-  if (response.status === 401 && !ehRotaRefresh && !skipAuthRedirect) {
+  if (response.status === 401 && !ehRotaIgnorada && !skipAuthRedirect) {
     try {
       const URL_ATUAL = window.location.pathname;
       const ehAdmin =
@@ -39,6 +51,14 @@ export const apiFetch = async (endpoint, options = {}) => {
       });
 
       if (refreshResponse.ok) {
+        if (backupFormData) {
+          const novoSubmitData = new FormData();
+          for (const [key, value] of backupFormData.entries()) {
+            novoSubmitData.append(key, value);
+          }
+          fetchOptions.body = novoSubmitData;
+          delete fetchOptions.headers["Content-Type"];
+        }
         response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
       } else {
         const payload = await refreshResponse.json().catch(() => ({}));

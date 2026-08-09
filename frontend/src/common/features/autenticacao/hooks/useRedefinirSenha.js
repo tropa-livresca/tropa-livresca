@@ -1,55 +1,62 @@
-import { useState, useCallback } from "react";
-import {useNavigate} from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { apiFetch } from "../../../services/api";
 
 export const useRedefinirSenha = () => {
   const [novaSenha, setNovaSenha] = useState("");
-  const [tokens, setTokens] = useState({ accessToken: "", refreshToken: "" });
-  const [mensagem, setMensagem] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
+  const [carregando, setCarregando] = useState(false);
+  const [error, setError] = useState("");
+  const [sucesso, setSucesso] = useState("");
   const navigate = useNavigate();
-
-  const encontrarHash = useCallback(() => {
-    const hash = window.location.hash;
-    if (hash) {
-      const params = new URLSearchParams(hash.replace("#", "?"));
-      setTokens({
-        accessToken: params.get("access_token") || "",
-        refreshToken: params.get("refresh_token") || "",
-      });
-    }
-  }, []);
 
   const enviarRedefinirSenha = async (e) => {
     e.preventDefault();
+    setError("");
+    setSucesso("");
+
+    if (novaSenha !== confirmarSenha) {
+      setError("As senhas nao coincidem.");
+      return;
+    }
+
+    setCarregando(true);
+
     try {
-      const response = await apiFetch("/api/v1/clients/auth/redefinir-senha", {
-        method: "POST",
+      const response = await apiFetch("/api/v1/clients/auth/senha", {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          accessToken: tokens.accessToken,
-          refreshToken: tokens.refreshToken,
-          novaSenha: novaSenha,
+        body: JSON.stringify({ 
+          senha: novaSenha
         }),
+        skipAuthRedirect: true 
       });
 
       const resultado = await response.json();
-      setMensagem(resultado.message);
 
-      if (response.ok) {
-        setNovaSenha("");
-        setTimeout(() => navigate("/auth/login"), 3000);
+      if (!response.ok) {
+        throw new Error(resultado.error || "Erro ao processar a redefinicao.");
       }
+
+      setSucesso(resultado.message || "Senha atualizada com sucesso!");
+      setNovaSenha("");
+      setConfirmarSenha("");
+      setTimeout(() => navigate("/auth/login"), 3000);
     } catch (err) {
-      console.log(err);
-      setMensagem("Erro ao processar a redefinição.");
+      setError(err.message || "Erro ao conectar com o servidor.");
+    } finally {
+      setCarregando(false);
     }
   };
 
   return {
     novaSenha,
-    mensagem,
     setNovaSenha,
-    encontrarHash,
+    confirmarSenha,
+    setConfirmarSenha,
+    carregando,
+    error,
+    sucesso,
     enviarRedefinirSenha,
   };
 };
