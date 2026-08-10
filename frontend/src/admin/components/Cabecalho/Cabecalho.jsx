@@ -1,43 +1,18 @@
-import { AppBar, Toolbar, IconButton, Typography, Button } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-
+import styles from "./Cabecalho.module.css";
+import { FaBars } from "react-icons/fa";
 
 export default function Cabecalho({ aoAbrirMenu, signoutAdmin }) {
+  return (
+    <header className={styles.cabecalho}>
+      <button className={styles.btnmenu} onClick={aoAbrirMenu}>
+        <FaBars size={20}/>
+      </button>
 
-    return (
-        <AppBar position="fixed" sx={
-            { 
-                bgcolor: "custom.primaria", 
-                color: "custom.superficie", minWidth: "100%",
-                left: 0,
-                top: 0,
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-                padding: "2em" 
-            }
-            }>
-            <Toolbar>
-                <IconButton
-                    size="large"
-                    edge="start"
-                    color="inherit"
-                    aria-label="menu"
-                    onClick={aoAbrirMenu}
-                    sx={{ mr: 2 }}
-                >
-                    <MenuIcon sx = {{fontSize: "2.5rem"}}/>
-                </IconButton>
+      <h1 className={styles.titulo}>Painel do Administrador</h1>
 
-                <Typography
-                    variant="h5"
-                    component="div"
-                    sx={{ flexGrow: 1, fontFamily: "Jacques rancois" }}>
-                    Painel do Administrador
-                </Typography>
-
-                <Button color="inherit" onClick={signoutAdmin}>
-                    Sair
-                </Button>
-            </Toolbar>
-        </AppBar>
-    );
+      <button className={styles.btnsair} onClick={signoutAdmin}>
+        Sair
+      </button>
+    </header>
+  );
 }
