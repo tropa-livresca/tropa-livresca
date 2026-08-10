@@ -1,0 +1,9 @@
+.conteudo {
+  min-height: 100vh;
+  padding-top: 7rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  display: grid;
+  align-items: start;
+  justify-content: start;
+}

@@ -1,14 +1,6 @@
-import { useState } from "react"; 
-import { 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemButton, 
-  ListItemText, 
-  Box,
-  Collapse
-} from "@mui/material";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { useState } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import styles from "./NavBarLateral.module.css";
 
 export default function NavBarLateral({ aberto, aoFechar }) {
   const [funcionariosAberta, setFuncionariosAberta] = useState(false);
@@ -18,88 +10,39 @@ export default function NavBarLateral({ aberto, aoFechar }) {
   };
 
   return (
-    <Box>
-      <Drawer 
-        anchor="left" 
-        open={aberto} 
-        onClose={aoFechar}
-        sx={{
-          [`& .MuiDrawer-paper`]: {
-            pt: "120px",
-            width: 250,
-            bgcolor: "custom.superficie",
-            height: "100%"
-          },
-        }} 
-      >
-        <Box
-          sx={{ width: 250, bgcolor: "custom.superficie", height: "100%" }}
-          role="presentation"
-        >
-          <List>
-            <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemText 
-                  primary="Geral" 
-                  sx={{ color: "custom.texto", paddingTop: "0.5em", paddingBottom: "0.5em" }}
-                />
-              </ListItemButton>
-            </ListItem>
+    <>
+      {aberto && <div className={styles.overlay} onClick={aoFechar} />}
 
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleToggleFuncionarios}>
-                <ListItemText 
-                  primary="Usuários" 
-                  sx={{ color: "custom.texto", paddingTop: "0.5em", paddingBottom: "0.5em" }}
-                />
-                {funcionariosAberta ? (
-                  <ExpandLess sx={{ color: "custom.textoMuted" }} />
-                ) : (
-                  <ExpandMore sx={{ color: "custom.textoMuted" }} />
-                )}
-              </ListItemButton>
-            </ListItem>
+      <div className={`${styles.menu} ${aberto ? styles.aberto : ""}`}>
+        <div className={styles.titulo}>Geral</div>
 
-            <Collapse in={funcionariosAberta} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemText primary="Nova Postagem" sx={{ color: "custom.textoMuted" }} />
-                </ListItemButton>
-                
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemText primary="Gerenciar Posts" sx={{ color: "custom.textoMuted" }} />
-                </ListItemButton>
-              </List>
-            </Collapse>
+        <div className={styles.itemMenu} onClick={handleToggleFuncionarios}>
+          <div>Usuários</div>
 
-            <ListItem disablePadding>
-              <ListItemButton onClick={handleToggleFuncionarios}>
-                <ListItemText 
-                  primary="Funcionarios" 
-                  sx={{ color: "custom.texto", paddingTop: "0.5em", paddingBottom: "0.5em" }}
-                />
-                {funcionariosAberta ? (
-                  <ExpandLess sx={{ color: "custom.textoMuted" }} />
-                ) : (
-                  <ExpandMore sx={{ color: "custom.textoMuted" }} />
-                )}
-              </ListItemButton>
-            </ListItem>
+          {funcionariosAberta ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
 
-            <Collapse in={funcionariosAberta} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemText primary="Nova Postagem" sx={{ color: "custom.textoMuted" }} />
-                </ListItemButton>
-                
-                <ListItemButton sx={{ pl: 4 }}>
-                  <ListItemText primary="Gerenciar Posts" sx={{ color: "custom.textoMuted" }} />
-                </ListItemButton>
-              </List>
-            </Collapse>
-          </List>
-        </Box>
-      </Drawer>
-    </Box>
+        {funcionariosAberta && (
+          <div className={styles.subMenu}>
+            <div className={styles.subItem}>Nova Postagem</div>
+
+            <div className={styles.subItem}>Gerenciar Posts</div>
+          </div>
+        )}
+
+        <div className={styles.itemMenu} onClick={handleToggleFuncionarios}>
+          <div>Funcionários</div>
+
+          {funcionariosAberta ? <FaChevronUp /> : <FaChevronDown />}
+        </div>
+
+        {funcionariosAberta && (
+          <div className={styles.subMenu}>
+            <div className={styles.subItem}>Novo Funcionário</div>
+            <div className={styles.subItem}>Gerenciar Funcionários</div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
