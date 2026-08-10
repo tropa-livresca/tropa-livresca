@@ -3,14 +3,32 @@ import { apiFetch } from "../services/api";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUserState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [tempEmail, setTempEmail] = useState(() => {
     return sessionStorage.getItem("temp_email") || "";
   });
 
+  const setUser = (value) => {
+    setUserState(value);
+  };
+
   useEffect(() => {
     let isMounted = true;
+
+    const hash = window.location.hash;
+    const search = window.location.search;
+    const pathname = window.location.pathname;
+
+    const temTokens = hash.includes("access_token") || search.includes("code") || search.includes("token");
+    const ehRotaAuth = pathname.includes("/auth/");
+
+    if (temTokens || ehRotaAuth) {
+      if (isMounted) {
+        setLoading(false);
+      }
+      return;
+    }
 
     const checkSession = async () => {
       try {
@@ -23,14 +41,11 @@ export const AuthProvider = ({ children }) => {
             const data = await res.json();
             setUser(data.user);
           } else {
-            const data = await res.json().catch(() => ({}));
-            console.error(`Falha na sessão (${res.status}):`, data.error || res.statusText);
             setUser(null);
           }
         }
       } catch (err) {
-        console.error("Erro de conexão em checkSession:", err);
-        if (isMounted) setUser(null);
+        if (isMounted) setUserState(null);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -51,10 +66,14 @@ export const AuthProvider = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const text = await res.text();
+      const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
-        console.error(`Falha na autenticação (${res.status}):`, data.error || res.statusText);
+        console.error(
+          `Falha na autenticação (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao fazer login";
       }
 
@@ -71,13 +90,17 @@ export const AuthProvider = ({ children }) => {
       const res = await apiFetch("/api/v1/clients/auth/signup", {
         skipAuthRedirect: true,
         method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password, telefone, nome }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        console.error(`Falha no cadastro (${res.status}):`, data.error || res.statusText);
+        console.error(
+          `Falha no cadastro (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao criar conta";
       }
 
@@ -100,7 +123,10 @@ export const AuthProvider = ({ children }) => {
 
       const data = await res.json();
       if (!res.ok) {
-        console.error(`Falha no encerramento de sessão (${res.status}):`, data.error || res.statusText);
+        console.error(
+          `Falha no encerramento de sessão (${res.status}):`,
+          data.error || res.statusText,
+        );
         return data.error || "Erro ao desconectar usuário.";
       }
 
@@ -122,6 +148,7 @@ export const AuthProvider = ({ children }) => {
         signout,
         tempEmail,
         setTempEmail,
+        setUser,
       }}
     >
       {children}

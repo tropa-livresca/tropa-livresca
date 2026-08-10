@@ -161,6 +161,22 @@ export class AutopublicacaoModel {
     return data;
   }
 
+  static async atualizar(id, dadosAtualizados) {
+    const { data, error } = await supabaseAdmin
+      .from("livros")
+      .update(dadosAtualizados)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async deletarLivro(idLivro, userId) {
     const { data: livroAtual, error: fetchError } = await supabaseAdmin
       .from("livros")

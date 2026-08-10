@@ -6,3 +6,9 @@ jest.mock("../../../../src/api/common/models/auth.model.js", () => ({
         
     },
 }));
+
+describe("auth service - testes unitarios", () => {
+    it("retorna ", () => {
+       AuthService.esqueciSenha()  
+    })
+})

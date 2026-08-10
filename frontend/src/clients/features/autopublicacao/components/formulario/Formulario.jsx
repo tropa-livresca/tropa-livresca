@@ -28,6 +28,7 @@ export default function Formulario({ idLivroEdicao }) {
   const { BuscarLivroById } = useMeusLivros();
 
   const [carregandoLivro, setCarregandoLivro] = useState(false);
+  const [erroCarregar, setErroCarregar] = useState(null);
   const navegar = { irParaProximaEtapa, voltarEtapa };
 
   useEffect(() => {
@@ -36,15 +37,21 @@ export default function Formulario({ idLivroEdicao }) {
     const buscarDadosDoLivro = async () => {
       try {
         setCarregandoLivro(true);
+        setErroCarregar(null);
 
         const dadosDoLivroDoBanco = await BuscarLivroById(idLivroEdicao);
 
+        console.debug("Formulario: dadosDoLivroDoBanco:", dadosDoLivroDoBanco);
+
         if (dadosDoLivroDoBanco) {
           carregarDadosParaEdicao(dadosDoLivroDoBanco);
+          setErroCarregar(null);
+        } else {
+          setErroCarregar("Não foram encontrados dados para este livro.");
         }
       } catch (error) {
         console.error("Erro ao inicializar dados de edição do livro:", error);
-        alert("Não foi possível carregar os dados deste livro.");
+        setErroCarregar("Não foi possível carregar os dados deste livro.");
       } finally {
         setCarregandoLivro(false);
       }
@@ -55,6 +62,19 @@ export default function Formulario({ idLivroEdicao }) {
 
   if (carregandoLivro) {
     return <div>Carregando dados do livro para edição...</div>;
+  }
+
+  if (idLivroEdicao && !carregandoLivro && erroCarregar) {
+    return (
+      <main className={styles.container}>
+        <div style={{ color: "red", fontWeight: "bold", marginBottom: "1rem" }}>
+          {erroCarregar}
+        </div>
+        <Link to="/meuslivros" className={styles.btn}>
+          Voltar a Meus Livros
+        </Link>
+      </main>
+    );
   }
 
   const tituloFormulario = isEdicao

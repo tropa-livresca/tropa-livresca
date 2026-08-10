@@ -42,14 +42,16 @@ export default function Conteudo({
   const previewFrente = obterPreview(dados.capa?.frente);
   const previewVerso = obterPreview(dados.capa?.verso);
   const previewOrelhas = obterPreview(dados.capa?.orelhas);
+  const previewManuscrito = obterPreview(dados.manuscrito);
 
   useEffect(() => {
     return () => {
       if (previewFrente) URL.revokeObjectURL(previewFrente);
       if (previewVerso) URL.revokeObjectURL(previewVerso);
       if (previewOrelhas) URL.revokeObjectURL(previewOrelhas);
+      if (previewManuscrito) URL.revokeObjectURL(previewManuscrito);
     };
-  }, [previewFrente, previewVerso, previewOrelhas]);
+  }, [previewFrente, previewVerso, previewOrelhas, previewManuscrito]);
 
   return (
     <main>
@@ -76,9 +78,27 @@ export default function Conteudo({
             />
           </label>
 
-          {dados.manuscrito && (
-            <p style={{ color: "green" }}>✓ Manuscrito carregado</p>
-          )}
+          {previewManuscrito ? (
+            <div>
+              <p style={{ color: "green" }}>✓ Manuscrito carregado</p>
+              <a
+                href={previewManuscrito}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: "inline-block", marginBottom: "8px" }}
+              >
+                Abrir manuscrito (PDF)
+              </a>
+              <div>
+                <embed
+                  src={previewManuscrito}
+                  type="application/pdf"
+                  width="100%"
+                  height="400px"
+                />
+              </div>
+            </div>
+          ) : null}
         </div>
 
         <div className={styles.card}>

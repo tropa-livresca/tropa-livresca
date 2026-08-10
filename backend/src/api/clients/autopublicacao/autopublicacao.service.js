@@ -1,4 +1,4 @@
-import supabase, {supabaseAdmin} from "../../common/config/supabase.js";
+import { supabaseAdmin } from "../../common/config/supabase.js";
 import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js";
 
 export class AutopublicacaoService {
@@ -60,7 +60,14 @@ export class AutopublicacaoService {
 
   static async buscarComFiltros({ userId, page, limit, busca, filtro, ordem }) {
     try {
-      return await AutopublicacaoModel.buscarComFiltros({ userId, page, limit, busca, filtro, ordem });
+      return await AutopublicacaoModel.buscarComFiltros({
+        userId,
+        page,
+        limit,
+        busca,
+        filtro,
+        ordem,
+      });
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;
@@ -159,6 +166,136 @@ export class AutopublicacaoService {
         data: novoLivro,
         manuscritoUrl,
       };
+    } catch (error) {
+      if (!error.statusCode) error.statusCode = 500;
+      throw error;
+    }
+  }
+
+  static async updateLivroService({
+    userId,
+    livroId,
+    dadosLivro = {},
+    capa = {},
+    manuscritoPath = null,
+  }) {
+    try {
+      if (!userId) {
+        const error = new Error(
+          "Sessão expirada. Autentique-se novamente para atualizar.",
+        );
+        error.statusCode = 401;
+        throw error;
+      }
+
+      if (!livroId) {
+        const error = new Error("ID do livro é obrigatório para atualização.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      // Verifica existência e propriedade do livro
+      const livroAtual = await AutopublicacaoModel.buscarDetalhesPorId(
+        livroId,
+        userId,
+      );
+
+      if (!livroAtual) {
+        const error = new Error(
+          "Livro não encontrado ou não pertence ao usuário.",
+        );
+        error.statusCode = 404;
+        throw error;
+      }
+
+      if (
+        livroAtual.estado === "em_revisao" ||
+        livroAtual.estado === "publicado"
+      ) {
+        const error = new Error(
+          "Este livro está travado para alterações no momento.",
+        );
+        error.statusCode = 403;
+        throw error;
+      }
+
+      let manuscritoUrl = livroAtual.manuscrito || null;
+
+      if (manuscritoPath) {
+        const caminhoEsperado = `${userId}/`;
+
+        if (!manuscritoPath.startsWith(caminhoEsperado)) {
+          const error = new Error(
+            "Tentativa inválida de manipulação de arquivo de outro usuário.",
+          );
+          error.statusCode = 403;
+          throw error;
+        }
+
+        const { data: signedData, error: signedError } =
+          await supabaseAdmin.storage
+            .from("manuscrito-livro")
+            .createSignedUrl(manuscritoPath, 31536000);
+
+        if (signedError) {
+          signedError.statusCode = 500;
+          throw signedError;
+        }
+
+        manuscritoUrl = signedData.signedUrl;
+      }
+
+      const dadosParaAtualizar = {
+        ISBN: dadosLivro.detalhes?.ISBN || livroAtual.ISBN,
+        titulo: dadosLivro.detalhes?.titulo || livroAtual.titulo,
+        subtitulo: dadosLivro.detalhes?.subtitulo || livroAtual.subtitulo,
+        descricao: dadosLivro.detalhes?.descricao || livroAtual.descricao,
+        numero_edicao: dadosLivro.detalhes?.numeroEdicao
+          ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
+          : livroAtual.numero_edicao,
+        autor_nome: dadosLivro.detalhes?.autor?.nome || livroAtual.autor_nome,
+        autor_sobrenome:
+          dadosLivro.detalhes?.autor?.sobrenome || livroAtual.autor_sobrenome,
+        publico_alvo:
+          dadosLivro.detalhes?.publicoPrincipal || livroAtual.publico_alvo,
+        colaboradores:
+          dadosLivro.detalhes?.colaboradores || livroAtual.colaboradores,
+        direitos_de_publicacao:
+          dadosLivro.detalhes?.direitoPublicacao === "sim" ||
+          dadosLivro.detalhes?.direitoPublicacao === true ||
+          livroAtual.direitos_de_publicacao,
+        conteudo_por_IA:
+          dadosLivro.detalhes?.conteudoPorIA === true ||
+          livroAtual.conteudo_por_IA,
+        imagens_explicitas:
+          dadosLivro.detalhes?.imagensExplicitas === true ||
+          livroAtual.imagens_explicitas,
+        preco_digital: dadosLivro.orcamento?.valorLivroDigital
+          ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
+          : livroAtual.preco_digital,
+        preco_fisico: dadosLivro.orcamento?.valorLivroFisico
+          ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
+          : livroAtual.preco_fisico,
+        capa: JSON.stringify({
+          frente:
+            capa.frente ||
+            (livroAtual.capa ? JSON.parse(livroAtual.capa).frente : null),
+          verso:
+            capa.verso ||
+            (livroAtual.capa ? JSON.parse(livroAtual.capa).verso : null),
+          orelhas:
+            capa.orelhas ||
+            (livroAtual.capa ? JSON.parse(livroAtual.capa).orelhas : null),
+        }),
+        manuscrito: manuscritoUrl,
+      };
+
+      const atualizado = await AutopublicacaoModel.atualizar(
+        livroId,
+        dadosParaAtualizar,
+      );
+
+      return { data: atualizado, manuscritoUrl };
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;

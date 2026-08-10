@@ -1,23 +1,17 @@
 import { AuthModel } from "../../common/models/auth.model.js";
 
 export class AuthService {
-  static async signinComGoogle(idToken) {
-    if (!idToken) {
-      const erroToken = new Error(
-        "Token de autenticação do Google não fornecido.",
-      );
-      erroToken.statusCode = 400;
-      throw erroToken;
-    }
-
+  static async signinComGoogle(redirectTo) {
     try {
-      const { data, error } = await AuthModel.signinComGoogle(idToken);
+      const result = await AuthModel.signinComGoogle(redirectTo);
 
-      if (error) {
-        error.statusCode = 401;
+      if (!result) {
+        const error = new Error("Resposta vazia ao iniciar login com Google.");
+        error.statusCode = 502;
         throw error;
       }
-      return data;
+
+      return result;
     } catch (error) {
       error.statusCode = error.statusCode || 500;
       throw error;
@@ -31,7 +25,9 @@ export class AuthService {
       throw erroEmail;
     }
 
-    const redirectUrl = process.env.SUPABASE_RESET_PASSWORD_URL || "https://localhost:5173/auth/redefinir-senha";
+    const redirectUrl =
+      process.env.SUPABASE_RESET_PASSWORD_CALLBACK_URL ||
+      "http://localhost:3000/api/v1/clients/auth/callback-redefinir-senha";
 
     const { data, error } = await AuthModel.enviarEmailRecuperacao(
       email,
@@ -71,6 +67,16 @@ export class AuthService {
     return data;
   }
 
+  static async setSessionWithCode(code) {
+    const { data, error } = await AuthModel.setSessionWithCode(code);
+
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+    return data;
+  }
+
   static async refreshSession(refreshToken) {
     if (!refreshToken) {
       const erroToken = new Error("Token de atualização não fornecido.");
@@ -99,13 +105,7 @@ export class AuthService {
       throw erroCampos;
     }
 
-    const metadata = { nome, telephone: telefone };
-
-    const { data, error } = await AuthModel.signup(
-      email,
-      password,
-      metadata,
-    );
+    const { data, error } = await AuthModel.signup(email, password, nome, telefone);
 
     if (error) {
       if (

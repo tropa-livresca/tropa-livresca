@@ -61,25 +61,11 @@ export class AuthModel {
 
   //Usuários comuns
   static async enviarEmailRecuperacao(email, redirectUrl) {
-  const {data, error} = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: redirectUrl,
-  });
-
-  if(error){
-    error.statusCode = 500;
-    throw error;
-  }
-
-  return data;
-}
-
-  static async signinComGoogle(idToken) {
-    const {data, error} = await supabase.auth.signInWithIdToken({
-      provider: "google",
-      token: idToken,
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
     });
 
-    if(error){
+    if (error) {
       error.statusCode = 500;
       throw error;
     }
@@ -87,11 +73,59 @@ export class AuthModel {
     return data;
   }
 
+  static async signinComGoogle(redirectTo) {
+    const callbackUrl =
+      redirectTo ||
+      process.env.SUPABASE_AUTH_REDIRECT_URL ||
+      "http://localhost:5173/auth/callback";
+
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: callbackUrl,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+        },
+      });
+
+      if (error) {
+        const oauthError = new Error(
+          error.message || "Falha ao iniciar autenticação do Google.",
+        );
+        oauthError.statusCode = 502;
+        throw oauthError;
+      }
+
+      return {
+        ...data,
+        url: data?.url || callbackUrl,
+      };
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 502;
+      }
+      throw error;
+    }
+  }
+
   static async setSession(accessToken, refreshToken) {
     const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
       refresh_token: refreshToken,
     });
+
+    if (error) {
+      error.statusCode = 400;
+      throw error;
+    }
+    return data;
+  }
+
+  static async setSessionWithCode(code) {
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
     if (error) {
       error.statusCode = 400;
@@ -139,7 +173,7 @@ export class AuthModel {
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { nome, telephone: telefone },
+        data: { nome, telefone },
       },
     });
 
@@ -161,9 +195,9 @@ export class AuthModel {
   }
 
   static async signout() {
-    const {error} = await supabase.auth.signOut();
-    
-    if(error){
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
       error.statusCode = 400;
       throw error;
     }
@@ -171,7 +205,7 @@ export class AuthModel {
     return true;
   }
 
-static async signin(email, password) {
+  static async signin(email, password) {
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,

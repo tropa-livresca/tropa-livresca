@@ -3,44 +3,18 @@ import SubmitButton from "../../../../components/Submit/SubmitButton";
 import BotaoGoogle from "../../components/BotaoGoogle/BotaoGoogle";
 import styles from "./Login.module.css";
 
-import useAuth from "../../../../hooks/useAuth";
+import {useLogin} from "../../hooks/useLogin";
 
 import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
+
 import { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash} from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [error, setError] = useState("");
-
-  const { signin } = useAuth();
-
-  const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-
-  const handleSignin = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !senha) {
-      setError("Preencha todos os campos.");
-      return;
-    }
-
-    const res = await signin(email, senha);
-
-    if (res) {
-      setError(res);
-      return;
-    }
-
-    navigate(from, { replace: true });
-  };
+  const {senha, setSenha, error, email, setEmail, handleSignin, navigate} = useLogin();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
@@ -113,7 +87,7 @@ export default function Login() {
                   Não tem uma conta? <Link to="/auth/cadastro">Crie uma.</Link>
                 </p>
                 <p>
-                  É funcionário? <Link to="/auth/cadastro">Clique aqui.</Link>
+                  É funcionário? <Link to="/auth/admin">Clique aqui.</Link>
                 </p>
               </div>
             </div>

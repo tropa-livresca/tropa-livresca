@@ -14,11 +14,9 @@ router.post(
   AutopublicacaoController.CriarUploadLivro,
 );
 
-router.post(
-  "/insertLivro",
-  checkAuth,
-  AutopublicacaoController.InsertLivro,
-);
+router.post("/insertLivro", checkAuth, AutopublicacaoController.InsertLivro);
+
+router.put("/updateLivro/:id", checkAuth, AutopublicacaoController.UpdateLivro);
 
 router.patch(
   "/updateEstado/:id",
@@ -26,11 +24,7 @@ router.patch(
   AutopublicacaoController.UpdateEstado,
 );
 
-router.patch(
-  "/ativo/:id",
-  checkAuth,
-  AutopublicacaoController.InativarLivro,
-);
+router.patch("/ativo/:id", checkAuth, AutopublicacaoController.InativarLivro);
 
 router.delete(
   "/rascunho/:id",

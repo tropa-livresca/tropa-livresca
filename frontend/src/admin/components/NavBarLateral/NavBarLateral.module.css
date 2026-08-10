@@ -1,0 +1,70 @@
+.menu {
+  position: fixed;
+  top: 0;
+  left: -18rem;
+  width: 15.6rem;
+  height: 100vh;
+  padding-top: 5.5rem;
+  background: #fffdf7;
+  z-index: 1150;
+  transition: 0.3s;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.15);
+}
+
+.aberto {
+  left: 0;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+}
+
+.titulo {
+  padding: 1rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.3rem;
+}
+
+.itemMenu {
+  width: 100%;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  cursor: pointer;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  transition: 0.2s;
+}
+
+.itemMenu:hover {
+  background: #f6f1dc;
+}
+
+.itemMenu svg{
+  color:#67170c;
+}
+
+.subMenu {
+  display: grid;
+  gap: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.subItem {
+  padding: 0.6rem;
+  cursor: pointer;
+  color: #8b6b5f;
+  font-family: "Jacques Francois", serif;
+  border-radius: 0.5rem;
+}
+
+.subItem:hover {
+  background: #f6f1dc;
+  color: #67170c;
+}
