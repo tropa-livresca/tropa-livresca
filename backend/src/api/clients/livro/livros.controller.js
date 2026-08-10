@@ -6,8 +6,10 @@ export class LivrosController {
       const page = parseInt(req.query.page, 10) || 1;
       const limit = parseInt(req.query.limit, 10) || 12;
       const busca = req.query.busca || "";
+      const filtro = req.query.filtro || "";
+      const ordem = req.query.ordem || "";
 
-      const resultado = await LivrosService.getLivros({ page, limit, busca });
+      const resultado = await LivrosService.getLivros({ page, limit, busca, filtro, ordem });
 
       return res.status(200).json(resultado);
     } catch (err) {

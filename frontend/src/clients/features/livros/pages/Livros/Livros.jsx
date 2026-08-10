@@ -7,22 +7,22 @@ export default function Livros() {
     const { Livros, BuscarLivros, carregando, meta } = useLivros();
 
     const [busca, setBusca] = useState("");
+    const [filtro, setFiltro] = useState("");
+    const [ordem, setOrdem] = useState("");
     const [paginaAtual, setPaginaAtual] = useState(1);
 
     useEffect(() => {
         const carregarDados = async () => {
-            await BuscarLivros(paginaAtual, 12, busca);
+            await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
         }
         carregarDados();
-    }, [paginaAtual, BuscarLivros]);
+    }, [paginaAtual, filtro, ordem, busca, BuscarLivros]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
         setPaginaAtual(1);
-        BuscarLivros(1, 12, busca);
+        BuscarLivros(1, 12, busca, filtro, ordem);
     }
-
-    if (carregando) return <p>Carregando...</p>
 
     return (
         <main>
@@ -40,24 +40,43 @@ export default function Livros() {
                     onChange={(e) => setBusca(e.target.value)}
                 />
 
+                <select value={filtro} onChange={(e) => { setFiltro(e.target.value); setPaginaAtual(1); }}>
+                    <option value="">Ordenar por</option>
+                    <option value="alfabetico">Ordem Alfabética</option>
+                    <option value="data">Data de Publicação</option>
+                </select>
+
+                <select value={ordem} onChange={(e) => { setOrdem(e.target.value); setPaginaAtual(1); }}>
+                    <option value="ascendente">Crescente / Antigos</option>
+                    <option value="descendente">Decrescente / Recentes</option>
+                </select>
+
                 <button type="submit">Buscar</button>
             </form>
 
-            {!Livros || Livros.length === 0 ? (<p>Nenhum livro encontrado</p>) : (
+            {carregando ? (
+                <p>Carregando...</p>
+            ) : !Livros || Livros.length === 0 ? (
+                <p>Nenhum livro encontrado</p>
+            ) : (
                 Livros.map((livro) => {
                     return (
                         <div key={livro.id}>
-                            {livro?.capa?.frente ? (<img src={livro.capa.frente} alt={livro.titulo} width="100" />) : (<div>Sem imagem</div>)}
-                            <h3>{livro.titulo || "Sem tÃ­tulo"}</h3>
+                            {livro?.capa?.frente ? (
+                                <img src={livro.capa.frente} alt={livro.titulo} width="100" />
+                            ) : (
+                                <div>Sem imagem</div>
+                            )}
+                            <h3>{livro.titulo || "Sem título"}</h3>
                             <p>{livro.autor_nome || "Sem autor"}</p>
                             <p>{livro.autor_sobrenome || "Sem sobrenome"}</p>
-                            <Link to={`/livros/${livro.id}`}>Ver Livro</Link>
+                            <Link to={`/livros/detalhes/${livro.id}`}>Ver Livro</Link>
                         </div>
                     );
                 })
             )}
 
-            {meta && meta.totalPages > 1 && (
+            {!carregando && meta && meta.totalPages > 1 && (
                 <div>
                     <button
                         onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}

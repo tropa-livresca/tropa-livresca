@@ -1,15 +1,9 @@
 ﻿import styles from "./Autores.module.css";
-
 import { Link } from "react-router-dom";
-
 import { useAutores } from "../../../../hooks/useAutores";
-
 import { FaSearch } from "react-icons/fa";
-
 import { useEffect, useState } from "react";
-
 import { FaUserCircle } from "react-icons/fa";
-
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
 export default function Autores() {
@@ -19,17 +13,15 @@ export default function Autores() {
 
   useEffect(() => {
     buscarAutores(paginaAtual, 12, busca);
-  }, [paginaAtual, busca, buscarAutores]);
-
-  if (carregando) return <p>Carregando...</p>;
-
-  if (erro) return <p>{erro}</p>;
+  }, [paginaAtual, buscarAutores, busca]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
     buscarAutores(1, 12, busca);
   };
+
+  if (erro) return <p>{erro}</p>;
 
   return (
     <div>
@@ -62,7 +54,9 @@ export default function Autores() {
         </div>
 
         <div className={styles.autorescontainer}>
-          {!autores || autores.length === 0 ? (
+          {carregando ? (
+            <p>Carregando...</p>
+          ) : !autores || autores.length === 0 ? (
             <p>Nenhum autor encontrado</p>
           ) : (
             autores.map((autor) => {
@@ -88,12 +82,14 @@ export default function Autores() {
             })
           )}
 
-          <Paginacao
-            paginaAtual={paginaAtual}
-            totalPaginas={meta?.totalPages}
-            totalItems={meta?.totalItems}
-            onMudarPagina={setPaginaAtual}
-          />
+          {!carregando && meta && meta.totalPages > 1 && (
+            <Paginacao
+              paginaAtual={paginaAtual}
+              totalPaginas={meta?.totalPages}
+              totalItems={meta?.totalItems}
+              onMudarPagina={setPaginaAtual}
+            />
+          )}
         </div>
       </main>
     </div>

@@ -4,6 +4,7 @@ import useAuth from "../../../common/hooks/useAuth";
 import { PerfilProvider } from "../../context/Perfil.jsx";
 
 import Inicio from "../institucional/pages/Inicio/Inicio";
+import SobreAutopublicacao from "../institucional/pages/SobreAutopublicacao/SobreAutopublicacao";
 import Perfil from "../perfil/pages/Perfil/Perfil";
 import Endereco from "../perfil/pages/Endereco/Endereco";
 import FAQ from "../suporte/pages/FAQ/FAQ";
@@ -37,6 +38,8 @@ const RoutesClients = () => {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Inicio />} />
           <Route path="/historia" element={<Historia />} />
+          <Route path = "/sobreautopublicacao" element = {<SobreAutopublicacao/>}/>
+
           <Route path="/autores" element={<Autores />} />
           <Route path="/autores/:id" element={<AutorById />} />
 

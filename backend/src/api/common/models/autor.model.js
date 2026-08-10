@@ -38,7 +38,7 @@ export class AutorModel {
     const { data, error } = await supabase
       .from("users_profile")
       .select(
-        "nome, telefone, imagem, descricao, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)",
+        "id, nome, telefone, imagem, descricao, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)",
       )
       .in("id", idsParaBuscar)
       .eq("livros.ativo", true)
@@ -54,6 +54,8 @@ export class AutorModel {
   }
 
   static async buscarPorId(id) {
+    if (!id) return null;
+
     const { data, error } = await supabase
       .from("users_profile")
       .select("id, nome, imagem, descricao, redes_sociais")
