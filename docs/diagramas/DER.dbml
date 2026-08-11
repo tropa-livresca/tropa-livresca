@@ -16,7 +16,6 @@ Table categorias {
   nome text [not null]
   tipo text [not null]
   data_criacao timestamp [default: `now()`, not null]
-  slug text [not null]
 }
 
 Table livros {
