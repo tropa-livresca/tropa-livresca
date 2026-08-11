@@ -207,9 +207,9 @@ export class AuthController {
     }
   }
 
-  static async atualizarSenhaAntiga(req, res, next){
-    try{
-      const {senhaAntiga, senhaNova} = req.body;
+  static async atualizarSenhaAntiga(req, res, next) {
+    try {
+      const { senhaAntiga, senhaNova } = req.body;
       const email = req.user?.email;
 
       await AuthService.atualizarSenhaAntiga(email, senhaAntiga, senhaNova);
@@ -217,7 +217,7 @@ export class AuthController {
       return res.status(200).json({
         message: "Senha alterada com sucesso!",
       });
-    }catch(err){
+    } catch (err) {
       next(err);
     }
   }
@@ -237,7 +237,7 @@ export class AuthController {
     }
   }
 
-  static async callbackRedefinirSenha(req, res, next) {
+  static async callbackRedefinirSenha(req, res) {
     const code = req.query.code;
 
     if (!code) {
