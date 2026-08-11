@@ -179,7 +179,7 @@ export default function Confirmacao({
 
               <div>
                 <label>Descrição do livro:</label>
-                <div className={styles.liinput}>{dados.detalhes.descricao}</div>
+                <div className={styles.liinput2}>{dados.detalhes.descricao}</div>
               </div>
             </div>
           </div>
@@ -197,19 +197,21 @@ export default function Confirmacao({
       <div>
         <div>
           <div>
-            <p>
-              <strong>Manuscrito:</strong>{" "}
-              {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}
-            </p>
-            {urlPreviewManga && (
+            <div className={styles.form}>
+        <h1 className={styles.titulo}>Manuscrito</h1>{" "}
+        <div className={styles.o}>
+              {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</div>
+
+              {urlPreviewManga && (
               <iframe
                 src={urlPreviewManga}
                 title="Pré-visualização do Manuscrito"
                 type="application/pdf"
-                width="100%"
-                height="200px"
+                className={styles.iframe}
               />
             )}
+            </div>
+            
           </div>
           <p>
             <strong>Imagens da Capa:</strong>

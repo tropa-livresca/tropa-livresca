@@ -69,6 +69,22 @@ label {
   box-sizing: border-box;
 }
 
+.liinput2 {
+  width: 100%;
+  height:auto;
+  background: #fff8d7;
+  overflow-x: hidden;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  color: #67170c;
+  box-sizing: border-box;
+  overflow-y: scroll;
+}
+
+
 .liinput span {
   color: #67170c;
 }
@@ -89,6 +105,7 @@ label {
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05) !important;
+    margin-bottom: 5%;
 }
 
 .btn {
@@ -108,6 +125,21 @@ label {
 
 .colunaCompleta {
   grid-column: 1 / -1;
+}
+
+.iframe{
+  width: 100%;
+  height:50vh;
+  border-radius: 1rem;
+   border: 2px solid #e2c77c;
+}
+
+.o{
+  margin-top: -2rem;
+  text-align: center;
+  color:#67170c;
+  font-size: 1.2rem;
+  margin-bottom: 1%;
 }
 
 @media (max-width: 1200px) {

@@ -49,7 +49,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
          <div className={styles.card}>
           <legend>Especificações do Livro</legend>
           <label>
-            Número de Páginas:
+            Número de Páginas:</label>
             <Input
             placeholder="Inserir número de páginas"
               type="number"
@@ -59,14 +59,14 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               handleOnChange={(e) => atualizarCampo("numeroPaginas", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
-          </label>
+          
         </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
           <p>Custo de Fabricação Mínimo (R$ <span className={styles.numero}>0,08</span> por página): R$ <span className={styles.numero}>{valoresFisico.minimo}</span></p>
           <label>
-            Preço Final de Venda Desejado (R$):
+            Preço Final de Venda Desejado (R$):</label>
             <Input
               type="text"
               placeholder="0,00"
@@ -75,7 +75,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               handleOnChange={(e) => atualizarCampo("valorLivroFisico", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
-          </label>
+          
           <div className={styles.div2}>
             <p>Comissão da Plataforma (<span className={styles.numero}>20</span>% inclusa): R$ <span className={styles.numero}>{valoresFisico.comissao}</span></p>
             <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresFisico.final}</span></strong>
@@ -86,7 +86,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
           <legend>Preço do Livro Digital</legend>
           <p>Custo Digital Mínimo: R$ <span className={styles.numero}>{valoresDigital.minimo}</span></p>
           <label>
-            Preço Final de Venda Desejado (R$):
+            Preço Final de Venda Desejado (R$):</label>
             <Input
               type="text"
               placeholder="0,00"
@@ -95,7 +95,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               handleOnChange={(e) => atualizarCampo("valorLivroDigital", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
-          </label>
+          
           <div className={styles.div2}>
             <p>Comissão da Plataforma (<span className={styles.numero}>20</span>% inclusa): R$ <span className={styles.numero}>{valoresDigital.comissao}</span></p>
             <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresDigital.final}</span></strong>
