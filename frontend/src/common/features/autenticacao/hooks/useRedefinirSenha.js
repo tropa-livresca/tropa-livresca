@@ -23,7 +23,7 @@ export const useRedefinirSenha = () => {
     setCarregando(true);
 
     try {
-      const response = await apiFetch("/api/v1/clients/auth/senha", {
+      const response = await apiFetch("/api/v1/auth/senha", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 

@@ -39,10 +39,8 @@ export const apiFetch = async (endpoint, options = {}) => {
       const ehAdmin =
         URL_ATUAL.startsWith("/admin") || URL_ATUAL.includes("/auth/admin");
 
-      const urlRefresh = ehAdmin
-        ? `${urlBase}/api/v1/admin/auth/refresh`
-        : `${urlBase}/api/v1/clients/auth/refresh`;
-
+      // Rota de refresh unificada conforme solicitado
+      const urlRefresh = `${urlBase}/api/v1/auth/refresh`;
       const rotaLogin = ehAdmin ? "/auth/admin" : "/auth/login";
 
       const refreshResponse = await fetch(urlRefresh, {

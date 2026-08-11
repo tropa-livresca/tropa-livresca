@@ -10,6 +10,15 @@ export class AuthController {
     maxAge: 7 * 24 * 60 * 60 * 1000,
   };
 
+  static async obterDadosUsuarioUnificado(userId) {
+    const { data } = await supabase
+      .from("users_profile")
+      .select("nome, telefone, imagem, descricao, redes_sociais, is_admin, funcao")
+      .eq("id", userId)
+      .single();
+    return data || {};
+  }
+
   static async setSession(req, res, next) {
     const code = req.body.code;
     const accessToken = req.body.accessToken || req.body.access_token;
@@ -32,27 +41,24 @@ export class AuthController {
       let finalUser = data?.user || data?.session?.user;
 
       if (!finalUser && finalAccessToken) {
-        const { data: userData } =
-          await supabase.auth.getUser(finalAccessToken);
+        const { data: userData } = await supabase.auth.getUser(finalAccessToken);
         finalUser = userData?.user;
       }
 
       if (!finalAccessToken || !finalRefreshToken || !finalUser) {
         return res.status(502).json({
-          error:
-            "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
+          error: "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
         });
       }
 
+      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(finalUser.id);
+      const usuarioCompleto = { ...finalUser, ...dadosPerfil };
+
       res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie(
-        "refresh-token",
-        finalRefreshToken,
-        AuthController.COOKIE_OPTIONS,
-      );
+      res.cookie("refresh-token", finalRefreshToken, AuthController.COOKIE_OPTIONS);
 
       return res.json({
-        user: finalUser,
+        user: usuarioCompleto,
         session: {
           access_token: finalAccessToken,
           refresh_token: finalRefreshToken,
@@ -66,12 +72,11 @@ export class AuthController {
         err?.statusCode === 401
       ) {
         return res.status(401).json({
-          error:
-            "Os tokens recebidos do Google não são válidos para finalizar a sessão.",
+          error: "Os tokens recebidos não são válidos para finalizar a sessão.",
         });
       }
 
-      next(err);
+      return next(err);
     }
   }
 
@@ -100,11 +105,9 @@ export class AuthController {
 
       return res.status(200).json({ message: "Sessão renovada com sucesso." });
     } catch (err) {
-      res.status(err?.statusCode || 401).json({
+      return res.status(err?.statusCode || 401).json({
         error: err?.message || "Não foi possível renovar a sessão.",
       });
-
-      next(err);
     }
   }
 
@@ -120,8 +123,7 @@ export class AuthController {
 
       if (!data?.url) {
         return res.status(502).json({
-          error:
-            "Não foi possível gerar a URL de autenticação com Google no momento.",
+          error: "Não foi possível gerar a URL de autenticação com Google no momento.",
         });
       }
 
@@ -130,7 +132,7 @@ export class AuthController {
         message: "Login com Google efetuado com sucesso!",
       });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -142,11 +144,10 @@ export class AuthController {
 
       return res.status(201).json({
         data: data,
-        message:
-          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+        message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -157,7 +158,7 @@ export class AuthController {
       res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
       return res.json({ message: "Desconectado com sucesso." });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -168,10 +169,11 @@ export class AuthController {
       const data = await AuthService.signin(email, password);
 
       if (!data || !data.session) {
-        const error = new Error("E-mail ou senha incorretos.");
-        error.statusCode = 401;
-        throw error;
+        return res.status(401).json({ error: "E-mail ou senha incorretos." });
       }
+
+      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(data.user.id);
+      const usuarioCompleto = { ...data.user, ...dadosPerfil };
 
       res.cookie(
         "auth-token",
@@ -186,9 +188,9 @@ export class AuthController {
 
       return res
         .status(200)
-        .json({ user: data.user, message: "Login realizado com sucesso!" });
+        .json({ user: usuarioCompleto, message: "Login realizado com sucesso!" });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -203,7 +205,7 @@ export class AuthController {
         message: "Alteração na senha realizada!",
       });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -218,7 +220,7 @@ export class AuthController {
         message: "Senha alterada com sucesso!",
       });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -229,11 +231,10 @@ export class AuthController {
       await AuthService.esqueciSenha(email);
 
       return res.status(200).json({
-        message:
-          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+        message: "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
       });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 
@@ -241,9 +242,7 @@ export class AuthController {
     const code = req.query.code;
 
     if (!code) {
-      return res.redirect(
-        "http://localhost:5173/auth/login?error=Link_invalido",
-      );
+      return res.redirect("http://localhost:5173/auth/login?error=Link_invalido");
     }
 
     try {
@@ -259,13 +258,9 @@ export class AuthController {
       res.cookie("auth-token", accessToken, AuthController.COOKIE_OPTIONS);
       res.cookie("refresh-token", refreshToken, AuthController.COOKIE_OPTIONS);
 
-      return res.redirect(
-        "http://localhost:5173/auth/redefinir-senha",
-      );
+      return res.redirect("http://localhost:5173/auth/redefinir-senha");
     } catch (err) {
-      return res.redirect(
-        "http://localhost:5173/auth/login?error=Erro_na_autenticacao",
-      );
+      return res.redirect("http://localhost:5173/auth/login?error=Erro_na_autenticacao");
     }
   }
 
@@ -290,7 +285,7 @@ export class AuthController {
         message: "Senha atualizada com sucesso! Voce ja pode fazer login.",
       });
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 }

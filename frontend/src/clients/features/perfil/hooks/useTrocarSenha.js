@@ -18,6 +18,11 @@ export const useTrocarSenha = () => {
             return false;
         }
 
+        if(novaSenha.length < 6){
+            setMensagem("A nova senha deve ter pelo menos 6 caracteres.");
+            return false;
+        }
+
         if (novaSenha !== confirmarSenha) {
             setMensagem("As novas senhas não são iguais.");
             return false;
@@ -41,7 +46,7 @@ export const useTrocarSenha = () => {
         setCarregando(true);
 
         try {
-            const response = await apiFetch(`/api/v1/clients/auth/senha`, {
+            const response = await apiFetch(`/api/v1/auth/senha`, {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: finalizarPayload(),

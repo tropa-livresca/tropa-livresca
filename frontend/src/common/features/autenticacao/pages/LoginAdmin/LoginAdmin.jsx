@@ -13,15 +13,28 @@ import { useLoginAdmin } from "../../hooks/useLoginAdmin";
 
 export default function LoginAdmin() {
   const {
-    username,
-    setUsername,
+    email,
+    setEmail,
     senha,
     setSenha,
     error,
+    setError,
+    loading,
     handleLoginAdmin,
     navigate,
   } = useLoginAdmin();
+  
   const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    if (error) setError("");
+  };
+
+  const handleSenhaChange = (e) => {
+    setSenha(e.target.value);
+    if (error) setError("");
+  };
 
   return (
     <div className={styles.container}>
@@ -31,6 +44,7 @@ export default function LoginAdmin() {
             type="button"
             className={styles.voltar}
             onClick={() => navigate("/")}
+            disabled={loading}
           >
             <IoChevronBack size={28} />
           </button>
@@ -41,36 +55,45 @@ export default function LoginAdmin() {
             <h2>Bem-vindo de volta</h2>
             <h3>Insira seus dados para acessar sua conta</h3>
             
-            <label>Usuário</label>
+            <label htmlFor="email">E-mail de funcionário</label>
             <Input
-              type="text"
-              placeholder="Digite seu usuário"
-              handleOnChange={(e) => setUsername(e.target.value)}
-              value={username}
+              id="email"
+              type="email"
+              placeholder="Digite seu e-mail"
+              handleOnChange={handleEmailChange}
+              value={email}
+              disabled={loading}
             />
             
-            <label>Senha</label>
+            <label htmlFor="password">Senha</label>
             <div className={styles.inputSenha}>
               <Input
+                id="password"
                 type={mostrarSenha ? "text" : "password"}
                 placeholder="Digite sua senha"
-                handleOnChange={(e) => setSenha(e.target.value)}
+                handleOnChange={handleSenhaChange}
                 value={senha}
+                disabled={loading}
               />
 
               <button
                 type="button"
                 className={styles.olho}
                 onClick={() => setMostrarSenha(!mostrarSenha)}
+                disabled={loading}
               >
                 {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
               
-            <SubmitButton text="ENTRAR" id={styles.btn} />
+            <SubmitButton 
+              text={loading ? "CARREGANDO..." : "ENTRAR"} 
+              id={styles.btn} 
+              disabled={loading} 
+            />
 
             <div className={styles.errinho}>
-              {error.length > 0 && <p>{error}</p>}
+              {error && <p className={styles.errorText}>{error}</p>}
             </div>
 
             <div className={styles.informacoes}>

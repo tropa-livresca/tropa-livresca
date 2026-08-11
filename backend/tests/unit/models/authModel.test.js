@@ -24,34 +24,5 @@ describe("Auth Model - Testes Unitários", () => {
     resetSupabaseMock();
   });
 
-  describe('signInAdmistrador', () => {
-    it('loga o usuario e retorna seus dados', async () => {
-      builder.resolve(funcionarioAtualizado, null);
-        
-      const username = "1";
-      
-      const response = await  AuthModel.signInAdministrador(username, "123"); 
-
-      console.log(response);
-
-      expect(response).toEqual(funcionarioAtualizado)
-      
-    })
-  })
-
-   describe('conferir adminstrador', () => {
-    it('loga o usuario e retorna seus dados', async () => {
-      builder.resolve(funcionarioAtualizado, null);
-        
-      const username = "1";
-      
-      const response = await  AuthModel.signInAdministrador(username, "123"); 
-
-      console.log(response);
-
-      expect(response).toEqual(funcionarioAtualizado)
-      
-    })
-  })
-
+  
 });
