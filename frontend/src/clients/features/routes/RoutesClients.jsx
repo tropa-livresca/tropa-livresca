@@ -4,6 +4,7 @@ import useAuth from "../../../common/hooks/useAuth";
 import { PerfilProvider } from "../../context/Perfil.jsx";
 
 import Inicio from "../institucional/pages/Inicio/Inicio";
+import TrocarSenha from "../perfil/pages/TrocarSenha/TrocarSenha";
 import SobreAutopublicacao from "../institucional/pages/SobreAutopublicacao/SobreAutopublicacao";
 import Perfil from "../perfil/pages/Perfil/Perfil";
 import Endereco from "../perfil/pages/Endereco/Endereco";
@@ -38,7 +39,7 @@ const RoutesClients = () => {
         <Route element={<MainLayout />}>
           <Route path="/" element={<Inicio />} />
           <Route path="/historia" element={<Historia />} />
-          <Route path = "/sobreautopublicacao" element = {<SobreAutopublicacao/>}/>
+          <Route path="/sobreautopublicacao" element={<SobreAutopublicacao />} />
 
           <Route path="/autores" element={<Autores />} />
           <Route path="/autores/:id" element={<AutorById />} />
@@ -50,9 +51,10 @@ const RoutesClients = () => {
 
           <Route path="/livros" element={<Livros />} />
           <Route path="/livros/:id" element={<LivroById />} />
-          
+
           <Route path="/perfil" element={<Private Item={Perfil} />} />
-          <Route path = "/perfil/endereco" element = {<Private Item = {Endereco}/>}/>
+          <Route path="/perfil/senha" element={<Private Item={TrocarSenha} />} />
+          <Route path="/perfil/endereco" element={<Private Item={Endereco} />} />
 
           <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
           <Route path="/editar-livro/:id" element={<Private Item={EditarLivro} />} />

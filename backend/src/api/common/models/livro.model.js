@@ -44,8 +44,8 @@ export class LivroModel {
       .select(COLUNAS_LIVRO)
       .eq("fk_user_profile_id", userId)
       .eq("ativo", true)
-            .eq("estado", "publicado");
-;
+      .eq("estado", "publicado");
+
 
     if (error) {
       error.statusCode = 500;

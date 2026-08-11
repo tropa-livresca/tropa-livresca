@@ -54,6 +54,34 @@ export class AuthService {
     return await AuthModel.atualizarSenha(novaSenha);
   }
 
+  static async atualizarSenhaAntiga(email, senhaAntiga, senhaNova) {
+  if (!email || !senhaAntiga || !senhaNova) {
+    const erroDados = new Error(
+      "Dados para atualização de senha não informados",
+    );
+    erroDados.statusCode = 400;
+    throw erroDados;
+  }
+
+  try {
+    const dataLogin = await AuthModel.signin(email, senhaAntiga);
+
+    await AuthModel.setSession(
+      dataLogin.session.access_token, 
+      dataLogin.session.refresh_token
+    );
+
+    const dataUpdate = await AuthModel.atualizarSenha(senhaNova);
+
+    return dataUpdate;
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    throw error;
+  }
+}
+
   static async setSession(accessToken, refreshToken) {
     const { data, error } = await AuthModel.setSession(
       accessToken,
@@ -105,7 +133,12 @@ export class AuthService {
       throw erroCampos;
     }
 
-    const { data, error } = await AuthModel.signup(email, password, nome, telefone);
+    const { data, error } = await AuthModel.signup(
+      email,
+      password,
+      nome,
+      telefone,
+    );
 
     if (error) {
       if (

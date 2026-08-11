@@ -32,11 +32,11 @@ export class AuthModel {
     return data;
   }
 
-  static async atualizarSenha(novaSenha) {
+  static async atualizarSenha(senhaNova) {
     const { data, error } = await supabase.auth.updateUser({
-      password: novaSenha,
+      password: senhaNova,
     });
-
+    
     if (error) {
       error.statusCode = 400;
       throw error;

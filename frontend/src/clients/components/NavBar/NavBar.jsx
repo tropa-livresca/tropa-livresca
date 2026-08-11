@@ -1,4 +1,4 @@
-﻿ import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import useAuth from "../../../common/hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
 import { useState, useEffect } from "react";
@@ -51,7 +51,7 @@ export default function NavBar() {
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
             <ul className={styles.subtema}>
-              <li><Link to = "/">Início</Link></li>
+              <li><Link to="/">Início</Link></li>
               <li><Link to="/historia">Quem Somos</Link></li>
               <li><Link to="/sobreautopublicacao">Sobre a Autopublicação</Link></li>
             </ul>
@@ -106,6 +106,16 @@ export default function NavBar() {
                     <FaUserCircle className={styles.menuIcon} />
                     Meu Perfil
                   </Link>
+
+                  <Link
+                    to="/perfil/senha"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FaUserCircle className={styles.menuIcon} />
+                    Conta e Senha
+                  </Link>
+
 
                   <button
                     className={styles.menuItem}

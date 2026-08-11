@@ -135,8 +135,9 @@ export class AuthController {
   }
 
   static async signup(req, res, next) {
-    const { email, password, telefone, nome } = req.body;
     try {
+      const { email, password, telefone, nome } = req.body;
+
       const data = await AuthService.signup(email, password, nome, telefone);
 
       return res.status(201).json({
@@ -161,8 +162,9 @@ export class AuthController {
   }
 
   static async signin(req, res, next) {
-    const { email, password } = req.body;
     try {
+      const { email, password } = req.body;
+
       const data = await AuthService.signin(email, password);
 
       if (!data || !data.session) {
@@ -191,16 +193,31 @@ export class AuthController {
   }
 
   static async atualizarSenha(req, res, next) {
-    const { senha } = req.body;
-
     try {
-      const resultado = await AuthService.atualizarSenha(senha);
+      const novaSenha = req.body.novaSenha || req.body.senha;
+
+      const resultado = await AuthService.atualizarSenha(novaSenha);
 
       return res.status(200).json({
         user: resultado.user,
         message: "Alteração na senha realizada!",
       });
     } catch (err) {
+      next(err);
+    }
+  }
+
+  static async atualizarSenhaAntiga(req, res, next){
+    try{
+      const {senhaAntiga, senhaNova} = req.body;
+      const email = req.user?.email;
+
+      await AuthService.atualizarSenhaAntiga(email, senhaAntiga, senhaNova);
+
+      return res.status(200).json({
+        message: "Senha alterada com sucesso!",
+      });
+    }catch(err){
       next(err);
     }
   }
@@ -273,10 +290,7 @@ export class AuthController {
         message: "Senha atualizada com sucesso! Voce ja pode fazer login.",
       });
     } catch (err) {
-      console.error("ERRO REAL DO SUPABASE NO BACKEND:", err);
-      return res.status(err.statusCode || 401).json({
-        error: err.message || "Erro na validação do token.",
-      });
+      next(err);
     }
   }
 }
