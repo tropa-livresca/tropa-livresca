@@ -45,7 +45,6 @@ CREATE TABLE public.categorias (
     nome text NOT NULL,
     tipo text NOT NULL,
     data_criacao timestamp with time zone DEFAULT now() NOT NULL,
-    slug text NOT NULL,
     CONSTRAINT categorias_pkey PRIMARY KEY (id),
     CONSTRAINT unique_slug_por_tipo UNIQUE (slug, tipo)
 );
