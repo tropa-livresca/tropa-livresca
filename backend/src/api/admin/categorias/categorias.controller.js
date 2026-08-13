@@ -1,4 +1,4 @@
-import { CategoriasService } from "./categorias.service";
+import { CategoriasService } from "./categorias.service.js";
 
 export class CategoriasController {
   static async BuscarCategorias(req, res, next) {

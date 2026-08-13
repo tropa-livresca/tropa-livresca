@@ -1,4 +1,4 @@
-import { CategoriasModel } from "../../common/models/categorias.model";
+import { CategoriasModel } from "../../common/models/categorias.model.js";
 
 export class CategoriasService {
   static async BuscarCategorias({

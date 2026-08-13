@@ -20,9 +20,9 @@ export class LivrosService {
     return livros.map(livro => this._parseCapaUrls(livro));
   }
 
-  static async getLivros ({ page, limit, busca, filtro, ordem }) {
+  static async getLivros ({ page, limit, busca, filtro, ordem }, alguns = true) {
     try {
-      const { data, count } = await LivroModel.buscarComFiltros({ page, limit, busca, filtro, ordem });
+      const { data, count } = await LivroModel.buscarComFiltros({ page, limit, busca, filtro, ordem}, alguns);
 
       if (!data || data.length === 0) {
         const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
