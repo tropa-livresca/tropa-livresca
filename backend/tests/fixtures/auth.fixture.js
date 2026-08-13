@@ -1,6 +1,4 @@
 
-
-
 export const usuarioAutorizado = {
     instance_id:"123",
     id: "124",
@@ -20,22 +18,8 @@ export const usuarioAutorizado = {
     last_sign_in_at: "2025-08-01 00:00:00-04",
   };
 
-export const Sesão = 
+export const sesao = 
   {
-    id: "funcionario-123",
-    username_adm: "Carlos Revisor",
-    ativo: true,
-    funcao: "escritor",
-    primeiro_acesso: true,
-  };
-
-  export const entradaComGoogle = 
-  {
-    data: {
-    provider: 'github',
-    url: "123",
-    flowId: "124"
-  },
-  error: null
-  };
+    session: { code:"123"  }
+  }
 

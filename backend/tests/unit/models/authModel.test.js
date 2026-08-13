@@ -1,3 +1,4 @@
+
 import {
     supabaseAdminMock as mockSupabaseAdmin,
     supabaseMock as mockSupabases,
@@ -9,6 +10,7 @@ import {funcionarioAutorizado} from "../../fixtures/funcionario.fixture.js";
 import {funcionarioConferido} from "../../fixtures/funcionario.fixture.js";
 import {funcionarioSenha} from "../../fixtures/funcionario.fixture.js";
 import {AuthModel} from "../../../src/api/common/models/auth.model.js";
+import {sesao} from "../../fixtures/auth.fixture.js";
 
 jest.mock("../../../src/api/common/config/supabase.js", () => {
   const originalMockSupabase =
@@ -31,7 +33,7 @@ describe("Auth Model - Testes Unitários", () => {
   });
 
   describe('signInAdmistrador', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
 
       builder.resolve(funcionarioAutorizado, null);
         
@@ -47,7 +49,7 @@ describe("Auth Model - Testes Unitários", () => {
   })
 
    describe('conferir adminstrador', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
       builder.resolve(funcionarioConferido, null);
         
       const response = await  AuthModel.conferirAdministrador(funcionarioAtualizado[0].id); 
@@ -60,7 +62,7 @@ describe("Auth Model - Testes Unitários", () => {
   })
 
   describe('atualizar senha', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
       builder.resolve(funcionarioAutorizado, null);
         
       const response = await  AuthModel.atualizarSenha(funcionarioSenha); 
@@ -73,7 +75,7 @@ describe("Auth Model - Testes Unitários", () => {
   })
 
   describe('atualizar status_ativo', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
       builder.resolve({ "status": 204,  "statusText": ""}, null);
         
       const response = await  AuthModel.atualizarSenha(funcionarioAtualizado[0].id); 
@@ -86,7 +88,7 @@ describe("Auth Model - Testes Unitários", () => {
   });
     
     describe('emviarEmailRecuperação', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
       builder.resolve({ data: {},  error: null}, null);
         
       const response = await  AuthModel.enviarEmailRecuperacao("123@123, 123.com"); 
@@ -99,7 +101,7 @@ describe("Auth Model - Testes Unitários", () => {
   })
 
   describe('signInComGoogle', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
       builder.resolve(funcionarioAtualizado);
         
       const response = await  AuthModel.enviarEmailRecuperacao("123@123"); 
@@ -112,7 +114,7 @@ describe("Auth Model - Testes Unitários", () => {
   })
 
   describe('setSession', () => {
-    it('loga o usuario e retorna seus dados', async () => {
+    it('retorna dados recebidos do supabase', async () => {
       builder.resolve(funcionarioAtualizado);
         
       const response = await  AuthModel.enviarEmailRecuperacao("123, 124"); 
@@ -125,16 +127,53 @@ describe("Auth Model - Testes Unitários", () => {
   })
 
    describe('setSessionWithCode', () => {
-    it('loga o usuario e retorna seus dados', async () => {
-      builder.resolve(funcionarioAtualizado);
+    it('verifica se recebe sesao do supabase e retorna dados recebidos ', async () => {
+      builder.resolve(sesao);
         
-      const response = await  AuthModel.exchangeCodeForSession("123"); 
+      const response = await  AuthModel.setSessionWithCode("123"); 
 
       console.log(response);
 
-      expect(response).toEqual(funcionarioAtualizado)
+      expect(response).toEqual(sesao)
       
     })
   })
+
+  describe('signup', () => {
+    it('verifica se recebe dados do usuario por pros e retorna dados recebidos', async () => {
+      builder.resolve(sesao);
+        
+      const response = await  AuthModel.signup("123@123.com", 123, 124, 555); 
+
+      console.log(response);
+
+      expect(response).toEqual(sesao)
+      
+    })
+  })
+
+   describe('signout', () => {
+    it('retorna verdadeira quando não ha erros', async () => {
+        
+      const response = await  AuthModel.signout();
+
+      expect(response).toEqual(true)
+      
+    })
+  })
+
+  describe('signin', () => {
+    it('retorna dados recebidos do supabase', async () => {
+      builder.resolve(sesao);
+        
+      const response = await  AuthModel.signin(); 
+
+      console.log(response);
+
+      expect(response).toEqual(sesao)
+      
+    })
+  })
+
 
 });
