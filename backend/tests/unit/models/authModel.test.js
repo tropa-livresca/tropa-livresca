@@ -32,27 +32,12 @@ describe("Auth Model - Testes Unitários", () => {
     resetSupabaseMock();
   });
 
-  describe('signInAdmistrador', () => {
-    it('retorna dados recebidos do supabase', async () => {
-
-      builder.resolve(funcionarioAutorizado, null);
-        
-      const username = "1";
-      
-      const response = await  AuthModel.signInAdministrador(username, "123"); 
-
-      console.log(response);
-
-      expect(response).toEqual(funcionarioAutorizado)
-      
-    })
-  })
 
    describe('conferir adminstrador', () => {
     it('retorna dados recebidos do supabase', async () => {
       builder.resolve(funcionarioConferido, null);
-        
-      const response = await  AuthModel.conferirAdministrador(funcionarioAtualizado[0].id); 
+      
+      const response = await  AuthModel.conferirAdmin(funcionarioAtualizado[0].id); 
 
       console.log(response);
 

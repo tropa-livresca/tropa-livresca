@@ -22,6 +22,7 @@ export const funcionarioConferido = [
     funcao: "revisor",
     ativo: true,
     primeiro_acesso: true,
+    is_admin: true,
   }
 ];
 

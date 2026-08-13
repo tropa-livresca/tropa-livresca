@@ -14,7 +14,7 @@ export class AuthModel {
     throw erroBanco;
   }
 
-  if (!data || !data.is_admin) {
+  if (!data || data.is_admin == false) {
     const erroAdmin = new Error("Acesso negado. Apenas administradores.");
     erroAdmin.statusCode = 403; 
     throw erroAdmin;
