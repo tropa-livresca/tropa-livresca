@@ -14,7 +14,7 @@ export const useEsqueceuSenha = () => {
     setCarregando(true);
 
     try {
-      const response = await apiFetch("/api/v1/clients/auth/esquecer-senha", {
+      const response = await apiFetch("/api/v1/auth/esquecer-senha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

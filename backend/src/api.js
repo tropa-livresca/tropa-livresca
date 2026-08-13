@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import routerClients from "./api/clients/index.js";
 import routerAdmin from "./api/admin/index.js";
+import routerAuth from "./api/common/auth/auth.route.js";
 import { errorHandler } from "./api/common/middlewares/error.middleware.js";
 
 const app = express();
@@ -38,6 +39,7 @@ app.use(
 
 app.use("/api/v1/clients", routerClients);
 app.use("/api/v1/admin", routerAdmin);
+app.use("/api/v1/auth", routerAuth);
 
 app.use(errorHandler);
 
