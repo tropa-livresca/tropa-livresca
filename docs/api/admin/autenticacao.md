@@ -6,9 +6,8 @@ Este documento detalha os endpoints de autenticação e controle de credenciais 
 
 ## Visão Geral
 
-* Segurança de Acesso: O login administrativo opera de forma isolada do fluxo de clientes, utilizando a tabela e regras específicas mapeadas no `AuthModel.buscarPorUsername`.
+* Segurança de Acesso: O login administrativo opera de forma isolada do fluxo de clientes.
 * Troca Forçada de Senha: O sistema implementa uma regra de primeiro acesso que obriga o administrador a atualizar a senha padrão temporária antes de liberar as demais funcionalidades do painel.
-* Prefixo dos Endpoints: Todas as rotas deste módulo respondem sob o caminho base `/api/v1/admin/auth`.
 
 ---
 

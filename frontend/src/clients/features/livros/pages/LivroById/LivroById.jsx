@@ -46,8 +46,6 @@ export default function LivroById() {
                 </div>
 
                 <div>
-                    <p>Preço digital: {livro?.preco_digital || "Sem preço digital"}</p>
-                    <p>Preço físico: {livro?.preco_fisico || "Sem preço físico"}</p>
                     <p>Número edição: {livro?.numero_edicao || "Sem número de edição"}</p>
                     <p>Feito com IA?: {livro?.conteudo_por_IA ? "Sim" : "Não"}</p>
                     <p>Idioma: {livro?.idioma || "Idioma não renderizado"}</p>

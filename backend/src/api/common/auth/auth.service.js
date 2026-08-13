@@ -21,13 +21,13 @@ export class AuthService {
   static async esqueciSenha(email) {
     if (!email) {
       const erroEmail = new Error("O e-mail é obrigatório.");
-      erroEmail.statusCode = 500;
+      erroEmail.statusCode = 400; // Corrigido de 500 para 400 (Bad Request)
       throw erroEmail;
     }
 
     const redirectUrl =
       process.env.SUPABASE_RESET_PASSWORD_CALLBACK_URL ||
-      "http://localhost:3000/api/v1/clients/auth/callback-redefinir-senha";
+      "http://localhost:3000/api/v1/auth/callback-redefinir-senha";
 
     const { data, error } = await AuthModel.enviarEmailRecuperacao(
       email,
@@ -52,6 +52,34 @@ export class AuthService {
     await AuthModel.setSession(accessToken, refreshToken);
 
     return await AuthModel.atualizarSenha(novaSenha);
+  }
+
+  static async atualizarSenhaAntiga(email, senhaAntiga, senhaNova) {
+    if (!email || !senhaAntiga || !senhaNova) {
+      const erroDados = new Error(
+        "Dados para atualização de senha não informados",
+      );
+      erroDados.statusCode = 400;
+      throw erroDados;
+    }
+
+    try {
+      const dataLogin = await AuthModel.signin(email, senhaAntiga);
+
+      await AuthModel.setSession(
+        dataLogin.session.access_token, 
+        dataLogin.session.refresh_token
+      );
+
+      const dataUpdate = await AuthModel.atualizarSenha(senhaNova);
+
+      return dataUpdate;
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = 500;
+      }
+      throw error;
+    }
   }
 
   static async setSession(accessToken, refreshToken) {
@@ -105,7 +133,12 @@ export class AuthService {
       throw erroCampos;
     }
 
-    const { data, error } = await AuthModel.signup(email, password, nome, telefone);
+    const { data, error } = await AuthModel.signup(
+      email,
+      password,
+      nome,
+      telefone,
+    );
 
     if (error) {
       if (
@@ -134,7 +167,7 @@ export class AuthService {
 
       return resultado;
     } catch (error) {
-      error.statusCode = 400;
+      error.statusCode = error.status || 400;
       throw error;
     }
   }
@@ -142,6 +175,7 @@ export class AuthService {
   static async atualizarSenha(novaSenha) {
     if (!novaSenha) {
       const erroSenha = new Error("Nenhuma nova senha informada.");
+      erroSenha.statusCode = 400;
       throw erroSenha;
     }
 

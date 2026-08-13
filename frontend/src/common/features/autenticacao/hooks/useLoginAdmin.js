@@ -1,42 +1,52 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { apiFetch } from "../../../services/api.js";
+import useAuth from "../../../hooks/useAuth";
 
 export const useLoginAdmin = () => {
+  const { setUser } = useAuth(); 
+
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
-  const [username, setUsername] = useState("");
-  const [user, setUser] = useState("");
+  const [email, setEmail] = useState("");
+  const [user, setUserLocal] = useState("");
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from?.pathname || "/admin/";
 
-  const signinAdmin = async (username, senha) => {
+  const signinAdmin = useCallback(async () => {
     setLoading(true);
     setError("");
 
     try {
-      const res = await apiFetch("/api/v1/admin/auth/signin", {
+      const res = await apiFetch("/api/v1/auth/signin", {
+        skipAuthRedirect: true,
         method: "POST",
-        body: JSON.stringify({ username, senha }),
+        body: JSON.stringify({
+          email: email,
+          password: senha,
+        }),
       });
 
       const text = await res.text();
       const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
-        setError(data.error || "Erro ao fazer login como administrador.");
+        setError(data.message || data.error || "Erro ao fazer login.");
         return null;
       }
 
-      if (data?.status === "EXIGIR_TROCA_DE_SENHA") {
-        navigate("/admin/trocar-senha", { state: { userId: data.userId } });
+      const usuario = data.user;
+
+      if (!usuario || usuario.is_admin !== true) {
+        setError("Acesso negado. Você não possui privilégios de administrador.");
         return null;
       }
 
-      setUser(data.user);
+      setUserLocal(usuario);
+      setUser(usuario); 
       return data;
     } catch (err) {
       console.error("Erro em useLoginAdmin", err);
@@ -45,27 +55,30 @@ export const useLoginAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, senha, setUser]);
 
-  const handleLoginAdmin = async (e) => {
-    e.preventDefault();
+  const handleLoginAdmin = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    if (!username || !senha) {
-      setError("Preencha todos os campos.");
-      return;
-    }
+      if (!email || !senha) {
+        setError("Preencha todos os campos.");
+        return;
+      }
 
-    const loginSucesso = await signinAdmin(username, senha);
+      const loginSucesso = await signinAdmin();
 
-    if (loginSucesso) {
-      navigate(from, { replace: true });
-    }
-  };
+      if (loginSucesso) {
+        navigate(from, { replace: true });
+      }
+    },
+    [from, navigate, email, senha, signinAdmin],
+  );
 
-  const signoutAdmin = async () => {
+  const signoutAdmin = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await apiFetch("/api/v1/admin/auth/signout", {
+      const res = await apiFetch("/api/v1/auth/signout", {
         method: "POST",
       });
 
@@ -73,12 +86,13 @@ export const useLoginAdmin = () => {
       const data = text ? JSON.parse(text) : {};
 
       if (!res.ok) {
-        setError(data.error || "Erro ao fazer logout como administrador.");
+        setError(data.message || data.error || "Erro ao fazer logout.");
         return null;
       }
-      
+
+      setUserLocal(null);
       setUser(null);
-      navigate("/auth/login", { replace: true });
+      navigate("/auth/admin", { replace: true });
     } catch (err) {
       console.error("Erro no logout", err);
       setError("Erro de conexão com o servidor.");
@@ -86,13 +100,13 @@ export const useLoginAdmin = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [navigate, setUser]);
 
   return {
-    username,
-    setUsername,
+    email,
+    setEmail,
     user,
-    setUser,
+    setUser: setUserLocal,
     senha,
     setSenha,
     error,

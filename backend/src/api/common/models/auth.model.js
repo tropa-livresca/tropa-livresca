@@ -1,42 +1,34 @@
 import supabase from "../config/supabase.js";
 
 export class AuthModel {
-  static async signInAdministrador(usernameDigitado, senhaAdm) {
-    const emailVirtual = `${usernameDigitado.toLowerCase()}@adm.sistema.internal`;
+  static async conferirAdmin(userId) {
+  const { data, error } = await supabase
+    .from("users_profile")
+    .select("is_admin")
+    .eq("id", userId)
+    .single(); 
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: emailVirtual,
-      password: senhaAdm,
-    });
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return data;
+  if (error) {
+    const erroBanco = new Error(error.message || "Erro no banco de dados.");
+    erroBanco.statusCode = 500;
+    throw erroBanco;
   }
 
-  static async conferirAdministrador(userId) {
-    const { data, error } = await supabase
-      .from("adm_credenciais")
-      .select("funcao, ativo, primeiro_acesso")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      error.statusCode = 404;
-      throw error;
-    }
-
-    return data;
+  if (!data || !data.is_admin) {
+    const erroAdmin = new Error("Acesso negado. Apenas administradores.");
+    erroAdmin.statusCode = 403; 
+    throw erroAdmin;
   }
 
-  static async atualizarSenha(novaSenha) {
+  return data;
+}
+
+
+  static async atualizarSenha(senhaNova) {
     const { data, error } = await supabase.auth.updateUser({
-      password: novaSenha,
+      password: senhaNova,
     });
-
+    
     if (error) {
       error.statusCode = 400;
       throw error;
@@ -45,21 +37,7 @@ export class AuthModel {
     return data;
   }
 
-  static async atualizarPrimeiroAcesso(userId) {
-    const { data, error } = await supabase
-      .from("adm_credenciais")
-      .update({ primeiro_acesso: false })
-      .eq("id", userId);
 
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return data;
-  }
-
-  //Usuários comuns
   static async enviarEmailRecuperacao(email, redirectUrl) {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: redirectUrl,

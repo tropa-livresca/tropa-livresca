@@ -38,25 +38,7 @@ export const useAutores = () => {
           email: dadosAutor.redes_sociais?.email || "",
         });
 
-        const livrosTratados = (dadosAutor.livros || []).map((livro) => {
-          let capaTratada = livro.capa;
-          
-          if (typeof livro.capa === "string") {
-            try {
-              capaTratada = JSON.parse(livro.capa);
-            } catch (e) {
-              console.error("Erro ao converter JSON da capa:", e);
-              capaTratada = null;
-            }
-          }
-          
-          return {
-            ...livro,
-            capa: capaTratada
-          };
-        });
-
-        setLivros(livrosTratados);
+        setLivros(dadosAutor.livros || []);
         setMeta(json.meta);
       } else {
         throw new Error(json.error || "Erro ao carregar autor");

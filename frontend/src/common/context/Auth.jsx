@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkSession = async () => {
       try {
-        const res = await apiFetch("/api/v1/clients/auth/session", {
+        const res = await apiFetch("/api/v1/auth/session", {
           skipAuthRedirect: true,
         });
 
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
   const signin = async (email, password) => {
     try {
-      const res = await apiFetch("/api/v1/clients/auth/signin", {
+      const res = await apiFetch("/api/v1/auth/signin", {
         skipAuthRedirect: true,
         method: "POST",
         body: JSON.stringify({ email, password }),
@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password, telefone, nome) => {
     try {
-      const res = await apiFetch("/api/v1/clients/auth/signup", {
+      const res = await apiFetch("/api/v1/auth/signup", {
         skipAuthRedirect: true,
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -116,7 +116,7 @@ export const AuthProvider = ({ children }) => {
 
   const signout = async () => {
     try {
-      const res = await apiFetch("/api/v1/clients/auth/signout", {
+      const res = await apiFetch("/api/v1/auth/signout", {
         skipAuthRedirect: true,
         method: "POST",
       });

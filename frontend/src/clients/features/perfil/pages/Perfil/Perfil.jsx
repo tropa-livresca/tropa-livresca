@@ -94,29 +94,6 @@ export default function Perfil() {
               <FaPhone />
               {telefone || "(00) 00000-0000"}
             </span>
-
-            {endereco ? (
-              <span className={styles.enderecoPrincipal}>
-                <FaMapMarkerAlt />
-                <div>
-                  <strong>Endereço Padrão:</strong>
-                  <br />
-                  {`${endereco.rua || ""}, ${endereco.num || "S/N"}`}
-                  <br />
-                  {`${endereco.bairro || ""} - ${endereco.cidade}/${endereco.estado}`}
-                </div>
-                <Link to = "/perfil/endereco">Alterar endereço principal</Link>
-              </span>
-            ) : (
-              <span className={styles.semEndereco}>
-                <FaMapMarkerAlt />
-                <div>
-                  <Link to="/perfil/endereco" className={styles.linkEndereco}>
-                    Cadastrar endereço padrão
-                  </Link>
-                </div>
-              </span>
-            )}
           </div>
 
           <div className={styles.redes}>
@@ -241,6 +218,55 @@ export default function Perfil() {
                 }
               />
             </div>
+          </section>
+
+          <section>
+            <h3>Endereço</h3>
+
+            <p className={styles.subtitulo}>Seu endereço principal.</p>
+
+            {endereco ? (
+              <div
+                className={`${styles.enderecoFormulario} ${!editando ? styles.enderecoDesabilitado : ""}`}
+              >
+                <div className={styles.enderecoInfo}>
+                  <FaMapMarkerAlt />
+
+                  <span className={styles.david}>
+                    {endereco.rua || ""}
+                    {endereco.rua && ", "}
+
+                    <span className={styles.numero}>
+                      {endereco.num || "S/N"}
+                    </span>
+
+                    {endereco.bairro && ` - ${endereco.bairro}`}
+                    {endereco.cidade && ` - ${endereco.cidade}`}
+                    {endereco.estado && `/${endereco.estado}`}
+                  </span>
+                </div>
+
+                <Link to="/perfil/endereco" className={styles.linkEndereco}>
+                  Alterar endereço
+                </Link>
+              </div>
+            ) : (
+              <div
+                className={`${styles.enderecoFormulario} ${!editando ? styles.enderecoDesabilitado : ""}`}
+              >
+                <div className={styles.semEndereco}>
+                  <FaMapMarkerAlt />
+
+                  <span className={styles.david}>
+                    Nenhum endereço cadastrado.
+                  </span>
+                </div>
+
+                <Link to="/perfil/endereco" className={styles.linkEndereco}>
+                  Cadastrar endereço
+                </Link>
+              </div>
+            )}
           </section>
 
           <section>

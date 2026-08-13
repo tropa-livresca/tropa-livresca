@@ -114,6 +114,39 @@ export class AutopublicacaoModel {
     return true;
   }
 
+  static async publicarLivro(id) {
+  const { data, error } = await supabase
+    .from("livros")
+    .update({ estado: "publicado" })
+    .eq("id", id)
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return data;
+}
+
+static async devolverRascunho(id) {
+  const { data, error } = await supabase
+    .from("livros")
+    .update({ estado: "rascunho" })
+    .eq("id", id)
+    .select("*")
+    .maybeSingle();
+
+  if (error) {
+    error.statusCode = 500;
+    throw error;
+  }
+
+  return data;
+}
+
+
   static async inativarLivro(id, userId) {
     const { data: livroAtual, error: fetchError } = await supabaseAdmin
       .from("livros")

@@ -51,8 +51,9 @@ export default function NavBar() {
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
             <ul className={styles.subtema}>
+              <li><Link to="/">Início</Link></li>
               <li><Link to="/historia">Quem Somos</Link></li>
-              <li><Link to="/">O Que Fazemos</Link></li>
+              <li><Link to="/sobreautopublicacao">Sobre a Autopublicação</Link></li>
             </ul>
           </li>
           <li className={styles.item}><Link to="/livros">Livros</Link></li>
@@ -105,6 +106,16 @@ export default function NavBar() {
                     <FaUserCircle className={styles.menuIcon} />
                     Meu Perfil
                   </Link>
+
+                  <Link
+                    to="/perfil/senha"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FaUserCircle className={styles.menuIcon} />
+                    Conta e Senha
+                  </Link>
+
 
                   <button
                     className={styles.menuItem}

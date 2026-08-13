@@ -4,20 +4,20 @@ import { AuthContext } from "../../common/context/AuthContext";
 
 export const useLivros = () => {
   const { user } = useContext(AuthContext);
-  const [livro, setLivro] = useState([]);
+  const [livro, setLivro] = useState(null);
   const [autor, setAutor] = useState(null);
   const [colaboradores, setColaboradores] = useState(null);
   const [Livros, setLivros] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
 
-  const BuscarLivros = useCallback(async (page = 1, limit = 12, busca = "") => {
+  const BuscarLivros = useCallback(async (page = 1, limit = 12, busca = "", filtro = "", ordem = "") => {
     setCarregando(true);
     setMeta(null);
 
     try {
       const res = await apiFetch(
-        `/api/v1/clients/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+        `/api/v1/clients/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}`,
         { method: "GET", skipAuthRedirect: true },
       );
 
@@ -33,8 +33,7 @@ export const useLivros = () => {
         throw new Error(result.error || `Erro ${res.status}`);
       }
 
-      const livrosData = result.data || [];
-      setLivros(livrosData);
+      setLivros(result.data || []);
       setMeta(result.meta);
       setCarregando(false);
     } catch (error) {
@@ -44,28 +43,59 @@ export const useLivros = () => {
     }
   }, []);
 
-  const BuscarLivroByAutor = useCallback(async (id) => {
-      setLivro([]); setColaboradores(null); setAutor(null); setCarregando(true);
-      try {
-        const res = await apiFetch(`/api/v1/clients/livros/${id}`, { skipAuthRedirect: true });
-        const json = await res.json();
-        if (!res.ok) {
-          if (res.status === 404) {
-            setLivro([]); setAutor(null); setColaboradores(null); setCarregando(false);
-            return;
-          }
-          throw new Error(json.error || `Erro ${res.status}`);
+  const BuscarLivrosDoAutor = useCallback(async (autorId) => {
+    setLivros([]);
+    setCarregando(true);
+    try {
+      const res = await apiFetch(`/api/v1/clients/livros/autor/${autorId}`, {
+        skipAuthRedirect: true,
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        if (res.status === 404) {
+          setLivros([]);
+          setCarregando(false);
+          return;
         }
-        setLivro(json.data);
-        setColaboradores(json.data.colaboradores);
-        setAutor(json.data.users_profile);
-        setCarregando(false);
-      } catch (err) {
-        console.error("Erro em BuscarLivroByAutor", err);
-        setLivro([]); setCarregando(false);
+        throw new Error(json.error || `Erro ${res.status}`);
       }
-    }, []);
-  
+      setLivros(json.data || []);
+      setCarregando(false);
+    } catch (err) {
+      console.error("Erro em BuscarLivrosDoAutor", err);
+      setLivros([]);
+      setCarregando(false);
+    }
+  }, []);
+
+  const BuscarDetalhesLivro = useCallback(async (id) => {
+    setLivro(null);
+    setColaboradores(null);
+    setAutor(null);
+    setCarregando(true);
+    try {
+      const res = await apiFetch(`/api/v1/clients/livros/detalhes/${id}`, {
+        skipAuthRedirect: true,
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        if (res.status === 404) {
+          setLivro(null);
+          setCarregando(false);
+          return;
+        }
+        throw new Error(json.error || `Erro ${res.status}`);
+      }
+      setLivro(json);
+      setAutor(json.users_profile || null);
+      setCarregando(false);
+    } catch (err) {
+      console.error("Erro em BuscarDetalhesLivro", err);
+      setLivro(null);
+      setCarregando(false);
+    }
+  }, []);
+
   return {
     user,
     autor,
@@ -81,6 +111,7 @@ export const useLivros = () => {
     setColaboradores,
     setCarregando,
     BuscarLivros,
-    BuscarLivroByAutor,
+    BuscarLivrosDoAutor,
+    BuscarDetalhesLivro,
   };
 };
