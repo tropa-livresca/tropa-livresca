@@ -1,4 +1,3 @@
-
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
@@ -27,62 +26,34 @@ jest.mock("../../../../src/api/common/middlewares/upload.middleware.js", () =>
 
 const request = require("supertest");
 const router =
-  require("../../../../src/api/clients/perfil/perfil.route.js").default;
+  require("../../../../src/api/clients/livro/livros.route.js").default;
 const { createApp } = require("../../../helpers/createApp.js");
 const {
   builder,
   resetSupabaseMock,
 } = require("../../../mocks/supabase.mock.js");
 const {
-  perfilCompleto,
-  perfilAtualizado,
-  payloadFormMultipart,
-} = require("../../../fixtures/perfil.fixture.js");
+  livroCompletoMock
+} = require("../../../fixtures/livros.fixture.js");
 
 const app = createApp(router);
 
-describe("Rotas de Perfil - Testes de Integração (E2E)", () => {
+describe("Rotas de Livro - Testes de Integração (E2E)", () => {
   beforeEach(() => {
     resetSupabaseMock();
   });
 
   describe("GET /", () => {
     it("Deve responder com status 200 e retornar os dados do banco", async () => {
-      builder.resolve(perfilCompleto, null);
+      
+      jest.spyOn(builder, "range").mockResolvedValueOnce({
+        livroCompletoMock
+      });
 
       const response = await request(app).get("/").expect(200);
 
-      expect(response.body).toEqual(perfilCompleto);
+      expect(response.body).toEqual(livroCompletoMock);
     });
-  });
-
-  describe("PUT /", () => {
-    it("Deve processar o multipart/form-data e retornar o perfil atualizado", async () => {
-      builder.resolve(perfilAtualizado, null);
-
-      const response = await request(app)
-        .put("/")
-        .send({dadosPerfil:{nome:"1", telefone:"2", descricao:"3",}})
-        .expect(200);
-
-      expect(response.body).toEqual(perfilAtualizado);
-    });
-    
-  });
-
-  describe("DELETE /imagem", () => {
-    it("Deve processar o multipart/form-data e retornar o perfil atualizado", async () => {
-      builder.resolve(perfilAtualizado, null);
-
-      const response = await request(app)
-        .delete("/imagem")
-
-        
-        .expect(200);
-
-      expect(response.body).toEqual(perfilAtualizado);
-    });
-
   });
 
 });
