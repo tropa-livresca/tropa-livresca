@@ -28,10 +28,9 @@ export class CategoriasController {
   static async BuscarCategoriaById(req, res, next) {
     try {
       const { id } = req.params;
-
       const categoriaById = await CategoriasService.BuscarCategoriaById(id);
 
-      return res.status(200).json(categoriaById);
+      return res.status(200).json({ data: categoriaById });
     } catch (err) {
       next(err);
     }
@@ -40,10 +39,9 @@ export class CategoriasController {
   static async InativarCategoria(req, res, next) {
     try {
       const { id } = req.params;
-
       const categoriaInativada = await CategoriasService.InativarCategoria(id);
 
-      return res.status(200).json(categoriaInativada);
+      return res.status(200).json({ data: categoriaInativada });
     } catch (err) {
       next(err);
     }
@@ -56,10 +54,10 @@ export class CategoriasController {
 
       const categoriaAtualizada = await CategoriasService.AtualizarCategoria(
         id,
-        dadosAtualizados,
+        dadosAtualizados
       );
 
-      return res.status(200).json(categoriaAtualizada);
+      return res.status(200).json({ data: categoriaAtualizada });
     } catch (err) {
       next(err);
     }
@@ -68,18 +66,16 @@ export class CategoriasController {
   static async CriarCategoria(req, res, next) {
     try {
       const userId = req.user?.id;
-      const nome = req.body.nome;
-      const tipo = req.body.tipo;
-      const descricao = req.body.descricao;
+      const { nome, tipo, descricao } = req.body;
 
       const categoriaCriada = await CategoriasService.CriarCategoriaLivro(
         userId,
         nome,
         tipo,
-        descricao,
+        descricao
       );
 
-      return res.status(201).json(categoriaCriada);
+      return res.status(201).json({ data: categoriaCriada });
     } catch (err) {
       next(err);
     }

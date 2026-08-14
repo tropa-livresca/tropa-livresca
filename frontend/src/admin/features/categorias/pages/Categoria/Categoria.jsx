@@ -46,9 +46,11 @@ export default function Categoria() {
                 <p>Autor não encontrado.</p>
             )}
 
-            <button><Link to={`/admin/categorias/editar/${id}`}></Link></button>
+            <button><Link to={`/admin/categoria/editar/${id}`}>Editar categoria</Link></button>
 
             <button onClick = {Inativar}>Inativar Categoria</button>
+
+            <button><Link to ={`/admin/categorias`}>Voltar para o painel</Link></button>
         </main>
     );
 }

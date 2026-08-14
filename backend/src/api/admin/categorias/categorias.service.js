@@ -10,15 +10,30 @@ export class CategoriasService {
     tipo = "",
   }) {
     try {
-      const categories = await CategoriasModel.BuscarCategorias(
-        page,
-        limit,
+      const pageNumber = Number(page) || 1;
+      const limitNumber = Number(limit) || 12;
+
+      const result = await CategoriasModel.BuscarCategorias(
+        pageNumber,
+        limitNumber,
         busca,
         filtro,
         ordem,
         tipo,
       );
-      return categories;
+
+      const totalPages = Math.ceil(result.count / limitNumber);
+
+      return {
+        data: result.data,
+        meta: {
+          totalItems: result.count,
+          itemCount: result.data.length,
+          itemsPerPage: limitNumber,
+          totalPages: totalPages || 1,
+          currentPage: pageNumber,
+        },
+      };
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;
@@ -56,18 +71,14 @@ export class CategoriasService {
       }
 
       const dadosCategoria = {
-        nome: nome,
-        fk_user_profile_id: userId,
-        tipo: tipo,
-        descricao: descricao,
+        nome,
+        fk_users_profile_id: userId,
+        tipo,
+        descricao,
       };
 
-      const novaCategoria =
-        await CategoriasModel.CriarCategoria(dadosCategoria);
-
-      return {
-        data: novaCategoria,
-      };
+      const novaCategoria = await CategoriasModel.CriarCategoria(dadosCategoria);
+      return novaCategoria;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;
@@ -99,17 +110,11 @@ export class CategoriasService {
       }
 
       const dadosFiltrados = {};
-      if (dadosAtualizados.nome !== undefined)
-        dadosFiltrados.nome = dadosAtualizados.nome;
-      if (dadosAtualizados.tipo !== undefined)
-        dadosFiltrados.tipo = dadosAtualizados.tipo;
-      if (dadosAtualizados.descricao !== undefined)
-        dadosFiltrados.descricao = dadosAtualizados.descricao;
+      if (dadosAtualizados.nome !== undefined) dadosFiltrados.nome = dadosAtualizados.nome;
+      if (dadosAtualizados.tipo !== undefined) dadosFiltrados.tipo = dadosAtualizados.tipo;
+      if (dadosAtualizados.descricao !== undefined) dadosFiltrados.descricao = dadosAtualizados.descricao;
 
-      const categoriaLivro = await CategoriasModel.AlterarCategoria(
-        id,
-        dadosFiltrados,
-      );
+      const categoriaLivro = await CategoriasModel.AlterarCategoria(id, dadosFiltrados);
       return categoriaLivro;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;

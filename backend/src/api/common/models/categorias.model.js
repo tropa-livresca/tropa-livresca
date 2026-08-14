@@ -1,8 +1,8 @@
-import supabase from "../config/supabase.js";
+import supabase, {supabaseAdmin} from "../config/supabase.js";
 
 export class CategoriasModel {
   static async CriarCategoria(dadosCategoria) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("categorias")
       .insert(dadosCategoria)
       .select()
@@ -57,23 +57,19 @@ export class CategoriasModel {
       .select("*", { count: "exact" })
       .eq("ativo", true);
 
-    if (tipo === "funcao") {
-      query = query.eq("tipo", "funcao");
-    }
-
-    if (tipo === "livro") {
-      query = query.eq("tipo", "livro");
+    if (tipo) {
+      query = query.eq("tipo", tipo);
     }
 
     if (busca) {
-      query = query.or(`nome.ilike.%${busca}%`);
+      query = query.ilike("nome", `%${busca}%`);
     }
 
+    const isAsc = ordem === "ascendente" || ordem !== "descendente";
+
     if (filtro === "data") {
-      const isAsc = ordem === "ascendente";
       query = query.order("data_criacao", { ascending: isAsc });
     } else {
-      const isAsc = ordem !== "descendente";
       query = query.order("nome", { ascending: isAsc });
     }
 

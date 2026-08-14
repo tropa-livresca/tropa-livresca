@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-//import styles from "./PainelCategoria.module.css";
 import { Link } from "react-router-dom";
 import { useCategoria } from "../../hooks/useCategoria.js";
 import { FaSearch } from "react-icons/fa";
@@ -11,25 +10,26 @@ export default function PainelCategoria() {
     const [filtro, setFiltro] = useState("");
     const [ordem, setOrdem] = useState("");
     const [tipo, setTipo] = useState("");
-    
     const [paginaAtual, setPaginaAtual] = useState(1);
 
     useEffect(() => {
-        const carregarDados = async () => {
-            await BuscarCategorias(paginaAtual, 12, busca, filtro, ordem);
-        }
-        carregarDados();
-    }, [paginaAtual, filtro, ordem, busca, BuscarCategorias]);
+        BuscarCategorias(paginaAtual, 12, busca, filtro, ordem, tipo);
+    }, [paginaAtual, filtro, ordem, tipo, BuscarCategorias]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
-        setPaginaAtual(1);
-        BuscarCategorias(1, 12, busca, filtro, ordem);
-    }
+        if (paginaAtual === 1) {
+            BuscarCategorias(1, 12, busca, filtro, ordem, tipo);
+        } else {
+            setPaginaAtual(1);
+        }
+    };
 
     return (
         <main>
             <h1>Categorias cadastradas</h1>
+
+            <button><Link to="/admin/categoria/nova">Nova Categoria</Link></button>
 
             <form onSubmit={handleBuscar}>
                 <span>
@@ -50,13 +50,15 @@ export default function PainelCategoria() {
                 </select>
 
                 <select value={ordem} onChange={(e) => { setOrdem(e.target.value); setPaginaAtual(1); }}>
+                    <option value="">Direção</option>
                     <option value="ascendente">Crescente / Antigos</option>
                     <option value="descendente">Decrescente / Recentes</option>
                 </select>
 
                 <select value={tipo} onChange={(e) => { setTipo(e.target.value); setPaginaAtual(1); }}>
+                    <option value="">Todos os tipos</option>
                     <option value="livro">Livro</option>
-                    <option value="funcao">Funcão</option>
+                    <option value="funcao">Função</option>
                 </select>
 
                 <button type="submit">Buscar</button>
@@ -64,23 +66,20 @@ export default function PainelCategoria() {
 
             {carregando ? (
                 <p>Carregando...</p>
-            ) : !categorias || categorias.length === 0 ? (<p>Nenhuma categoria encontrada.</p>) : (
+            ) : !categorias || categorias.length === 0 ? (
+                <p>Nenhuma categoria encontrada.</p>
+            ) : (
                 categorias.map((categoria) => {
                     return (
                         <div key={categoria.id}>
                             <div>
-                                <p>Nome:{categoria.nome}</p>
-                                
+                                <p>Nome: {categoria.nome}</p>
                                 <p>{categoria.descricao}</p>
-
-                                <p>{categoria.tipo}
-                                </p>
+                                <p>{categoria.tipo}</p>
                             </div>
-                            <button onClick={InativarCategoria(categoria.id)}>Inativar Categoria</button>
-
-                            <button><Link to={`/admin/categoria/${categoria.id}`}>Ver Categoria</Link></button>
-
-                            <button><Link to = {`/admin/categoria/editar/${categoria.id}`}>Editar Categoria</Link></button>
+                            <button><Link to = {`/admin/categoria/${categoria.id}`}>Ver Categoria</Link></button>
+                            <button onClick={() => InativarCategoria(categoria.id)}>Inativar Categoria</button>
+                            <button><Link to={`/admin/categoria/alterar/${categoria.id}`}>Editar Categoria</Link></button>
                         </div>
                     );
                 })
@@ -105,5 +104,6 @@ export default function PainelCategoria() {
                     </button>
                 </div>
             )}
-        </main>)
+        </main>
+    );
 }

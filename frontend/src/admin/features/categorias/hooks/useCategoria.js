@@ -16,12 +16,10 @@ export const useCategoria = () => {
       alert("O campo nome é obrigatório.");
       return false;
     }
-
     if (!tipo || tipo.trim() === "") {
       alert("O campo tipo é obrigatório.");
       return false;
     }
-
     if (!descricao || descricao.trim() === "") {
       alert("O campo descrição é obrigatório.");
       return false;
@@ -33,64 +31,70 @@ export const useCategoria = () => {
     setNome("");
     setDescricao("");
     setTipo("");
-  },[]);
+  }, []);
 
   const FinalizarPayload = useCallback(() => {
     return JSON.stringify({
-      nome: nome,
-      tipo: tipo,
-      descricao: descricao,
+      nome,
+      tipo,
+      descricao,
     });
   }, [nome, descricao, tipo]);
 
-  const BuscarCategorias = useCallback(async (page = 1, limit = 12, busca = "", filtro = "", ordem = "", tipo ="") => {
-    setCarregando(true);
-    setMeta(null);
-    setError(null);
-
-    try { 
-      const response = await apiFetch(`/api/v1/admin/categorias?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&tipo=${tipo}`);
-
-      if (!response.ok) {
-        throw new Error(
-          `Erro encontrado ao Buscar Categorias: ${response.status}`,
+  const BuscarCategorias = useCallback(
+    async (
+      page = 1,
+      limit = 12,
+      busca = "",
+      filtro = "",
+      ordem = "",
+      tipoFiltro = "",
+    ) => {
+      setCarregando(true);
+      setMeta(null);
+      setError(null);
+      try {
+        const response = await apiFetch(
+          `/api/v1/admin/categorias?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&tipo=${tipoFiltro}`,
         );
-      }
 
-      const data = response.data;
-      setCategorias(data.data || []);
-      setMeta(data.meta);
-      setCarregando(false);
-    } catch (err) {
-      console.error("Erro ao buscar categorias:", error);
-      setError(err.message);
-      setCarregando(false);
-    } finally {
-      setCarregando(false);
-    }
-  }, [error]);
+        if (!response.ok) {
+          throw new Error(
+            `Erro encontrado ao Buscar Categorias: ${response.status}`,
+          );
+        }
+
+        const responseData = response.data || (await response.json());
+        setCategorias(responseData.data || []);
+        setMeta(responseData.meta || null);
+      } catch (err) {
+        console.error("Erro ao buscar categorias:", err);
+        setError(err.message);
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [],
+  );
 
   const BuscarCategoriaById = useCallback(async (id) => {
-    if(!id) return;
-
+    if (!id) return;
     setCarregando(true);
     setError(null);
     try {
       const response = await apiFetch(`/api/v1/admin/categorias/${id}`);
-
       if (!response.ok) {
         throw new Error(
           `Erro encontrado ao buscar categoria por ID: ${response.status}`,
         );
       }
-
-      const data = response.data;
-  
-      setCategoria(data);
-      setNome(data.nome || "");
-      setTipo(data.tipo || "");
-      setDescricao(data.descricao || "");
-      return data;
+      const responseData = response.data || (await response.json());
+      const item = responseData.data || responseData;
+      setCategoria(item);
+      setNome(item.nome || "");
+      setTipo(item.tipo || "");
+      setDescricao(item.descricao || "");
+      return item;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -101,108 +105,96 @@ export const useCategoria = () => {
 
   const AtualizarCategoria = useCallback(
     async (id, e) => {
-      if(e && typeof e.preventDefault === "function") e.preventDefault();
-      if(!id) return;
-      if(!ValidarCampos()) return;
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      if (!id) return;
+      if (!ValidarCampos()) return;
 
       setCarregando(true);
       setError(null);
       try {
         const response = await apiFetch(`/api/v1/admin/categorias/${id}`, {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: FinalizarPayload(),
         });
-
         if (!response.ok) {
           throw new Error(
             `Erro encontrado ao atualizar categoria: ${response.status}`,
           );
         }
-
-        const json = await response.json();
-        const data = json.data || json;
-      
-        setCategoria(data);
+        const responseData = response.data || (await response.json());
+        setCategoria(responseData.data || responseData);
         alert("Categoria atualizada com sucesso.");
         await BuscarCategorias();
-      } catch (error) {
-        console.error("Erro ao atualizar categoria.", error);
+      } catch (err) {
+        console.error("Erro ao atualizar categoria.", err);
         alert("Ocorreu erro ao atualizar categoria.");
       } finally {
         setCarregando(false);
       }
     },
-    [BuscarCategorias, FinalizarPayload, ValidarCampos]
+    [BuscarCategorias, FinalizarPayload, ValidarCampos],
   );
 
-  const InativarCategoria = useCallback(async (id) => {
-    if(!id) return;
-
-    setCarregando(true);
-    setError(null);
-    try {
-      const response = await apiFetch(`/api/v1/admin/categorias/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Erro encontrado ao inativar categoria: ${response.status}`,
-        );
+  const InativarCategoria = useCallback(
+    async (id) => {
+      if (!id) return;
+      setCarregando(true);
+      setError(null);
+      try {
+        const response = await apiFetch(`/api/v1/admin/categorias/${id}/ativo`, {
+          method: "PATCH",
+        });
+        if (!response.ok) {
+          throw new Error(
+            `Erro encontrado ao inativar categoria: ${response.status}`,
+          );
+        }
+        const responseData = response.data || (await response.json());
+        setCategoria(responseData.data || responseData);
+        await BuscarCategorias();
+      } catch (err) {
+        setError(err.message);
+        throw err;
+      } finally {
+        setCarregando(false);
       }
+    },
+    [BuscarCategorias],
+  );
 
-       const json = await response.json();
-      const data = json.data || json;
+  const handleCriarCategoria = useCallback(
+    async (e) => {
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      if (!ValidarCampos()) return;
 
-      setCategoria(data);
-
-      await BuscarCategorias();
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setCarregando(false);
-    }
-  }, [BuscarCategorias]);
-
-  const handleCriarCategoria = useCallback(async (e) => {
-    if (e && typeof e.preventDefault === "function") e.preventDefault();
-    if (!ValidarCampos()) return;
-
-    setCarregando(true);
-
-    setError(null);
-    try {
-      const response = await apiFetch(`/api/v1/admin/categorias`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: FinalizarPayload(),
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `Erro encontrado ao criar categoria: ${response.status}`,
-        );
+      setCarregando(true);
+      setError(null);
+      try {
+        const response = await apiFetch(`/api/v1/admin/categorias`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: FinalizarPayload(),
+        });
+        if (!response.ok) {
+          throw new Error(
+            `Erro encontrado ao criar categoria: ${response.status}`,
+          );
+        }
+        alert("Categoria craida");
+        const responseData = response.data || (await response.json());
+        setCategoria(responseData.data || responseData);
+        LimparFormulario();
+        await BuscarCategorias();
+      } catch (err) {
+        setError(err.message);
+        throw err;
+      } finally {
+        setCarregando(false);
       }
-
-      const json = await response.json();
-      const data = json.data || json;
-
-      setCategoria(data);
-      LimparFormulario();
-      await BuscarCategorias();
-    } catch (err) {
-      setError(err.message);
-      throw err;
-    } finally {
-      setCarregando(false);
-    }
-  }, [FinalizarPayload, BuscarCategorias, LimparFormulario, ValidarCampos]);
+    },
+    [FinalizarPayload, BuscarCategorias, LimparFormulario, ValidarCampos],
+  );
 
   return {
     categorias,
