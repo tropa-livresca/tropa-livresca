@@ -1,13 +1,14 @@
 import supabase from "../config/supabase.js";
 
 export class RevisaoModel {
-  static async BuscarRevisoes({
+  static async BuscarRevisoes(
     page = 1,
     limit = 12,
     busca = "",
     filtro = "",
     ordem = "",
-  }) {
+    livro = "",
+  ) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
@@ -18,6 +19,10 @@ export class RevisaoModel {
 
     if (busca) {
       query = query.or(`nome.ilike.%${busca}%`);
+    }
+
+    if (livro) {
+      query = query.eq("fk_livros_id", livro);
     }
 
     if (filtro === "data") {
@@ -60,8 +65,8 @@ export class RevisaoModel {
     const { data, error } = await supabase
       .from("revisoes")
       .update(dadosAtualizados)
-      .select()
       .eq("id", id)
+      .select()
       .single();
 
     if (error) {
@@ -76,6 +81,23 @@ export class RevisaoModel {
     const { data, error } = await supabase
       .from("revisoes")
       .insert(dadosRevisao)
+      .select()
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async InativarRevisao(id) {
+    const { data, error } = await supabase
+      .from("revisoes")
+      .update({ ativo: false })
+      .eq("id", id)
+      .select()
       .single();
 
     if (error) {
@@ -105,7 +127,7 @@ export class RevisaoModel {
   static async AlterarEstadoLivro(idLivro, novoEstado) {
     const { data, error } = await supabase
       .from("livros")
-      .update("estado", novoEstado)
+      .update({ estado: novoEstado })
       .eq("id", idLivro)
       .select()
       .single();

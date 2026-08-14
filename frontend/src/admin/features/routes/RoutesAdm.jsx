@@ -2,8 +2,6 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 
-import BoasVindas from "../painelGeral/pages/BoasVindas/BoasVindas";
-
 const PrivateRoute = ({ children, redirectTo = "/auth/login" }) => {
   const { signed, loading } = useAuth();
   const location = useLocation();
@@ -21,7 +19,6 @@ const RoutesAdm = () => {
             path="/" 
             element={
               <PrivateRoute>
-                <BoasVindas />
               </PrivateRoute>
             } 
           />

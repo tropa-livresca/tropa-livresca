@@ -2,9 +2,10 @@ import supabase from "../config/supabase.js";
 
 export class CategoriasModel {
   static async CriarCategoria(dadosCategoria) {
-    const { data, error } = supabase
+    const { data, error } = await supabase
       .from("categorias")
-      .insert({ dadosCategoria })
+      .insert(dadosCategoria)
+      .select()
       .single();
 
     if (error) {
@@ -16,11 +17,11 @@ export class CategoriasModel {
   }
 
   static async InativarCategoria(id) {
-    const { data, error } = supabase
+    const { data, error } = await supabase
       .from("categorias")
-      .delete()
-      .select()
+      .update({ ativo: false })
       .eq("id", id)
+      .select()
       .single();
 
     if (error) {
@@ -32,7 +33,7 @@ export class CategoriasModel {
   }
 
   static async AlterarCategoria(id, dadosAtualizados) {
-    const { data, error } = supabase
+    const { data, error } = await supabase
       .from("categorias")
       .update(dadosAtualizados)
       .eq("id", id)
@@ -47,23 +48,13 @@ export class CategoriasModel {
     return data;
   }
 
-  static async BuscarCategorias({
-    page = 1,
-    limit = 12,
-    busca = "",
-    filtro = "",
-    ordem = "",
-    tipo = "",
-  }) {
+  static async BuscarCategorias(page = 1, limit = 12, busca = "", filtro = "", ordem = "", tipo = "") {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
     let query = supabase
-      .from("categorias", {
-        count: "exact",
-        head: false,
-      })
-      .select("*")
+      .from("categorias")
+      .select("*", { count: "exact" })
       .eq("ativo", true);
 
     if (tipo === "funcao") {
@@ -75,7 +66,7 @@ export class CategoriasModel {
     }
 
     if (busca) {
-      query = query.or(`nome.ilike.%${busca}`);
+      query = query.or(`nome.ilike.%${busca}%`);
     }
 
     if (filtro === "data") {
@@ -83,7 +74,7 @@ export class CategoriasModel {
       query = query.order("data_criacao", { ascending: isAsc });
     } else {
       const isAsc = ordem !== "descendente";
-      query = query.order("titulo", { ascending: isAsc });
+      query = query.order("nome", { ascending: isAsc });
     }
 
     const { data, error, count } = await query.range(start, end);
@@ -100,7 +91,7 @@ export class CategoriasModel {
   }
 
   static async BuscarCategoriaById(id) {
-    const { data, error } = supabase
+    const { data, error } = await supabase
       .from("categorias")
       .select("*")
       .eq("id", id)

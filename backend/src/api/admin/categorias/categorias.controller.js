@@ -41,9 +41,9 @@ export class CategoriasController {
     try {
       const { id } = req.params;
 
-      const categoriaById = await CategoriasService.InativarCategoria(id);
+      const categoriaInativada = await CategoriasService.InativarCategoria(id);
 
-      return res.status(200).json(categoriaById);
+      return res.status(200).json(categoriaInativada);
     } catch (err) {
       next(err);
     }
@@ -79,7 +79,7 @@ export class CategoriasController {
         descricao,
       );
 
-      return res.status(200).json(categoriaCriada);
+      return res.status(201).json(categoriaCriada);
     } catch (err) {
       next(err);
     }

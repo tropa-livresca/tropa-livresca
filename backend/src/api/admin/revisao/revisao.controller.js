@@ -8,6 +8,7 @@ export class RevisaoController {
       const busca = req.body.busca || "";
       const filtro = req.body.filtro || "";
       const ordem = req.body.ordem || "";
+      const livro = req.body.livro || "";
 
       const revisoes = await RevisaoService.BuscarRevisoes({
         page,
@@ -15,6 +16,7 @@ export class RevisaoController {
         busca,
         filtro,
         ordem,
+        livro,
       });
 
       return res.status(200).json(revisoes);
@@ -38,9 +40,9 @@ export class RevisaoController {
   static async AtualizarRevisao(req, res, next) {
     try {
       const { id } = req.params;
-      const nome = req.body.nome || "";
-      const apontamento = req.body.apontamento || "";
-      const idLivro = req.body.idLivro;
+      const nome = req.body.nome !== undefined ? req.body.nome : undefined;
+      const apontamento = req.body.apontamento !== undefined ? req.body.apontamento : undefined;
+      const idLivro = req.body.idLivro !== undefined ? req.body.idLivro : undefined;
 
       const revisaoAtualizada = await RevisaoService.AtualizarRevisao(
         id,
@@ -61,15 +63,17 @@ export class RevisaoController {
       const nome = req.body.nome;
       const apontamento = req.body.apontamento;
       const idLivro = req.body.idLivro;
+      const manuscritoRevisto = req.file || req.body.manuscritoRevisto || null;
 
       const novaRevisao = await RevisaoService.CriarRevisao(
-        userId,
         nome,
         apontamento,
         idLivro,
+        manuscritoRevisto,
+        userId,
       );
 
-      return res.status(200).json(novaRevisao);
+      return res.status(201).json(novaRevisao);
     } catch (err) {
       next(err);
     }
@@ -94,7 +98,7 @@ export class RevisaoController {
 
       const livroRevisado = await RevisaoService.AlterarEstadoLivro(idLivro, novoEstado);
 
-      return livroRevisado;
+      return res.status(200).json(livroRevisado);
     } catch (err) {
       next(err);
     }
