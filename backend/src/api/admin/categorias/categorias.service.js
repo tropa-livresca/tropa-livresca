@@ -7,19 +7,33 @@ export class CategoriasService {
     busca = "",
     filtro = "",
     ordem = "",
-    tipo,
+    tipo = "",
   }) {
     try {
-      const categorias = await CategoriasModel.BuscarCategorias(
-        page,
-        limit,
+      const pageNumber = Number(page) || 1;
+      const limitNumber = Number(limit) || 12;
+
+      const result = await CategoriasModel.BuscarCategorias(
+        pageNumber,
+        limitNumber,
         busca,
         filtro,
         ordem,
         tipo,
       );
 
-      return categorias;
+      const totalPages = Math.ceil(result.count / limitNumber);
+
+      return {
+        data: result.data,
+        meta: {
+          totalItems: result.count,
+          itemCount: result.data.length,
+          itemsPerPage: limitNumber,
+          totalPages: totalPages || 1,
+          currentPage: pageNumber,
+        },
+      };
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;
@@ -30,12 +44,11 @@ export class CategoriasService {
     try {
       if (!id) {
         const erroId = new Error("Id não informado.");
-        erroId.statusCode = 404;
+        erroId.statusCode = 400;
         throw erroId;
       }
 
       const categoria = await CategoriasModel.BuscarCategoriaById(id);
-
       return categoria;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
@@ -52,24 +65,20 @@ export class CategoriasService {
       }
 
       if (!nome) {
-        const erroNome = new Error("Metadados da categoria não informadaos ");
-        erroNome.statusCode = 500;
+        const erroNome = new Error("Metadados da categoria não informados.");
+        erroNome.statusCode = 400;
         throw erroNome;
       }
 
       const dadosCategoria = {
-        nome: nome,
-        fk_user_profile_id: userId,
-        tipo: tipo,
-        descricao: descricao,
+        nome,
+        fk_users_profile_id: userId,
+        tipo,
+        descricao,
       };
 
-      const novaCategoria =
-        await CategoriasModel.CriarCategoria(dadosCategoria);
-
-      return {
-        data: novaCategoria,
-      };
+      const novaCategoria = await CategoriasModel.CriarCategoria(dadosCategoria);
+      return novaCategoria;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;
@@ -80,12 +89,11 @@ export class CategoriasService {
     try {
       if (!id) {
         const erroId = new Error("Id da categoria livro não informado.");
-        erroId.statusCode = 404;
+        erroId.statusCode = 400;
         throw erroId;
       }
 
       const categoria = await CategoriasModel.InativarCategoria(id);
-
       return categoria;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
@@ -97,12 +105,16 @@ export class CategoriasService {
     try {
       if (!id || !dadosAtualizados) {
         const erroDados = new Error("Dados da atualização não informados.");
-        erroDados.statusCode = 404;
+        erroDados.statusCode = 400;
         throw erroDados;
       }
 
-      const categoriaLivro = await CategoriasModel(id, dadosAtualizados);
+      const dadosFiltrados = {};
+      if (dadosAtualizados.nome !== undefined) dadosFiltrados.nome = dadosAtualizados.nome;
+      if (dadosAtualizados.tipo !== undefined) dadosFiltrados.tipo = dadosAtualizados.tipo;
+      if (dadosAtualizados.descricao !== undefined) dadosFiltrados.descricao = dadosAtualizados.descricao;
 
+      const categoriaLivro = await CategoriasModel.AlterarCategoria(id, dadosFiltrados);
       return categoriaLivro;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
