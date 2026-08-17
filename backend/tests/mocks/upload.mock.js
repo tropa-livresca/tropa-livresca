@@ -13,5 +13,8 @@ export const uploadMiddlewareMock = {
       }
       next();
     }),
+    any: jest.fn(() => (req, res, next) => {
+      next();
+    }),
   },
 };

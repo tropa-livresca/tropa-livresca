@@ -1,5 +1,6 @@
 export const livroCompletoMock = {
   id: 1,
+  ISBN: "123",
   direitos_de_publicacao: true,
   conteudo_por_IA: false,
   imagens_explicitas: false,
