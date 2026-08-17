@@ -1,6 +1,4 @@
 import { LivroModel } from "../../common/models/livro.model";
-import { CategoriasModel } from "../../common/models/categorias.model";
-
 export class LivrosService {
   static async BuscarLivros(
     page = 1,
@@ -16,6 +14,7 @@ export class LivrosService {
         busca,
         filtro,
         ordem,
+        false,
       );
 
       return livros;

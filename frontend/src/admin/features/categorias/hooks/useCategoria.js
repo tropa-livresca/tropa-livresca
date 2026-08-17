@@ -181,7 +181,7 @@ export const useCategoria = () => {
             `Erro encontrado ao criar categoria: ${response.status}`,
           );
         }
-        alert("Categoria craida");
+        alert("Categoria criada");
         const responseData = response.data || (await response.json());
         setCategoria(responseData.data || responseData);
         LimparFormulario();

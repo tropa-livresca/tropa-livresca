@@ -8,6 +8,7 @@ export class AutopublicacaoModel {
     busca = "",
     filtro = "",
     ordem = "",
+    estado = "",
   } = {}) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
@@ -30,6 +31,14 @@ export class AutopublicacaoModel {
       query = query.order("data_de_publicacao", { ascending: isAsc });
     } else {
       query = query.order("titulo", { ascending: true });
+    }
+
+    if(estado === "publicado"){
+      query = query.eq("estado", "publicado");
+    } else if(estado === "em_revisao"){
+      query = query.eq("estado", "em_revisao");
+    } else if(estado === "rascunho"){
+      query = query.eq("estado", "rascunho");
     }
 
     const { data, error, count } = await query.range(start, end);

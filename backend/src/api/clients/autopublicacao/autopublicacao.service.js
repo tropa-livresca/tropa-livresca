@@ -58,7 +58,7 @@ export class AutopublicacaoService {
     }
   }
 
-  static async buscarComFiltros({ userId, page, limit, busca, filtro, ordem }) {
+  static async buscarComFiltros({ userId, page, limit, busca, filtro, ordem, estado }) {
     try {
       return await AutopublicacaoModel.buscarComFiltros({
         userId,
@@ -67,6 +67,7 @@ export class AutopublicacaoService {
         busca,
         filtro,
         ordem,
+        estado,
       });
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;

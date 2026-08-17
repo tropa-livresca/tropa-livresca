@@ -15,6 +15,7 @@ import AutorById from "../autores/pages/AutorById/AutorById";
 import MeusLivros from "../autopublicacao/pages/MeusLivros/MeusLivros";
 import EditarLivro from "../autopublicacao/pages/EditarLivro/EditarLivro";
 import Livros from "../livros/pages/Livros/Livros";
+import Visualizar from '../autopublicacao/pages/Visualizar/Visualizar';
 import NovoLivro from "../autopublicacao/pages/NovoLivro/NovoLivro";
 import LivroById from "../livros/pages/LivroById/LivroById";
 import Suporte from "../suporte/pages/Suporte/Suporte";
@@ -58,6 +59,7 @@ const RoutesClients = () => {
 
           <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
           <Route path="/editar-livro/:id" element={<Private Item={EditarLivro} />} />
+          |<Route path = "/visualizar-livro/:id" element = {<Private Item={Visualizar}/>}/>
         </Route>
       </Routes>
     </PerfilProvider>

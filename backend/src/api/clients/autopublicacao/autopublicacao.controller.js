@@ -90,7 +90,7 @@ export class AutopublicacaoController {
   static async BuscarComFiltros(req, res, next) {
     try {
       const userId = req.user.id;
-      const { page, limit, busca, filtro, ordem } = req.query;
+      const { page, limit, busca, filtro, ordem, estado } = req.query;
 
       const resultado = await AutopublicacaoService.buscarComFiltros({
         userId,
@@ -99,6 +99,7 @@ export class AutopublicacaoController {
         busca,
         filtro,
         ordem,
+        estado,
       });
 
       return res.status(200).json(resultado);
