@@ -229,8 +229,8 @@ body {
 .menuDropdown {
   position: absolute;
   top: 115%;
-  right: -50%;
-  width: 150px;
+  right: -60%;
+  width: 170px;
   background-color: #fff8e8;
   border: 1px solid #d4c07a;
   border-radius: 12px;
@@ -408,7 +408,7 @@ body {
   }
 
   .list {
-    gap: 2.5rem;
+    gap: 3.4rem;
   }
 
   .item a {
@@ -478,7 +478,7 @@ body {
   }
 
   .list {
-    gap: 6rem;
+    gap: 7rem;
   }
 
   .item a {
@@ -487,6 +487,10 @@ body {
 
   .button {
     font-size: 1.08rem;
+  }
+
+  .subtema{
+     min-width: 13rem;
   }
 
   .subtema li a {

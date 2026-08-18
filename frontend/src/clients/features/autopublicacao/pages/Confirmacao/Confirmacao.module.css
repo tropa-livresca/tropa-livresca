@@ -142,6 +142,44 @@ label {
   margin-bottom: 1%;
 }
 
+.capa{
+ display: grid;
+ grid-template-columns: auto auto auto;
+ gap:20px;
+}
+
+.capas{
+ text-align: center;
+}
+
+.fvo{
+  color: #67170c;
+  padding-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: "Jacques Francois", serif;
+  text-align:left;
+  border-bottom: 1px solid #e2c77c;
+  margin-top: 2%;
+  width:100%; 
+}
+
+.fvoimg{
+  width: 80%;
+  height:80%;
+}
+
+.fvo small{
+  margin-left: 3%;
+}
+
+.card2 {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+}
+
 @media (max-width: 1200px) {
   .containergrid {
     gap: 0.8rem;

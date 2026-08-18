@@ -213,42 +213,47 @@ export default function Confirmacao({
             </div>
             
           </div>
+          <div className={styles.form}>
           <p>
             <strong>Imagens da Capa:</strong>
           </p>
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          <div className={styles.capa}>
             {urlPreviewFrente && (
-              <div>
-                <p>
+              <div className={`${styles.capas} ${styles.card2}`}
+>
+                <p className={styles.fvo}>
                   <small>Frente:</small>
                 </p>
-                <img src={urlPreviewFrente} alt="Frente da Capa" width="150" />
+                <img src={urlPreviewFrente} alt="Frente da Capa" className={styles.fvoimg} />
               </div>
             )}
             {urlPreviewVerso && (
-              <div>
-                <p>
+              <div className={`${styles.capas} ${styles.card2}`}
+>
+                <p className={styles.fvo}>
                   <small>Verso:</small>
                 </p>
-                <img src={urlPreviewVerso} alt="Verso da Capa" width="150" />
+                <img src={urlPreviewVerso} alt="Verso da Capa" className={styles.fvoimg} />
               </div>
             )}
             {urlPreviewOrelhas && (
-              <div>
-                <p>
+              <div className={`${styles.capas} ${styles.card2}`}
+>
+                <p className={styles.fvo}>
                   <small>Orelhas:</small>
                 </p>
                 <img
                   src={urlPreviewOrelhas}
                   alt="Orelhas da Capa"
-                  width="150"
+                  className={styles.fvoimg}
                 />
               </div>
             )}
           </div>
           {!isBloqueadoParaEdicao && (
-            <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>
+            <button onClick={() => irParaEtapaEspecifica(2)} className={styles.btn}>Editar</button>
           )}
+          </div>
         </div>
       </div>
       <div>

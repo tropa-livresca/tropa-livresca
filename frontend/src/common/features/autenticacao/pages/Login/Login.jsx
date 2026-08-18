@@ -63,15 +63,17 @@ export default function Login() {
               </button>
             </div>
 
-            <BotaoGoogle/>
+            
 
-            <SubmitButton text="ENTRAR" id={styles.btn} />
+            <SubmitButton text="Entrar" id={styles.btn} />
 
             <div className={styles.divisor}>
               <span></span>
               <p>ou</p>
               <span></span>
             </div>
+
+            <BotaoGoogle/>
 
             <div className={styles.errinho}>
               {error.length > 0 && <p>{error}</p>}

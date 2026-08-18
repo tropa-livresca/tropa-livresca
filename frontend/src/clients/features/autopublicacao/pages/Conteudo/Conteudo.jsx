@@ -79,17 +79,19 @@ export default function Conteudo({
           </label>
 
           {previewManuscrito ? (
-            <div>
-              <p style={{ color: "green" }}>✓ Manuscrito carregado</p>
+            <div className={styles.manuscrito}>
+              <p className={styles.pmanuscrito}>✓ Manuscrito carregado</p>
               <a
                 href={previewManuscrito}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ display: "inline-block", marginBottom: "8px" }}
+                className={styles.btnmanus}
+                
+                
               >
                 Abrir manuscrito (PDF)
               </a>
-              <div>
+              <div className={styles.embed}>
                 <embed
                   src={previewManuscrito}
                   type="application/pdf"

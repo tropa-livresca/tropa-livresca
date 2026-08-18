@@ -130,11 +130,45 @@
 }
 
 .preview img{
-  height:50%;
-  width:50%;
+  height:25%;
+  width:25%;
   display: flex;
   margin :0 auto;
   border: 1px solid #e2c77c;
   border-radius: 1rem;
   margin-bottom: 1.5%;
+}
+
+.pmanuscrito{
+  color:green;
+}
+
+.manuscrito{
+  width: 90%;
+  margin:0 auto;
+  margin-bottom: 2%;
+}
+
+.manuscrito embed{
+  border-radius: 1rem;
+   border: 1px #d4b46a;
+}
+
+.btnmanus{
+  color: #67170c;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.btnmanus:hover{
+  transition: 0.3s;
+  color:#d4b46a;
+}
+
+@media (min-width: 1920px) {
+  .preview img{
+    height:25%;
+  width:25%;
+  }
 }
