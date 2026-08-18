@@ -195,7 +195,7 @@ export class AutopublicacaoService {
         throw error;
       }
 
-      // Verifica existência e propriedade do livro
+      
       const livroAtual = await AutopublicacaoModel.buscarDetalhesPorId(
         livroId,
         userId,

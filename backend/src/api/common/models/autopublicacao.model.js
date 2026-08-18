@@ -35,9 +35,13 @@ export class AutopublicacaoModel {
 
     if(estado === "publicado"){
       query = query.eq("estado", "publicado");
-    } else if(estado === "em_revisao"){
+    } 
+    
+    if(estado === "em_revisao"){
       query = query.eq("estado", "em_revisao");
-    } else if(estado === "rascunho"){
+    } 
+    
+    if(estado === "rascunho"){
       query = query.eq("estado", "rascunho");
     }
 
@@ -61,12 +65,13 @@ export class AutopublicacaoModel {
       .eq("id", idLivro)
       .eq("fk_user_profile_id", userId)
       .eq("ativo", true)
-      .maybeSingle();
+      .single();
 
     if (error) {
       error.statusCode = 500;
       throw error;
     }
+
     return data;
   }
 

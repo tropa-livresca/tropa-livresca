@@ -90,12 +90,17 @@ export class AutopublicacaoController {
   static async BuscarComFiltros(req, res, next) {
     try {
       const userId = req.user.id;
-      const { page, limit, busca, filtro, ordem, estado } = req.query;
+       const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 12;
+      const busca = req.query.busca || "";
+      const filtro = req.query.filtro || "";
+      const ordem = req.query.ordem || "";
+      const estado = req.query.estado || "";
 
       const resultado = await AutopublicacaoService.buscarComFiltros({
         userId,
-        page: page ? parseInt(page, 10) : undefined,
-        limit: limit ? parseInt(limit, 10) : undefined,
+        page,
+        limit,
         busca,
         filtro,
         ordem,

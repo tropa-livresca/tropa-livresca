@@ -16,18 +16,21 @@ export default function Visualizar() {
         return <p>Carregando manuscrito...</p>;
     }
 
-    if (!livroSelecionado || !livroSelecionado.conteudo) {
+    if (!livroSelecionado) {
         return <p>Livro não encontrado</p>;
     }
 
-    const { capa, manuscrito } = livroSelecionado.conteudo;
+    const { titulo, subtitulo, capa, manuscrito } = livroSelecionado;
 
     return (
         <main style={{ display: "flex", flexDirection: "column", gap: "20px", padding: "20px" }}>
+            <p>Título:{titulo}</p>
+            <p>Subtítulo: {subtitulo}</p>
             {capa?.frente && (
                 <img src={capa.frente} alt="Capa Frente" style={{ maxWidth: "300px" }} />
             )}
 
+{manuscrito}
             {manuscrito && (
                 <object
                     data={manuscrito}
