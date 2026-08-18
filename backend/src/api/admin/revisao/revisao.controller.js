@@ -3,12 +3,12 @@ import { RevisaoService } from "./revisao.service.js";
 export class RevisaoController {
   static async BuscarRevisoes(req, res, next) {
     try {
-      const page = parseInt(req.body.page, 10) || 1;
-      const limit = parseInt(req.body.limit, 10) || 12;
-      const busca = req.body.busca || "";
-      const filtro = req.body.filtro || "";
-      const ordem = req.body.ordem || "";
-      const livro = req.body.livro || "";
+      const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 12;
+      const busca = req.query.busca || "";
+      const filtro = req.query.filtro || "";
+      const ordem = req.query.ordem || "";
+      const livro = req.query.livro || "";
 
       const revisoes = await RevisaoService.BuscarRevisoes({
         page,
@@ -21,7 +21,7 @@ export class RevisaoController {
 
       return res.status(200).json(revisoes);
     } catch (err) {
-      next(err);
+      return res.json(err.message);
     }
   }
 

@@ -37,7 +37,7 @@ export class RevisaoModel {
 
     if (error) {
       error.statusCode = 500;
-      throw error;
+      return error.message;
     }
 
     return {

@@ -57,11 +57,12 @@ describe("Rotas de Autor - Testes de Integração (E2E)", () => {
       const response = await request(app).get("/1").expect(200);
 
 
+      console.log(response.body);
+      console.log(response.body.data);
 
-      expect(response.body).toEqual({data:{livros:[autorMock]}, meta:{ "limit": 12,  "page": 1,
-        "totalItems": 1,
-         "totalPages": 1,
-      }});
+      const autor = autorMock.autor
+
+    expect(response.body).toEqual({data:{ 0: {autor}, livros:[autorMock] }, meta:{ "limit": 12,  "page": 1, "totalItems": 1, "totalPages": 1,   }});
     });
   });
 
