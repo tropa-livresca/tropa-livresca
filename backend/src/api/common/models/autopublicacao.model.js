@@ -59,13 +59,13 @@ export class AutopublicacaoModel {
   }
 
   static async buscarDetalhesPorId(idLivro, userId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("livros")
       .select("*")
       .eq("id", idLivro)
       .eq("fk_user_profile_id", userId)
       .eq("ativo", true)
-      .single();
+      .maybeSingle();
 
     if (error) {
       error.statusCode = 500;

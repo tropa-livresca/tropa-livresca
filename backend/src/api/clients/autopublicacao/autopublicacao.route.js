@@ -8,6 +8,8 @@ router.get("/", checkAuth, AutopublicacaoController.GetLivrosById);
 
 router.get("/buscar", checkAuth, AutopublicacaoController.BuscarComFiltros);
 
+router.get("/:id", checkAuth, AutopublicacaoController.BuscarLivroById);
+
 router.post(
   "/upload-url",
   checkAuth,

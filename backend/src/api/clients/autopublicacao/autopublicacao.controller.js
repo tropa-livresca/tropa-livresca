@@ -12,14 +12,27 @@ export class AutopublicacaoController {
     }
   }
 
+  static async BuscarLivroById(req, res, next){
+    try{
+      const {id} = req.params;
+      const userId = req.user?.id;
+
+      const livro = await AutopublicacaoService.buscarDetalhesPorId(id, userId);
+
+      return res.status(200).json(livro);
+    }catch(err){
+      next(err);
+    }
+  }
+
   static async UpdateEstado(req, res, next) {
     try {
       const { id } = req.params;
       const { novoEstado } = req.body;
 
-      await AutopublicacaoService.updateEstado(id, novoEstado);
+      const livro = await AutopublicacaoService.updateEstado(id, novoEstado);
 
-      return res.status(200).end();
+      return res.status(200).json(livro);
     } catch (err) {
       next(err);
     }
