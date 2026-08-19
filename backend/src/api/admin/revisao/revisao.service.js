@@ -22,7 +22,7 @@ export class RevisaoService {
       return revisoes;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
-      throw error;
+      return error.message;
     }
   }
 
