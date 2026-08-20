@@ -1,4 +1,5 @@
 ﻿import Input from "../../../../../common/components/Input/Input";
+import styles from "./Orcamento.module.css";
 
 export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa, isBloqueadoParaEdicao }) {
   const numeroPaginas = Number(dados.numeroPaginas) || 100;
@@ -40,66 +41,79 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
   const valoresFisico = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroFisico, custoMinimoFisicoCentavos);
   const valoresDigital = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroDigital, custoMinimoDigitalCentavos);
 
+  const lidarComProximaEtapa = () => {
+    onChange({
+      ...dados,
+      valorLivroFisico: valoresFisico.final,
+      valorLivroDigital: valoresDigital.final
+    });
+    irParaProximaEtapa();
+  };
+
   return (
     <main>
-      <form onSubmit={(e) => e.preventDefault()}>
-        <h1>Orçamento</h1>
+      <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
+        <h1 className={styles.titulo}>Orçamento</h1>
 
-        <fieldset>
+        <div className={styles.card}>
           <legend>Especificações do Livro</legend>
           <label>
             Número de Páginas:
             <Input
+              placeholder="Inserir número de páginas"
               type="number"
+              className={styles.inputmodificado}
               min="1"
               value={dados.numeroPaginas || ""}
               handleOnChange={(e) => atualizarCampo("numeroPaginas", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
           </label>
-        </fieldset>
+        </div>
 
-        <fieldset>
+        <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
-          <p>Custo de Fabricação Mínimo (R$ 0,08 por página): R$ {valoresFisico.minimo}</p>
+          <p>Custo de Fabricação Mínimo (R$ <span className={styles.numero}>0,08</span> por página): R$ <span className={styles.numero}>{valoresFisico.minimo}</span></p>
           <label>
             Preço Base Desejado (R$):
             <Input
               type="text"
               placeholder="0,00"
+              className={styles.inputmodificado}
               value={dados.valorLivroFisico || ""}
               handleOnChange={(e) => atualizarCampo("valorLivroFisico", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
           </label>
-          <div>
-            <p>Comissão da Plataforma (+20%): R$ {valoresFisico.comissao}</p>
-            <strong>Valor Total de Venda: R$ {valoresFisico.final}</strong>
+          <div className={styles.div2}>
+            <p>Comissão da Plataforma (+<span className={styles.numero}>20</span>%): R$ <span className={styles.numero}>{valoresFisico.comissao}</span></p>
+            <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresFisico.final}</span></strong>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset>
+        <div className={styles.card}>
           <legend>Preço do Livro Digital</legend>
-          <p>Custo Digital Mínimo: R$ {valoresDigital.minimo}</p>
+          <p>Custo Digital Mínimo: R$ <span className={styles.numero}>{valoresDigital.minimo}</span></p>
           <label>
             Preço Base Desejado (R$):
             <Input
               type="text"
               placeholder="0,00"
+              className={styles.inputmodificado}
               value={dados.valorLivroDigital || ""}
               handleOnChange={(e) => atualizarCampo("valorLivroDigital", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
           </label>
-          <div>
-            <p>Comissão da Plataforma (+20%): R$ {valoresDigital.comissao}</p>
-            <strong>Valor Total de Venda: R$ {valoresDigital.final}</strong>
+          <div className={styles.div2}>
+            <p>Comissão da Plataforma (+<span className={styles.numero}>20</span>%): R$ <span className={styles.numero}>{valoresDigital.comissao}</span></p>
+            <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresDigital.final}</span></strong>
           </div>
-        </fieldset>
+        </div>
 
-        <div>
-          <button type="button" onClick={voltarEtapa}>Anterior</button>
-          <button type="button" onClick={irParaProximaEtapa}>Posterior</button>
+        <div className={styles.posterior}>
+          <button type="button" onClick={voltarEtapa} id={styles.btn}>Anterior</button>
+          <button type="button" onClick={lidarComProximaEtapa} id={styles.btn2}>Posterior</button>
         </div>
       </form>
     </main>

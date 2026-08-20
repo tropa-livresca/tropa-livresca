@@ -30,6 +30,8 @@ export default function MeusLivros() {
     <main className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.tituloHeader}>Meus Livros</h1>
+        <Link to="/novo-livro" className={styles.btn}> Novo Livro </Link>
+
       </header>
 
       <form onSubmit={handleBuscar} className={styles.filtroForm}>
@@ -74,7 +76,7 @@ export default function MeusLivros() {
                     <div className={styles.semCapaMini}><IoLibraryOutline /></div>
                   )}
                 </div>
-                
+
                 <div className={styles.detalhesTexto}>
                   <strong className={styles.livroTitulo}>{livro.titulo}</strong>
                   <span className={`${styles.badge} ${styles[livro.estado]}`}>{livro.estado}</span>
@@ -126,9 +128,6 @@ export default function MeusLivros() {
           </span>
         </div>
       )}
-
-      {/* Seu botão Novo Livro original com a estilização centralizada */}
-      <Link to="/novo-livro" className={styles.btn}> Novo Livro </Link>
 
       {!carregando && meta && meta.totalPages > 1 && (
         <div className={styles.paginacao}>

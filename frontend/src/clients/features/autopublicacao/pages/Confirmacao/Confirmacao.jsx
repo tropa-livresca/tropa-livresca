@@ -1,6 +1,12 @@
-﻿import { useState, useEffect } from "react";
+﻿﻿import { useState, useEffect } from "react";
+import styles from "./Confirmacao.module.css";
 
-export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivro, isBloqueadoParaEdicao }) {
+export default function Confirmacao({
+  dados,
+  irParaEtapaEspecifica,
+  publicarLivro,
+  isBloqueadoParaEdicao,
+}) {
   const [urlPreviewManga, setUrlPreviewManga] = useState(null);
   const [urlPreviewFrente, setUrlPreviewFrente] = useState(null);
   const [urlPreviewVerso, setUrlPreviewVerso] = useState(null);
@@ -72,77 +78,212 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
 
   return (
     <main>
-      <h1>Confirmação</h1>
-      <div>
-        Detalhes:
+      <div className={styles.form}>
+        <h1 className={styles.titulo}>Confirmação</h1>
+
         {dados.detalhes && (
-          <ul>
-            <li>Título: {dados.detalhes.titulo}</li>
-            <li>Subtítulo: {dados.detalhes.subtitulo}</li>
-            <li>Descrição: {dados.detalhes.descricao}</li>
-            <li>Idioma: {dados.detalhes.idioma}</li>
-            <li>Direito de Publicação: {dados.detalhes.direitoPublicacao}</li>
-            <li>Autor: {dados.detalhes.autor?.nome} {dados.detalhes.autor?.sobrenome}</li>
-            <li>
-              Colaboradores: {dados.detalhes.colaboradores?.map(c => `${c.nome} ${c.sobrenome} (${c.funcao})`).join(", ") || "Nenhum"}
-            </li>
-            <li>Público Principal: {dados.detalhes.publicoPrincipal}</li>
-            <li>Categorias: {dados.detalhes.categorias?.join(", ")}</li>
-            <li>Palavras-chave: {dados.detalhes.palavrasChave?.join(", ")}</li>
-          </ul>
+          <div>
+            <div className={styles.card}>
+              <legend>Título e Subtítulo</legend>
+
+              <div className={styles.containergrid}>
+                <div>
+                  <label>Título:</label>
+                  <div className={styles.liinput}>{dados.detalhes.titulo}</div>
+                </div>
+
+                <div>
+                  <label>Subtítulo:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.subtitulo}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.card}>
+              <legend>Edição</legend>
+
+              <div className={styles.containergrid}>
+                <div>
+                  <label>ISBN do livro:</label>
+                  <div className={styles.liinput}>{dados.detalhes.Isbn}</div>
+                </div>
+
+                <div>
+                  <label>Número da edição:</label>
+                  <div className={styles.liinput}>{dados.detalhes.edicao}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.card}>
+              <legend>Informações do Livro</legend>
+
+              <div className={styles.containergrid}>
+                <div>
+                  <label>Idioma:</label>
+                  <div className={styles.liinput}>{dados.detalhes.idioma}</div>
+                </div>
+
+                <div>
+                  <label>Direito de Publicação e Uso de IA:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.direitoPublicacao}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Autor:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.autor?.nome}{" "}
+                    {dados.detalhes.autor?.sobrenome}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Restrição de Conteúdo:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.restricaoConteudo}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Categorias:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.categorias?.join(", ")}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Palavras-chave:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.palavrasChave?.join(", ")}
+                  </div>
+                </div>
+
+                <div className={styles.colunaCompleta}>
+                  <label>Colaboradores:</label>
+
+                  <div className={styles.liinput}>
+                    {dados.detalhes.colaboradores
+                      ?.map((c) => `${c.nome} ${c.sobrenome} (${c.funcao})`)
+                      .join(", ") || "Nenhum"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.card}>
+              <legend>Descrição</legend>
+
+              <div>
+                <label>Descrição do livro:</label>
+                <div className={styles.liinput2}>{dados.detalhes.descricao}</div>
+              </div>
+            </div>
+          </div>
         )}
-        {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>}
+        {!isBloqueadoParaEdicao && (
+          <button
+            onClick={() => irParaEtapaEspecifica(1)}
+            className={styles.btn}
+          >
+            Editar
+          </button>
+        )}
       </div>
+
       <div>
         <div>
           <div>
-            <p><strong>Manuscrito:</strong> {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</p>
-            {urlPreviewManga && (
-              <iframe src={urlPreviewManga} title="Pré-visualização do Manuscrito" type="application/pdf" width="100%" height="200px" />
+            <div className={styles.form}>
+        <h1 className={styles.titulo}>Manuscrito</h1>{" "}
+        <div className={styles.o}>
+              {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</div>
+
+              {urlPreviewManga && (
+              <iframe
+                src={urlPreviewManga}
+                title="Pré-visualização do Manuscrito"
+                type="application/pdf"
+                className={styles.iframe}
+              />
             )}
+            </div>
+            
           </div>
-          <p><strong>Imagens da Capa:</strong></p>
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+          <div className={styles.form}>
+          <p>
+            <strong>Imagens da Capa:</strong>
+          </p>
+          <div className={styles.capa}>
             {urlPreviewFrente && (
-              <div>
-                <p><small>Frente:</small></p>
-                <img src={urlPreviewFrente} alt="Frente da Capa" width="150" />
+              <div className={`${styles.capas} ${styles.card2}`}
+>
+                <p className={styles.fvo}>
+                  <small>Frente:</small>
+                </p>
+                <img src={urlPreviewFrente} alt="Frente da Capa" className={styles.fvoimg} />
               </div>
             )}
             {urlPreviewVerso && (
-              <div>
-                <p><small>Verso:</small></p>
-                <img src={urlPreviewVerso} alt="Verso da Capa" width="150" />
+              <div className={`${styles.capas} ${styles.card2}`}
+>
+                <p className={styles.fvo}>
+                  <small>Verso:</small>
+                </p>
+                <img src={urlPreviewVerso} alt="Verso da Capa" className={styles.fvoimg} />
               </div>
             )}
             {urlPreviewOrelhas && (
-              <div>
-                <p><small>Orelhas:</small></p>
-                <img src={urlPreviewOrelhas} alt="Orelhas da Capa" width="150" />
+              <div className={`${styles.capas} ${styles.card2}`}
+>
+                <p className={styles.fvo}>
+                  <small>Orelhas:</small>
+                </p>
+                <img
+                  src={urlPreviewOrelhas}
+                  alt="Orelhas da Capa"
+                  className={styles.fvoimg}
+                />
               </div>
             )}
           </div>
-          {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>}
+          {!isBloqueadoParaEdicao && (
+            <button onClick={() => irParaEtapaEspecifica(2)} className={styles.btn}>Editar</button>
+          )}
+          </div>
         </div>
       </div>
       <div>
-        Orçamento:{dados.orcamento && (
+        Orçamento:
+        {dados.orcamento && (
           <ul>
             <li>Tipo de Formatação: {dados.orcamento.tipoFormatacao}</li>
             <li>Valor do Livro Físico: {dados.orcamento.valorLivroFisico}</li>
             <li>Valor do Livro Digital: {dados.orcamento.valorLivroDigital}</li>
           </ul>
         )}
-        {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>}
+        {!isBloqueadoParaEdicao && (
+          <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>
+        )}
       </div>
       <div>
         {!isBloqueadoParaEdicao ? (
           <>
-            <button type="button" onClick={() => publicarLivro("em_revisao")}>Enviar para Revisão</button>
-            <button type="button" onClick={() => publicarLivro("rascunho")}>Salvar como Rascunho</button>
+            <button type="button" onClick={() => publicarLivro("em_revisao")}>
+              Enviar para Revisão
+            </button>
+            <button type="button" onClick={() => publicarLivro("rascunho")}>
+              Salvar como Rascunho
+            </button>
           </>
         ) : (
-          <p style={{ color: "orange", fontWeight: "bold" }}>Este livro está em modo de leitura e não pode receber ações de envio.</p>
+          <p style={{ color: "orange", fontWeight: "bold" }}>
+            Este livro está em modo de leitura e não pode receber ações de
+            envio.
+          </p>
         )}
       </div>
     </main>

@@ -455,7 +455,7 @@ textarea {
 }
 
 .enderecoDesabilitado .linkEndereco {
-  opacity: 0.5;
+   opacity: 0.6;
 }
 
 @media (max-width: 900px) {

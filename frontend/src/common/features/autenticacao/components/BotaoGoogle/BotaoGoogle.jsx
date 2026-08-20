@@ -1,5 +1,6 @@
 import { useGoogle } from "../../hooks/useGoogle.js";
 import styles from "./BotaoGoogle.module.css";
+import { FaGoogle } from "react-icons/fa";
 
 export default function BotaoGoogle() {
     const { iniciarLoginNativo, error, carregando } = useGoogle();
@@ -9,9 +10,10 @@ export default function BotaoGoogle() {
             <button 
                 onClick={iniciarLoginNativo} 
                 disabled={carregando}
-                className={styles.botaoGoogleNativo}
+                className={styles.btngoogle}
             >
-                {carregando ? "Carregando..." : "Entrar com o Google"}
+                <FaGoogle />
+                {carregando ? "Carregando..." : " Entrar com o Google"}
             </button>
             {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
