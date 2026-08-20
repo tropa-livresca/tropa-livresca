@@ -11,7 +11,6 @@
 .topo {
   width: 100%;
   display: grid;
-  gap: 1.5rem;
 }
 
 .titulo {
@@ -29,7 +28,23 @@
   margin-top: 1rem;
   background-color: #d4b46a;
   border-radius: 999px;
-  margin-bottom: 5%;
+}
+
+.legend {
+  color: #67170c;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2%;
+}
+
+.legend::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
 }
 
 .containerbloco {
@@ -39,15 +54,13 @@
 }
 
 .formulario {
-  display: grid;
-  gap: 1.8rem;
   width: 100%;
-  max-width: 500px;
-  padding: clamp(1.8rem, 3vw, 3rem);
-  background: #fffcf4;
-  border-left: 8px solid #d4b46a;
-  border-radius: clamp(12px, 2vw, 20px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .campo_grupo {
@@ -57,53 +70,50 @@
 }
 
 .campo_grupo label {
-  color: #67170c;
-  font-size: 0.95rem;
-  font-weight: 600;
+ color: #67170c;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
 }
 
 .formulario input {
-  width: 100%;
-  padding: 1rem;
-  font-family: inherit;
-  font-size: 1rem;
-  border: 1px solid rgba(103, 23, 12, 0.2);
-  background-color: #fff;
-  border-radius: 8px;
-  color: #67170c;
-  transition: .3s;
+ width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-bottom: 1rem;
 }
 
 .formulario input:focus {
-  outline: none;
-  border-color: #d4b46a;
-  box-shadow: 0 0 0 3px rgba(212, 180, 106, 0.2);
+  outline: none !important;
+  border: 2px solid #67170c !important;
 }
 
 .formulario input::placeholder {
-  color: #a48b87;
-  font-size: 0.9rem;
+   color: var(--cor-texto-muted) !important;
 }
 
 .btn_submit {
   width: 100%;
-  padding: 1rem;
+  padding: 0.7rem;
   font-family: inherit;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: normal;
   background-color: #67170c;
-  color: #fff;
+  color: #ede6b3;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: .3s;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .btn_submit:hover:not(:disabled) {
-  background-color: #d4b46a;
-  color: #67170c;
-  transform: translateY(-2px);
+    background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .btn_submit:disabled {
@@ -115,22 +125,22 @@
 .mensagem {
   margin: 0;
   padding: 1rem;
+  margin-top: 1%;
   border-radius: 8px;
   font-size: 0.95rem;
   line-height: 1.5;
-  text-align: left;
+  text-align: center;
+  color:#67170c;
 }
 
 .erro {
   background-color: rgba(103, 23, 12, 0.05);
   color: #67170c;
-  border-left: 4px solid #67170c;
 }
 
 .sucesso {
   background-color: rgba(40, 167, 69, 0.05);
   color: #28a745;
-  border-left: 4px solid #28a745;
 }
 
 /* Insira estas classes no seu arquivo TrocarSenha.module.css */
@@ -148,21 +158,31 @@
 
 .olho {
   position: absolute;
+  top: 35%;
   right: 1rem;
-  background: none;
+  transform: translateY(-50%);
+  background: transparent;
   border: none;
-  color: #67170c;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #666;
   font-size: 1.2rem;
   padding: 0;
-  transition: color 0.2s ease;
+  z-index: 10;
 }
 
+
 .olho:hover {
-  color: #d4b46a;
+  color: #67170c;
+}
+
+.topo p {
+  color: #67170c;
+  text-align: left;
+  font-size: 1.2rem;
+  margin-bottom:3%;
 }
 
 @media (max-width: 900px) {
@@ -186,5 +206,11 @@
 
   .formulario {
     padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px;
   }
 }

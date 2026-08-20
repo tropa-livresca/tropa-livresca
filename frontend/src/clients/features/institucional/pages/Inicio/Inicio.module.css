@@ -1,15 +1,24 @@
-.home_wrapper {
+.container {
+     width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
+}
+
+.topo {
+  width: 100%;
+}
+
+.falecido{
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
-
 /* 1. HERO BANNER */
 .hero_section {
     width: 100%;
-    max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,7 +28,7 @@
 }
 
 .hero_tagline {
-    font-size: 0.9em;
+    font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #ffbb33;
@@ -33,12 +42,13 @@
     margin-bottom: 0.5em;
     line-height: 1.2;
     max-width: 800px;
+    color:#67170c;
 }
 
 .hero_section p {
     font-size: 1.1em;
     margin-bottom: 2em;
-    color: #7b7b7b;
+    color: var(--cor-texto-muted);
     max-width: 650px;
 }
 
@@ -49,37 +59,55 @@
 
 .btn_primary, .btn_secondary {
     padding: 0.8em 2em;
-    border-radius: 4px;
-    font-weight: 600;
+    border-radius: 0.5rem;
+    font-weight: normal;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 .btn_primary {
-    background-color: #222;
-    color: #fff;
+    background-color: #67170c;
+    color: #ede6b3;
 }
 
 .btn_primary:hover {
     background-color: #ffbb33;
-    color: #222;
+  transition: 0.3s;
 }
 
 .btn_secondary {
-    background-color: transparent;
-    color: #222;
-    border: 1px solid #222;
+     border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
 }
 
 .btn_secondary:hover {
-    background-color: #f4f4f4;
+    background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.subcontainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.catalogo, .comunidade{
+    text-align: left;
+}
+
+.descubra{
+    text-align: right;
 }
 
 /* 2. ESTRUTURA GERAL DAS SEÇÕES (LIVROS E AUTORES) */
 .secao_livros, .secao_autores {
     width: 100%;
-    max-width: 1200px;
-    padding: 3em 1.5em;
+    max-width: 1800px;
     display: flex;
     flex-direction: column;
 }
@@ -98,27 +126,29 @@
     font-size: 0.8em;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: #7b7b7b;
+    color: var(--cor-texto-muted);
 }
 
 .container_header h2 {
     font-size: 2em;
     margin-top: 0.2em;
     margin-bottom: 0;
+    color:#67170c;
 }
 
 .link_ver_todos {
     display: flex;
     align-items: center;
     gap: 0.5em;
-    color: #222;
+    color: #67170c;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: bold;
     font-size: 0.95em;
 }
 
 .link_ver_todos:hover {
     color: #ffbb33;
+    transition: 0.3s;
 }
 
 /* 3. GRIDS EDITORIAIS */
@@ -264,4 +294,22 @@
     text-align: center;
     color: #7b7b7b;
     padding: 2em 0;
+}
+
+
+.divisao{
+  width: 100%;
+  height: 1.5px;
+  background-image: repeating-linear-gradient(
+    90deg,
+     #ffbb33 0 8px,
+    transparent 8px 14px
+  );
+}
+
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px;
+  }
 }

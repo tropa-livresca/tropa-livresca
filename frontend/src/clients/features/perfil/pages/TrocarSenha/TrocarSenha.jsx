@@ -24,12 +24,15 @@ export default function TrocarSenha() {
   return (
     <div className={styles.container}>
       <div className={styles.topo}>
-        <h1 className={styles.titulo}>Trocar Senha</h1>
+        <h1 className={styles.titulo}>Redefinir Senha</h1>
+        <p>
+          Para sua segurança, escolha uma senha forte e que você não utiliza em outros serviços.
+        </p>
       </div>
 
       <div className={styles.containerbloco}>
         <form onSubmit={AlterarSenha} className={styles.formulario}>
-          
+           <legend className={styles.legend}>Preencha os campos abaixo</legend>
           {/* Campo: Senha Atual */}
           <div className={styles.campo_grupo}>
             <label htmlFor="senha">Senha atual</label>
