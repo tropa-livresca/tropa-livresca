@@ -58,7 +58,7 @@ export class AutopublicacaoService {
     }
   }
 
-  static async buscarComFiltros({ userId, page, limit, busca, filtro, ordem }) {
+  static async buscarComFiltros({ userId, page, limit, busca, filtro, ordem, estado }) {
     try {
       return await AutopublicacaoModel.buscarComFiltros({
         userId,
@@ -67,8 +67,32 @@ export class AutopublicacaoService {
         busca,
         filtro,
         ordem,
+        estado,
       });
     } catch (error) {
+      if (!error.statusCode) error.statusCode = 500;
+      throw error;
+    }
+  }
+
+  static async buscarDetalhesPorId(livroId, userId){
+    if(!userId){
+      const erroUserId = new Error("Sessão expirada. Renovar login.");
+      erroUserId.statusCode = 401;
+      throw erroUserId;
+    }
+
+    if(!livroId){
+      const erroLivroId = new Error("O id do livro não foi informado.");
+      erroLivroId.statusCode = 500;
+      throw erroLivroId;
+    } 
+
+    try{
+      const resultado = await AutopublicacaoModel.buscarDetalhesPorId(livroId, userId);
+
+      return resultado;
+    }catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;
     }
@@ -194,7 +218,7 @@ export class AutopublicacaoService {
         throw error;
       }
 
-      // Verifica existência e propriedade do livro
+      
       const livroAtual = await AutopublicacaoModel.buscarDetalhesPorId(
         livroId,
         userId,

@@ -11,23 +11,11 @@ Table users_profile {
   redes_sociais jsonb [default: '{}']
 }
 
-Table adm_credenciais {
-  id bigint [pk, increment]
-  username text [not null]
-  primeiro_acesso boolean [default: false]
-  ativo boolean [default: true]
-  funcao text [not null]
-  email text [not null]
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-}
-
 Table categorias {
   id bigint [pk, increment]
   nome text [not null]
   tipo text [not null]
   data_criacao timestamp [default: `now()`, not null]
-  slug text [not null]
-  fk_adms_id uuid [not null]
 }
 
 Table livros {
@@ -134,7 +122,6 @@ Table cupons {
   data_criacao timestamp [default: `now()`]
   data_atualizacao timestamp [default: `now()`]
   fk_livros_id bigint [ref: > livros.id, not null]
-  fk_adm_credenciais_id bigint [ref: > adm_credenciais.id, not null]
 }
 
 Table revisoes {

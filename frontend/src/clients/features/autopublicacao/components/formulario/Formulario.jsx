@@ -25,7 +25,7 @@ export default function Formulario({ idLivroEdicao }) {
     publicarLivro,
   } = useAutopublicacao();
 
-  const { BuscarLivroById } = useMeusLivros();
+  const { buscarLivroById } = useMeusLivros();
 
   const [carregandoLivro, setCarregandoLivro] = useState(false);
   const [erroCarregar, setErroCarregar] = useState(null);
@@ -39,7 +39,7 @@ export default function Formulario({ idLivroEdicao }) {
         setCarregandoLivro(true);
         setErroCarregar(null);
 
-        const dadosDoLivroDoBanco = await BuscarLivroById(idLivroEdicao);
+        const dadosDoLivroDoBanco = await buscarLivroById(idLivroEdicao);
 
         console.debug("Formulario: dadosDoLivroDoBanco:", dadosDoLivroDoBanco);
 
@@ -58,7 +58,7 @@ export default function Formulario({ idLivroEdicao }) {
     };
 
     buscarDadosDoLivro();
-  }, [idLivroEdicao, carregarDadosParaEdicao, BuscarLivroById]);
+  }, [idLivroEdicao, carregarDadosParaEdicao, buscarLivroById]);
 
   if (carregandoLivro) {
     return <div>Carregando dados do livro para edição...</div>;
@@ -144,10 +144,11 @@ export default function Formulario({ idLivroEdicao }) {
           publicarLivro={publicarLivro}
         />
       )}
-
-      <Link to="/meuslivros" className={styles.btn}>
+  <button className={styles.btn}>
+      <Link to="/meuslivros" >
         Voltar a Meus Livros
       </Link>
+      </button>
     </main>
   );
 }

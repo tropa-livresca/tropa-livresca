@@ -11,7 +11,7 @@ export function useGoogle() {
 
     try {
       const redirectTo = `${window.location.origin}/auth/callback`;
-      const response = await apiFetch("/api/v1/clients/auth/signin/google", {
+      const response = await apiFetch("/api/v1/auth/signin/google", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ redirectTo }),

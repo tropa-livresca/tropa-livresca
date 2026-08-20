@@ -37,7 +37,7 @@
 
 .containerperfil {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 350px 1fr;
   gap: 2rem;
 }
 
@@ -55,6 +55,7 @@
   text-align: center;
   display: grid;
   gap: 1.5rem;
+  padding: 1.7rem;
   align-content: start;
 }
 
@@ -362,28 +363,100 @@ textarea {
   color: #806f60 !important;
 }
 
-.enderecoPrincipal, .semEndereco {
-  padding: 0.8rem 1rem !important;
-  align-items: flex-start !important;
-  line-height: 1.4;
-  font-size: 0.9rem !important;
-}
-
 .enderecoPrincipal strong {
   font-family: "Jacques Francois", serif;
   color: #67170c;
 }
 
+.enderecoFormulario {
+  margin-bottom: 3%;
+}
 .linkEndereco {
-  color: #67170c;
-  text-decoration: underline;
-  font-weight: 600;
+  color: #fff8d7;
+  background: #67170c;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.7rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.8rem;
 }
 
 .linkEndereco:hover {
-  color: #ffbb33;
+  background: #ffbb33;
+  transition: 0.3s;
 }
 
+.numero {
+  font-family: none;
+}
+
+.enderecoInfo {
+  margin-bottom: 4%;
+}
+
+.enderecoInfo svg {
+  color: #67170c;
+  font-size: 1rem;
+}
+
+.semEndereco {
+  margin-bottom: 4%;
+}
+
+.semEndereco svg {
+  color: #67170c;
+  font-size: 1rem;
+}
+
+.david {
+  color: #67170c;
+  font-size: 1rem;
+  margin-left: 1%;
+}
+
+.removerFoto {
+  color: #fff8d7;
+  background: #67170c;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 0.7rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  margin-top: 2%;
+}
+
+.removerFoto:hover {
+  background: #ffbb33;
+  transition: 0.3s;
+}
+
+.enderecoDesabilitado {
+  opacity: 0.7;
+  pointer-events: none;
+  color: #806f60;
+}
+
+.enderecoDesabilitado .enderecoInfo,
+.enderecoDesabilitado .semEndereco {
+  color: #806f60;
+}
+
+.enderecoDesabilitado .enderecoInfo svg,
+.enderecoDesabilitado .semEndereco svg {
+  color: #806f60;
+}
+
+.enderecoDesabilitado .david {
+  color: #806f60;
+}
+
+.enderecoDesabilitado .numero {
+  color: #806f60;
+}
+
+.enderecoDesabilitado .linkEndereco {
+   opacity: 0.6;
+}
 
 @media (max-width: 900px) {
   .containerperfil {
@@ -397,6 +470,6 @@ textarea {
 
 @media (min-width: 1920px) {
   .container {
-  max-width: 1800px;
-}
+    max-width: 1800px;
+  }
 }

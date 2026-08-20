@@ -12,14 +12,27 @@ export class AutopublicacaoController {
     }
   }
 
+  static async BuscarLivroById(req, res, next){
+    try{
+      const {id} = req.params;
+      const userId = req.user?.id;
+
+      const livro = await AutopublicacaoService.buscarDetalhesPorId(id, userId);
+
+      return res.status(200).json(livro);
+    }catch(err){
+      next(err);
+    }
+  }
+
   static async UpdateEstado(req, res, next) {
     try {
       const { id } = req.params;
       const { novoEstado } = req.body;
 
-      await AutopublicacaoService.updateEstado(id, novoEstado);
+      const livro = await AutopublicacaoService.updateEstado(id, novoEstado);
 
-      return res.status(200).end();
+      return res.status(200).json(livro);
     } catch (err) {
       next(err);
     }
@@ -90,15 +103,21 @@ export class AutopublicacaoController {
   static async BuscarComFiltros(req, res, next) {
     try {
       const userId = req.user.id;
-      const { page, limit, busca, filtro, ordem } = req.query;
+       const page = parseInt(req.query.page, 10) || 1;
+      const limit = parseInt(req.query.limit, 10) || 12;
+      const busca = req.query.busca || "";
+      const filtro = req.query.filtro || "";
+      const ordem = req.query.ordem || "";
+      const estado = req.query.estado || "";
 
       const resultado = await AutopublicacaoService.buscarComFiltros({
         userId,
-        page: page ? parseInt(page, 10) : undefined,
-        limit: limit ? parseInt(limit, 10) : undefined,
+        page,
+        limit,
         busca,
         filtro,
         ordem,
+        estado,
       });
 
       return res.status(200).json(resultado);

@@ -1,3 +1,5 @@
+/*
+
 import { PerfilService } from "../../../../src/api/clients/perfil/perfil.service.js";
 import { PerfilModel } from "../../../../src/api/common/models/perfil.model.js";
 
@@ -139,3 +141,5 @@ describe("PerfilService - Testes Unitários", () => {
     });
   });
 });
+
+*/

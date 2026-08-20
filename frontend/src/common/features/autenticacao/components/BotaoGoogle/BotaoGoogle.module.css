@@ -1,32 +1,32 @@
-.google {
+.btngoogle{
+  background: #fff8d7;
   width: 90%;
-  height: 3rem;
-  margin: auto;
-  display: flex;
-  align-items: center;
+  margin-left:5%;
+  padding: 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7em;
+  display: inline-flex;
   justify-content: center;
-  gap: 0.8rem;
-  background-color: #ede6b3;
-  border-radius: 0.7rem;
-  border: 0.2em solid beige;
+  align-items: center;
   color: #67170c;
   font-size: 1rem;
-  cursor: pointer;
-  transition: 0.25s;
 }
 
-.google:hover {
+.btngoogle:hover {
   background-color: #ffbb33;
-  color: #ede6b3;
   transition: 0.3s;
 }
 
-.google svg {
-  font-size: 1.25rem;
+.btngoogle svg{
+  margin-right: 3%;
+  font-size: 1.2rem;
+  color:#67170c;
 }
 
 @media (max-width: 1024px){
-  .google {
+  .btngoogle {
     width: 90%;
   }
 }

@@ -1,0 +1,190 @@
+@import url("https://googleapis.com");
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
+  font-family: "Jacques Francois", serif, system-ui;
+}
+
+.topo {
+  width: 100%;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  text-align: left;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 7rem;
+  height: 3px;
+  margin-top: 1rem;
+  background-color: #d4b46a;
+  border-radius: 999px;
+  margin-bottom: 5%;
+}
+
+.containerbloco {
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.formulario {
+  display: grid;
+  gap: 1.8rem;
+  width: 100%;
+  max-width: 500px;
+  padding: clamp(1.8rem, 3vw, 3rem);
+  background: #fffcf4;
+  border-left: 8px solid #d4b46a;
+  border-radius: clamp(12px, 2vw, 20px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.campo_grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.campo_grupo label {
+  color: #67170c;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.formulario input {
+  width: 100%;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  border: 1px solid rgba(103, 23, 12, 0.2);
+  background-color: #fff;
+  border-radius: 8px;
+  color: #67170c;
+  transition: .3s;
+}
+
+.formulario input:focus {
+  outline: none;
+  border-color: #d4b46a;
+  box-shadow: 0 0 0 3px rgba(212, 180, 106, 0.2);
+}
+
+.formulario input::placeholder {
+  color: #a48b87;
+  font-size: 0.9rem;
+}
+
+.btn_submit {
+  width: 100%;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  background-color: #67170c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .3s;
+  margin-top: 0.5rem;
+}
+
+.btn_submit:hover:not(:disabled) {
+  background-color: #d4b46a;
+  color: #67170c;
+  transform: translateY(-2px);
+}
+
+.btn_submit:disabled {
+  background-color: #a48b87;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.mensagem {
+  margin: 0;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.erro {
+  background-color: rgba(103, 23, 12, 0.05);
+  color: #67170c;
+  border-left: 4px solid #67170c;
+}
+
+.sucesso {
+  background-color: rgba(40, 167, 69, 0.05);
+  color: #28a745;
+  border-left: 4px solid #28a745;
+}
+
+/* Insira estas classes no seu arquivo TrocarSenha.module.css */
+
+.inputSenha {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputSenha input {
+  padding-right: 3rem; /* Abre espaço no final do input para o olho não sobrepor o texto */
+}
+
+.olho {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #67170c;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.olho:hover {
+  color: #d4b46a;
+}
+
+@media (max-width: 900px) {
+  .titulo {
+    text-align: center;
+  }
+
+  .titulo::after {
+    margin-inline: auto;
+  }
+
+  .containerbloco {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 3rem 5%;
+  }
+
+  .formulario {
+    padding: 1.5rem;
+  }
+}

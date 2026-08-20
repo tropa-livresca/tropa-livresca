@@ -14,20 +14,30 @@ describe("PerfilModel - Testes Unitários", () => {
   beforeEach(() => { resetSupabaseMock(); });
 
   describe("buscarPorId", () => {
-    it("Deve estruturar a query corretamente e retornar o perfil se ele existir", async () => {
+    it("retorna dados recebidos do supabase", async () => {
       builder.resolve(perfilCompleto, null);
       
-      const resultado = await PerfilModel.buscarPorId("user-integration-123");
+      const resultado = await PerfilModel.buscarPerfil("123");
 
       expect(resultado).toEqual(perfilCompleto);
     });
   });
 
-  describe("salvar", () => {
-    it("Deve chamar o upsert com as opções de conflito corretas e retornar o perfil salvo", async () => {
+  describe("atualizarPerfil", () => {
+    it("retorna dados recebidos do supabase", async () => {
       builder.resolve(perfilAtualizado, null); 
 
-      const resultado = await PerfilModel.salvar({ id: "user-integration-123", nome: "Carlos Atualizado" });
+      const resultado = await PerfilModel.atualizarPerfil("user-integration-123", "Carlos Atualizado");
+
+      expect(resultado).toEqual(perfilAtualizado);
+    });
+  });
+
+  describe("atualizarApenasImagem", () => {
+    it("retorna dados recebidos do supabase", async () => {
+      builder.resolve(perfilAtualizado, null); 
+
+      const resultado = await PerfilModel.atualizarApenasImagem("user-integration-123", "Carlos Atualizado" );
 
       expect(resultado).toEqual(perfilAtualizado);
     });
