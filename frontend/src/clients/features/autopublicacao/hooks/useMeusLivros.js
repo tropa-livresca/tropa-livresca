@@ -2,62 +2,75 @@ import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback } from "react";
 
 export const useMeusLivros = () => {
-  const [livro, setLivro] = useState([]);
-  const [Livros, setLivros] = useState([]);
-  const [carregando, setCarregando] = useState(true);
+  const [livroSelecionado, setLivroSelecionado] = useState(null);
+  const [livros, setLivros] = useState([]);
+  const [meta, setMeta] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
-  const BuscarLivrosById = useCallback(async () => {
-    setCarregando(true);
-    setLivros([]);
-    try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/", {
-        method: "GET",
-      });
-      const data = await res.json();
+  const buscarLivrosById = useCallback(
+    async (
+      page = 1,
+      limit = 12,
+      busca = "",
+      filtro = "",
+      ordem = "",
+      estado = "",
+    ) => {
+      setCarregando(true);
+      try {
+        const url = `/api/v1/clients/autopublicacao/buscar/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&estado=${estado}`;
+        
+        const res = await apiFetch(url, { method: "GET" });
+        const data = await res.json();
 
-      if (!res.ok) {
-        if (res.status === 404) {
-          setLivros([]);
-          setCarregando(false);
-          return;
+        if (!res.ok) {
+          if (res.status === 404) {
+            setLivros([]);
+            return;
+          }
+          throw new Error(data.error || `Erro ${res.status}`);
         }
-        throw new Error(data.error || `Erro ${res.status}`);
+
+        const livrosData = data.data || data || [];
+        setLivros(livrosData);
+        setMeta(data.meta || "");
+      } catch (error) {
+        console.error("Erro em buscarLivrosById", error);
+        setLivros([]);
+      } finally {
+        setCarregando(false);
       }
+    },
+    [],
+  );
 
-      const livrosData = data.data || data || [];
-      setLivros(livrosData);
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro em GetLivrosById", error);
-      setLivros([]);
-      setCarregando(false);
-    }
-  }, []);
-
-  const BuscarLivroById = useCallback(async (id) => {
+  const buscarLivroById = useCallback(async (id) => {
+    setCarregando(true);
     try {
-      const res = await apiFetch("/api/v1/clients/livros/detalhes/" + id, {
+      const res = await apiFetch(`/api/v1/clients/autopublicacao/${id}`, {
         method: "GET",
       });
-
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
 
-      console.debug("BuscarLivroById response:", data);
-      return data.data ?? data;
+      const detalhe = data.data ?? data;
+      setLivroSelecionado(detalhe);
+      return detalhe;
     } catch (error) {
-      console.error("Erro em BuscarLivroById", error);
+      console.error("Erro em buscarLivroById", error);
       throw error;
+    } finally {
+      setCarregando(false);
     }
   }, []);
 
-  const UpdateEstado = useCallback(
-    async (id, novoEstado) => {
+  const updateEstado = useCallback(
+    async (id, novoEstado, callbackAtualizar) => {
       setCarregando(true);
       try {
         const res = await apiFetch(
-          "/api/v1/clients/autopublicacao/updateEstado/" + id,
+          `/api/v1/clients/autopublicacao/updateEstado/${id}`,
           {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
@@ -65,45 +78,43 @@ export const useMeusLivros = () => {
           },
         );
         if (!res.ok) throw new Error(`Erro ${res.status}`);
-        await BuscarLivrosById();
+
+        if (callbackAtualizar) await callbackAtualizar();
       } catch (error) {
-        console.error("Erro em UpdateEstado", error);
+        console.error("Erro em updateEstado", error);
         setCarregando(false);
       }
     },
-    [BuscarLivrosById],
+    [],
   );
 
-  const InativarLivro = useCallback(
-    async (id) => {
-      setCarregando(true);
-      try {
-        const res = await apiFetch(
-          "/api/v1/clients/autopublicacao/ativo/" + id,
-          {
-            method: "PATCH",
-          },
-        );
-        if (!res.ok) throw new Error(`Erro ${res.status}`);
-        await BuscarLivrosById();
-      } catch (error) {
-        console.error("Erro em InativarLivro", error);
-        setCarregando(false);
-      }
-    },
-    [BuscarLivrosById],
-  );
+  const inativarLivro = useCallback(async (id, callbackAtualizar) => {
+    setCarregando(true);
+    try {
+      const res = await apiFetch(`/api/v1/clients/autopublicacao/ativo/${id}`, {
+        method: "PATCH",
+      });
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+      if (callbackAtualizar) await callbackAtualizar();
+    } catch (error) {
+      console.error("Erro em inativarLivro", error);
+      setCarregando(false);
+    }
+  }, []);
 
   return {
     carregando,
-    livro,
-    Livros,
+    livroSelecionado,
+    livros,
+    meta,
+    setMeta,
     setCarregando,
-    setLivro,
+    setLivroSelecionado,
     setLivros,
-    BuscarLivrosById,
-    BuscarLivroById,
-    UpdateEstado,
-    InativarLivro,
+    buscarLivrosById,
+    buscarLivroById,
+    updateEstado,
+    inativarLivro,
   };
 };

@@ -3,7 +3,6 @@ import styles from "./Orcamento.module.css";
 
 export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa, isBloqueadoParaEdicao }) {
   const numeroPaginas = Number(dados.numeroPaginas) || 100;
-
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
   const custoMinimoDigitalCentavos = 599;
 
@@ -16,16 +15,16 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
 
   const calcularEstruturaPrecoPorPrecoFinal = (valorDigitado, custoMinimoCentavos) => {
     const limpo = String(valorDigitado || "").replace(",", ".");
-    const partes = limpo.split(".");
-    
-    const reais = Number(partes[0]) || 0;
-    const centavos = Number(String(partes[1] || "").padEnd(2, "0").slice(0, 2)) || 0;
-    const precoFinalDigitadoCentavos = (reais * 100) + centavos;
+    const valorFloat = parseFloat(limpo);
 
-    const vendaTotalCentavos = Math.max(precoFinalDigitadoCentavos, custoMinimoCentavos);
+    let precoFinalDigitadoCentavos = 0;
+    if (!isNaN(valorFloat)) {
+      precoFinalDigitadoCentavos = Math.round(valorFloat * 100);
+    }
 
-    const subtotalCentavos = Math.round(vendaTotalCentavos / 1.20);
-    const comissaoCentavos = vendaTotalCentavos - subtotalCentavos;
+    const subtotalCentavos = Math.max(precoFinalDigitadoCentavos, custoMinimoCentavos);
+    const comissaoCentavos = Math.round(subtotalCentavos * 0.20);
+    const vendaTotalCentavos = subtotalCentavos + comissaoCentavos;
 
     return {
       minimo: formatarMoeda(custoMinimoCentavos),
@@ -35,23 +34,33 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
   };
 
   const atualizarCampo = (chave, valor) => {
-    onChange({ ...dados, [chave]: valor });
+    const valorValidado = valor.replace(/[^0-9.,]/g, "");
+    onChange({ ...dados, [chave]: valorValidado });
   };
 
   const valoresFisico = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroFisico, custoMinimoFisicoCentavos);
   const valoresDigital = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroDigital, custoMinimoDigitalCentavos);
+
+  const lidarComProximaEtapa = () => {
+    onChange({
+      ...dados,
+      valorLivroFisico: valoresFisico.final,
+      valorLivroDigital: valoresDigital.final
+    });
+    irParaProximaEtapa();
+  };
 
   return (
     <main>
       <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
         <h1 className={styles.titulo}>Orçamento</h1>
 
-         <div className={styles.card}>
+        <div className={styles.card}>
           <legend>Especificações do Livro</legend>
           <label>
-            Número de Páginas:</label>
+            Número de Páginas:
             <Input
-            placeholder="Inserir número de páginas"
+              placeholder="Inserir número de páginas"
               type="number"
               className={styles.inputmodificado}
               min="1"
@@ -59,14 +68,14 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               handleOnChange={(e) => atualizarCampo("numeroPaginas", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
-          
+          </label>
         </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
           <p>Custo de Fabricação Mínimo (R$ <span className={styles.numero}>0,08</span> por página): R$ <span className={styles.numero}>{valoresFisico.minimo}</span></p>
           <label>
-            Preço Final de Venda Desejado (R$):</label>
+            Preço Base Desejado (R$):
             <Input
               type="text"
               placeholder="0,00"
@@ -75,9 +84,9 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               handleOnChange={(e) => atualizarCampo("valorLivroFisico", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
-          
+          </label>
           <div className={styles.div2}>
-            <p>Comissão da Plataforma (<span className={styles.numero}>20</span>% inclusa): R$ <span className={styles.numero}>{valoresFisico.comissao}</span></p>
+            <p>Comissão da Plataforma (+<span className={styles.numero}>20</span>%): R$ <span className={styles.numero}>{valoresFisico.comissao}</span></p>
             <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresFisico.final}</span></strong>
           </div>
         </div>
@@ -86,7 +95,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
           <legend>Preço do Livro Digital</legend>
           <p>Custo Digital Mínimo: R$ <span className={styles.numero}>{valoresDigital.minimo}</span></p>
           <label>
-            Preço Final de Venda Desejado (R$):</label>
+            Preço Base Desejado (R$):
             <Input
               type="text"
               placeholder="0,00"
@@ -95,16 +104,16 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
               handleOnChange={(e) => atualizarCampo("valorLivroDigital", e.target.value)}
               disabled={isBloqueadoParaEdicao}
             />
-          
+          </label>
           <div className={styles.div2}>
-            <p>Comissão da Plataforma (<span className={styles.numero}>20</span>% inclusa): R$ <span className={styles.numero}>{valoresDigital.comissao}</span></p>
+            <p>Comissão da Plataforma (+<span className={styles.numero}>20</span>%): R$ <span className={styles.numero}>{valoresDigital.comissao}</span></p>
             <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresDigital.final}</span></strong>
           </div>
         </div>
 
         <div className={styles.posterior}>
           <button type="button" onClick={voltarEtapa} id={styles.btn}>Anterior</button>
-          <button type="button" onClick={irParaProximaEtapa} id={styles.btn2}>Posterior</button>
+          <button type="button" onClick={lidarComProximaEtapa} id={styles.btn2}>Posterior</button>
         </div>
       </form>
     </main>

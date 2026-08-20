@@ -129,6 +129,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         capa = JSON.parse(capa);
       } catch (e) {
         capa = null;
+        console.error("Erro ao converter a capa", e);
       }
     }
 
@@ -202,7 +203,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       const b = normalizeBool(imagensExplicitasRaw);
       if (b === true) return true;
       if (b === false) return false;
-      // also accept explicit string values inside detalhes
       if (typeof imagensExplicitasRaw === "string") {
         const low = imagensExplicitasRaw.toLowerCase();
         if (low === "sim" || low === "true") return true;

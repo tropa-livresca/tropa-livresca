@@ -1,3 +1,4 @@
+
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
@@ -61,14 +62,27 @@ describe("Rotas de Perfil - Testes de Integração (E2E)", () => {
 
       const response = await request(app)
         .put("/")
-        .field("nome", payloadFormMultipart.nome)
-        .field("telefone", payloadFormMultipart.telefone)
-        .field("descricao", payloadFormMultipart.descricao)
-        .field("redes_sociais", payloadFormMultipart.redes_sociais)
-        .attach("imagem", Buffer.from("fake-binary-data"), "avatar.jpg")
+        .send({dadosPerfil:{nome:"1", telefone:"2", descricao:"3",}})
         .expect(200);
 
       expect(response.body).toEqual(perfilAtualizado);
     });
+    
   });
+
+  describe("DELETE /imagem", () => {
+    it("Deve processar o multipart/form-data e retornar o perfil atualizado", async () => {
+      builder.resolve(perfilAtualizado, null);
+
+      const response = await request(app)
+        .delete("/imagem")
+
+        
+        .expect(200);
+
+      expect(response.body).toEqual(perfilAtualizado);
+    });
+
+  });
+
 });

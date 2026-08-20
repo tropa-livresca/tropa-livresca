@@ -8,6 +8,7 @@ export class AutopublicacaoModel {
     busca = "",
     filtro = "",
     ordem = "",
+    estado = "",
   } = {}) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
@@ -32,6 +33,18 @@ export class AutopublicacaoModel {
       query = query.order("titulo", { ascending: true });
     }
 
+    if(estado === "publicado"){
+      query = query.eq("estado", "publicado");
+    } 
+    
+    if(estado === "em_revisao"){
+      query = query.eq("estado", "em_revisao");
+    } 
+    
+    if(estado === "rascunho"){
+      query = query.eq("estado", "rascunho");
+    }
+
     const { data, error, count } = await query.range(start, end);
 
     if (error) {
@@ -46,7 +59,7 @@ export class AutopublicacaoModel {
   }
 
   static async buscarDetalhesPorId(idLivro, userId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("livros")
       .select("*")
       .eq("id", idLivro)
@@ -58,6 +71,7 @@ export class AutopublicacaoModel {
       error.statusCode = 500;
       throw error;
     }
+
     return data;
   }
 
