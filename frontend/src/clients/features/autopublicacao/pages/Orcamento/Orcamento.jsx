@@ -2,7 +2,6 @@
 
 export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa, isBloqueadoParaEdicao }) {
   const numeroPaginas = Number(dados.numeroPaginas) || 100;
-
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
   const custoMinimoDigitalCentavos = 599;
 
@@ -15,16 +14,16 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
 
   const calcularEstruturaPrecoPorPrecoFinal = (valorDigitado, custoMinimoCentavos) => {
     const limpo = String(valorDigitado || "").replace(",", ".");
-    const partes = limpo.split(".");
-    
-    const reais = Number(partes[0]) || 0;
-    const centavos = Number(String(partes[1] || "").padEnd(2, "0").slice(0, 2)) || 0;
-    const precoFinalDigitadoCentavos = (reais * 100) + centavos;
+    const valorFloat = parseFloat(limpo);
 
-    const vendaTotalCentavos = Math.max(precoFinalDigitadoCentavos, custoMinimoCentavos);
+    let precoFinalDigitadoCentavos = 0;
+    if (!isNaN(valorFloat)) {
+      precoFinalDigitadoCentavos = Math.round(valorFloat * 100);
+    }
 
-    const subtotalCentavos = Math.round(vendaTotalCentavos / 1.20);
-    const comissaoCentavos = vendaTotalCentavos - subtotalCentavos;
+    const subtotalCentavos = Math.max(precoFinalDigitadoCentavos, custoMinimoCentavos);
+    const comissaoCentavos = Math.round(subtotalCentavos * 0.20);
+    const vendaTotalCentavos = subtotalCentavos + comissaoCentavos;
 
     return {
       minimo: formatarMoeda(custoMinimoCentavos),
@@ -34,7 +33,8 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
   };
 
   const atualizarCampo = (chave, valor) => {
-    onChange({ ...dados, [chave]: valor });
+    const valorValidado = valor.replace(/[^0-9.,]/g, "");
+    onChange({ ...dados, [chave]: valorValidado });
   };
 
   const valoresFisico = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroFisico, custoMinimoFisicoCentavos);
@@ -63,7 +63,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
           <legend>Preço do Livro Físico</legend>
           <p>Custo de Fabricação Mínimo (R$ 0,08 por página): R$ {valoresFisico.minimo}</p>
           <label>
-            Preço Final de Venda Desejado (R$):
+            Preço Base Desejado (R$):
             <Input
               type="text"
               placeholder="0,00"
@@ -73,7 +73,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
             />
           </label>
           <div>
-            <p>Comissão da Plataforma (20% inclusa): R$ {valoresFisico.comissao}</p>
+            <p>Comissão da Plataforma (+20%): R$ {valoresFisico.comissao}</p>
             <strong>Valor Total de Venda: R$ {valoresFisico.final}</strong>
           </div>
         </fieldset>
@@ -82,7 +82,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
           <legend>Preço do Livro Digital</legend>
           <p>Custo Digital Mínimo: R$ {valoresDigital.minimo}</p>
           <label>
-            Preço Final de Venda Desejado (R$):
+            Preço Base Desejado (R$):
             <Input
               type="text"
               placeholder="0,00"
@@ -92,7 +92,7 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
             />
           </label>
           <div>
-            <p>Comissão da Plataforma (20% inclusa): R$ {valoresDigital.comissao}</p>
+            <p>Comissão da Plataforma (+20%): R$ {valoresDigital.comissao}</p>
             <strong>Valor Total de Venda: R$ {valoresDigital.final}</strong>
           </div>
         </fieldset>
