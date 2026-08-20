@@ -15,9 +15,10 @@ export default function Inicio() {
   }, [buscarAutores, BuscarLivros]);
 
   return (
-    <div className={styles.home_wrapper}>
+    <div>
+      <div className={styles.topo}>
       <section className={styles.hero_section}>
-        <div className={styles.hero_content}>
+        <div className={styles.falecido}>
           <span className={styles.hero_tagline}>Autopublicação de Alto Nível</span>
           <h1>Publique seu livro com quem entende do mercado</h1>
           <p>
@@ -30,16 +31,21 @@ export default function Inicio() {
           </div>
         </div>
       </section>
-
+      </div>
+      <div class={styles.divisao}></div>
+      <div className={styles.container}>
+      <div className={styles.subcontainer}>
       <section className={styles.secao_livros}>
         <div className={styles.container_header}>
-          <div>
+          <div className={styles.catalogo}>
             <span className={styles.subtitulo_secao}>Catálogo</span>
             <h2>Livros em Destaque</h2>
           </div>
+          <div className={styles.descubra}>
           <Link to="/livros" className={styles.link_ver_todos}>
             Descubra mais livros <FaArrowRight />
           </Link>
+          </div>
         </div>
 
         <div className={styles.editorial_grid_livros}>
@@ -75,13 +81,15 @@ export default function Inicio() {
 
       <section className={styles.secao_autores}>
         <div className={styles.container_header}>
-          <div>
+          <div className={styles.comunidade}>
             <span className={styles.subtitulo_secao}>Comunidade</span>
             <h2>Nossos Autores</h2>
           </div>
+          <div className={styles.descubra}>
           <Link to="/autores" className={styles.link_ver_todos}>
             Descubra mais autores <FaArrowRight />
           </Link>
+          </div>
         </div>
 
         <div className={styles.editorial_grid_autores}>
@@ -115,6 +123,8 @@ export default function Inicio() {
           )}
         </div>
       </section>
+      </div>
+      </div>
     </div>
   );
 }
