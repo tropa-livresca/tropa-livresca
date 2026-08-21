@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useEndereco } from "../../hooks/useEndereco.js";
 import styles from "./Endereco.module.css";
+import Popup from "../../../../components/PopUp/Popup";
 
 export default function Endereco() {
   const {
+    popup,
+    fecharPopup,
     enderecos,
     estado,
     setEstado,
@@ -245,6 +248,13 @@ export default function Endereco() {
           </div>
         </div>
       </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </div>
   );
 }

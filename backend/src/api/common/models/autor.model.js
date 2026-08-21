@@ -9,7 +9,6 @@ export class AutorModel {
       .from("users_profile")
       .select("id, livros!inner(ativo, estado)", {
         count: "exact",
-        head: false,
       })
       .eq("livros.ativo", true)
       .eq("livros.estado", "publicado");
@@ -58,9 +57,13 @@ export class AutorModel {
 
     const { data, error } = await supabase
       .from("users_profile")
-      .select("id, nome, imagem, descricao, redes_sociais")
+      .select("id, nome, imagem, descricao, redes_sociais, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)")
       .eq("id", id)
+      .eq("livros.ativo", true)
+      .eq("livros.estado", "publicado")
       .maybeSingle();
+
+          console.log("Erro:", data);
 
     if (error) {
       error.statusCode = 500;

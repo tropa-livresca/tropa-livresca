@@ -28,7 +28,6 @@ Se você precisar recriar estas tabelas em um banco de dados limpo ou em um novo
 -- ==========================================
 CREATE TABLE public.users_profile (
     id uuid NOT NULL DEFAULT gen_random_uuid(),
-    username text NOT NULL,
     nome text NOT NULL,
     telefone character varying NOT NULL,
     imagem text,

@@ -41,13 +41,15 @@ export default function Suporte() {
   };
 
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Entre em contato</h1>
         <p>
           Tem alguma dúvida? Entre em contato conosco.
         </p>
       </div>
+
+      <div className={styles.container}>
 
       <form onSubmit={handleSubmit} method="POST" className={styles.form}>
         <legend className={styles.legend}>Preencha os campos abaixo</legend>
@@ -138,6 +140,7 @@ export default function Suporte() {
           <p className={styles.erro}>{error.text}</p>
         )}
       </form>
+      </div>
     </main>
   );
 }

@@ -5,6 +5,7 @@ import { useLivros } from "../../../../hooks/useLivros";
 import { useEffect } from "react";
 import { FaUserCircle, FaArrowRight } from "react-icons/fa";
 
+
 export default function Inicio() {
   const { autores, buscarAutores, carregando: carregandoAutores } = useAutores();
   const { Livros, BuscarLivros, carregando: carregandoLivros } = useLivros();
