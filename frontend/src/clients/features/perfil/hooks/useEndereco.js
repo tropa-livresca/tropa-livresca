@@ -2,6 +2,19 @@ import { useCallback, useState } from "react";
 import { apiFetch } from "../../../../common/services/api";
 
 export const useEndereco = () => {
+  const [popup, setPopup] = useState(null);
+
+  const mostrarPopup = useCallback((tipo, mensagem) => {
+    setPopup({
+      tipo,
+      mensagem,
+    });
+  }, []);
+
+  const fecharPopup = useCallback(() => {
+    setPopup(null);
+  }, []);
+
   const [endereco, setEndereco] = useState(null);
   const [enderecos, setEnderecos] = useState([]);
   const [estado, setEstado] = useState("");
@@ -28,35 +41,35 @@ export const useEndereco = () => {
 
   const ValidarCampos = useCallback(() => {
     if (!CEP || CEP.trim() === "") {
-      alert("O campo CEP é obrigatório.");
+      mostrarPopup("Aviso", "O campo CEP é obrigatório.");
       return false;
     }
     if (!estado || estado.trim() === "") {
-      alert("O campo Estado é obrigatório.");
+      mostrarPopup("Aviso", "O campo Estado é obrigatório.");
       return false;
     }
     if (!cidade || cidade.trim() === "") {
-      alert("O campo Cidade é obrigatório.");
+      mostrarPopup("Aviso", "O campo Cidade é obrigatório.");
       return false;
     }
     if (!bairro || bairro.trim() === "") {
-      alert("O campo Bairro é obrigatório.");
+      mostrarPopup("Aviso", "O campo Bairro é obrigatório.");
       return false;
     }
     if (!rua || rua.trim() === "") {
-      alert("O campo Rua é obrigatório.");
+      mostrarPopup("Aviso", "O campo Rua é obrigatório.");
       return false;
     }
     if (!numero || numero.trim() === "") {
-      alert("O campo Número é obrigatório.");
+      mostrarPopup("Aviso", "O campo Número é obrigatório.");
       return false;
     }
     if (!pais || pais.trim() === "") {
-      alert("O campo País é obrigatório.");
+      mostrarPopup("Aviso", "O campo País é obrigatório.");
       return false;
     }
     return true;
-  }, [CEP, estado, cidade, bairro, rua, numero, pais]);
+  }, [CEP, estado, cidade, bairro, rua, numero, pais, mostrarPopup]);
 
   const AplicarMascaraCEP = useCallback((valor) => {
     const apenasNumeros = valor.replace(/\D/g, "");
@@ -335,5 +348,7 @@ export const useEndereco = () => {
     AplicarMascaraCEP,
     DefinirEnderecoPrincipal,
     BuscarEnderecoPrincipal,
+    popup,
+    fecharPopup,
   };
 };

@@ -5,13 +5,13 @@ import { Link, useParams } from "react-router-dom";
 
 export default function LivroById() {
     const { id } = useParams();
-    const { autor, colaboradores, livro, BuscarLivroByAutor, carregando } = useLivros();
+    const { autor, colaboradores, livro, BuscarDetalhesLivro, carregando } = useLivros();
 
     useEffect(() => {
         if (id) {
-            BuscarLivroByAutor(id);
+            BuscarDetalhesLivro(id);
         }
-    }, [id, BuscarLivroByAutor]);
+    }, [id, BuscarDetalhesLivro]);
 
     if (carregando) return <p>Carregando...</p>;
 

@@ -1,5 +1,4 @@
 import { AutorModel } from "../../common/models/autor.model.js";
-import { LivroModel } from "../../common/models/livro.model.js";
 
 export class AutorService {
   static _parseCapaUrls (livro) {
@@ -56,7 +55,7 @@ export class AutorService {
     }
   }
 
-  static async getAutorByIdService({ id, page, limit }) {
+ static async getAutorByIdService({ id, page, limit }) {
     try {
       const autor = await AutorModel.buscarPorId(id);
 
@@ -66,9 +65,16 @@ export class AutorService {
         throw erro404;
       }
 
-      const livros = await LivroModel.buscarPorPerfilUsuario(id);
-      const totalLivros = livros ? livros.length : 0;
-      const livrosComCapas = this._parseCapasArray(livros);
+      const livrosOriginais = autor.livros || [];
+      const totalLivros = livrosOriginais.length;
+      
+      const start = (page - 1) * limit;
+      const end = start + limit;
+      const livrosPaginados = livrosOriginais.slice(start, end);
+      
+      const livrosComCapas = this._parseCapasArray(livrosPaginados);
+
+      delete autor.livros;
 
       return {
         data: {
@@ -76,8 +82,8 @@ export class AutorService {
           livros: livrosComCapas,
         },
         meta: {
-          page,
-          limit,
+          page: Number(page),
+          limit: Number(limit),
           totalItems: totalLivros,
           totalPages: Math.ceil(totalLivros / limit) || 1,
         },
