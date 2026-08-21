@@ -45,9 +45,14 @@ export class AutorModel {
       .order("nome", { ascending: true });
 
     if (error) {
+      
+          console.log("Erro:", error);
       error.statusCode = 500;
       throw error;
     }
+
+    
+    console.log("Erro:", data);
 
     return { data: data || [], count: count || 0 };
   }
@@ -62,8 +67,6 @@ export class AutorModel {
       .eq("livros.ativo", true)
       .eq("livros.estado", "publicado")
       .maybeSingle();
-
-          console.log("Erro:", data);
 
     if (error) {
       error.statusCode = 500;
