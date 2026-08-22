@@ -9,13 +9,15 @@
 
 .topo {
   width: 100%;
-  margin-bottom: 7rem;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
 }
 
 .titulo {
    margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
+  font-size: clamp(2rem, 4vw, 4rem);
   font-family: "Jacques Francois", serif;
 }
 
@@ -31,13 +33,17 @@
 }
 
 .topo p {
-  color: #67170c;
   text-align: left;
   font-size: 1.2rem;
+  color: var(--cor-texto-muted);
 }
 
 .categoriaCard {
-  margin-bottom: 3rem;
+  margin-bottom: 5rem;
+}
+
+.categoriaCard:last-child {
+  margin-bottom: 0;
 }
 
 .categoriaTitulo {
@@ -130,26 +136,20 @@
 }
 
 .contato {
-    margin-top: 5rem;
-  padding: 2rem;
+  margin: 0 auto;
+  padding: 1.5rem;
   text-align: center;
   border-radius: 1rem;
   background: #fffdf7;
-  border-radius: 1.5rem;
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.contato:hover {
-  border-left-color: #d4b46a;
-  box-shadow: 0 8px 20px rgba(103, 23, 12, 0.08);
-}
-
 .contatoTitulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(2rem, 4vw, 2.7rem);
+  font-size: 2em;
   font-family: "Jacques Francois", serif;
 }
 
@@ -190,6 +190,15 @@
   );
 }
 
+.subcontainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 
 @media (max-width: 768px) {
   .container {
@@ -212,11 +221,6 @@
 
   .aberto + .respostaCard {
     padding: 1.2rem 1.3rem 1.4rem;
-  }
-
-  .contatoBox {
-    margin-top: 4rem;
-    padding: 2.5rem 1.5rem;
   }
 
   .contatoTitulo {
