@@ -1,0 +1,357 @@
+@import url("https://googleapis.com");
+
+/* ---------- Suas Regras Originais (Mantidas Intactas) ---------- */
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: auto;
+  padding: 5rem 6%;
+}
+
+.cardnenhumlivro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  border-radius: 1.5rem;
+  margin-bottom: 5%;
+}
+
+.cardnenhumlivro svg {
+  color: #67170c;
+}
+
+.titulon {
+  color: #67170c;
+  font-size: 1.5rem;
+  font-family: "Jacques Francois", serif;
+  text-align: center;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.sub {
+  color: var(--cor-texto-muted);
+}
+
+.btn {
+  background-color: #67170c;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 1rem;
+  display: grid;
+  justify-self: center;
+  margin-top: 1.5rem;
+  color: #ede6b3;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+@media (min-width: 1920px) {
+  .container {
+    max-width: 1800px;
+  }
+}
+
+/* ---------- Estrutura Complementar para Tabela e Filtros ---------- */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  border-bottom: 2px solid var(--cor-superficie-clara);
+  padding-bottom: 1.5rem;
+}
+
+.tituloHeader {
+  margin: 0;
+  color: #67170c;
+  font-size: 2.5rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.filtroForm {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1.5rem;
+  background: var(--cor-superficie);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: var(--sombra-suave);
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.buscaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.buscaIcon {
+  position: absolute;
+  left: 1rem;
+  color: var(--cor-texto-muted);
+}
+
+.inputBusca {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid var(--cor-superficie-clara);
+  border-radius: 999px;
+  background-color: var(--cor-fundo);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.inputBusca:focus {
+  border-color: #67170c;
+}
+
+.selectsGrid {
+  display: flex;
+  gap: 1rem;
+}
+
+.selectsGrid select {
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--cor-superficie-clara);
+  border-radius: 999px;
+  background-color: var(--cor-fundo);
+  color: var(--cor-primaria);
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+}
+
+/* Tabela de Linhas Grandes */
+.tabelaLinhas {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.linhaLivro {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: var(--cor-superficie);
+  border-radius: 1.25rem;
+  box-shadow: var(--sombra-card);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.linhaLivro:hover {
+  transform: translateX(4px);
+  box-shadow: 0 6px 12px rgba(103, 23, 12, 0.08);
+}
+
+.infoColuna {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.capaContainer {
+  width: 4rem;
+  height: 6rem;
+  flex-shrink: 0;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: var(--sombra-suave);
+  background: var(--cor-superficie-clara);
+}
+
+.capaMini {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.semCapaMini {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--cor-texto-muted);
+  font-size: 1.5rem;
+}
+
+.detalhesTexto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.livroTitulo {
+  color: #67170c;
+  font-size: 1.3rem;
+  font-family: "Jacques Francois", serif;
+}
+
+/* Badges e Tipos de Ações Específicas */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  width: max-content;
+  font-family: system-ui, sans-serif;
+}
+
+.rascunho { background-color: #feebc8; color: #c05621; }
+.em_revisao { background-color: #e2e8f0; color: #4a5568; }
+.publicado { background-color: #c6f6d5; color: #22543d; }
+
+.acoesColuna {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.textoPublicado {
+  font-size: 0.9rem;
+  color: #22543d;
+  font-weight: 600;
+  font-family: "Jacques Francois", serif;
+  padding: 0 0.5rem;
+}
+
+/* Botões menores específicos para as ações da linha */
+.btnAcao {
+  text-decoration: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: 0.2s;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnVisualizar {
+  background-color: var(--cor-superficie-clara);
+  color: #67170c;
+}
+
+.btnVisualizar:hover {
+  background-color: #67170c;
+  color: #ede6b3;
+}
+
+.btnEditar {
+  background-color: #edf2f7;
+  color: #2d3748;
+}
+
+.btnEditar:hover {
+  background-color: #e2e8f0;
+}
+
+.btnPublicar {
+  background-color: #e6fffa;
+  color: #006d5b;
+}
+
+.btnPublicar:hover {
+  background-color: #319795;
+  color: #fff;
+}
+
+.btnInativar {
+  background-color: #fff5f5;
+  color: #e53e3e;
+}
+
+.btnInativar:hover {
+  background-color: #e53e3e;
+  color: #fff;
+}
+
+/* Paginação */
+.paginacao {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.btnPaginacao {
+  background: var(--cor-superficie);
+  border: 1px solid var(--cor-superficie-clara);
+  padding: 0.5rem 1.2rem;
+  border-radius: 999px;
+  color: #67170c;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.btnPaginacao:hover:not(:disabled) {
+  background: #67170c;
+  color: #ede6b3;
+}
+
+.btnPaginacao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.textoPaginacao {
+  font-size: 0.95rem;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+}
+
+/* Responsivo para Filtros e Linhas */
+@media (max-width: 992px) {
+  .filtroForm {
+    grid-template-columns: 1fr;
+  }
+  .selectsGrid {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .selectsGrid select {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .linhaLivro {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.25rem;
+  }
+  .acoesColuna {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .btnAcao {
+    flex: 1;
+    min-width: max-content;
+  }
+}

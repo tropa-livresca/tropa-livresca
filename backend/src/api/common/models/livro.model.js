@@ -4,6 +4,10 @@ const COLUNAS_LIVRO =
   "ISBN, imagens_explicitas, publico_alvo, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
 
 export class LivroModel {
+
+  //admin
+
+  
   static async buscarComFiltros(
     { page = 1, limit = 12, busca = "", filtro = "", ordem = "" },
     alguns = true,
