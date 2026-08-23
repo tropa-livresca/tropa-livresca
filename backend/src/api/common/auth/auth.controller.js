@@ -240,6 +240,8 @@ export class AuthController {
 
   static async callbackRedefinirSenha(req, res) {
     const code = req.query.code;
+    console.log(code)
+    console.log(req)
 
     if (!code) {
       return res.redirect("http://localhost:5173/auth/login?error=Link_invalido");
@@ -258,9 +260,9 @@ export class AuthController {
       res.cookie("auth-token", accessToken, AuthController.COOKIE_OPTIONS);
       res.cookie("refresh-token", refreshToken, AuthController.COOKIE_OPTIONS);
 
-      return res.redirect("http://localhost:5173/auth/redefinir-senha");
+      return res.redirect(process.env.SUPABASE_RDEFINIR_SENHA);
     } catch (err) {
-      return res.redirect("http://localhost:5173/auth/login?error=Erro_na_autenticacao");
+      return res.redirect(process.env.SUPABASE_RDEFINIR_SENHA_ERROR);
     }
   }
 

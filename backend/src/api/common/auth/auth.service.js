@@ -21,7 +21,7 @@ export class AuthService {
   static async esqueciSenha(email) {
     if (!email) {
       const erroEmail = new Error("O e-mail é obrigatório.");
-      erroEmail.statusCode = 400; // Corrigido de 500 para 400 (Bad Request)
+      erroEmail.statusCode = 400; 
       throw erroEmail;
     }
 

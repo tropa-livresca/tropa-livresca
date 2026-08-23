@@ -52,10 +52,7 @@ export class AuthModel {
   }
 
   static async signinComGoogle(redirectTo) {
-    const callbackUrl =
-      redirectTo ||
-      process.env.SUPABASE_AUTH_REDIRECT_URL ||
-      "http://localhost:5173/auth/callback";
+    const callbackUrl = "https://urban-zebra-r4q9wg546jp2pqjp-5173.app.github.dev/";
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
