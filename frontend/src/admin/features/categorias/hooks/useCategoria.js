@@ -2,6 +2,20 @@ import { useState, useCallback } from "react";
 import { apiFetch } from "../../../../common/services/api.js";
 
 export const useCategoria = () => {
+
+  const [popup, setPopup] = useState(null);
+
+  const mostrarPopup = useCallback((tipo, mensagem) => {
+    setPopup({
+      tipo,
+      mensagem,
+    });
+  }, []);
+
+  const fecharPopup = useCallback(() => {
+    setPopup(null);
+  }, []);
+
   const [categorias, setCategorias] = useState([]);
   const [meta, setMeta] = useState(null);
   const [categoria, setCategoria] = useState(null);
@@ -13,19 +27,19 @@ export const useCategoria = () => {
 
   const ValidarCampos = useCallback(() => {
     if (!nome || nome.trim() === "") {
-      alert("O campo nome é obrigatório.");
-      return false;
-    }
-    if (!tipo || tipo.trim() === "") {
-      alert("O campo tipo é obrigatório.");
+      mostrarPopup("erro", "O campo nome é obrigatório.");
       return false;
     }
     if (!descricao || descricao.trim() === "") {
-      alert("O campo descrição é obrigatório.");
+      mostrarPopup("erro", "O campo descrição é obrigatório.");
+      return false;
+    }
+    if (!tipo || tipo.trim() === "") {
+      mostrarPopup("erro", "O campo tipo é obrigatório.");
       return false;
     }
     return true;
-  }, [nome, tipo, descricao]);
+  }, [nome, tipo, descricao, mostrarPopup]);
 
   const LimparFormulario = useCallback(() => {
     setNome("");
@@ -124,16 +138,16 @@ export const useCategoria = () => {
         }
         const responseData = response.data || (await response.json());
         setCategoria(responseData.data || responseData);
-        alert("Categoria atualizada com sucesso.");
+        mostrarPopup("sucesso", "Categoria atualizada com sucesso.");
         await BuscarCategorias();
       } catch (err) {
         console.error("Erro ao atualizar categoria.", err);
-        alert("Ocorreu erro ao atualizar categoria.");
+        mostrarPopup("erro", "Ocorreu erro ao atualizar categoria.");
       } finally {
         setCarregando(false);
       }
     },
-    [BuscarCategorias, FinalizarPayload, ValidarCampos],
+    [BuscarCategorias, FinalizarPayload, ValidarCampos,mostrarPopup],
   );
 
   const InativarCategoria = useCallback(
@@ -181,7 +195,7 @@ export const useCategoria = () => {
             `Erro encontrado ao criar categoria: ${response.status}`,
           );
         }
-        alert("Categoria criada");
+        mostrarPopup("sucesso", "Categoria criada");
         const responseData = response.data || (await response.json());
         setCategoria(responseData.data || responseData);
         LimparFormulario();
@@ -193,7 +207,7 @@ export const useCategoria = () => {
         setCarregando(false);
       }
     },
-    [FinalizarPayload, BuscarCategorias, LimparFormulario, ValidarCampos],
+    [FinalizarPayload, BuscarCategorias, LimparFormulario, ValidarCampos, mostrarPopup],
   );
 
   return {
@@ -218,5 +232,7 @@ export const useCategoria = () => {
     handleCriarCategoria,
     AtualizarCategoria,
     InativarCategoria,
+    popup,
+    fecharPopup,
   };
 };

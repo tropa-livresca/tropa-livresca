@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCategoria } from "../../hooks/useCategoria";
+import Popup from "../../../../../clients/components/PopUp/Popup";
 
 export default function AlterarCategoria() {
   const { id } = useParams();
@@ -15,7 +16,9 @@ export default function AlterarCategoria() {
     setTipo,
     descricao,
     setDescricao,
-    carregando
+    carregando,
+    popup,
+    fecharPopup,
   } = useCategoria();
 
   useEffect(() => {
@@ -36,7 +39,7 @@ export default function AlterarCategoria() {
   return (
     <main>
       <h2>Alterar Categoria</h2>
-      
+
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="nome">Nome:</label>
@@ -74,6 +77,13 @@ export default function AlterarCategoria() {
           {carregando ? "Salvando..." : "Salvar Alterações"}
         </button>
       </form>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </main>
   );
 }
