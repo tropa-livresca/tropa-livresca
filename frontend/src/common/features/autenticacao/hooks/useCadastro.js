@@ -1,15 +1,29 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 
 export const useCadastro = () => {
+  const navigate = useNavigate();
+  const [popup, setPopup] = useState(null);
+
+  const mostrarPopup = useCallback((tipo, mensagem) => {
+    setPopup({
+      tipo,
+      mensagem,
+    });
+  }, []);
+
+  const fecharPopup = useCallback(() => {
+    setPopup(null);
+    navigate("/auth/login");
+  }, [navigate]);
+
   const [nome, setNome] = useState("");
   const [senha, setSenha] = useState("");
   const [confSenha, setConfSenha] = useState("");
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const { signup } = useAuth();
 
@@ -56,11 +70,7 @@ export const useCadastro = () => {
       return;
     }
 
-    alert(
-      "Cadastro realizado! Verifique sua caixa de entrada para confirmar o e-mail.",
-    );
-
-    navigate("/auth/login");
+    mostrarPopup("sucesso", "Cadastro realizado com sucesso!");
   };
 
   return {
@@ -78,5 +88,7 @@ export const useCadastro = () => {
     setTelefone,
     navigate,
     handleSignup,
+    popup,
+    fecharPopup,
   };
 };

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros.js";
 import styles from "./Visualizar.module.css";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Visualizar() {
     const { id } = useParams();
@@ -14,7 +15,7 @@ export default function Visualizar() {
     }, [id, buscarLivroById]);
 
     if (carregando) {
-        return <div className={styles.loading}>Carregando manuscrito...</div>;
+        return <Carregando mensagem="Carregando manuscrito..."/>;
     }
 
     if (!livroSelecionado) {

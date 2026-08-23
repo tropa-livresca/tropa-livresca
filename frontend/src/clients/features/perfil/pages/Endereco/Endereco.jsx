@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useEndereco } from "../../hooks/useEndereco.js";
 import styles from "./Endereco.module.css";
 import Popup from "../../../../components/PopUp/Popup";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Endereco() {
   const {
@@ -73,9 +74,7 @@ export default function Endereco() {
       </div>
 
       {carregando && (
-        <div className={styles.loading}>
-          <strong>Aguarde...</strong> Processando requisição...
-        </div>
+        <Carregando mensagem="Aguarde... Processando requisição..."/>
       )}
 
       <div className={styles.conteudoLayout}>
