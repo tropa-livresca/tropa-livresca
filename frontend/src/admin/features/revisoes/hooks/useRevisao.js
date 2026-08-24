@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+ import { useCallback, useState } from "react";
 import { apiFetch } from "../../../../common/services/api.js";
 
 export const useRevisao = () => {
@@ -70,6 +70,7 @@ export const useRevisao = () => {
         formData.append("nome", nome);
         formData.append("apontamento", apontamento);
         formData.append("idLivro", idLivro);
+        
         if (manuscrito) {
           formData.append("manuscritoRevisto", manuscrito);
         }

@@ -4,15 +4,30 @@ import { useCallback, useState } from "react";
 export const useLivros = () => {
   const [livro, setLivro] = useState(null);
   const [livros, setLivros] = useState([]);
-  const [meta, setMeta] = useState(null);
+  const [count, setCount] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
   const buscarLivros = useCallback(
-    async (page = 1, limit = 12, busca = "", filtro = "", ordem = "") => {
+    async (
+      page = 1,
+      limit = 12,
+      busca = "",
+      filtro = "",
+      ordem = "",
+      ativo = "",
+      estado = "",
+    ) => {
       setCarregando(true);
       try {
+        let ativoBooleano = "";
+        if (ativo === "true" || ativo === true) ativoBooleano = true;
+        if (ativo === "false" || ativo === false) ativoBooleano = false;
+
         const res = await apiFetch(
-          `api/v1/admin/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}`,
+          `api/v1/admin/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&ativo=${ativoBooleano}&estado=${estado}`,
+          {
+            method: "GET",
+          },
         );
 
         const result = await res.json();
@@ -20,7 +35,7 @@ export const useLivros = () => {
         if (!res.ok) {
           if (res.status === 404) {
             setLivros([]);
-            setMeta(null);
+            setCount(null);
             setCarregando(false);
             return;
           }
@@ -29,7 +44,7 @@ export const useLivros = () => {
         }
 
         setLivros(result.data || []);
-        setMeta(result.meta);
+        setCount(result.count);
         setCarregando(false);
       } catch (error) {
         console.error("Erro detectado ao buscar os livros", error);
@@ -75,8 +90,8 @@ export const useLivros = () => {
     setLivros,
     carregando,
     setCarregando,
-    meta,
-    setMeta,
+    count,
+    setCount,
     buscarLivros,
     buscarLivroById,
   };

@@ -49,9 +49,9 @@ export default function NavBarLateral({ aberto, aoFechar }) {
 
         {livrosAberto && (
           <div className={styles.subMenu}>
-            {/* Rota corrigida para bater com o path="categorias" do seu arquivo de rotas */}
             <Link to="/admin/categorias" className={styles.subItem}>Categorias</Link>
-            <Link to="/admin/livros/painel" className={styles.subItem}>Painel Livros</Link>  
+            <Link to="/admin/livros/painel" className={styles.subItem}>Painel Livros</Link>
+            <Link to = "/admin/livros/revisoes">Revisões</Link>  
             <Link to="/admin/livros/catalogo" className={styles.subItem}>Gerenciar Catálogo</Link>
           </div>
         )}

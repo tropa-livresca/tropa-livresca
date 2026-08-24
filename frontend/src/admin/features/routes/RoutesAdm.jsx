@@ -1,4 +1,7 @@
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+
+import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
+import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
 import Categoria from "../categorias/pages/Categoria/Categoria";
 import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
 import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
@@ -19,6 +22,18 @@ const RoutesAdm = () => {
   return (
     <MainLayout>
       <Routes>
+        <Route path = "livros/painel" element = {
+          <PrivateRoute>
+            <GerenciaLivros/>
+          </PrivateRoute>
+        }/>
+
+        <Route path = "livros/detalhes/:id" element = {
+          <PrivateRoute>
+            <VisualizarLivro/>
+          </PrivateRoute>
+        }/>
+
         <Route
           path="categorias"
           element={

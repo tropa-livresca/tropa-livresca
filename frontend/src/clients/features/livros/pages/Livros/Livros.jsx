@@ -16,7 +16,7 @@ export default function Livros() {
             await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
         }
         carregarDados();
-    }, [paginaAtual, filtro, ordem, busca, BuscarLivros]);
+    }, [paginaAtual, filtro, ordem, BuscarLivros]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
