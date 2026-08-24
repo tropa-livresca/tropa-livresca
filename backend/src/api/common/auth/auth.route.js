@@ -15,9 +15,9 @@ router.patch("/senha", checkAuth, AuthController.atualizarSenhaAntiga);
 
 router.post("/redefinir-senha", AuthController.redefinirSenha);
 router.post("/esquecer-senha", AuthController.esqueciSenha);
-router.get(/callback-redefinir-senha/, AuthController.callbackRedefinirSenha);
+router.get("/callback-redefinir-senha", AuthController.callbackRedefinirSenha);
 
-router.patch("/senha", checkAuth, AuthController.atualizarSenhaAntiga);
+router.patch("/senha-nova", checkAuth, AuthController.atualizarSenhaAntiga);
 
 router.get("/session", checkAuth, (req, res) => {
   return res.status(200).json({ user: req.user });

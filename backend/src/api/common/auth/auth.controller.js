@@ -239,48 +239,17 @@ export class AuthController {
   }
 
   static async callbackRedefinirSenha(req, res) {
-    const code = req.query.code;
-    console.log(code)
-    console.log(req)
-
-    if (!code) {
-      return res.redirect("http://localhost:5173/auth/login?error=Link_invalido");
-    }
-
-    try {
-      const data = await AuthService.setSessionWithCode(code);
-
-      const accessToken = data?.session?.access_token;
-      const refreshToken = data?.session?.refresh_token;
-
-      if (!accessToken || !refreshToken) {
-        throw new Error("Dados de sessao ausentes no retorno do provedor.");
-      }
-
-      res.cookie("auth-token", accessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", refreshToken, AuthController.COOKIE_OPTIONS);
-
-      return res.redirect(process.env.SUPABASE_RDEFINIR_SENHA);
-    } catch (err) {
-      return res.redirect(process.env.SUPABASE_RDEFINIR_SENHA_ERROR);
-    }
+   return res.redirect("http://localhost:5173/auth/redefinir-senha");
   }
 
   static async redefinirSenha(req, res, next) {
     try {
-      const { novaSenha, accessToken, refreshToken } = req.body;
-
-      if (!accessToken || !refreshToken) {
-        return res.status(401).json({
-          error: "Tokens de autenticação ausentes no corpo da requisição.",
-        });
-      }
+      const { novaSenha } = req.body;
 
       if (!novaSenha) {
         return res.status(400).json({ error: "A nova senha é obrigatória." });
       }
 
-      await AuthService.setSession(accessToken, refreshToken);
       await AuthService.atualizarSenha(novaSenha);
 
       return res.status(200).json({

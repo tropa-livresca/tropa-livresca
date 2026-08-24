@@ -87,6 +87,9 @@ export class AuthModel {
   }
 
   static async setSession(accessToken, refreshToken) {
+    console.log(accessToken);
+    console.log(refreshToken);
+
     const { data, error } = await supabase.auth.setSession({
       access_token: accessToken,
       refresh_token: refreshToken,

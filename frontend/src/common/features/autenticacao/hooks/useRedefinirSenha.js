@@ -8,6 +8,8 @@ export const useRedefinirSenha = () => {
   const [carregando, setCarregando] = useState(false);
   const [error, setError] = useState("");
   const [sucesso, setSucesso] = useState("");
+  const [access_token, setAccess_token] = useState("");
+  const [refresh_token, setRefresh_token] = useState("");
   const navigate = useNavigate();
 
   const enviarRedefinirSenha = async (e) => {
@@ -23,11 +25,11 @@ export const useRedefinirSenha = () => {
     setCarregando(true);
 
     try {
-      const response = await apiFetch("/api/v1/auth/senha", {
+      const response = await apiFetch("/api/v1/auth/senha-nova", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          senha: novaSenha
+          novaSenha: novaSenha,
         }),
         skipAuthRedirect: true 
       });
@@ -56,7 +58,12 @@ export const useRedefinirSenha = () => {
     setConfirmarSenha,
     carregando,
     error,
+    setError,
     sucesso,
     enviarRedefinirSenha,
+    setAccess_token,
+    setRefresh_token,
+    access_token,
+    refresh_token,
   };
 };

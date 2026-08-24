@@ -1,20 +1,59 @@
+import { useEffect, useState } from "react";
 import { useRedefinirSenha } from "../../hooks/useRedefinirSenha";
+import { useNavigate, useLocation } from "react-router-dom";
+import supabase from "../../config/supabase";
 
 export default function RedefinirSenha() {
+
   const {
-    novaSenha,
+    novaSenha, 
     setNovaSenha,
-    confirmarSenha,
+    confirmarSenha, 
     setConfirmarSenha,
-    carregando,
-    error,
-    sucesso,
+    error, 
+    setError,
     enviarRedefinirSenha,
+    carregando,
+    sucesso,
+
   } = useRedefinirSenha();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const iniciarRedefinirSenha = async (e) => {
+      e.preventDefault();
+      setError("");
+
+      console.log( location.hash);
+  
+      if (novaSenha !== confirmarSenha) {
+        setError("As senhas nao coincidem.");
+        return;
+      }
+  
+      try {
+
+        const { data, error } = await supabase.auth.setSession({
+      access_token: location.hash.split("&")[0].split("#")[1].split("=")[1],
+      refresh_token: location.hash.split("&")[3].split("=")[1],
+    });
+        setNovaSenha("");
+        setConfirmarSenha("");
+        setTimeout(() => navigate("/auth/login"), 3000);
+
+        if(error == null){
+          enviarRedefinirSenha();
+        }
+      } catch (err) {
+        setError(err.message || "Erro ao conectar com o servidor.");
+      } 
+
+    };
 
   return (
     <div>
-      <form onSubmit={enviarRedefinirSenha}>
+      <form onSubmit={iniciarRedefinirSenha}>
         <h1>REDEFINIR SENHA</h1>
         <p>Digite e confirme sua nova senha abaixo para atualizar sua conta</p>
 
