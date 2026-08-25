@@ -9,6 +9,7 @@ import Detalhes from "../../pages/Detalhes/Detalhes";
 import Conteudo from "../../pages/Conteudo/Conteudo";
 import Orcamento from "../../pages/Orcamento/Orcamento";
 import Confirmacao from "../../pages/Confirmacao/Confirmacao";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Formulario({ idLivroEdicao }) {
   const {
@@ -61,13 +62,13 @@ export default function Formulario({ idLivroEdicao }) {
   }, [idLivroEdicao, carregarDadosParaEdicao, buscarLivroById]);
 
   if (carregandoLivro) {
-    return <div>Carregando dados do livro para edição...</div>;
+    return <Carregando mensagem="Carregando dados do livro para edição..."/>;
   }
 
   if (idLivroEdicao && !carregandoLivro && erroCarregar) {
     return (
       <main className={styles.container}>
-        <div style={{ color: "red", fontWeight: "bold", marginBottom: "1rem" }}>
+        <div className={styles.erro}>
           {erroCarregar}
         </div>
         <Link to="/meuslivros" className={styles.btn}>

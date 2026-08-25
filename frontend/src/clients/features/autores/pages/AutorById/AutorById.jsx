@@ -4,6 +4,7 @@ import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaEnvelope } from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function AutorById() {
   const { id } = useParams();
@@ -69,7 +70,7 @@ export default function AutorById() {
         <h2 className={styles.subtitulo}>Livros</h2>
         
         {carregando ? (
-          <p className={styles.carregando}>Carregando livros...</p>
+          <Carregando mensagem="Carregando perfil do autor..."/>
         ) : !livros || livros.length === 0 ? (
           <p className={styles.vazio}>Nenhum livro encontrado</p>
         ) : (

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useCategoria } from "../../hooks/useCategoria.js";
 import { FaSearch } from "react-icons/fa";
+import Carregando from "../../../../../clients/components/Carregando/Carregando";
 
 export default function PainelCategoria() {
     const { categorias, carregando, meta, InativarCategoria, BuscarCategorias } = useCategoria();
@@ -65,7 +66,7 @@ export default function PainelCategoria() {
             </form>
 
             {carregando ? (
-                <p>Carregando...</p>
+                <Carregando mensagem="Carregando..."/>
             ) : !categorias || categorias.length === 0 ? (
                 <p>Nenhuma categoria encontrada.</p>
             ) : (

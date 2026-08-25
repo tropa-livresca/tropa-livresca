@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Autores() {
   const { autores, carregando, erro, buscarAutores, meta } = useAutores();
@@ -55,7 +56,7 @@ export default function Autores() {
 
         <div className={styles.autorescontainer}>
           {carregando ? (
-            <p>Carregando...</p>
+            <Carregando mensagem="Carregando autores..."/>
           ) : !autores || autores.length === 0 ? (
             <p>Nenhum autor encontrado</p>
           ) : (

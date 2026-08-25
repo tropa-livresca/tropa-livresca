@@ -41,31 +41,31 @@ export const useEndereco = () => {
 
   const ValidarCampos = useCallback(() => {
     if (!CEP || CEP.trim() === "") {
-      mostrarPopup("Aviso", "O campo CEP é obrigatório.");
+      mostrarPopup("erro", "O campo CEP é obrigatório.");
       return false;
     }
     if (!estado || estado.trim() === "") {
-      mostrarPopup("Aviso", "O campo Estado é obrigatório.");
+      mostrarPopup("erro", "O campo Estado é obrigatório.");
       return false;
     }
     if (!cidade || cidade.trim() === "") {
-      mostrarPopup("Aviso", "O campo Cidade é obrigatório.");
+      mostrarPopup("erro", "O campo Cidade é obrigatório.");
       return false;
     }
     if (!bairro || bairro.trim() === "") {
-      mostrarPopup("Aviso", "O campo Bairro é obrigatório.");
+      mostrarPopup("erro", "O campo Bairro é obrigatório.");
       return false;
     }
     if (!rua || rua.trim() === "") {
-      mostrarPopup("Aviso", "O campo Rua é obrigatório.");
+      mostrarPopup("erro", "O campo Rua é obrigatório.");
       return false;
     }
     if (!numero || numero.trim() === "") {
-      mostrarPopup("Aviso", "O campo Número é obrigatório.");
+      mostrarPopup("erro", "O campo Número é obrigatório.");
       return false;
     }
     if (!pais || pais.trim() === "") {
-      mostrarPopup("Aviso", "O campo País é obrigatório.");
+      mostrarPopup("erro", "O campo País é obrigatório.");
       return false;
     }
     return true;
@@ -94,7 +94,7 @@ export const useEndereco = () => {
       const json = await response.json();
 
       if (json.erro) {
-        alert("CEP não encontrado.");
+        mostrarPopup("", "CEP não encontrado.");
         return;
       }
 
@@ -109,7 +109,7 @@ export const useEndereco = () => {
     } finally {
       setCarregando(false);
     }
-  }, []);
+  }, [mostrarPopup]);
 
   const BuscarEnderecos = useCallback(async () => {
     setCarregando(true);
@@ -209,15 +209,15 @@ export const useEndereco = () => {
       const data = json.data || json;
 
       setEndereco(data);
-      alert("Informações atualizadas com sucesso!");
+       mostrarPopup("sucesso", "Informações atualizadas com sucesso!");
       await BuscarEnderecos();
     } catch (error) {
       console.error("Erro ao atualizar endereço: ", error);
-      alert("Ocorreu um erro ao atualizar o endereço.");
+      mostrarPopup("erro", "Ocorreu um erro ao atualizar o endereço.");
     } finally {
       setCarregando(false);
     }
-  }, [ValidarCampos, FinalizarPayload, BuscarEnderecos]);
+  }, [ValidarCampos, FinalizarPayload, BuscarEnderecos, mostrarPopup]);
 
   const InativarEndereco = useCallback(async (id) => {
     if (!id) return;
@@ -234,15 +234,15 @@ export const useEndereco = () => {
       const data = json.data || json;
 
       setEndereco(data);
-      alert("Status do endereço alterado com sucesso!");
+      mostrarPopup("sucesso", "Status do endereço alterado com sucesso!");
       await BuscarEnderecos();
     } catch (error) {
       console.error("Erro ao alterar status do endereço", error);
-      alert("Ocorreu um erro ao alterar o status do endereço.");
+      mostrarPopup("erro", "Ocorreu um erro ao alterar o status do endereço.");
     } finally {
       setCarregando(false);
     }
-  }, [BuscarEnderecos]);
+  }, [BuscarEnderecos, mostrarPopup]);
 
   const handleCriarEndereco = useCallback(async (e) => {
     if (e && typeof e.preventDefault === "function") e.preventDefault();
@@ -263,16 +263,16 @@ export const useEndereco = () => {
       const data = json.data || json;
 
       setEndereco(data);
-      alert("Endereço criado com sucesso!");
+      mostrarPopup("sucesso", "Endereço criado com sucesso!");
       LimparFormulario();
       await BuscarEnderecos();
     } catch (error) {
       console.error("Erro ao criar endereço", error);
-      alert("Ocorreu um erro ao criar endereço.");
+      mostrarPopup("erro", "Ocorreu um erro ao criar endereço.");
     } finally {
       setCarregando(false);
     }
-  }, [ValidarCampos, FinalizarPayload, LimparFormulario, BuscarEnderecos]);
+  }, [ValidarCampos, FinalizarPayload, LimparFormulario, BuscarEnderecos,mostrarPopup]);
 
   const BuscarEnderecoPrincipal = useCallback(async()=>{
     try{
@@ -306,15 +306,15 @@ export const useEndereco = () => {
       const data = json.data || json;
 
       setEndereco(data);
-      alert("Endereço definido como principal com sucesso!");
+      mostrarPopup("sucesso", "Endereço definido como principal com sucesso!");
       await BuscarEnderecos();
     } catch (error) {
       console.error("Erro ao definir endereço principal: ", error);
-      alert("Ocorreu um erro ao atualizar o endereço principal.");
+      mostrarPopup("erro", "Ocorreu um erro ao atualizar o endereço principal.");
     } finally {
       setCarregando(false);
     }
-  }, [BuscarEnderecos]);
+  }, [BuscarEnderecos, mostrarPopup]);
 
   return {
     endereco,

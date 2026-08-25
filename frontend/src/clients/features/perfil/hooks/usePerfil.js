@@ -167,14 +167,15 @@ export const usePerfil = () => {
 
       setPerfil(data);
       setEditando(false);
-      alert("Informações atualizadas com sucesso!");
+      mostrarPopup("sucesso", "Informações atualizadas com sucesso!");
       return { success: true };
     } catch (error) {
       console.error(error);
-      alert(`Erro: ${error.message}`);
+
+      mostrarPopup("erro", "Erro ao atualizar informações");
       return { success: false, error: error.message };
     }
-  }, [nome, telefone, descricao, redesSociais, setPerfil, setEditando]);
+  }, [nome, telefone, descricao, redesSociais, setPerfil, setEditando, mostrarPopup]);
 
   return {
     perfil,

@@ -2,6 +2,7 @@
 import styles from "./LivroById.module.css";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function LivroById() {
     const { id } = useParams();
@@ -13,7 +14,7 @@ export default function LivroById() {
         }
     }, [id, BuscarDetalhesLivro]);
 
-    if (carregando) return <p>Carregando...</p>;
+    if (carregando) return <Carregando mensagem="Carregando livro..."/>;
 
     if (!livro) return <p>Livro não encontrado.</p>;
 
