@@ -18,7 +18,7 @@ export default function GerenciaLivros() {
 
     useEffect(() => {
         buscarLivros(paginaAtual, 12, busca, filtro, ordem, ativo, estado);
-    }, [paginaAtual, busca, buscarLivros, filtro, ordem, ativo, estado]);
+    }, [paginaAtual, buscarLivros, filtro, ordem, ativo, estado]);
 
     const handleBuscar = (e) => {
         e.preventDefault();

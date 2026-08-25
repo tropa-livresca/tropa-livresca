@@ -16,7 +16,7 @@ export default function MeusLivros() {
 
   useEffect(() => {
     buscarLivrosById(paginaAtual, 12, busca, filtro, ordem, estado);
-  }, [paginaAtual, busca, filtro, ordem, estado, buscarLivrosById]);
+  }, [paginaAtual, filtro, ordem, estado, buscarLivrosById]);
 
   const handleBuscar = (e) => {
     e.preventDefault();

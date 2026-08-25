@@ -14,7 +14,7 @@ export default function Autores() {
 
   useEffect(() => {
     buscarAutores(paginaAtual, 12, busca);
-  }, [paginaAtual, buscarAutores, busca]);
+  }, [paginaAtual, buscarAutores]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
