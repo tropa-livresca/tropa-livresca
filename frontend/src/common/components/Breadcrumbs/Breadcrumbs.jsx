@@ -12,9 +12,7 @@ function Breadcrumbs() {
   };
 
   return (
-    <nav style={{ padding: '10px', fontSize: '14px' }}>
-      <Link to="/">Início</Link>
-      
+    <nav style={{ padding: '10px', fontSize: '14px' }}>      
       {caminhos.map((segmento, index) => {
         const urlCompleta = `/${caminhos.slice(0, index + 1).join('/')}`;
         
