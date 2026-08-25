@@ -65,7 +65,7 @@
 
 .container {
      width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
   padding-top:0;
@@ -221,10 +221,4 @@
 .contatoBotao:hover {
   background-color: #ffbb33;
   transition: 0.3s;
-}
-
-@media (min-width: 1920px) {
-  .container {
-    max-width: 1800px;
-  }
 }

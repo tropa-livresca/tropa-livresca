@@ -22,13 +22,14 @@ export default function TrocarSenha() {
   const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
   return (
-    <div className={styles.container}>
+    <div>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Redefinir Senha</h1>
         <p>
           Para sua segurança, escolha uma senha forte e que você não utiliza em outros serviços.
         </p>
       </div>
+      <div className={styles.container}>
 
       <div className={styles.containerbloco}>
         <form onSubmit={AlterarSenha} className={styles.formulario}>
@@ -115,6 +116,7 @@ export default function TrocarSenha() {
             </p>
           )}
         </form>
+      </div>
       </div>
     </div>
   );

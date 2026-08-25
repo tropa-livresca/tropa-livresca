@@ -1,6 +1,6 @@
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
@@ -219,14 +219,6 @@
   text-align: center;
   color:#67170c;
 }
-
-
-@media (min-width: 1920px) {
-  .container {
-  max-width: 1800px;
-}
-}
-
 
 @keyframes abrir {
   from {

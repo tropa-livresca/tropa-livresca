@@ -72,6 +72,14 @@
   margin-top: 0.3rem !important;
 }
 
+.inputmodificado input {
+  font-family: none;
+}
+
+.inputmodificado input::placeholder {
+  font-family: "Jacques Francois", serif;
+}
+
 .form input::placeholder {
   color: var(--cor-texto-muted) !important;
 }
@@ -81,13 +89,25 @@
   border: 2px solid #67170c !important;
 }
 
+.inputmodificado input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.inputmodificado input::-webkit-inner-spin-button,
+.inputmodificado input::-webkit-outer-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .numero{
     font-family: none;
 }
 
 .strong{
     color: #67170c;
-  margin-left: 1%;
+  margin-left: 1rem;
    font-weight: bold;
    font-size: 1.1rem;
 }
@@ -96,36 +116,47 @@
     margin-bottom: 1%;
 }
 
-.posterior {
+
+.botao {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
-#btn {
+.navegacao {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btnmeu {
   background: #67170c;
   color: #ede6b3;
   border: 0;
   border-radius: 1rem;
   padding: 1rem;
   cursor: pointer;
-  margin-right: 1%;
+  text-decoration: none;
+  font-size: 0.8rem;
 }
 
-#btn:hover {
+.btnmeu:hover {
   background-color: #ffbb33;
   transition: 0.3s;
 }
 
-#btn2 {
+.btn2meu {
   background: #67170c;
   color: #ede6b3;
   border: 0;
   border-radius: 1rem;
   padding: 1rem;
   cursor: pointer;
+  font-size: 0.8rem;
 }
 
-#btn2:hover {
+.btn2meu:hover {
   background-color: #ffbb33;
   transition: 0.3s;
 }

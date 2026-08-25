@@ -2,6 +2,7 @@
 import Input from "../../../../../common/components/Input/Input";
 import styles from "./Detalhes.module.css";
 import { FiChevronDown } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 export default function Detalhes({
   dados,
@@ -96,50 +97,43 @@ export default function Detalhes({
               publicação.
             </p>
           )}
-          <label>
-            Título:</label>
-            <Input
-              placeholder="Inserir título"
-              type="text"
-              value={dados.titulo || ""}
-              onChange={(e) => atualizarCampo("titulo", e.target.value)}
-              handleOnChange={(e) => atualizarCampo("titulo", e.target.value)}
-              disabled={deveBloquearCampos}
-              className={styles.inputmodificado}
-            />
-          
-          <label>
-            Subtítulo:</label>
-            <Input
-              placeholder="Inserir subtítulo"
-              type="text"
-              value={dados.subtitulo || ""}
-              onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
-              handleOnChange={(e) =>
-                atualizarCampo("subtitulo", e.target.value)
-              }
-              disabled={deveBloquearCampos}
-              className={styles.inputmodificado}
-            />
-          
+          <label>Título:</label>
+          <Input
+            placeholder="Inserir título"
+            type="text"
+            value={dados.titulo || ""}
+            onChange={(e) => atualizarCampo("titulo", e.target.value)}
+            handleOnChange={(e) => atualizarCampo("titulo", e.target.value)}
+            disabled={deveBloquearCampos}
+            className={styles.inputmodificado}
+          />
+
+          <label>Subtítulo:</label>
+          <Input
+            placeholder="Inserir subtítulo"
+            type="text"
+            value={dados.subtitulo || ""}
+            onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+            handleOnChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+            disabled={deveBloquearCampos}
+            className={styles.inputmodificado}
+          />
         </div>
 
         <div className={styles.card}>
           <legend>Edição</legend>
-          <label>
-            Número da edição:</label>
-            <Input
-              placeholder="Inserir numero da edição"
-              type="text"
-              value={dados.numeroEdicao || ""}
-              onChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
-              handleOnChange={(e) =>
-                atualizarCampo("numeroEdicao", e.target.value)
-              }
-              className={styles.inputmodificado}
-              disabled={deveBloquearCampos}
-            />
-          
+          <label>Número da edição:</label>
+          <Input
+            placeholder="Inserir numero da edição"
+            type="text"
+            value={dados.numeroEdicao || ""}
+            onChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
+            handleOnChange={(e) =>
+              atualizarCampo("numeroEdicao", e.target.value)
+            }
+            className={styles.inputmodificado}
+            disabled={deveBloquearCampos}
+          />
         </div>
 
         <div className={styles.card}>
@@ -149,18 +143,16 @@ export default function Detalhes({
               *O ISBN não pode ser alterado em revisão ou após a publicação.*
             </p>
           )}
-          <label>
-            ISBN:{" "}</label>
-            <Input
-             placeholder="Inserir numero da edição"
-              type="text"
-              value={dados.ISBN || ""}
-              onChange={(e) => atualizarCampo("ISBN", e.target.value)}
-              handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
-               className={styles.inputmodificado}
-              disabled={deveBloquearCampos}
-            />
-          
+          <label>ISBN: </label>
+          <Input
+            placeholder="Inserir numero da edição"
+            type="text"
+            value={dados.ISBN || ""}
+            onChange={(e) => atualizarCampo("ISBN", e.target.value)}
+            handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
+            className={styles.inputmodificado}
+            disabled={deveBloquearCampos}
+          />
         </div>
 
         <div className={styles.card}>
@@ -171,32 +163,27 @@ export default function Detalhes({
               após a publicação.*
             </p>
           )}
-          <label>
-            Nome:</label>
-            <Input
-              placeholder="Inserir nome do autor"
-              type="text"
-              value={dados.autor?.nome || ""}
-              onChange={(e) => atualizarAutor("nome", e.target.value)}
-              handleOnChange={(e) => atualizarAutor("nome", e.target.value)}
-              disabled={deveBloquearCampos}
-              className={styles.inputmodificado}
-            />
-          
-          <label>
-            Sobrenome: </label>
-            <Input
-              placeholder="Inserir sobrenome do autor"
-              type="text"
-              value={dados.autor?.sobrenome || ""}
-              onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
-              handleOnChange={(e) =>
-                atualizarAutor("sobrenome", e.target.value)
-              }
-              disabled={deveBloquearCampos}
-              className={styles.inputmodificado}
-            />
-         
+          <label>Nome:</label>
+          <Input
+            placeholder="Inserir nome do autor"
+            type="text"
+            value={dados.autor?.nome || ""}
+            onChange={(e) => atualizarAutor("nome", e.target.value)}
+            handleOnChange={(e) => atualizarAutor("nome", e.target.value)}
+            disabled={deveBloquearCampos}
+            className={styles.inputmodificado}
+          />
+
+          <label>Sobrenome: </label>
+          <Input
+            placeholder="Inserir sobrenome do autor"
+            type="text"
+            value={dados.autor?.sobrenome || ""}
+            onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
+            handleOnChange={(e) => atualizarAutor("sobrenome", e.target.value)}
+            disabled={deveBloquearCampos}
+            className={styles.inputmodificado}
+          />
         </div>
 
         <div className={styles.card}>
@@ -254,33 +241,29 @@ export default function Detalhes({
                 )}
               </div>
 
-              <label>
-                Nome:</label>
-                <Input
-                  placeholder="Inserir nome do colaborador"
-                  type="text"
-                  value={colaborador.nome || ""}
-                  onChange={(e) =>
-                    atualizarColaborador(index, "nome", e.target.value)
-                  }
-                  className={styles.inputmodificado}
-                  disabled={deveBloquearCampos}
-                />
-              
+              <label>Nome:</label>
+              <Input
+                placeholder="Inserir nome do colaborador"
+                type="text"
+                value={colaborador.nome || ""}
+                onChange={(e) =>
+                  atualizarColaborador(index, "nome", e.target.value)
+                }
+                className={styles.inputmodificado}
+                disabled={deveBloquearCampos}
+              />
 
-              <label>
-                Sobrenome:</label>
-                <Input
-                  placeholder="Inserir sobrenome do colaborador"
-                  type="text"
-                  value={colaborador.sobrenome || ""}
-                  onChange={(e) =>
-                    atualizarColaborador(index, "sobrenome", e.target.value)
-                  }
-                  className={styles.inputmodificado}
-                  disabled={deveBloquearCampos}
-                />
-              
+              <label>Sobrenome:</label>
+              <Input
+                placeholder="Inserir sobrenome do colaborador"
+                type="text"
+                value={colaborador.sobrenome || ""}
+                onChange={(e) =>
+                  atualizarColaborador(index, "sobrenome", e.target.value)
+                }
+                className={styles.inputmodificado}
+                disabled={deveBloquearCampos}
+              />
 
               {!deveBloquearCampos && (
                 <button
@@ -309,57 +292,53 @@ export default function Detalhes({
 
         <div className={styles.card}>
           <legend>Idioma</legend>
-          <label>
-            Idioma:</label>
-            <div className={styles.selectContainer}>
-              <div
-                className={styles.select}
-                onClick={() => setIdiomaAberto(!idiomaAberto)}
-                disabled={deveBloquearCampos}
-              >
-                <span>
-                  {listaIdiomas.find((idioma) => idioma.id === dados.idioma)
-                    ?.label || "Selecione um idioma"}
-                </span>
+          <label>Idioma:</label>
+          <div className={styles.selectContainer}>
+            <div
+              className={styles.select}
+              onClick={() => setIdiomaAberto(!idiomaAberto)}
+              disabled={deveBloquearCampos}
+            >
+              <span>
+                {listaIdiomas.find((idioma) => idioma.id === dados.idioma)
+                  ?.label || "Selecione um idioma"}
+              </span>
 
-                <FiChevronDown
-                  className={`${styles.seta} ${
-                    idiomaAberto ? styles.setaAberta : ""
-                  }`}
-                />
-              </div>
-
-              {idiomaAberto && (
-                <div className={styles.opcoes}>
-                  {listaIdiomas.map((idioma) => (
-                    <div
-                      key={idioma.id}
-                      className={styles.opcao}
-                      onClick={() => {
-                        atualizarCampo("idioma", idioma.id);
-                        setIdiomaAberto(false);
-                      }}
-                    >
-                      {idioma.label}
-                    </div>
-                  ))}
-                </div>
-              )}
+              <FiChevronDown
+                className={`${styles.seta} ${
+                  idiomaAberto ? styles.setaAberta : ""
+                }`}
+              />
             </div>
-          
+
+            {idiomaAberto && (
+              <div className={styles.opcoes}>
+                {listaIdiomas.map((idioma) => (
+                  <div
+                    key={idioma.id}
+                    className={styles.opcao}
+                    onClick={() => {
+                      atualizarCampo("idioma", idioma.id);
+                      setIdiomaAberto(false);
+                    }}
+                  >
+                    {idioma.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
 
         <div className={styles.card}>
           <legend>Descrição</legend>
-          <label>
-            Descrição do livro: </label>
-            <textarea
-              placeholder="Inserir descrição do livro"
-              value={dados.descricao || ""}
-              onChange={(e) => atualizarCampo("descricao", e.target.value)}
-              disabled={deveBloquearCampos}
-            />
-         
+          <label>Descrição do livro: </label>
+          <textarea
+            placeholder="Inserir descrição do livro"
+            value={dados.descricao || ""}
+            onChange={(e) => atualizarCampo("descricao", e.target.value)}
+            disabled={deveBloquearCampos}
+          />
         </div>
 
         <div className={styles.card}>
@@ -475,27 +454,32 @@ export default function Detalhes({
 
         <div className={styles.card}>
           <legend>Tags</legend>
-          <label>
-            Palavras-chave (separadas por ponto e vírgula)          </label>
-            <Input
-              placeholder="Inserir palavras-chave"
-              type="text"
-              value={
-                Array.isArray(dados.palavrasChave)
-                  ? dados.palavrasChave.join("; ")
-                  : ""
-              }
-              onChange={(e) =>
-                atualizarCampo("palavrasChave", e.target.value.split("; "))
-              }
-              className={styles.inputmodificado}
-              disabled={deveBloquearCampos}
-            />
-
+          <label>Palavras-chave (separadas por ponto e vírgula) </label>
+          <Input
+            placeholder="Inserir palavras-chave"
+            type="text"
+            value={
+              Array.isArray(dados.palavrasChave)
+                ? dados.palavrasChave.join("; ")
+                : ""
+            }
+            onChange={(e) =>
+              atualizarCampo("palavrasChave", e.target.value.split("; "))
+            }
+            className={styles.inputmodificado}
+            disabled={deveBloquearCampos}
+          />
         </div>
+        <div className={styles.botao}>
+          <Link to="/meuslivros" className={styles.btnmeu}>
+            Voltar a Meus Livros
+          </Link>
 
-        <div className={styles.posterior}>
-          <button type="button" onClick={irParaProximaEtapa} id={styles.btn}>
+          <button
+            type="button"
+            onClick={irParaProximaEtapa}
+            className={styles.btnid}
+          >
             Posterior
           </button>
         </div>

@@ -1,3 +1,38 @@
+.tituloContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.btnEditarDescricao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.2rem;
+  margin-left: auto;
+  height: 3rem;
+  padding: 0 1.1rem;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+  color: #67170c;
+  background: #fff8d7;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.btnEditarDescricao:hover {
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.btnEditarDescricao:hover svg {
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
 .titulo {
   margin: 0;
   color: #67170c;
@@ -22,6 +57,10 @@
   border-radius: 1rem;
   padding: 1rem;
   margin-bottom: 2rem;
+}
+
+.card:last-child{
+  margin-bottom: 0;
 }
 
 .card legend,
@@ -50,6 +89,10 @@
   gap: 1.5rem;
 }
 
+.colunaCompleta {
+  grid-column: 1 / -1;
+}
+
 label {
   display: block;
   color: #67170c;
@@ -59,34 +102,50 @@ label {
 .liinput {
   width: 100%;
   min-height: 3.5rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 1rem;
   background: #fff8d7;
   border: 1px solid #e2c77c;
   border-radius: 1rem;
-  padding: 0.8rem 1rem;
-  display: flex;
-  align-items: center;
   color: #67170c;
-  box-sizing: border-box;
+}
+
+.liinput span {
+  color: #67170c;
 }
 
 .liinput2 {
   width: 100%;
-  height:auto;
-  background: #fff8d7;
-  overflow-x: hidden;
-  border: 1px solid #e2c77c;
-  border-radius: 1rem;
-  padding: 0.8rem 1rem;
-  display: flex;
-  align-items: center;
-  color: #67170c;
+  min-height: 8rem;
+  max-height: 15rem;
   box-sizing: border-box;
-  overflow-y: scroll;
+  padding: 1rem;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 0.8rem;
+  color: #67170c;
+  line-height: 1.6;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+  scrollbar-color: #d4b46a transparent;
 }
 
+.liinput2::-webkit-scrollbar {
+  width: 0.4rem;
+}
 
-.liinput span {
-  color: #67170c;
+.liinput2::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.liinput2::-webkit-scrollbar-thumb {
+  background: #d4b46a;
+  border-radius: 999px;
 }
 
 .card ul {
@@ -99,23 +158,306 @@ label {
 }
 
 .form {
-  background: #fffdf7 !important;
-  border-radius: 1.5rem !important;
-  padding: 2rem !important;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  padding: 2rem;
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
-    0 2px 6px rgba(103, 23, 12, 0.05) !important;
-    margin-bottom: 5%;
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+  margin-bottom: 5rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  padding: 5px 10px;
+  background: #ede6b3;
+  color: #67170c;
+  border-radius: 20px;
+  font-size: 12.5px;
+}
+
+.manuscritoHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.manuscritoDescricao {
+  margin: 0.6rem 0 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.95rem;
+}
+
+.statusArquivo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  color: #67170c;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.statusCarregado,
+.statusNaoEnviado {
+  color: #67170c;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+}
+
+.statusPonto {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #67170c;
+}
+
+.previewContainer {
+  overflow: hidden;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+}
+
+.previewspan {
+  display: flex;
+  align-items: center;
+  min-height: 3rem;
+  padding: 0 1.2rem;
+  background: #fff8d7;
+  border-bottom: 1px solid #e2c77c;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-weight: 600;
+}
+
+.iframe {
+  display: block;
+  width: 100%;
+  height: 30rem;
+  border: none;
+  background: #f6f1dc;
+}
+
+.semArquivo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 15rem;
+  padding: 2rem;
+  text-align: center;
+  background: #fff8d7;
+  border: 1px dashed #d4b46a;
+  border-radius: 1rem;
+  color: #67170c;
+}
+
+.semArquivoIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  background: #ede6b3;
+  font-size: 1.7rem;
+}
+
+.semArquivo strong {
+  font-family: "Jacques Francois", serif;
+  font-size: 1.1rem;
+}
+
+.semArquivo p {
+  margin: 0.5rem 0 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+}
+
+.capa {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.capas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  text-align: center;
+}
+
+.card2 {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.fvo {
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+  color: #67170c;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: "Jacques Francois", serif;
+  text-align: left;
+  background: #fff8d7;
+  border-bottom: 1px solid #e2c77c;
+}
+
+.fvo small {
+  margin-left: 0;
+}
+
+.imagemContainer {
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: #fff8d7;
+  overflow: hidden;
+}
+
+.imgerro{
+  color:#67170c;
+}
+
+.fvoimg {
+  display: block;
+  width: 100%;
+  height: 30rem;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.orcamentoCapa {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.orcamentoCard {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: left;
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+}
+
+.orcamentoTitulo {
+  width: 100%;
+  margin: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+  color: #67170c;
+  font-size: 1.2rem;
+  font-weight: bold;
+  font-family: "Jacques Francois", serif;
+  text-align: left;
+  background: #fff8d7;
+  border-bottom: 1px solid #e2c77c;
+}
+
+.orcamentoTitulo small {
+  margin-left: 0;
+}
+
+.orcamentoConteudo {
+  width: 100%;
+  min-height: 4rem;
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #67170c;
+  background: #fff8d7;
+  overflow: hidden;
+}
+
+.orcamentoConteudo span {
+  color: #67170c;
+  font-size: 1rem;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.numero{
+  font-family: none;
+}
+
+.botoes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+.formOrcamento {
+  margin-bottom: 4.5rem;
+}
+
+.btnenviar {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.btnenviar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btnsalvar {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btnsalvar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .btn {
   background: #67170c;
-  color: #ede6b3;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.7rem 1.5rem;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
   cursor: pointer;
-  margin-left: 1.5%;
+  text-decoration: none;
+  color: #ede6b3;
+  font-size: 0.8rem;
 }
 
 .btn:hover {
@@ -123,61 +465,10 @@ label {
   transition: 0.3s;
 }
 
-.colunaCompleta {
-  grid-column: 1 / -1;
-}
-
-.iframe{
-  width: 100%;
-  height:50vh;
-  border-radius: 1rem;
-   border: 2px solid #e2c77c;
-}
-
-.o{
-  margin-top: -2rem;
-  text-align: center;
-  color:#67170c;
-  font-size: 1.2rem;
-  margin-bottom: 1%;
-}
-
-.capa{
- display: grid;
- grid-template-columns: auto auto auto;
- gap:20px;
-}
-
-.capas{
- text-align: center;
-}
-
-.fvo{
-  color: #67170c;
-  padding-bottom: 1rem;
-  font-size: 1.2rem;
-  font-weight: 600;
-  font-family: "Jacques Francois", serif;
-  text-align:left;
-  border-bottom: 1px solid #e2c77c;
-  margin-top: 2%;
-  width:100%; 
-}
-
-.fvoimg{
-  width: 80%;
-  height:80%;
-}
-
-.fvo small{
-  margin-left: 3%;
-}
-
-.card2 {
-  background: #fffdf7;
-  border: 1px solid #e2c77c;
-  border-radius: 1rem;
-  margin-bottom: 2rem;
+@media (max-width: 768px) {
+  .orcamentoCapa {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -198,6 +489,24 @@ label {
   .titulo {
     font-size: 1.5rem;
   }
+
+  .containerManuscrito {
+    margin-top: 3rem;
+  }
+
+  .manuscritoHeader {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .statusArquivo {
+    align-self: flex-start;
+  }
+
+  .iframe {
+    height: 60vh;
+  }
 }
 
 @media (max-width: 480px) {
@@ -207,5 +516,33 @@ label {
 
   .liinput {
     font-size: 0.9rem;
+  }
+
+  .containerManuscrito {
+    margin-top: 2.5rem;
+  }
+
+  .manuscritoHeader {
+    gap: 0.8rem;
+  }
+
+  .statusArquivo {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .previewContainer {
+    border-radius: 0.8rem;
+  }
+
+  .previewspan {
+    min-height: 2.7rem;
+    padding: 0 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .iframe {
+    height: 55vh;
   }
 }

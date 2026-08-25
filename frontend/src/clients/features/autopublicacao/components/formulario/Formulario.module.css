@@ -4,23 +4,24 @@ main {
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
 
 .topo {
   width: 100%;
-  display: grid;
-  gap: 1.5rem;
-  margin-bottom: 4%;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
 }
+
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
-  text-align: left;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
@@ -31,6 +32,7 @@ main {
   margin-top: 1rem;
   background-color: #d4b46a;
   border-radius: 999px;
+    margin-bottom: 1.5rem;
 }
 
 .descricao{
@@ -68,8 +70,3 @@ font-family: none;
   margin-bottom: 5%;
 }
 
-@media (min-width: 1920px) {
-  .container {
-  max-width: 1800px;
-}
-}

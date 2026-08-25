@@ -60,13 +60,14 @@ if (carregando) {
   };
 
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Meu Perfil</h1>
         <p>
           Gerencie suas informações pessoais, redes sociais e foto de perfil.
         </p>
       </div>
+      <div className={styles.container}>
 
       <section className={styles.containerperfil}>
         <div className={styles.perfilesq}>
@@ -334,6 +335,8 @@ if (carregando) {
           </div>
         </form>
       </section>
+      </div>
+
 
       {popup && (
         <Popup

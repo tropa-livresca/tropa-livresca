@@ -6,22 +6,24 @@ main {
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
 
 .topo {
   width: 100%;
-  display: grid;
-  gap: 1.5rem;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
 }
+
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
-  text-align: left;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
@@ -35,24 +37,22 @@ main {
 }
 
 .descricao {
-  max-width: 100%;
-  line-height: 1.8;
+  text-align: left;
   font-size: 1.2rem;
-  color: #67170c;
-  text-align: center;
+  color: var(--cor-texto-muted);
+  margin-bottom: 2rem;
 }
 
 .busca {
   width: 100%;
-  max-width: 43rem;
+  max-width: 50%;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   padding: 0.4rem;
   background-color: #fffdf7;
-  border-radius: 999px;
+  border-radius: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  margin-bottom: 8%;
 }
 
 .iconebusca {
@@ -61,6 +61,7 @@ main {
   display: grid;
   place-items: center;
   color: #67170c;
+  font-size: 1.2rem;
 }
 
 .busca input {
@@ -73,8 +74,8 @@ main {
 
 .btnbuscar {
   border: none;
-  padding: 1rem 1rem;
-  border-radius: 999px;
+  padding: 1rem 1.5rem;
+  border-radius: 1.5rem;
   background-color: #67170c;
   color: #ede6b3;
   cursor: pointer;
@@ -98,6 +99,7 @@ main {
   justify-items: center;
   gap: 0.8rem;
   padding: 1rem;
+
   background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;

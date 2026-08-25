@@ -1,6 +1,7 @@
 ﻿import { useEffect } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Conteudo({
   dados,
@@ -86,8 +87,6 @@ export default function Conteudo({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.btnmanus}
-                
-                
               >
                 Abrir manuscrito (PDF)
               </a>
@@ -95,8 +94,6 @@ export default function Conteudo({
                 <embed
                   src={previewManuscrito}
                   type="application/pdf"
-                  width="100%"
-                  height="400px"
                 />
               </div>
             </div>
@@ -191,13 +188,28 @@ export default function Conteudo({
           </div>
         </div>
 
-        <div className={styles.posterior}>
-          <button type="button" onClick={voltarEtapa} id={styles.btn}>
-            Anterior
-          </button>
-          <button type="button" onClick={irParaProximaEtapa} id={styles.btn2}>
-            Posterior
-          </button>
+        <div className={styles.botao}>
+          <Link to="/meuslivros" className={styles.btnmeu}>
+            Voltar a Meus Livros
+          </Link>
+
+          <div className={styles.navegacao}>
+            <button
+              type="button"
+              onClick={voltarEtapa}
+              className={styles.btnmeu}
+            >
+              Anterior
+            </button>
+
+            <button
+              type="button"
+              onClick={irParaProximaEtapa}
+              className={styles.btn2meu}
+            >
+              Posterior
+            </button>
+          </div>
         </div>
       </form>
     </main>
