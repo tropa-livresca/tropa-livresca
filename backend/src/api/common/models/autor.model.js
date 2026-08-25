@@ -50,10 +50,7 @@ export class AutorModel {
       error.statusCode = 500;
       throw error;
     }
-
     
-    console.log("Erro:", data);
-
     return { data: data || [], count: count || 0 };
   }
 

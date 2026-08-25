@@ -137,14 +137,10 @@ export default function GerenciaLivros() {
                                                 Ver Livro
                                             </Link>
 
-                                            {livro.estado === "rascunho" && (
-                                                <Link to={`/admin/livros/revisao/${livro.id}`} className={`${styles.btnAcao} ${styles.btnEditar}`}>
+                                            {livro.estado === "em_revisao" && (
+                                                <Link to={`/admin/livros/revisoes/nova-revisao/${livro.id}`} className={`${styles.btnAcao} ${styles.btnEditar}`}>
                                                     Revisar
                                                 </Link>
-                                            )}
-
-                                            {livro.estado === "em_revisao" && (
-                                                <span className={styles.sub}>Para publicar</span>
                                             )}
                                         </div>
                                     </td>

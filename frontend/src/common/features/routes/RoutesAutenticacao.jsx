@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+
+import NotFound from "../paginasErro/pages/NotFound/NotFound";
 import Login from "../autenticacao/pages/Login/Login";
 import Cadastro from "../autenticacao/pages/Cadastro/Cadastro";
 import RedefinirSenha from "../autenticacao/pages/RedefinirSenha/RedefinirSenha";
@@ -15,6 +17,7 @@ export default function RoutesAutenticacao() {
             <Route path="callback" element={<Callback />} />
             <Route path="esqueceu-senha" element={<EsqueceuSenha />} />
             <Route path="redefinir-senha" element={<RedefinirSenha />} />
+            <Route path = "*" element = {<NotFound/>}/>
         </Routes>
     );
 }

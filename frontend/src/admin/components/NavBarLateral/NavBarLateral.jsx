@@ -51,8 +51,8 @@ export default function NavBarLateral({ aberto, aoFechar }) {
           <div className={styles.subMenu}>
             <Link to="/admin/categorias" className={styles.subItem}>Categorias</Link>
             <Link to="/admin/livros/painel" className={styles.subItem}>Painel Livros</Link>
-            <Link to = "/admin/livros/revisoes">Revisões</Link>  
             <Link to="/admin/livros/catalogo" className={styles.subItem}>Gerenciar Catálogo</Link>
+            <Link to = "/admin/livros/revisoes" className = {styles.subItem}>Revisões</Link>
           </div>
         )}
 
