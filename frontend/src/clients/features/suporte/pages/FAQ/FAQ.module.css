@@ -2,7 +2,7 @@
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
@@ -237,11 +237,4 @@
     max-width: 20rem;
     padding: 1rem;
   }
-}
-
-
-@media (min-width: 1920px) {
-  .container {
-  max-width: 1800px;
-}
 }

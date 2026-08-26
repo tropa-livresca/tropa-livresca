@@ -67,7 +67,7 @@ export default function Formulario({ idLivroEdicao }) {
 
   if (idLivroEdicao && !carregandoLivro && erroCarregar) {
     return (
-      <main className={styles.container}>
+      <main>
         <div className={styles.erro}>
           {erroCarregar}
         </div>
@@ -85,7 +85,7 @@ export default function Formulario({ idLivroEdicao }) {
     : "Novo Livro";
 
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>{tituloFormulario}</h1>
         {isBloqueadoParaEdicao && (
@@ -105,6 +105,8 @@ export default function Formulario({ idLivroEdicao }) {
           <span className={styles.numero}>4</span>
         </span>
       </div>
+
+      <div className={styles.container}>
 
       {etapa === 1 && (
         <Detalhes
@@ -145,11 +147,7 @@ export default function Formulario({ idLivroEdicao }) {
           publicarLivro={publicarLivro}
         />
       )}
-  <button className={styles.btn}>
-      <Link to="/meuslivros" >
-        Voltar a Meus Livros
-      </Link>
-      </button>
+      </div>
     </main>
   );
 }
