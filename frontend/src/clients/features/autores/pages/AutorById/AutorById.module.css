@@ -6,7 +6,7 @@ main {
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
@@ -16,8 +16,9 @@ main {
 .hero {
   display: flex;
   align-items: center;
-  gap: 3rem;
+  gap: 5rem;
   margin-bottom: 8%;
+  margin:0 auto;
 }
 
 .foto,
@@ -51,7 +52,7 @@ main {
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
+  font-size: clamp(2rem, 4vw, 4rem);
   text-align: left;
   font-family: "Jacques Francois", serif;
 }
@@ -67,11 +68,9 @@ main {
 }
 
 .descricao {
-  max-width: 50rem;
-  line-height: 1.8;
+  text-align: left;
   font-size: 1.2rem;
   color: var(--cor-texto-muted);
-  font-family: "Jacques Francois", serif;
 }
 
 /* ---------- Seções ---------- */
@@ -79,7 +78,12 @@ main {
 .secao {
   display: grid;
   gap: 1.5rem;
-  margin-bottom: 10%;
+  margin-bottom: 8rem;
+  margin-top: 8rem;
+}
+
+.secao:last-child{
+  margin-bottom: 0;
 }
 
 .subtitulo {
@@ -119,11 +123,11 @@ main {
   align-items: center;
   gap: 0.6rem;
   padding: 0.7rem 1.4rem;
-  border-radius: 999px;
-  background: var(--cor-superficie-clara);
-  color: var(--cor-primaria);
+  border-radius: 1rem;
+  background-color: #67170c;
+  color: #ede6b3;
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: normal;
   text-decoration: none;
   box-shadow: var(--sombra-suave);
   transition: 0.3s;
@@ -135,8 +139,8 @@ main {
 }
 
 .rede:hover {
-  background: var(--cor-primaria);
-  color: #fff;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 /* ---------- Livros ---------- */

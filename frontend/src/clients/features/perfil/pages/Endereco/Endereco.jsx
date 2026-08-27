@@ -68,10 +68,15 @@ export default function Endereco() {
   };
 
   return (
-    <div className={styles.container}>
+    <div>
     <div className={styles.topo}>
       <h1 className={styles.titulo}>Gerenciamento de Endereços</h1>
+      <p>
+          Gerencie, adicione, edite e remova seus endereços de forma rápida e prática.
+        </p>
       </div>
+
+      <div className={styles.container}>
 
       {carregando && (
         <Carregando mensagem="Aguarde... Processando requisição..."/>
@@ -246,6 +251,7 @@ export default function Endereco() {
             </table>
           </div>
         </div>
+      </div>
       </div>
       {popup && (
         <Popup
