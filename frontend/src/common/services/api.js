@@ -9,13 +9,7 @@ export const apiFetch = async (endpoint, options = {}) => {
     delete fetchOptions.headers["Content-Type"];
   }
 
-  let backupFormData = null;
-  if (fetchOptions.body instanceof FormData) {
-    backupFormData = new FormData();
-    for (const [key, value] of fetchOptions.body.entries()) {
-      backupFormData.append(key, value);
-    }
-  }
+  const originalFormData = fetchOptions.body instanceof FormData ? fetchOptions.body : null;
 
   const fallbackUrlBase = import.meta.env.DEV ? "" : "";
   const urlBase = import.meta.env.VITE_API_URL
@@ -39,7 +33,6 @@ export const apiFetch = async (endpoint, options = {}) => {
       const ehAdmin =
         URL_ATUAL.startsWith("/admin") || URL_ATUAL.includes("/auth/admin");
 
-      // Rota de refresh unificada conforme solicitado
       const urlRefresh = `${urlBase}/api/v1/auth/refresh`;
       const rotaLogin = ehAdmin ? "/auth/admin" : "/auth/login";
 
@@ -49,15 +42,19 @@ export const apiFetch = async (endpoint, options = {}) => {
       });
 
       if (refreshResponse.ok) {
-        if (backupFormData) {
+        if (originalFormData) {
           const novoSubmitData = new FormData();
-          for (const [key, value] of backupFormData.entries()) {
+          for (const [key, value] of originalFormData.entries()) {
             novoSubmitData.append(key, value);
           }
           fetchOptions.body = novoSubmitData;
           delete fetchOptions.headers["Content-Type"];
         }
+
+        // Como o refresh deu ok, o navegador já atualizou o Cookie de autenticação.
+        // O fetch com credentials: "include" vai repassar as novas credenciais automaticamente para o backend.
         response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
+        return response;
       } else {
         const payload = await refreshResponse.json().catch(() => ({}));
         if (payload?.error === "Token de atualização não fornecido.") {

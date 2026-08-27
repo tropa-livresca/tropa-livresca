@@ -33,7 +33,9 @@ export const useRevisao = () => {
       const response = await apiFetch(`/api/v1/admin/revisao?${params}`);
 
       if (!response.ok) {
-        throw new Error(`Erro encontrado ao Buscar Revisões: ${response.status}`);
+        throw new Error(
+          `Erro encontrado ao Buscar Revisões: ${response.status}`,
+        );
       }
 
       const data = response.data;
@@ -56,7 +58,9 @@ export const useRevisao = () => {
       const response = await apiFetch(`/api/v1/admin/revisao/${id}`);
 
       if (!response.ok) {
-        throw new Error(`Erro encontrado ao buscar revisão por ID: ${response.status}`);
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
       }
 
       const data = response.data;
@@ -74,7 +78,8 @@ export const useRevisao = () => {
     }
   }, []);
 
-  const CriarRevisao = useCallback(async (idLivro) => {
+  const CriarRevisao = useCallback(
+    async (idLivro) => {
       if (!ValidarCamposTexto() || !manuscrito) {
         throw new Error("Preencha todos os campos e anexe o manuscrito.");
       }
@@ -91,13 +96,17 @@ export const useRevisao = () => {
           formData.append("manuscritoRevisto", manuscrito);
         }
 
+        // Adicionamos a flag isFormData abaixo
         const response = await apiFetch(`/api/v1/admin/revisao`, {
           method: "POST",
           body: formData,
+          isFormData: true,
         });
 
         if (!response.ok) {
-          throw new Error(`Erro encontrado ao criar revisão: ${response.status}`);
+          throw new Error(
+            `Erro encontrado ao criar revisão: ${response.status}`,
+          );
         }
 
         return response.data;
@@ -111,7 +120,8 @@ export const useRevisao = () => {
     [nome, apontamento, manuscrito, ValidarCamposTexto],
   );
 
-  const AtualizarRevisao = useCallback(async (id, e, idLivro) => {
+  const AtualizarRevisao = useCallback(
+    async (id, e, idLivro) => {
       if (e && typeof e.preventDefault === "function") e.preventDefault();
 
       if (!id) return;
@@ -166,7 +176,9 @@ export const useRevisao = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Erro encontrado ao inativar revisão: ${response.status}`);
+        throw new Error(
+          `Erro encontrado ao inativar revisão: ${response.status}`,
+        );
       }
 
       return response.data;
@@ -191,7 +203,9 @@ export const useRevisao = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`Erro encontrado ao alterar estado do livro: ${response.status}`);
+        throw new Error(
+          `Erro encontrado ao alterar estado do livro: ${response.status}`,
+        );
       }
 
       return response.data;
@@ -227,6 +241,6 @@ export const useRevisao = () => {
     AtualizarRevisao,
     InativarRevisao,
     AlterarEstadoLivro,
-    LimparCampos
+    LimparCampos,
   };
 };
