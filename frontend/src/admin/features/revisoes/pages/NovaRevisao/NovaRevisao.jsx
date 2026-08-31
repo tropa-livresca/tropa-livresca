@@ -15,13 +15,13 @@ export default function NovaRevisao() {
         CriarRevisao
     } = useRevisao();
 
-    const { BuscarLivroById, livro } = useLivros();
+    const { buscarLivroById, livro } = useLivros();
 
     useEffect(() => {
         if (id) {
-            BuscarLivroById(id);
+            buscarLivroById(id);
         }
-    }, [BuscarLivroById, id]);
+    }, [buscarLivroById, id]);
 
     const handleCriar = async (e) => {
         e.preventDefault();
@@ -49,7 +49,7 @@ export default function NovaRevisao() {
                         </p>
                     </object>
 
-                    <Link to = {`/admin/livros/visualizar/${livro.id}`}>Ver dados completos do livro</Link>
+                    <Link to={`/admin/livros/visualizar/${livro.id}`}>Ver dados completos do livro</Link>
                 </div>
             )}
 
@@ -86,6 +86,8 @@ export default function NovaRevisao() {
                 </div>
 
                 <button type="submit">Salvar Nova Revisão</button>
+                <button type="submit">Enviar Revisão e Publicar</button>
+                <button type="submit">Enviar Revisão e Voltar a Rascunho</button>
             </form>
         </main>
     );

@@ -77,6 +77,15 @@
   margin-top: 0.3rem !important;
 }
 
+
+.inputmodificado input {
+  font-family: none;
+}
+
+.inputmodificado input::placeholder {
+  font-family: "Jacques Francois", serif;
+}
+
 .form input::placeholder {
   color: var(--cor-texto-muted) !important;
 }

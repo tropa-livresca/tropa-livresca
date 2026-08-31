@@ -7,13 +7,15 @@ export class LivroModel {
 
   //admin
   
-  static async buscarLivrosAdmin({ page = 1, limit = 12, busca = "", filtro = "", ordem = "", ativo = "", estado = "" }){
+  static async buscarLivrosAdmin({ page = 1, limit = 12, busca = "", filtro = "", ordem = "", estado = "" }){
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
     let query = supabaseAdmin
       .from("livros")
-      .select("*", { count: "exact" });
+      .select("*", { count: "exact" })
+      .neq("estado", "rascunho")
+      .eq("ativo", true);
 
     if (busca) {
       query = query.or(`titulo.ilike.%${busca}%,subtitulo.ilike.%${busca}%`);
@@ -31,15 +33,7 @@ export class LivroModel {
       query = query.eq("estado", "publicado");
     } else if (estado === "em_revisao") {
       query = query.eq("estado", "em_revisao");
-    } else if (estado === "rascunho") {
-      query = query.eq("estado", "rascunho");
-    }
-
-    if (ativo === true) {
-      query = query.eq("ativo", true);
-    } else if (ativo === false) {
-      query = query.eq("ativo", false);
-    }
+    } 
 
     const { data, error, count } = await query.range(start, end);
 
@@ -70,7 +64,7 @@ export class LivroModel {
 
     return data;
   }
-0 
+
   //clients
   static async buscarComFiltros({ page = 1, limit = 12, busca = "", filtro = "", ordem = "" },
   ) {
@@ -111,7 +105,7 @@ export class LivroModel {
   static async buscarDetalhesPorId(id) {
     if (!id) return null;
 
-    const { data, error } = await await supabase
+    const { data, error } = await supabase
       .from("livros")
       .select(`${COLUNAS_LIVRO}, users_profile(id, nome, imagem)`)
       .eq("id", id)

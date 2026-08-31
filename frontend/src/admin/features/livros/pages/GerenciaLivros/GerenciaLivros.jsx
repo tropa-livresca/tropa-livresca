@@ -9,7 +9,6 @@ export default function GerenciaLivros() {
     const [busca, setBusca] = useState("");
     const [filtro, setFiltro] = useState("");
     const [ordem, setOrdem] = useState("");
-    const [ativo, setAtivo] = useState("");
     const [estado, setEstado] = useState("");
     const [paginaAtual, setPaginaAtual] = useState(1);
 
@@ -17,13 +16,13 @@ export default function GerenciaLivros() {
     const totalPages = count ? Math.ceil(count / itensPorPagina) : 1;
 
     useEffect(() => {
-        buscarLivros(paginaAtual, 12, busca, filtro, ordem, ativo, estado);
-    }, [paginaAtual, buscarLivros, filtro, ordem, ativo, estado]);
+        buscarLivros(paginaAtual, 12, busca, filtro, ordem, estado);
+    }, [paginaAtual, buscarLivros, filtro, ordem, estado]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
         setPaginaAtual(1);
-        buscarLivros(1, 12, busca, filtro, ordem, ativo, estado);
+        buscarLivros(1, 12, busca, filtro, ordem, estado);
     };
 
     return (
@@ -52,21 +51,17 @@ export default function GerenciaLivros() {
                     </select>
 
                     <select value={ordem} onChange={(e) => { setOrdem(e.target.value); setPaginaAtual(1); }}>
-                        <option value="ascendente">Crescente / Antigos</option>
-                        <option value="descendente">Decrescente / Recentes</option>
-                    </select>
-
-                    <select value={ativo} onChange={(e) => { setAtivo(e.target.value); setPaginaAtual(1); }}>
-                        <option value="">Todos os Status</option>
-                        <option value="true">Ativos</option>
-                        <option value="false">Inativados</option>
+                        {filtro === "" || filtro === "alfabetico" ? (<div>
+                            <option value="ascendente">Crescente</option>
+                            <option value="descendente">Decrescente</option></div>) : (<div>
+                                <option value="ascendente">Antigos</option>
+                                <option value="descendente">Mais Recentes</option></div>)}
                     </select>
 
                     <select value={estado} onChange={(e) => { setEstado(e.target.value); setPaginaAtual(1); }}>
                         <option value="">Todos</option>
                         <option value="publicado">Publicados</option>
                         <option value="em_revisao">Para revisão</option>
-                        <option value="rascunho">Rascunhos</option>
                     </select>
 
                     <button type="submit" className={styles.btn}>
@@ -91,61 +86,70 @@ export default function GerenciaLivros() {
                         <thead>
                             <tr>
                                 <th>Capa</th>
-                                <th>Título / Autor</th>
+                                <th>Título</th>
+                                <th>Autor</th>
                                 <th>Data de Publicação</th>
                                 <th>Estado</th>
-                                <th>Status</th>
-                                <th style={{ textAlign: "right" }}>Ações</th>
+                                <th>Revisão</th>
+                                <th style={{ textAlign: "center" }}>Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {livros.map((livro) => (
-                                <tr key={livro.id}>
-                                    <td>
-                                        <div className={styles.capaContainer}>
-                                            {livro.capa?.frente ? (
-                                                <img src={livro.capa.frente} alt={livro.titulo} className={styles.capaMini} />
-                                            ) : (
-                                                <div className={styles.semCapaMini}>📖</div>
-                                            )}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div className={styles.detalhesTexto}>
-                                            <h3 className={styles.livroTitulo}>{livro.titulo || "Sem título"}</h3>
-                                            <span className={styles.sub}>
-                                                {livro.autor_nome} {livro.autor_sobrenome}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td>{livro.data_de_publicacao}</td>
-                                    <td>
-                                        {livro.estado && (
-                                            <span className={`${styles.badge} ${styles[livro.estado.toLowerCase()] || ""}`}>
-                                                {livro.estado.replace("_", " ")}
-                                            </span>
-                                        )}
-                                    </td>
-                                    <td>
-                                        <span className={`${styles.badge} ${livro.ativo ? styles.ativo : styles.inativo}`}>
-                                            {livro.ativo ? "Ativo" : "Inativo"}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <div className={styles.acoesColuna}>
-                                            <Link to={`/admin/livros/detalhes/${livro.id}`} className={`${styles.btnAcao} ${styles.btnVisualizar}`}>
-                                                Ver Livro
-                                            </Link>
+                            {livros.map((livro) => {
+                                let capaObjeto = null;
+                                try {
+                                    capaObjeto = typeof livro.capa === "string" ? JSON.parse(livro.capa) : livro.capa;
+                                } catch (e) {
+                                    console.error("Erro ao converter capa JSONB:", e);
+                                }
 
-                                            {livro.estado === "em_revisao" && (
-                                                <Link to={`/admin/livros/revisoes/nova-revisao/${livro.id}`} className={`${styles.btnAcao} ${styles.btnEditar}`}>
-                                                    Revisar
+                                return (
+                                    <tr key={livro.id}>
+                                        <td>
+                                            <div className={styles.capaContainer}>
+                                                {capaObjeto ? (
+                                                    <img src={capaObjeto.frente} alt={livro.titulo} className={styles.capaMini} />
+                                                ) : (
+                                                    <div className={styles.semCapaMini}>📖</div>
+                                                )}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div className={styles.detalhesTexto}>
+                                                <h3 className={styles.livroTitulo}>{livro.titulo || "Sem título"}</h3>
+                                                <span className={styles.sub}>
+                                                    {livro.autor_nome} {livro.autor_sobrenome}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td><Link to={`admin/autores/${livro.fk_user_profile_id}`}>{livro.autor_nome} {livro.autor_sobrenome}</Link></td>
+                                        <td>{livro.data_de_publicacao}</td>
+                                        <td>
+                                            {livro.estado === "em_revisao" ? (
+                                                <span>Nâo publicado</span>
+                                            ) : (<span>Publicado</span>)}
+                                        </td>
+
+                                        <td>
+                                            {livro.estado === "em_revisao" ? (<span>Em revisão</span>) : (<span>Revisto</span>)}
+                                        </td>
+
+                                        <td>
+                                            <div className={styles.acoesColuna}>
+                                                <Link to={`/admin/livros/detalhes/${livro.id}`} className={`${styles.btnAcao} ${styles.btnVisualizar}`}>
+                                                    Ver Livro
                                                 </Link>
-                                            )}
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
+
+                                                {livro.estado === "em_revisao" && (
+                                                    <Link to={`/admin/livros/revisoes/nova-revisao/${livro.id}`} className={`${styles.btnAcao} ${styles.btnEditar}`}>
+                                                        Revisar
+                                                    </Link>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
                         </tbody>
                     </table>
                 </div>

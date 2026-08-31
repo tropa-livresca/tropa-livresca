@@ -41,6 +41,12 @@ export default function VisualizarLivro() {
         conteudo_por_IA,
     } = livro;
 
+    let capaObjeto = null;
+    try {
+        capaObjeto = typeof capa === "string" ? JSON.parse(capa) : capa;
+    } catch (e) {
+        console.error("Erro ao converter capa JSONB:", e);
+    }
     return (
         <main className={styles.container}>
             <header className={styles.header}>
@@ -51,12 +57,7 @@ export default function VisualizarLivro() {
                     <p className={styles.autor}>Por: <strong>{autor_nome} {autor_sobrenome}</strong></p>
                 </div>
                 <div className={styles.headerActions}>
-                    {estado === "rascunho" && (
-                        <Link to={`/editar-livro/${id}`} className={`${styles.btn} ${styles.btnPrimary}`}>
-                            Editar Livro
-                        </Link>
-                    )}
-                    <Link to="/meuslivros" className={`${styles.btn} ${styles.btnSecondary}`}>
+                    <Link to="/admin/livros/painel" className={`${styles.btn} ${styles.btnSecondary}`}>
                         Voltar ao Painel
                     </Link>
                 </div>
@@ -127,20 +128,20 @@ export default function VisualizarLivro() {
                         </ul>
                     </div>
 
-                    {(capa?.frente || capa?.verso) && (
+                    {(capaObjeto) && (
                         <div className={styles.card}>
                             <h2>Capas do Livro</h2>
                             <div className={styles.capasContainer}>
-                                {capa?.frente && (
+                                {capaObjeto.frente && (
                                     <div className={styles.capaBox}>
                                         <span>Frente</span>
-                                        <img src={capa.frente} alt="Capa Frente" />
+                                        <img src={capaObjeto.frente} alt="Capa Frente" />
                                     </div>
                                 )}
-                                {capa?.verso && (
+                                {capaObjeto.verso && (
                                     <div className={styles.capaBox}>
                                         <span>Verso</span>
-                                        <img src={capa.verso} alt="Capa Verso" />
+                                        <img src={capaObjeto.verso} alt="Capa Verso" />
                                     </div>
                                 )}
                             </div>

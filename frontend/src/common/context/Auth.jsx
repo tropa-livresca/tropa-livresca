@@ -4,7 +4,18 @@ import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUserState] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
+  const [loading, setLoading] = useState(() => {
+    const hash = window.location.hash;
+    const search = window.location.search;
+    const pathname = window.location.pathname;
+
+    const temTokens = hash.includes("access_token") || search.includes("code") || search.includes("token");
+    const ehRotaAuth = pathname.includes("/auth/");
+
+    return !(temTokens || ehRotaAuth);
+  });
+
   const [tempEmail, setTempEmail] = useState(() => {
     return sessionStorage.getItem("temp_email") || "";
   });
@@ -14,7 +25,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    let isMounted = true;
+    let isActive = true;
+    const controller = new AbortController();
+    const { signal } = controller;
 
     const hash = window.location.hash;
     const search = window.location.search;
@@ -24,19 +37,20 @@ export const AuthProvider = ({ children }) => {
     const ehRotaAuth = pathname.includes("/auth/");
 
     if (temTokens || ehRotaAuth) {
-      if (isMounted) {
-        setLoading(false);
-      }
-      return;
+      return () => {
+        isActive = false;
+        controller.abort();
+      };
     }
 
     const checkSession = async () => {
       try {
-        const res = await apiFetch("/api/v1/auth/session", {
+        const res = await apiFetch("/api/v1/auth/dados-sessao", {
           skipAuthRedirect: true,
+          signal,
         });
 
-        if (isMounted) {
+        if (isActive) {
           if (res.ok) {
             const data = await res.json();
             setUser(data.user);
@@ -45,16 +59,21 @@ export const AuthProvider = ({ children }) => {
           }
         }
       } catch (err) {
-        if (isMounted) setUserState(null);
+        if (isActive && err.name !== "AbortError") {
+          setUserState(null);
+        }
       } finally {
-        if (isMounted) setLoading(false);
+        if (isActive) {
+          setLoading(false);
+        }
       }
     };
 
     checkSession();
 
     return () => {
-      isMounted = false;
+      isActive = false;
+      controller.abort();
     };
   }, []);
 
@@ -116,24 +135,24 @@ export const AuthProvider = ({ children }) => {
 
   const signout = async () => {
     try {
+      setUser(null);
+      localStorage.clear();
+      sessionStorage.clear();
+
       const res = await apiFetch("/api/v1/auth/signout", {
         skipAuthRedirect: true,
         method: "POST",
       });
 
-      const data = await res.json();
       if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
         console.error(
           `Falha no encerramento de sessão (${res.status}):`,
           data.error || res.statusText,
         );
-        return data.error || "Erro ao desconectar usuário.";
       }
-
-      setUser(null);
     } catch (err) {
       console.error("Erro de rede no método signout:", err);
-      return "Erro de conexão com o servidor.";
     }
   };
 
