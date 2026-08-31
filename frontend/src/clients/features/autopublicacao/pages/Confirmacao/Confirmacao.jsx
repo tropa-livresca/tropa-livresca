@@ -384,15 +384,6 @@ export default function Confirmacao({
 
         {dados.orcamento && (
           <div className={styles.orcamentoCapa}>
-            <div className={styles.orcamentoCard}>
-              <p className={styles.orcamentoTitulo}>
-                <small>Tipo de Formatação:</small>
-              </p>
-
-              <div className={styles.orcamentoConteudo}>
-                <span>{dados.orcamento.tipoFormatacao}</span>
-              </div>
-            </div>
 
             <div className={styles.orcamentoCard}>
               <p className={styles.orcamentoTitulo}>
