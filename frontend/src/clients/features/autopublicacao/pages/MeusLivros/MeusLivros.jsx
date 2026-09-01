@@ -4,6 +4,7 @@ import { useMeusLivros } from "../../hooks/useMeusLivros";
 import styles from "./MeusLivros.module.css";
 import { IoLibraryOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function MeusLivros() {
   const { livros, carregando, meta, buscarLivrosById, updateEstado, inativarLivro } = useMeusLivros();
@@ -24,7 +25,7 @@ export default function MeusLivros() {
 
   const possuiLivros = Array.isArray(livros) && livros.length > 0;
 
-  if (carregando) return <div className={styles.loading}>Carregando seus livros...</div>;
+  if (carregando) return <Carregando mensagem="Carregando meus livros..."/>;
 
   return (
     <main className={styles.container}>

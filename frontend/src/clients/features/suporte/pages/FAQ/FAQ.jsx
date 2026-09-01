@@ -96,13 +96,14 @@ export default function FAQ() {
   };
 
   return (
-      <div  className={styles.container}>
+      <div>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Perguntas Frequentes</h1>
         <p>
           Encontre respostas para as dúvidas mais comuns.
         </p>
       </div>
+      <div  className={styles.container}>
       {Object.entries(faqData).map(([categoria, itens]) => (
         <div key={categoria} className={styles.categoriaCard}>
           <h2 className={styles.categoriaTitulo}>{categoria}</h2>
@@ -136,6 +137,11 @@ export default function FAQ() {
           })}
         </div>
       ))}
+
+           </div>
+           <div class={styles.divisao}></div>
+           <div className={styles.container}>
+            <div className={styles.subcontainer}>
       <div className={styles.contato}>
         <h2 className={styles.contatoTitulo}>Ainda ficou com alguma dúvida?</h2>
 
@@ -146,6 +152,8 @@ export default function FAQ() {
         <Link to="/Suporte" className={styles.contatoBotao}>
           Entrar em Contato
         </Link>
+      </div>
+      </div>
       </div>
       </div>
   );

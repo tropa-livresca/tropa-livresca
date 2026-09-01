@@ -1,19 +1,30 @@
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
 
 .topo {
   width: 100%;
-  margin-bottom: 3%;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+/*
+#fdf7d1f0;
+*/
+.topo p {
+  text-align: left;
+  font-size: 1.2rem;
+  color: var(--cor-texto-muted);
 }
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
+  font-size: clamp(2rem, 4vw, 4rem);
   font-family: "Jacques Francois", serif;
 }
 
@@ -197,13 +208,6 @@
   border-radius: 999px;
 }
 
-.topo p {
-  color: #67170c;
-  text-align: left;
-  font-size: 1.2rem;
-  margin-bottom:3%;
-}
-
 .erro{
    background-color: rgba(103, 23, 12, 0.05);
    margin: 0;
@@ -215,14 +219,6 @@
   text-align: center;
   color:#67170c;
 }
-
-
-@media (min-width: 1920px) {
-  .container {
-  max-width: 1800px;
-}
-}
-
 
 @keyframes abrir {
   from {

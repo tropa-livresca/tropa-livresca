@@ -11,10 +11,26 @@ import { useCadastro } from "../../hooks/useCadastro";
 import { Link } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
+import Popup from "../../../../../clients/components/PopUp/Popup";
 
 export default function Cadastro() {
-  
-  const { email, setEmail, senha, setSenha, error, nome, setNome, confSenha, setConfSenha, telefone, setTelefone, navigate, handleSignup } = useCadastro();
+  const {
+    popup,
+    fecharPopup,
+    email,
+    setEmail,
+    senha,
+    setSenha,
+    error,
+    nome,
+    setNome,
+    confSenha,
+    setConfSenha,
+    telefone,
+    setTelefone,
+    navigate,
+    handleSignup,
+  } = useCadastro();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfSenha, setMostrarConfSenha] = useState(false);
@@ -125,6 +141,13 @@ export default function Cadastro() {
           </form>
         </div>
       </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </div>
   );
 }

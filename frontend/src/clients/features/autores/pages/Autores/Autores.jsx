@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Autores() {
   const { autores, carregando, erro, buscarAutores, meta } = useAutores();
@@ -13,7 +14,7 @@ export default function Autores() {
 
   useEffect(() => {
     buscarAutores(paginaAtual, 12, busca);
-  }, [paginaAtual, buscarAutores, busca]);
+  }, [paginaAtual, buscarAutores]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
@@ -25,7 +26,7 @@ export default function Autores() {
 
   return (
     <div>
-      <main className={styles.container}>
+      <main>
         <div className={styles.topo}>
           <h1 className={styles.titulo}>Autores</h1>
 
@@ -34,7 +35,6 @@ export default function Autores() {
             Brasil. Descubra escritores que compartilham histórias únicas,
             cheias de emoção e originalidade em suas obras.
           </p>
-
           <form className={styles.busca} onSubmit={handleBuscar}>
             <span className={styles.iconebusca}>
               <FaSearch />
@@ -51,11 +51,15 @@ export default function Autores() {
               Buscar
             </button>
           </form>
+
+         
         </div>
+         <div className={styles.container}>
+          
 
         <div className={styles.autorescontainer}>
           {carregando ? (
-            <p>Carregando...</p>
+            <Carregando mensagem="Carregando autores..."/>
           ) : !autores || autores.length === 0 ? (
             <p>Nenhum autor encontrado</p>
           ) : (
@@ -90,6 +94,7 @@ export default function Autores() {
               onMudarPagina={setPaginaAtual}
             />
           )}
+        </div>
         </div>
       </main>
     </div>

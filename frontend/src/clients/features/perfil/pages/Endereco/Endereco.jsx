@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useEndereco } from "../../hooks/useEndereco.js";
 import styles from "./Endereco.module.css";
+import Popup from "../../../../components/PopUp/Popup";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Endereco() {
   const {
+    popup,
+    fecharPopup,
     enderecos,
     estado,
     setEstado,
@@ -64,15 +68,18 @@ export default function Endereco() {
   };
 
   return (
-    <div className={styles.container}>
+    <div>
     <div className={styles.topo}>
       <h1 className={styles.titulo}>Gerenciamento de Endereços</h1>
+      <p>
+          Gerencie, adicione, edite e remova seus endereços de forma rápida e prática.
+        </p>
       </div>
 
+      <div className={styles.container}>
+
       {carregando && (
-        <div className={styles.loading}>
-          <strong>Aguarde...</strong> Processando requisição...
-        </div>
+        <Carregando mensagem="Aguarde... Processando requisição..."/>
       )}
 
       <div className={styles.conteudoLayout}>
@@ -245,6 +252,14 @@ export default function Endereco() {
           </div>
         </div>
       </div>
+      </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </div>
   );
 }

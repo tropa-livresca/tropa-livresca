@@ -1,4 +1,5 @@
 import { useCategoria } from "../../hooks/useCategoria";
+import Popup from "../../../../../clients/components/PopUp/Popup";
 
 export default function NovaCategoria() {
     const {
@@ -8,7 +9,9 @@ export default function NovaCategoria() {
         setTipo,
         descricao,
         setDescricao,
-        handleCriarCategoria
+        handleCriarCategoria,
+         popup,
+    fecharPopup,
     } = useCategoria();
 
     return (
@@ -35,5 +38,13 @@ export default function NovaCategoria() {
             </select>
 
             <button type = "submit">Criar Nova Categoria</button>
+
+            {popup && (
+                    <Popup
+                      tipo={popup.tipo}
+                      mensagem={popup.mensagem}
+                      fechar={fecharPopup}
+                    />
+                  )}
         </form>);
 }

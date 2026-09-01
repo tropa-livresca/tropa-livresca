@@ -3,6 +3,7 @@ import { useState, useCallback, useContext, useEffect } from "react";
 import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
 import { AuthContext } from "../../../../common/context/AuthContext";
+import Popup from "../../../components/PopUp/Popup";
 
 const ESTADO_INICIAL_LIVRO = {
   detalhes: {
@@ -25,6 +26,19 @@ const ESTADO_INICIAL_LIVRO = {
 
 export const AutopublicacaoProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
+
+  const [popup, setPopup] = useState(null);
+
+  const mostrarPopup = useCallback((tipo, mensagem) => {
+    setPopup({
+      tipo,
+      mensagem,
+    });
+  }, []);
+
+  const fecharPopup = useCallback(() => {
+    setPopup(null);
+  }, []);
 
   const [livro, setLivro] = useState([]);
   const [autor, setAutor] = useState(null);
@@ -68,9 +82,9 @@ export const AutopublicacaoProvider = ({ children }) => {
     setIsEdicao(true);
     setEstadoAtualLivro(
       dadosBanco.estado ||
-      dadosBanco.estado_atual ||
-      dadosBanco.estadoAtual ||
-      "rascunho",
+        dadosBanco.estado_atual ||
+        dadosBanco.estadoAtual ||
+        "rascunho",
     );
     setEtapa(1);
 
@@ -289,8 +303,9 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (validarEtapaAtual(etapa)) {
       setEtapa((atual) => Math.min(atual + 1, 4));
     } else {
-      alert(
-        "Por favor, preencha todos os campos obrigatórios antes de continuar.",
+      mostrarPopup(
+        "erro",
+        "Preencha todos os campos obrigatórios antes de continuar.",
       );
     }
   };
@@ -303,7 +318,8 @@ export const AutopublicacaoProvider = ({ children }) => {
         novosDados.autor?.nome !== dadosAntigos.autor?.nome ||
         novosDados.autor?.sobrenome !== dadosAntigos.autor?.sobrenome
       ) {
-        alert(
+        mostrarPopup(
+          "erro",
           "Não é permitido alterar o Título ou o Autor de um livro já publicado.",
         );
         return;
@@ -452,6 +468,14 @@ export const AutopublicacaoProvider = ({ children }) => {
       }}
     >
       {children}
+
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </AutopublicacaoContext.Provider>
   );
 };
