@@ -59,7 +59,7 @@ export class RevisaoController {
 
   static async CriarRevisao(req, res, next) {
     try {
-      const userId = req.user?.id;
+      const userId = req.user?.id || req.userId || req.usuario;
       const nome = req.body.nome;
       const apontamento = req.body.apontamento;
       const idLivro = req.body.idLivro;
