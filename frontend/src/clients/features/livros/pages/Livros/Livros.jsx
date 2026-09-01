@@ -15,19 +15,10 @@ export default function Livros() {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
 
-<<<<<<< HEAD
-    useEffect(() => {
-        const carregarDados = async () => {
-            await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
-        }
-        carregarDados();
-    }, [paginaAtual, filtro, ordem, BuscarLivros]);
-=======
   useEffect(() => {
     const carregarDados = async () => {
       await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
     };
->>>>>>> frontend
 
     carregarDados();
   }, [paginaAtual, filtro, ordem, busca, BuscarLivros]);
