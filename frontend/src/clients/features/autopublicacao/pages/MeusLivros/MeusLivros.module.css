@@ -1,3 +1,200 @@
+.busca {
+  width: 100%;
+  display: grid;
+  grid-template-columns:
+    3rem
+    minmax(150px, 1fr)
+    200px
+    200px
+    200px
+    6rem;
+  align-items: center;
+  padding: 0.4rem;
+  background-color: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  margin-bottom: 5rem;
+}
+
+.iconebusca {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+
+.selectContainer {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.select {
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.7rem 0.8rem;
+  margin: 0px -20px;
+  box-sizing: border-box;
+  background-color: #fffdf7;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  color: #333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.select span {
+  color: #67170c;
+}
+
+.select svg {
+  flex-shrink: 0;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+.select1 {
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.7rem 0.8rem;
+  margin: 0px -20px;
+  box-sizing: border-box;
+  background-color: #fffdf7;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  color: #333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.select1 span {
+  color: #67170c;
+}
+
+.select1 svg {
+  flex-shrink: 0;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+.select2 {
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.7rem 0.8rem;
+  margin: 0px -20px;
+  box-sizing: border-box;
+  background-color: #fffdf7;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  color: #333;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.select2 span {
+  color: #67170c;
+}
+
+.select2 svg {
+  flex-shrink: 0;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+
+.options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  overflow: hidden;
+  padding: 0.2rem;
+  background-color: #fffdf7;
+  border-radius: 0.8rem;
+   box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.selectContainer:nth-of-type(1) .options {
+  left: -20px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(2) .options {
+  left: -20px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(3) .options {
+  left: -20px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(1)  {
+  left: -20px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(2){
+  left: -10px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(3){
+  left: 0;
+  width: calc(100% + 0px);
+}
+
+.options div {
+  padding: 0.8rem 1rem;
+  color: #67170c;
+  font-size: 0.9rem;
+  border-radius: 0.7rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.options div:hover {
+  background-color: #ffecc9;
+  color: #ffbb33;
+}
+
+.btnbuscar {
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 1.5rem;
+  background-color: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btnbuscar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
 @import url("https://googleapis.com");
 
 /* ---------- Suas Regras Originais (Mantidas Intactas) ---------- */
@@ -59,6 +256,14 @@
   transition: 0.3s;
 }
 
+.inputBusca {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 1rem;
+}
+
 @media (min-width: 1920px) {
   .container {
     max-width: 1800px;
@@ -117,15 +322,7 @@
   color: var(--cor-texto-muted);
 }
 
-.inputBusca {
-  width: 100%;
-  padding: 0.75rem 1rem 0.75rem 2.5rem;
-  border: 1px solid var(--cor-superficie-clara);
-  border-radius: 1rem;
-  background-color: var(--cor-fundo);
-  font-size: 0.95rem;
-  outline: none;
-}
+
 
 .inputBusca:focus {
   border-color: #67170c;

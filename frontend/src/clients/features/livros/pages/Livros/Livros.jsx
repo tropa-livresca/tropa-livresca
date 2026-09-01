@@ -117,7 +117,11 @@ export default function Livros() {
               }
             >
               <span>
-                {ordem === "ascendente" ? "Mais Antigos" : "Mais Recentes"}
+                {ordem === "ascendente"
+                  ? "Mais Antigos"
+                  : ordem === "descendente"
+                    ? "Mais Recentes"
+                    : "Ordenar por"}
               </span>
 
               <FiChevronDown
@@ -129,12 +133,22 @@ export default function Livros() {
               <div className={styles.options}>
                 <div
                   onClick={() => {
+                    setOrdem("");
+                    setPaginaAtual(1);
+                    setDropdownAberto(null);
+                  }}
+                >
+                  <span>Ordenar por</span>
+                </div>
+
+                <div
+                  onClick={() => {
                     setOrdem("ascendente");
                     setPaginaAtual(1);
                     setDropdownAberto(null);
                   }}
                 >
-                  Mais Antigos
+                  <span>Mais Antigos</span>
                 </div>
 
                 <div
@@ -144,7 +158,7 @@ export default function Livros() {
                     setDropdownAberto(null);
                   }}
                 >
-                  Mais Recentes
+                  <span>Mais Recentes</span>
                 </div>
               </div>
             )}
@@ -212,15 +226,13 @@ export default function Livros() {
             </button>
 
             <span>
-              Página {paginaAtual} de {meta.totalPages} (Total:{" "}
-              {meta.totalItems})
+              Página {paginaAtual} de {meta.totalPages}
             </span>
 
             <button
               onClick={() =>
                 setPaginaAtual((prev) => Math.min(prev + 1, meta.totalPages))
               }
-              disabled={paginaAtual === meta.totalPages}
             >
               Próximo
             </button>
