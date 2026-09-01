@@ -3,7 +3,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../../../../lib/supabaseClient";
 import useAuth from "../../../../hooks/useAuth";
 import { apiFetch } from "../../../../services/api";
-import { useRedefinirSenha } from "../../hooks/useRedefinirSenha";
 
 export default function Callback() {
   const [novaSenha, setNovaSenha] = useState("");

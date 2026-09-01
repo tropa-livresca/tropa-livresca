@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Cabecalho from "../Cabecalho/Cabecalho";
 import NavBarLateral from "../NavBarLateral/NavBarLateral";
-import Breadcrumbs from "../../../common/components/BreadCrumbs/BreadCrumbs";
+import Breadcrumbs from "../../../common/components/Breadcrumbs/Breadcrumbs";
 import { useLoginAdmin } from "../../../common/features/autenticacao/hooks/useLoginAdmin";
 import styles from "./MainLayout.module.css";
 

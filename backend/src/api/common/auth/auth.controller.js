@@ -239,29 +239,7 @@ export class AuthController {
   }
 
   static async callbackRedefinirSenha(req, res) {
-    const code = req.query.code;
-
-    if (!code) {
-      return res.redirect("http://localhost:5173/auth/login?error=Link_invalido");
-    }
-
-    try {
-      const data = await AuthService.setSessionWithCode(code);
-
-      const accessToken = data?.session?.access_token;
-      const refreshToken = data?.session?.refresh_token;
-
-      if (!accessToken || !refreshToken) {
-        throw new Error("Dados de sessao ausentes no retorno do provedor.");
-      }
-
-      res.cookie("auth-token", accessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", refreshToken, AuthController.COOKIE_OPTIONS);
-
-      return res.redirect("http://localhost:5173/auth/redefinir-senha");
-    } catch (err) {
-      return res.redirect("http://localhost:5173/auth/login?error=Erro_na_autenticacao");
-    }
+    return res.redirect("https://urban-zebra-r4q9wg546jp2pqjp-5173.app.github.dev/auth/callback");
   }
 
   static async redefinirSenha(req, res, next) {
