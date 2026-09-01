@@ -1,5 +1,4 @@
-import supabase from "../config/supabase.js";
-
+import supabase, {supabaseAdmin} from "../config/supabase.js";
 export class RevisaoModel {
   static async BuscarRevisoes(
     page = 1,
@@ -14,7 +13,7 @@ export class RevisaoModel {
 
     let query = supabase
       .from("revisoes")
-      .select("*", { count: "exact" })
+      .select("*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)", { count: "exact" })
       .eq("ativo", true);
 
     if (busca) {
@@ -42,15 +41,17 @@ export class RevisaoModel {
 
     return {
       data: data || [],
+      livros: data.livros || [],
       count: count || 0,
     };
   }
 
-  static async BuscarRevisaoById(id) {
+  static async BuscarRevisaoById(id, livroId) {
     const { data, error } = await supabase
-      .from("revisoes")
+      .from("revisoes, livros!inner(*)")
       .select("*")
       .eq("id", id)
+      .eq("livros.id", livroId)
       .single();
 
     if (error) {
@@ -58,7 +59,10 @@ export class RevisaoModel {
       throw error;
     }
 
-    return data;
+    return {
+      data: data,
+      livro: data.livros
+    };
   }
 
   static async AtualizarRevisao(id, dadosAtualizados) {
@@ -78,7 +82,7 @@ export class RevisaoModel {
   }
 
   static async CriarRevisao(dadosRevisao) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("revisoes")
       .insert(dadosRevisao)
       .select()

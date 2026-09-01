@@ -3,6 +3,8 @@ import { apiFetch } from "../../../../common/services/api.js";
 
 export const useRevisao = () => {
   const [revisoes, setRevisoes] = useState([]);
+  const [livros, setLivros] = useState([]);
+  const [livro, setLivro] = useState(null);
   const [count, setCount] = useState(0);
   const [revisaoAtual, setRevisaoAtual] = useState(null);
   const [nome, setNome] = useState("");
@@ -10,6 +12,18 @@ export const useRevisao = () => {
   const [apontamento, setApontamento] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [error, setError] = useState(null);
+
+  const ValidarCamposTexto = useCallback(() => {
+    if (!nome || nome.trim().length === 0) return false;
+    if (!apontamento || apontamento.trim().length === 0) return false;
+    return true;
+  }, [nome, apontamento]);
+
+  const LimparCampos = useCallback(() => {
+    setNome("");
+    setApontamento("");
+    setManuscrito(null);
+  }, []);
 
   const BuscarRevisoes = useCallback(async (filtros = {}) => {
     setCarregando(true);
@@ -25,9 +39,10 @@ export const useRevisao = () => {
       }
 
       const data = response.data;
+      const dadosLivro = response.livros;
       setRevisoes(data.data || []);
+      setLivros(dadosLivro || []);
       setCount(data.count || 0);
-      return data;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -49,10 +64,12 @@ export const useRevisao = () => {
       }
 
       const data = response.data;
-      setRevisaoAtual(data);
-      setNome(data.nome || "");
-      setApontamento(data.apontamento || "");
-      return data;
+
+      setRevisaoAtual(data.data);
+      setLivro(data.livro);
+      setNome(data.data?.nome || "");
+      setApontamento(data.data?.apontamento || "");
+      setManuscrito(data.data?.manuscritoRevisto || null);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -63,6 +80,10 @@ export const useRevisao = () => {
 
   const CriarRevisao = useCallback(
     async (idLivro) => {
+      if (!ValidarCamposTexto() || !manuscrito) {
+        throw new Error("Preencha todos os campos e anexe o manuscrito.");
+      }
+
       setCarregando(true);
       setError(null);
       try {
@@ -70,13 +91,16 @@ export const useRevisao = () => {
         formData.append("nome", nome);
         formData.append("apontamento", apontamento);
         formData.append("idLivro", idLivro);
+
         if (manuscrito) {
           formData.append("manuscritoRevisto", manuscrito);
         }
 
+        // Adicionamos a flag isFormData abaixo
         const response = await apiFetch(`/api/v1/admin/revisao`, {
           method: "POST",
           body: formData,
+          isFormData: true,
         });
 
         if (!response.ok) {
@@ -85,8 +109,7 @@ export const useRevisao = () => {
           );
         }
 
-        const data = response.data;
-        return data;
+        return response.data;
       } catch (err) {
         setError(err.message);
         throw err;
@@ -94,18 +117,28 @@ export const useRevisao = () => {
         setCarregando(false);
       }
     },
-    [nome, apontamento, manuscrito],
+    [nome, apontamento, manuscrito, ValidarCamposTexto],
   );
 
   const AtualizarRevisao = useCallback(
-    async (id, idLivro) => {
+    async (id, e, idLivro) => {
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+
+      if (!id) return;
+      if (!ValidarCamposTexto()) {
+        alert("Preencha todos os campos obrigatórios (Nome e Apontamento).");
+        return;
+      }
+
       setCarregando(true);
       setError(null);
       try {
         const corpo = {};
         if (nome) corpo.nome = nome;
         if (apontamento) corpo.apontamento = apontamento;
-        if (idLivro) corpo.idLivro = idLivro;
+
+        const libroIdAtual = idLivro || livro?.id;
+        if (libroIdAtual) corpo.idLivro = libroIdAtual;
 
         const response = await apiFetch(`/api/v1/admin/revisao/${id}`, {
           method: "PUT",
@@ -116,21 +149,22 @@ export const useRevisao = () => {
         });
 
         if (!response.ok) {
-          throw new Error(
-            `Erro encontrado ao atualizar revisão: ${response.status}`,
-          );
+          throw new Error(`Erro retornado do servidor: ${response.status}`);
         }
 
-        const data = response.data;
-        return data;
+        const json = response.data || response;
+        setRevisaoAtual(json.data || json);
+
+        alert("Informações atualizadas com sucesso!");
       } catch (err) {
+        console.error("Erro ao atualizar revisão: ", err);
         setError(err.message);
-        throw err;
+        alert("Ocorreu um erro ao atualizar a revisão.");
       } finally {
         setCarregando(false);
       }
     },
-    [nome, apontamento],
+    [nome, apontamento, livro, ValidarCamposTexto],
   );
 
   const InativarRevisao = useCallback(async (id) => {
@@ -147,8 +181,7 @@ export const useRevisao = () => {
         );
       }
 
-      const data = response.data;
-      return data;
+      return response.data;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -175,8 +208,7 @@ export const useRevisao = () => {
         );
       }
 
-      const data = response.data;
-      return data;
+      return response.data;
     } catch (err) {
       setError(err.message);
       throw err;
@@ -191,6 +223,10 @@ export const useRevisao = () => {
     count,
     revisaoAtual,
     setRevisaoAtual,
+    livro,
+    setLivro,
+    livros,
+    setLivros,
     nome,
     setNome,
     manuscrito,
@@ -205,5 +241,6 @@ export const useRevisao = () => {
     AtualizarRevisao,
     InativarRevisao,
     AlterarEstadoLivro,
+    LimparCampos,
   };
 };

@@ -17,17 +17,6 @@ export class LivrosController {
     }
   }
 
-  static async GetLivrosByAutor(req, res, next) {
-    try {
-      const { id } = req.params;
-      const livroDetalhes = await LivrosService.getLivrosByAutor(id);
-
-      return res.status(200).json(livroDetalhes);
-    } catch (err) {
-      next(err);
-    }
-  }
-
   static async GetLivrosById(req, res, next) {
     try {
       const { id } = req.params;

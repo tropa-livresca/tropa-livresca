@@ -1,6 +1,7 @@
 import { useCategoria } from "../../hooks/useCategoria.js";
 import { useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+import Carregando from "../../../../../clients/components/Carregando/Carregando";
 
 export default function Categoria() {
     const { id } = useParams();
@@ -22,7 +23,7 @@ export default function Categoria() {
         navigate(`/admin/categorias`);
     }
 
-    if (carregando) return <p>Carregando...</p>
+    if (carregando) return <Carregando mensagem="Carregando categoria..."/>
 
     if (!categoria) return <p>Nenhuma categoria encontrada para este id.</p>
 

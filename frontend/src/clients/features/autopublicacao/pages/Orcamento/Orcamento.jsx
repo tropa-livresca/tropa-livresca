@@ -1,7 +1,14 @@
 ﻿import Input from "../../../../../common/components/Input/Input";
 import styles from "./Orcamento.module.css";
+import { Link } from "react-router-dom";
 
-export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarEtapa, isBloqueadoParaEdicao }) {
+export default function Orcamento({
+  dados,
+  onChange,
+  irParaProximaEtapa,
+  voltarEtapa,
+  isBloqueadoParaEdicao,
+}) {
   const numeroPaginas = Number(dados.numeroPaginas) || 100;
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
   const custoMinimoDigitalCentavos = 599;
@@ -13,7 +20,10 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
     return `${reais},${centavosFinais}`;
   };
 
-  const calcularEstruturaPrecoPorPrecoFinal = (valorDigitado, custoMinimoCentavos) => {
+  const calcularEstruturaPrecoPorPrecoFinal = (
+    valorDigitado,
+    custoMinimoCentavos,
+  ) => {
     const limpo = String(valorDigitado || "").replace(",", ".");
     const valorFloat = parseFloat(limpo);
 
@@ -22,14 +32,17 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
       precoFinalDigitadoCentavos = Math.round(valorFloat * 100);
     }
 
-    const subtotalCentavos = Math.max(precoFinalDigitadoCentavos, custoMinimoCentavos);
-    const comissaoCentavos = Math.round(subtotalCentavos * 0.20);
+    const subtotalCentavos = Math.max(
+      precoFinalDigitadoCentavos,
+      custoMinimoCentavos,
+    );
+    const comissaoCentavos = Math.round(subtotalCentavos * 0.2);
     const vendaTotalCentavos = subtotalCentavos + comissaoCentavos;
 
     return {
       minimo: formatarMoeda(custoMinimoCentavos),
       comissao: formatarMoeda(comissaoCentavos),
-      final: formatarMoeda(vendaTotalCentavos)
+      final: formatarMoeda(vendaTotalCentavos),
     };
   };
 
@@ -38,14 +51,20 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
     onChange({ ...dados, [chave]: valorValidado });
   };
 
-  const valoresFisico = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroFisico, custoMinimoFisicoCentavos);
-  const valoresDigital = calcularEstruturaPrecoPorPrecoFinal(dados.valorLivroDigital, custoMinimoDigitalCentavos);
+  const valoresFisico = calcularEstruturaPrecoPorPrecoFinal(
+    dados.valorLivroFisico,
+    custoMinimoFisicoCentavos,
+  );
+  const valoresDigital = calcularEstruturaPrecoPorPrecoFinal(
+    dados.valorLivroDigital,
+    custoMinimoDigitalCentavos,
+  );
 
   const lidarComProximaEtapa = () => {
     onChange({
       ...dados,
       valorLivroFisico: valoresFisico.final,
-      valorLivroDigital: valoresDigital.final
+      valorLivroDigital: valoresDigital.final,
     });
     irParaProximaEtapa();
   };
@@ -58,62 +77,108 @@ export default function Orcamento({ dados, onChange, irParaProximaEtapa, voltarE
         <div className={styles.card}>
           <legend>Especificações do Livro</legend>
           <label>
-            Número de Páginas:
+            Número de Páginas:          </label>
             <Input
               placeholder="Inserir número de páginas"
               type="number"
               className={styles.inputmodificado}
               min="1"
               value={dados.numeroPaginas || ""}
-              handleOnChange={(e) => atualizarCampo("numeroPaginas", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("numeroPaginas", e.target.value)
+              }
               disabled={isBloqueadoParaEdicao}
             />
-          </label>
+
         </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
-          <p>Custo de Fabricação Mínimo (R$ <span className={styles.numero}>0,08</span> por página): R$ <span className={styles.numero}>{valoresFisico.minimo}</span></p>
+          <p>
+            Custo de Fabricação Mínimo (R${" "}
+            <span className={styles.numero}>0,08</span> por página): R${" "}
+            <span className={styles.numero}>{valoresFisico.minimo}</span>
+          </p>
           <label>
-            Preço Base Desejado (R$):
+            Preço Base Desejado (R$):        </label>
             <Input
               type="text"
               placeholder="0,00"
               className={styles.inputmodificado}
               value={dados.valorLivroFisico || ""}
-              handleOnChange={(e) => atualizarCampo("valorLivroFisico", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("valorLivroFisico", e.target.value)
+              }
               disabled={isBloqueadoParaEdicao}
             />
-          </label>
+  
           <div className={styles.div2}>
-            <p>Comissão da Plataforma (+<span className={styles.numero}>20</span>%): R$ <span className={styles.numero}>{valoresFisico.comissao}</span></p>
-            <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresFisico.final}</span></strong>
+            <p>
+              Comissão da Plataforma (+<span className={styles.numero}>20</span>
+              %): R${" "}
+              <span className={styles.numero}>{valoresFisico.comissao}</span>
+            </p>
+            <strong className={styles.strong}>
+              Valor Total de Venda: R${" "}
+              <span className={styles.numero}>{valoresFisico.final}</span>
+            </strong>
           </div>
         </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Digital</legend>
-          <p>Custo Digital Mínimo: R$ <span className={styles.numero}>{valoresDigital.minimo}</span></p>
+          <p>
+            Custo Digital Mínimo: R${" "}
+            <span className={styles.numero}>{valoresDigital.minimo}</span>
+          </p>
           <label>
-            Preço Base Desejado (R$):
+            Preço Base Desejado (R$):          </label>
             <Input
               type="text"
               placeholder="0,00"
               className={styles.inputmodificado}
               value={dados.valorLivroDigital || ""}
-              handleOnChange={(e) => atualizarCampo("valorLivroDigital", e.target.value)}
+              handleOnChange={(e) =>
+                atualizarCampo("valorLivroDigital", e.target.value)
+              }
               disabled={isBloqueadoParaEdicao}
             />
-          </label>
+
           <div className={styles.div2}>
-            <p>Comissão da Plataforma (+<span className={styles.numero}>20</span>%): R$ <span className={styles.numero}>{valoresDigital.comissao}</span></p>
-            <strong className={styles.strong}>Valor Total de Venda: R$ <span className={styles.numero}>{valoresDigital.final}</span></strong>
+            <p>
+              Comissão da Plataforma (+<span className={styles.numero}>20</span>
+              %): R${" "}
+              <span className={styles.numero}>{valoresDigital.comissao}</span>
+            </p>
+            <strong className={styles.strong}>
+              Valor Total de Venda: R${" "}
+              <span className={styles.numero}>{valoresDigital.final}</span>
+            </strong>
           </div>
         </div>
 
-        <div className={styles.posterior}>
-          <button type="button" onClick={voltarEtapa} id={styles.btn}>Anterior</button>
-          <button type="button" onClick={lidarComProximaEtapa} id={styles.btn2}>Posterior</button>
+        <div className={styles.botao}>
+          <Link to="/meuslivros" className={styles.btnmeu}>
+            Voltar a Meus Livros
+          </Link>
+
+          <div className={styles.navegacao}>
+            <button
+              type="button"
+              onClick={voltarEtapa}
+              className={styles.btnmeu}
+            >
+              Anterior
+            </button>
+
+            <button
+              type="button"
+              onClick={irParaProximaEtapa}
+              className={styles.btn2meu}
+            >
+              Posterior
+            </button>
+          </div>
         </div>
       </form>
     </main>

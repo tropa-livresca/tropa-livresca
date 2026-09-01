@@ -1,4 +1,4 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
+import { supabaseAdmin } from "../config/supabase.js";
 
 export class PerfilModel {
   static async buscarPerfil(id) {

@@ -54,16 +54,6 @@ describe("Rotas de Livro - Testes de Integração (E2E)", () => {
     });
   });
 
-  describe("GET /autor/:id", () => {
-    it("Deve responder com status 200 e retornar os dados do banco", async () => {
-      
-      builder.resolve([livroCompletoMock], null)
-
-      const response = await request(app).get("/autor/1")
-        
-      expect(response.body).toEqual({data:[livroCompletoMock]});
-    });
-  });
 
   describe("GET /detalhes/:id", () => {
     it("Deve responder com status 200 e retornar os dados do banco", async () => {

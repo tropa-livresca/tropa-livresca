@@ -1,0 +1,258 @@
+/* Container Principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.tituloHeader {
+    font-size: 1.75rem;
+    color: #1a1a1a;
+    font-weight: 700;
+}
+
+/* Formulário de Filtros */
+.filtroForm {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.buscaWrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.buscaIcon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+}
+
+.inputBusca {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.inputBusca:focus {
+    outline: none;
+    border-color: #4a90e2;
+}
+
+/* Grid de Seleções e Botão */
+.selectsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.selectsGrid select {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.75rem;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.selectsGrid .btn {
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.selectsGrid .btn:hover {
+    background-color: #357abd;
+}
+
+/* Estrutura da Tabela */
+.tabelaContainer {
+    width: 100%;
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.tabelaLivros {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.tabelaLivros th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 2px solid #dee2e6;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tabelaLivros td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+    color: #333;
+}
+
+.tabelaLivros tbody tr:hover {
+    background-color: #fdfdfd;
+}
+
+/* Capa do Livro */
+.capaContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.capaMini {
+    width: 45px;
+    height: 65px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.semCapaMini {
+    font-size: 1.5rem;
+}
+
+/* Títulos e Textos internos */
+.livroTitulo {
+    font-size: 1rem;
+    margin: 0 0 0.25rem 0;
+    color: #212529;
+}
+
+.sub {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Badges de Status */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge.publicado {
+    background-color: #e6f4ea;
+    color: #137333;
+}
+
+.badge.em_revisao {
+    background-color: #fef7e0;
+    color: #b06000;
+}
+
+.badge.rascunho {
+    background-color: #f1f3f4;
+    color: #3c4043;
+}
+
+/* Coluna de Ações */
+.acoesColuna {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.btnAcao {
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.btnAcao:hover {
+    opacity: 0.9;
+}
+
+.btnVisualizar {
+    background-color: #f1f3f4;
+    color: #3c4043;
+}
+
+.btnEditar {
+    background-color: #e8f0fe;
+    color: #1a73e8;
+}
+
+/* Estado Vazio (Nenhum Livro) */
+.cardnenhumlivro {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #6c757d;
+}
+
+.titulon {
+    margin: 1rem 0 0.5rem 0;
+    color: #333;
+}
+
+/* Paginação */
+.paginacao {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.btnPaginacao {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ced4da;
+    background-color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btnPaginacao:hover:not(:disabled) {
+    background-color: #f8f9fa;
+    border-color: #adb5bd;
+}
+
+.btnPaginacao:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.textoPaginacao {
+    font-size: 0.95rem;
+    color: #495057;
+}

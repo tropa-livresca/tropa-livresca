@@ -7,9 +7,23 @@
 }
 
 
+.topo {
+  width: 100%;
+}
+
+.divisao{
+  width: 100%;
+  height: 1.5px;
+  background-image: repeating-linear-gradient(
+    90deg,
+     #ffbb33 0 8px,
+    transparent 8px 14px
+  );
+}
+
+
 .hero_section {
     width: 100%;
-    max-width: 1200px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -19,7 +33,7 @@
 }
 
 .hero_tagline {
-    font-size: 0.9em;
+     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #ffbb33;
@@ -33,106 +47,178 @@
     margin-bottom: 0.5em;
     line-height: 1.2;
     max-width: 800px;
+    color:#67170c;
 }
 
 .hero_section p {
-    font-size: 1.1em;
+     font-size: 1.1em;
     margin-bottom: 2em;
-    color: #7b7b7b;
+    color: var(--cor-texto-muted);
     max-width: 650px;
 }
 
 .hero_actions {
     display: flex;
     gap: 1em;
+    justify-content: center;
+}
+
+.container {
+     width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
+  padding-top:0;
+}
+
+.subcontainer{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .btn_primary, .btn_secondary {
-    padding: 0.8em 2em;
-    border-radius: 4px;
-    font-weight: 600;
+     padding: 0.8em 2em;
+    border-radius: 0.5rem;
+    font-weight: normal;
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: 0.3s;
 }
 
 .btn_primary {
-    background-color: #222;
-    color: #fff;
+    background-color: #67170c;
+    color: #ede6b3;
 }
 
 .btn_primary:hover {
-    background-color: #ffbb33;
-    color: #222;
+   background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .btn_secondary {
-    background-color: transparent;
-    color: #222;
-    border: 1px solid #222;
+     border: 1px solid #e2c77c;
+  color: #67170c;
+   background: rgb(255, 248, 215);
 }
 
 .btn_secondary:hover {
-    background-color: #f4f4f4;
+    background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 /* 2. SEÇÃO DE TEXTO FLUIDO */
 .secao_texto {
     width: 100%;
-    max-width: 850px;
-    padding: 2em 1.5em 4em 1.5em;
 }
 
-.artigo_fluxo h2 {
-    font-size: 1.8em;
-    color: #222;
+.card{
+    margin-bottom: 5rem;
+}
+
+.card h2 {
+    font-size: 1.8rem;
+    color: #67170c;
     margin-top: 2em;
-    margin-bottom: 0.8em;
     font-weight: 600;
     line-height: 1.3;
+    text-align: left;
 }
 
-.artigo_fluxo p {
+.card h2::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+   margin-bottom: 0.8em;
+}
+
+.card p {
     font-size: 1.05em;
-    color: #4a4a4a;
+    color: var(--cor-texto-muted);
     line-height: 1.7;
     margin-bottom: 1.5em;
     text-align: justify;
 }
 
+.card2{
+    margin-bottom: 0;
+}
+
+.card2 h2 {
+    font-size: 1.8rem;
+    color: #67170c;
+    margin-top: 2em;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: left;
+}
+
+.card2 h2::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+   margin-bottom: 0.8em;
+}
+
+.card2 p {
+    font-size: 1.05em;
+    color: var(--cor-texto-muted);
+    line-height: 1.7;
+    margin-bottom: 1.5em;
+    text-align: justify;
+}
 /* 3. FOOTER DE SUPORTE */
 .contato {
-    width: 100%;
-    max-width: 1200px;
-    padding: 4em 1.5em;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2em;
-    border-top: 1px solid #e1e1e1;
+    margin-top: 5rem;
+  padding: 2rem;
+  text-align: center;
+  border-radius: 1rem;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .contatoTitulo {
-    font-size: 1.8em;
-    margin-bottom: 0.5em;
+  margin: 0;
+  color: #67170c;
+  font-size: 2em;
+  font-family: "Jacques Francois", serif;
 }
 
 .contatoTexto {
-    color: #7b7b7b;
-    margin-bottom: 2em;
+  max-width: 42rem;
+  margin: 1.3rem auto 2rem;
+  color: #7a6a5b;
+  line-height: 1.8;
+  font-size: 1em;
 }
 
 .contatoBotao {
-    padding: 0.8em 2.5em;
-    background-color: #222;
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.95rem 2.5rem;
+  border-radius: 999px;
+  background: #67170c;
+  color: #ede6b3;
+  text-decoration: none;
+  font-size: 1em;
 }
 
 .contatoBotao:hover {
-    background-color: #ffbb33;
-    color: #222;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }

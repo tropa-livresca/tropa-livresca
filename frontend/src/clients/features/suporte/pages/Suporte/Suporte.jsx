@@ -26,9 +26,11 @@ export default function Suporte() {
   };
 
   const motivos = [
+    "Selecione um motivo",
     "Problemas de Autopublicação",
     "Problemas ao receber",
     "Dúvidas",
+    "Outro"
   ];
 
   const [aberto, setAberto] = useState(false);
@@ -39,15 +41,19 @@ export default function Suporte() {
   };
 
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Entre em contato</h1>
+        <p>
+          Tem alguma dúvida? Entre em contato conosco.
+        </p>
       </div>
 
+      <div className={styles.container}>
+
       <form onSubmit={handleSubmit} method="POST" className={styles.form}>
-        {error?.text && (
-          <p style={{ color: error.success ? "green" : "red" }}>{error.text}</p>
-        )}
+        <legend className={styles.legend}>Preencha os campos abaixo</legend>
+        
 
         <label htmlFor="email">E-mail</label>
         <input
@@ -123,12 +129,18 @@ export default function Suporte() {
           placeholder="Sua mensagem"
           rows={5}
           onChange={(e) => setMensagem(e.target.value)}
+          className={styles.textarea}
         />
 
-        <button type="submit" disabled={carregando}>
+        <button type="submit" disabled={carregando} className={styles.button}>
           {carregando ? "Enviando..." : "Enviar"}
         </button>
+
+        {error?.text && (
+          <p className={styles.erro}>{error.text}</p>
+        )}
       </form>
+      </div>
     </main>
   );
 }

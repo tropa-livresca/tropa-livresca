@@ -3,6 +3,7 @@ import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 import { PerfilProvider } from "../../context/Perfil.jsx";
 
+import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound.jsx";
 import Inicio from "../institucional/pages/Inicio/Inicio";
 import TrocarSenha from "../perfil/pages/TrocarSenha/TrocarSenha";
 import SobreAutopublicacao from "../institucional/pages/SobreAutopublicacao/SobreAutopublicacao";
@@ -61,6 +62,8 @@ const RoutesClients = () => {
           <Route path="/editar-livro/:id" element={<Private Item={EditarLivro} />} />
           |<Route path = "/visualizar-livro/:id" element = {<Private Item={Visualizar}/>}/>
         </Route>
+        
+        <Route path = "*" element = {<NotFound/>}/>
       </Routes>
     </PerfilProvider>
   );
