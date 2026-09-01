@@ -1,6 +1,6 @@
 import { useLocation, Link } from 'react-router-dom';
 
-function Breadcrumbs() {
+export default function BreadCrumbs() {
   const location = useLocation();
   
   const caminhos = location.pathname.split('/').filter(Boolean);
@@ -28,5 +28,3 @@ function Breadcrumbs() {
     </nav>
   );
 }
-
-export default Breadcrumbs;
