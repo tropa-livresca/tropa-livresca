@@ -1,6 +1,7 @@
 ﻿import { useEffect } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Conteudo({
   dados,
@@ -79,22 +80,20 @@ export default function Conteudo({
           </label>
 
           {previewManuscrito ? (
-            <div>
-              <p style={{ color: "green" }}>✓ Manuscrito carregado</p>
+            <div className={styles.manuscrito}>
+              <p className={styles.pmanuscrito}>✓ Manuscrito carregado</p>
               <a
                 href={previewManuscrito}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ display: "inline-block", marginBottom: "8px" }}
+                className={styles.btnmanus}
               >
                 Abrir manuscrito (PDF)
               </a>
-              <div>
+              <div className={styles.embed}>
                 <embed
                   src={previewManuscrito}
                   type="application/pdf"
-                  width="100%"
-                  height="400px"
                 />
               </div>
             </div>
@@ -125,7 +124,7 @@ export default function Conteudo({
             </label>
 
             {previewFrente && (
-              <div>
+              <div className={styles.preview}>
                 <img src={previewFrente} alt="Preview da Frente" width="150" />
               </div>
             )}
@@ -152,7 +151,7 @@ export default function Conteudo({
             </label>
 
             {previewVerso && (
-              <div>
+              <div className={styles.preview}>
                 <img src={previewVerso} alt="Preview do Verso" width="150" />
               </div>
             )}
@@ -178,7 +177,7 @@ export default function Conteudo({
             </label>
 
             {previewOrelhas && (
-              <div>
+              <div className={styles.preview}>
                 <img
                   src={previewOrelhas}
                   alt="Preview das Orelhas"
@@ -189,13 +188,28 @@ export default function Conteudo({
           </div>
         </div>
 
-        <div className={styles.posterior}>
-          <button type="button" onClick={voltarEtapa} id={styles.btn}>
-            Anterior
-          </button>
-          <button type="button" onClick={irParaProximaEtapa} id={styles.btn2}>
-            Posterior
-          </button>
+        <div className={styles.botao}>
+          <Link to="/meuslivros" className={styles.btnmeu}>
+            Voltar a Meus Livros
+          </Link>
+
+          <div className={styles.navegacao}>
+            <button
+              type="button"
+              onClick={voltarEtapa}
+              className={styles.btnmeu}
+            >
+              Anterior
+            </button>
+
+            <button
+              type="button"
+              onClick={irParaProximaEtapa}
+              className={styles.btn2meu}
+            >
+              Posterior
+            </button>
+          </div>
         </div>
       </form>
     </main>

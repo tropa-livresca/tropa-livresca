@@ -43,30 +43,6 @@ export const useLivros = () => {
     }
   }, []);
 
-  const BuscarLivrosDoAutor = useCallback(async (autorId) => {
-    setLivros([]);
-    setCarregando(true);
-    try {
-      const res = await apiFetch(`/api/v1/clients/livros/autor/${autorId}`, {
-        skipAuthRedirect: true,
-      });
-      const json = await res.json();
-      if (!res.ok) {
-        if (res.status === 404) {
-          setLivros([]);
-          setCarregando(false);
-          return;
-        }
-        throw new Error(json.error || `Erro ${res.status}`);
-      }
-      setLivros(json.data || []);
-      setCarregando(false);
-    } catch (err) {
-      console.error("Erro em BuscarLivrosDoAutor", err);
-      setLivros([]);
-      setCarregando(false);
-    }
-  }, []);
 
   const BuscarDetalhesLivro = useCallback(async (id) => {
     setLivro(null);
@@ -111,7 +87,6 @@ export const useLivros = () => {
     setColaboradores,
     setCarregando,
     BuscarLivros,
-    BuscarLivrosDoAutor,
     BuscarDetalhesLivro,
   };
 };

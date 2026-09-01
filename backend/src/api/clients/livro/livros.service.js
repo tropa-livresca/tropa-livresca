@@ -49,36 +49,7 @@ export class LivrosService {
       throw erroBanco;
     }
   }
-
-  static async getLivrosByAutor (autorId) {
-    try {
-      if (!autorId) {
-        const erro400 = new Error("O ID do autor é obrigatório.");
-        erro400.statusCode = 400;
-        throw erro400;
-      }
-
-      const data = await LivroModel.buscarPorPerfilUsuario(autorId);
-
-      if (!data || data.length === 0) {
-        const erro404 = new Error("Nenhum livro cadastrado para este autor.");
-        erro404.statusCode = 404;
-        throw erro404;
-      }
-
-      const livrosComCapas = this._parseCapasArray(data);
-
-      return {
-        data: livrosComCapas,
-      };
-    } catch (error) {
-      if (error.statusCode) throw error;
-      const erroBanco = new Error("Erro ao buscar livros do autor.");
-      erroBanco.statusCode = 500;
-      throw erroBanco;
-    }
-  }
-
+  
   static async getLivrosById(id) {
     try {
       const data = await LivroModel.buscarDetalhesPorId(id);

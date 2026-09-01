@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import { useEndereco } from "../../hooks/useEndereco.js";
 import styles from "./Endereco.module.css";
+import Popup from "../../../../components/PopUp/Popup";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Endereco() {
   const {
+    popup,
+    fecharPopup,
     enderecos,
     estado,
     setEstado,
@@ -64,13 +68,18 @@ export default function Endereco() {
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.tituloPrincipal}>Painel de Gerenciamento de Endereços</h1>
+    <div>
+    <div className={styles.topo}>
+      <h1 className={styles.titulo}>Gerenciamento de Endereços</h1>
+      <p>
+          Gerencie, adicione, edite e remova seus endereços de forma rápida e prática.
+        </p>
+      </div>
+
+      <div className={styles.container}>
 
       {carregando && (
-        <div className={styles.loading}>
-          <strong>Aguarde...</strong> Processando requisição...
-        </div>
+        <Carregando mensagem="Aguarde... Processando requisição..."/>
       )}
 
       <div className={styles.conteudoLayout}>
@@ -82,7 +91,7 @@ export default function Endereco() {
               <label className={styles.label}>CEP:</label>
               <input
                 type="text"
-                className={styles.input}
+                className={`${styles.input} ${styles.fontnumero}`}
                 value={CEP}
                 onChange={(e) => AplicarMascaraCEP(e.target.value)}
                 placeholder="00000-000"
@@ -96,6 +105,7 @@ export default function Endereco() {
                 className={styles.input}
                 value={rua}
                 onChange={(e) => setRua(e.target.value)}
+                placeholder="Inserir rua"
               />
             </div>
 
@@ -103,9 +113,10 @@ export default function Endereco() {
               <label className={styles.label}>Número:</label>
               <input
                 type="text"
-                className={styles.input}
+                className={`${styles.input} ${styles.fontnumero2}`}
                 value={numero}
                 onChange={(e) => setNumero(e.target.value)}
+                placeholder="Inserir numero"
               />
             </div>
 
@@ -116,6 +127,7 @@ export default function Endereco() {
                 className={styles.input}
                 value={bairro}
                 onChange={(e) => setBairro(e.target.value)}
+                placeholder="Inserir bairro"
               />
             </div>
 
@@ -126,6 +138,7 @@ export default function Endereco() {
                 className={styles.input}
                 value={cidade}
                 onChange={(e) => setCidade(e.target.value)}
+                placeholder="Inserir cidade"
               />
             </div>
 
@@ -136,6 +149,7 @@ export default function Endereco() {
                 className={styles.input}
                 value={estado}
                 onChange={(e) => setEstado(e.target.value)}
+                placeholder="Inserir estado"
               />
             </div>
 
@@ -146,6 +160,7 @@ export default function Endereco() {
                 className={styles.input}
                 value={complemento}
                 onChange={(e) => setComplemento(e.target.value)}
+                placeholder="Inserir complemento"
               />
             </div>
 
@@ -156,6 +171,7 @@ export default function Endereco() {
                 className={styles.input}
                 value={pais}
                 onChange={(e) => setPais(e.target.value)}
+                placeholder="Inserir país"
               />
             </div>
 
@@ -175,7 +191,7 @@ export default function Endereco() {
           <div className={styles.listagemTopo}>
             <h2 className={styles.subtitulo}>Endereços Cadastrados</h2>
             <button onClick={BuscarEnderecos} className={styles.btnAtualizar}>
-              Atualizar Lista
+              Atualizar
             </button>
           </div>
 
@@ -200,10 +216,11 @@ export default function Endereco() {
                   enderecos.map((end) => (
                     <tr key={end.id} className={styles.tabelaLinha}>
                       <td className={styles.tabelaTd}>
+                        <span className={styles.fontnumero}>
                         {end.CEP || end.cep}
                         {end.principal && (
                           <span className={styles.badgePrincipal}>Principal</span>
-                        )}
+                        )}</span>
                       </td>
                       <td className={styles.tabelaTd}>{`${end.rua || ""}, ${end.num || end.numero || "S/N"}`}</td>
                       <td className={styles.tabelaTd}>{`${end.cidade} - ${end.estado}`}</td>
@@ -218,12 +235,12 @@ export default function Endereco() {
                               onClick={() => DefinirEnderecoPrincipal(end.id)} 
                               className={styles.btnPrincipalAction}
                             >
-                              Estipular Padrão
+                              Principal
                             </button>
                           )}
 
                           <button onClick={() => InativarEndereco(end.id)} className={styles.btnStatus}>
-                            Alternar Status
+                            Remover
                           </button>
                         </div>
                       </td>
@@ -235,6 +252,14 @@ export default function Endereco() {
           </div>
         </div>
       </div>
+      </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </div>
   );
 }

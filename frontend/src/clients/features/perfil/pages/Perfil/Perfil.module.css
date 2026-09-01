@@ -2,20 +2,22 @@
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
 
 .topo {
   width: 100%;
-  margin-bottom: 8%;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
 }
 
 .titulo {
-  margin: 0;
+   margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
+  font-size: clamp(2rem, 4vw, 4rem);
   font-family: "Jacques Francois", serif;
 }
 
@@ -455,7 +457,7 @@ textarea {
 }
 
 .enderecoDesabilitado .linkEndereco {
-  opacity: 0.5;
+   opacity: 0.6;
 }
 
 @media (max-width: 900px) {
@@ -465,11 +467,5 @@ textarea {
 
   .inputs {
     grid-template-columns: 1fr;
-  }
-}
-
-@media (min-width: 1920px) {
-  .container {
-    max-width: 1800px;
   }
 }

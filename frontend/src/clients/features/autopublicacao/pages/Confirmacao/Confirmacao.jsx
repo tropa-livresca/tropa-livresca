@@ -1,6 +1,15 @@
-﻿import { useState, useEffect } from "react";
+﻿﻿import { useState, useEffect } from "react";
+import styles from "./Confirmacao.module.css";
+import { FaPen } from "react-icons/fa";
+import { FaFilePdf } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivro, isBloqueadoParaEdicao }) {
+export default function Confirmacao({
+  dados,
+  irParaEtapaEspecifica,
+  publicarLivro,
+  isBloqueadoParaEdicao,
+}) {
   const [urlPreviewManga, setUrlPreviewManga] = useState(null);
   const [urlPreviewFrente, setUrlPreviewFrente] = useState(null);
   const [urlPreviewVerso, setUrlPreviewVerso] = useState(null);
@@ -72,77 +81,374 @@ export default function Confirmacao({ dados, irParaEtapaEspecifica, publicarLivr
 
   return (
     <main>
-      <h1>Confirmação</h1>
-      <div>
-        Detalhes:
+      <div className={styles.form}>
+        <div className={styles.tituloContainer}>
+          <h1 className={styles.titulo}>Confirmação</h1>
+
+          {!isBloqueadoParaEdicao && (
+            <button
+              type="button"
+              onClick={() => irParaEtapaEspecifica(1)}
+              className={styles.btnEditarDescricao}
+              title="Editar"
+              aria-label="Editar"
+            >
+              <FaPen />
+              <span>Editar</span>
+            </button>
+          )}
+        </div>
+
         {dados.detalhes && (
-          <ul>
-            <li>Título: {dados.detalhes.titulo}</li>
-            <li>Subtítulo: {dados.detalhes.subtitulo}</li>
-            <li>Descrição: {dados.detalhes.descricao}</li>
-            <li>Idioma: {dados.detalhes.idioma}</li>
-            <li>Direito de Publicação: {dados.detalhes.direitoPublicacao}</li>
-            <li>Autor: {dados.detalhes.autor?.nome} {dados.detalhes.autor?.sobrenome}</li>
-            <li>
-              Colaboradores: {dados.detalhes.colaboradores?.map(c => `${c.nome} ${c.sobrenome} (${c.funcao})`).join(", ") || "Nenhum"}
-            </li>
-            <li>Público Principal: {dados.detalhes.publicoPrincipal}</li>
-            <li>Categorias: {dados.detalhes.categorias?.join(", ")}</li>
-            <li>Palavras-chave: {dados.detalhes.palavrasChave?.join(", ")}</li>
-          </ul>
+          <div>
+            <div className={styles.card}>
+              <legend>Título e Subtítulo</legend>
+
+              <div className={styles.containergrid}>
+                <div>
+                  <label>Título:</label>
+                  <div className={styles.liinput}>{dados.detalhes.titulo}</div>
+                </div>
+
+                <div>
+                  <label>Subtítulo:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.subtitulo}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.card}>
+              <legend>Edição</legend>
+
+              <div className={styles.containergrid}>
+                <div>
+                  <label>ISBN do livro:</label>
+                  <div className={styles.liinput}>{dados.detalhes.Isbn}</div>
+                </div>
+
+                <div>
+                  <label>Número da edição:</label>
+                  <div className={styles.liinput}>{dados.detalhes.edicao}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.card}>
+              <legend>Informações do Livro</legend>
+
+              <div className={styles.containergrid}>
+                <div>
+                  <label>Idioma:</label>
+                  <div className={styles.liinput}>{dados.detalhes.idioma}</div>
+                </div>
+
+                <div>
+                  <label>Direito de Publicação e Uso de IA:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.direitoPublicacao}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Autor:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.autor?.nome}{" "}
+                    {dados.detalhes.autor?.sobrenome}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Restrição de Conteúdo:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.restricaoConteudo}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Categoria:</label>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.categorias?.join(", ")}
+                  </div>
+                </div>
+
+                <div>
+                  <label>Palavras-chave:</label>
+                  <div className={styles.liinput}>
+                    <div className={styles.chips}>
+                      {dados.detalhes.palavrasChave?.map((palavra, i) => (
+                        <span key={i} className={styles.chip}>
+                          {palavra}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.colunaCompleta}>
+                  <label>Colaboradores:</label>
+
+                  <div className={styles.liinput}>
+                    {dados.detalhes.colaboradores
+                      ?.map((c) => `${c.nome} ${c.sobrenome} (${c.funcao})`)
+                      .join(", ") || "Nenhum"}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.card}>
+              <legend>Descrição</legend>
+
+              <div>
+                <label>Descrição do livro:</label>
+
+                <div className={styles.liinput2}>
+                  {dados.detalhes.descricao}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
-        {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(1)}>Editar</button>}
       </div>
+
       <div>
         <div>
           <div>
-            <p><strong>Manuscrito:</strong> {dados.conteudo?.manuscrito ? "Arquivo carregado" : "Não enviado"}</p>
-            {urlPreviewManga && (
-              <iframe src={urlPreviewManga} title="Pré-visualização do Manuscrito" type="application/pdf" width="100%" height="200px" />
-            )}
+            <div className={styles.containerManuscrito}>
+              <div className={styles.form}>
+                <div className={styles.manuscritoHeader}>
+                  <div>
+                    <h1 className={styles.titulo}>Manuscrito</h1>
+
+                    <p className={styles.manuscritoDescricao}>
+                      Pré-visualização do arquivo enviado
+                    </p>
+                  </div>
+
+                  <div
+                    className={`${styles.statusArquivo} ${
+                      dados.conteudo?.manuscrito
+                        ? styles.statusCarregado
+                        : styles.statusNaoEnviado
+                    }`}
+                  >
+                    <span className={styles.statusPonto}></span>
+
+                    {dados.conteudo?.manuscrito
+                      ? "Arquivo carregado"
+                      : "Não enviado"}
+                  </div>
+                </div>
+
+                {urlPreviewManga ? (
+                  <div className={styles.previewContainer}>
+                    <div className={styles.previewspan}>
+                      <span>Documento PDF</span>
+                    </div>
+
+                    <iframe
+                      src={urlPreviewManga}
+                      title="Pré-visualização do Manuscrito"
+                      type="application/pdf"
+                      className={styles.iframe}
+                    />
+                  </div>
+                ) : (
+                  <div className={styles.semArquivo}>
+                    <span className={styles.semArquivoIcon}>
+                      <FaFilePdf />
+                    </span>
+
+                    <strong>Nenhum manuscrito enviado</strong>
+
+                    <p>O arquivo do manuscrito não foi encontrado.</p>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-          <p><strong>Imagens da Capa:</strong></p>
-          <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-            {urlPreviewFrente && (
-              <div>
-                <p><small>Frente:</small></p>
-                <img src={urlPreviewFrente} alt="Frente da Capa" width="150" />
-              </div>
-            )}
-            {urlPreviewVerso && (
-              <div>
-                <p><small>Verso:</small></p>
-                <img src={urlPreviewVerso} alt="Verso da Capa" width="150" />
-              </div>
-            )}
-            {urlPreviewOrelhas && (
-              <div>
-                <p><small>Orelhas:</small></p>
-                <img src={urlPreviewOrelhas} alt="Orelhas da Capa" width="150" />
-              </div>
-            )}
+          <div className={styles.form}>
+            <div className={styles.tituloContainer}>
+              <h1 className={styles.titulo}>Imagens da Capa</h1>
+              {!isBloqueadoParaEdicao && (
+                <button
+                  onClick={() => irParaEtapaEspecifica(2)}
+                  className={styles.btnEditarDescricao}
+                >
+                  <FaPen />
+                  <span>Editar</span>
+                </button>
+              )}
+            </div>
+            <div className={styles.capa}>
+              {urlPreviewFrente ? (
+                <div className={`${styles.capas} ${styles.card2}`}>
+                  <p className={styles.fvo}>
+                    <small>Frente:</small>
+                  </p>
+                  <div className={styles.imagemContainer}>
+                    <img
+                      src={urlPreviewFrente}
+                      alt="Frente da Capa"
+                      className={styles.fvoimg}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className={`${styles.capas} ${styles.card2}`}>
+                  <p className={styles.fvo}>
+                    <small>Frente:</small>
+                  </p>
+                  <div className={styles.imagemContainer}>
+                    <span className={styles.imgerro}>
+                      Imagem da frente não adicionada.
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {urlPreviewVerso ? (
+                <div className={`${styles.capas} ${styles.card2}`}>
+                  <p className={styles.fvo}>
+                    <small>Verso:</small>
+                  </p>
+                  <div className={styles.imagemContainer}>
+                    <img
+                      src={urlPreviewVerso}
+                      alt="Verso da Capa"
+                      className={styles.fvoimg}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className={`${styles.capas} ${styles.card2}`}>
+                  <p className={styles.fvo}>
+                    <small>Verso:</small>
+                  </p>
+                  <div className={styles.imagemContainer}>
+                    <span className={styles.imgerro}>
+                      Imagem do verso não adicionada.
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {urlPreviewOrelhas ? (
+                <div className={`${styles.capas} ${styles.card2}`}>
+                  <p className={styles.fvo}>
+                    <small>Orelhas:</small>
+                  </p>
+                  <div className={styles.imagemContainer}>
+                    <img
+                      src={urlPreviewOrelhas}
+                      alt="Orelhas da Capa"
+                      className={styles.fvoimg}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className={`${styles.capas} ${styles.card2}`}>
+                  <p className={styles.fvo}>
+                    <small>Orelhas:</small>
+                  </p>
+                  <div className={styles.imagemContainer}>
+                    <span className={styles.imgerro}>
+                      Imagem das orelhas não adicionada.
+                    </span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(2)}>Editar</button>}
         </div>
       </div>
-      <div>
-        Orçamento:{dados.orcamento && (
-          <ul>
-            <li>Tipo de Formatação: {dados.orcamento.tipoFormatacao}</li>
-            <li>Valor do Livro Físico: {dados.orcamento.valorLivroFisico}</li>
-            <li>Valor do Livro Digital: {dados.orcamento.valorLivroDigital}</li>
-          </ul>
+      <div className={`${styles.form} ${styles.formOrcamento}`}>
+        <div className={styles.tituloContainer}>
+          <h1 className={styles.titulo}>Orçamento</h1>
+
+          {!isBloqueadoParaEdicao && (
+            <button
+              type="button"
+              onClick={() => irParaEtapaEspecifica(3)}
+              className={styles.btnEditarDescricao}
+              title="Editar"
+              aria-label="Editar"
+            >
+              <FaPen />
+              <span>Editar</span>
+            </button>
+          )}
+        </div>
+
+        {dados.orcamento && (
+          <div className={styles.orcamentoCapa}>
+            <div className={styles.orcamentoCard}>
+              <p className={styles.orcamentoTitulo}>
+                <small>Tipo de Formatação:</small>
+              </p>
+
+              <div className={styles.orcamentoConteudo}>
+                <span>{dados.orcamento.tipoFormatacao}</span>
+              </div>
+            </div>
+
+            <div className={styles.orcamentoCard}>
+              <p className={styles.orcamentoTitulo}>
+                <small>Valor do Livro Físico:</small>
+              </p>
+
+              <div className={styles.orcamentoConteudo}>
+                <span className={styles.numero}>
+                  {dados.orcamento.valorLivroFisico}
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.orcamentoCard}>
+              <p className={styles.orcamentoTitulo}>
+                <small>Valor do Livro Digital:</small>
+              </p>
+
+              <div className={styles.orcamentoConteudo}>
+                <span className={styles.numero}>
+                  {dados.orcamento.valorLivroDigital}
+                </span>
+              </div>
+            </div>
+          </div>
         )}
-        {!isBloqueadoParaEdicao && <button onClick={() => irParaEtapaEspecifica(3)}>Editar</button>}
       </div>
       <div>
         {!isBloqueadoParaEdicao ? (
-          <>
-            <button type="button" onClick={() => publicarLivro("em_revisao")}>Enviar para Revisão</button>
-            <button type="button" onClick={() => publicarLivro("rascunho")}>Salvar como Rascunho</button>
-          </>
+          <div className={styles.botoes}>
+            <Link to="/meuslivros" className={styles.btn}>
+              Voltar a Meus Livros
+            </Link>
+
+           
+              <button
+                type="button"
+                onClick={() => publicarLivro("em_revisao")}
+                className={styles.btnenviar}
+              >
+                Enviar para Revisão
+              </button>
+
+              <button
+                type="button"
+                onClick={() => publicarLivro("rascunho")}
+                className={styles.btnsalvar}
+              >
+                Salvar como Rascunho
+              </button>
+            </div>
         ) : (
-          <p style={{ color: "orange", fontWeight: "bold" }}>Este livro está em modo de leitura e não pode receber ações de envio.</p>
+          <p style={{ color: "orange", fontWeight: "bold" }}>
+            Este livro está em modo de leitura e não pode receber ações de
+            envio.
+          </p>
         )}
       </div>
     </main>

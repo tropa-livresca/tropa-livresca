@@ -1,8 +1,21 @@
-﻿import { useContext, useCallback } from "react";
+﻿import { useContext, useCallback, useState } from "react";
 import { PerfilContext } from "../../../context/PerfilContext.jsx";
 import { apiFetch } from "../../../../common/services/api";
 
 export const usePerfil = () => {
+  const [popup, setPopup] = useState(null);
+
+  const mostrarPopup = useCallback((tipo, mensagem) => {
+    setPopup({
+      tipo,
+      mensagem,
+    });
+  }, []);
+
+  const fecharPopup = useCallback(() => {
+    setPopup(null);
+  }, []);
+
   const context = useContext(PerfilContext);
 
   if (!context) {
@@ -67,13 +80,13 @@ export const usePerfil = () => {
           setPreviewUrl(urlComCacheBuster);
         }, 50);
 
-        alert("Foto de perfil atualizada com sucesso!");
+        mostrarPopup("sucesso", "Foto de perfil atualizada com sucesso!");
       } catch (error) {
         console.error(error);
-        alert(error.message || "Erro ao carregar a imagem.");
+        mostrarPopup("erro", error.message || "Erro ao carregar a imagem.");
       }
     },
-    [setPerfil, setPreviewUrl],
+    [setPerfil, setPreviewUrl, mostrarPopup],
   );
 
   const handleRemoverImagem = useCallback(
@@ -92,13 +105,13 @@ export const usePerfil = () => {
         setPerfil(data);
         setImagem("");
         setPreviewUrl(null);
-        alert("Foto de perfil removida com sucesso!");
+        mostrarPopup("sucesso", "Foto de perfil removida com sucesso!");
       } catch (error) {
         console.error(error);
-        alert(error.message || "Erro ao remover a imagem.");
+        mostrarPopup("erro", error.message || "Erro ao remover a imagem.");
       }
     },
-    [setPerfil, setImagem, setPreviewUrl],
+    [setPerfil, setImagem, setPreviewUrl, mostrarPopup],
   );
 
   const handleRedeChange = useCallback(
@@ -154,14 +167,15 @@ export const usePerfil = () => {
 
       setPerfil(data);
       setEditando(false);
-      alert("Informações atualizadas com sucesso!");
+      mostrarPopup("sucesso", "Informações atualizadas com sucesso!");
       return { success: true };
     } catch (error) {
       console.error(error);
-      alert(`Erro: ${error.message}`);
+
+      mostrarPopup("erro", "Erro ao atualizar informações");
       return { success: false, error: error.message };
     }
-  }, [nome, telefone, descricao, redesSociais, setPerfil, setEditando]);
+  }, [nome, telefone, descricao, redesSociais, setPerfil, setEditando, mostrarPopup]);
 
   return {
     perfil,
@@ -182,5 +196,7 @@ export const usePerfil = () => {
     handleCancelar,
     updatePerfil,
     getPerfil,
+    popup,
+    fecharPopup,
   };
 };

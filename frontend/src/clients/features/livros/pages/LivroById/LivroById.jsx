@@ -2,18 +2,19 @@
 import styles from "./LivroById.module.css";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function LivroById() {
     const { id } = useParams();
-    const { autor, colaboradores, livro, BuscarLivroByAutor, carregando } = useLivros();
+    const { autor, colaboradores, livro, BuscarDetalhesLivro, carregando } = useLivros();
 
     useEffect(() => {
         if (id) {
-            BuscarLivroByAutor(id);
+            BuscarDetalhesLivro(id);
         }
-    }, [id, BuscarLivroByAutor]);
+    }, [id, BuscarDetalhesLivro]);
 
-    if (carregando) return <p>Carregando...</p>;
+    if (carregando) return <Carregando mensagem="Carregando livro..."/>;
 
     if (!livro) return <p>Livro não encontrado.</p>;
 

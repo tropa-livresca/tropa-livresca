@@ -2,6 +2,7 @@ import { useLivros } from "../../../../hooks/useLivros";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Livros() {
     const { Livros, BuscarLivros, carregando, meta } = useLivros();
@@ -16,7 +17,7 @@ export default function Livros() {
             await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
         }
         carregarDados();
-    }, [paginaAtual, filtro, ordem, busca, BuscarLivros]);
+    }, [paginaAtual, filtro, ordem, BuscarLivros]);
 
     const handleBuscar = (e) => {
         e.preventDefault();
@@ -55,7 +56,7 @@ export default function Livros() {
             </form>
 
             {carregando ? (
-                <p>Carregando...</p>
+                <Carregando mensagem="Carregando livros..."/>
             ) : !Livros || Livros.length === 0 ? (
                 <p>Nenhum livro encontrado</p>
             ) : (

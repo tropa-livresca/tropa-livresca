@@ -1,0 +1,162 @@
+.form {
+  background: #fffdf7 !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem !important;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+}
+
+.form legend {
+  color: #67170c;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form legend::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+
+.form label {
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  margin-bottom: 3%;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 2%;
+}
+
+.card p{
+     color: #67170c;
+     font-size: 1.1rem;
+}
+
+.inputmodificado input {
+  width: 95% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: center !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-top: 0.3rem !important;
+}
+
+.inputmodificado input {
+  font-family: none;
+}
+
+.inputmodificado input::placeholder {
+  font-family: "Jacques Francois", serif;
+}
+
+.form input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.inputmodificado input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.inputmodificado input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.inputmodificado input::-webkit-inner-spin-button,
+.inputmodificado input::-webkit-outer-spin-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.numero{
+    font-family: none;
+}
+
+.strong{
+    color: #67170c;
+  margin-left: 1rem;
+   font-weight: bold;
+   font-size: 1.1rem;
+}
+
+.div2{
+    margin-bottom: 1%;
+}
+
+
+.botao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navegacao {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btnmeu {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+.btnmeu:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btn2meu {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btn2meu:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}

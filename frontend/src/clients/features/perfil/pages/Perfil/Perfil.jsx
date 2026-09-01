@@ -4,6 +4,8 @@ import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
 import { useEndereco } from "../../hooks/useEndereco";
 import { Link } from "react-router-dom";
+import Popup from "../../../../components/PopUp/Popup";
+import Carregando from "../../../../components/Carregando/Carregando";
 import {
   FaUserCircle,
   FaEnvelope,
@@ -17,6 +19,8 @@ import {
 
 export default function Perfil() {
   const {
+    popup,
+    fecharPopup,
     getPerfil,
     nome,
     telefone,
@@ -46,9 +50,9 @@ export default function Perfil() {
     getPerfil();
   }, [getPerfil]);
 
-  if (carregando) {
-    return <p>Carregando...</p>;
-  }
+if (carregando) {
+  return <Carregando />;
+}
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -56,13 +60,14 @@ export default function Perfil() {
   };
 
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Meu Perfil</h1>
         <p>
           Gerencie suas informações pessoais, redes sociais e foto de perfil.
         </p>
       </div>
+      <div className={styles.container}>
 
       <section className={styles.containerperfil}>
         <div className={styles.perfilesq}>
@@ -330,6 +335,16 @@ export default function Perfil() {
           </div>
         </form>
       </section>
+      </div>
+
+
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={fecharPopup}
+        />
+      )}
     </main>
   );
 }

@@ -7,11 +7,10 @@ export const useLogin = () => {
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
 
-  const { signin } = useAuth();
+  const { signin, user } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   const handleSignin = async (e) => {
     e.preventDefault();
@@ -29,17 +28,27 @@ export const useLogin = () => {
       return;
     }
 
-    navigate(from, { replace: true });
+    const deOndeVeio = location.state?.from?.pathname || "/";
+    const ehRotaAdmin =
+      deOndeVeio.startsWith("/admin") || deOndeVeio.includes("/auth/admin");
+
+    if (user?.is_admin || user?.funcao === "master") {
+      const destinoAdmin = ehRotaAdmin ? deOndeVeio : "/admin/dashboard";
+      navigate(destinoAdmin, { replace: true });
+    } else {
+      const destinoComum =
+        ehRotaAdmin || deOndeVeio === "/" ? "/" : deOndeVeio;
+      navigate(destinoComum, { replace: true });
+    }
   };
 
   return {
-    email, 
+    email,
     setEmail,
     error,
     setError,
     senha,
     setSenha,
     handleSignin,
-
   };
 };

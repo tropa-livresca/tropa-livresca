@@ -1,17 +1,39 @@
 .container {
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
-  color: #333333;
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
 }
 
-.tituloPrincipal {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 24px;
-  color: #1a1a1a;
-  border-bottom: 2px solid #eaeaea;
-  padding-bottom: 12px;
+.topo {
+  width: 100%;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.topo p {
+  color: #67170c;
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.titulo {
+   margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
+}
+
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
 }
 
 .loading {
@@ -28,28 +50,63 @@
 }
 
 .conteudoLayout {
-  display: flex;
-  gap: 32px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 2rem;
 }
 
-.colunaFormulario {
-  flex: 1;
-  min-width: 320px;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-  height: fit-content;
+.colunaFormulario,
+.colunaListagem {
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  min-width: 300px;
+}
+
+
+.formularioGrid {
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow: none;
+}
+
+.fontnumero {
+  font-family: none;
+}
+
+.fontnumero2 {
+  font-family: none;
+}
+
+.formularioGrid input::placeholder {
+  color: var(--cor-texto-muted) !important;
+  font-family: "Jacques Francois", serif;
+}
+
+.formularioGrid label {
+  color: #67170c;
+  font-size: 1.2rem;
+  font-family: "Jacques Francois", serif;
 }
 
 .subtitulo {
-  font-size: 20px;
+  color: #67170c;
+  font-size: 2rem;
   font-weight: 600;
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #2c3e50;
+  padding-left: 2%;
+}
+
+.subtitulo::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
 }
 
 .formularioGrid {
@@ -71,21 +128,19 @@
 }
 
 .input {
-  width: 100%;
-  padding: 10px 12px;
-  box-sizing: border-box;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 14px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  background-color: #f8fafc;
+  width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
 }
 
 .input:focus {
-  outline: none;
-  border-color: #228be6;
-  box-shadow: 0 0 0 3px rgba(34, 139, 230, 0.15);
-  background-color: #ffffff;
+  outline: none !important;
+  border: 2px solid #67170c !important;
 }
 
 .areaAcoesForm {
@@ -95,47 +150,44 @@
 }
 
 .btnSalvar {
-  flex: 1;
-  padding: 11px 16px;
-  background-color: #228be6;
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  background-color: #67170c;
+  width: 70%;
+  padding: 0.7em 1.2em;
+  text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  border: none;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  margin-top: 1.5rem;
+  color: #ede6b3;
+  font-size: 1rem;
 }
 
 .btnSalvar:hover {
-  background-color: #1c7ed6;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .btnLimpar {
-  padding: 11px 16px;
-  background-color: #f1f3f5;
-  color: #495057;
-  border: 1px solid #ced4da;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  width: 30%;
+  padding: 0.7em 1.2em;
+  text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s, border-color 0.2s;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  margin-top: 1.5rem;
+  font-size: 1rem;
 }
 
 .btnLimpar:hover {
-  background-color: #e9ecef;
-  border-color: #adb5bd;
-}
-
-.colunaListagem {
-  flex: 1.5;
-  min-width: 450px;
-  background: #ffffff;
-  border: 1px solid #e0e0e0;
-  padding: 24px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 .listagemTopo {
@@ -146,20 +198,23 @@
 }
 
 .btnAtualizar {
-  padding: 8px 14px;
+  background-color: #67170c;
+  width: 20%;
+  padding: 0.5rem;
+  text-decoration: none;
   cursor: pointer;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #475569;
-  transition: background-color 0.2s, border-color 0.2s;
+  border: none;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  color: #ede6b3;
+  font-size: 1rem;
+  margin-right: 2%;
 }
 
 .btnAtualizar:hover {
-  background-color: #f8fafc;
-  border-color: #94a3b8;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .containerTabela {
@@ -175,28 +230,25 @@
 
 .tabelaCabecalho tr {
   background-color: #f8fafc;
-  border-bottom: 2px solid #edf2f7;
+  border-bottom: 1px solid #67170c;
 }
 
 .tabelaTh {
   padding: 12px 16px;
-  font-weight: 600;
-  color: #4a5568;
+  font-weight: bold;
+  color: #67170c;
+  background: rgb(255, 248, 215);
   text-align: left;
 }
 
 .tabelaTd {
   padding: 14px 16px;
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid #67170c;
   color: #2d3748;
 }
 
-.tabelaLinha:hover {
-  background-color: #f8fafc;
-}
-
 .tabelaVazia {
-  padding: 32px 16px;
+  padding: 1rem;
   text-align: center;
   color: #94a3b8;
   font-style: italic;
@@ -209,35 +261,42 @@
 }
 
 .btnEditar {
-  padding: 6px 12px;
-  background-color: #fff4e6;
-  color: #d9480f;
-  border: 1px solid #ffd8a8;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  width: 50%;
+  padding: 0.5rem;
+  text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  font-size: 0.9rem;
 }
 
 .btnEditar:hover {
-  background-color: #ffe8cc;
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 .btnStatus {
-  padding: 6px 12px;
-  background-color: #fff5f5;
-  color: #c92a2a;
-  border: 1px solid #ffc9c9;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  color: #ede6b3;
+  border: none;
+  background-color: #67170c;
+  width: 55%;
+  padding: 0.5rem;
+  text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  font-size: 0.9rem;
 }
 
 .btnStatus:hover {
-  background-color: #ffe3e3;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .focoEndereco {
@@ -279,17 +338,73 @@
 }
 
 .btnPrincipalAction {
-  padding: 6px 12px;
-  background-color: #e8f0fe;
-  color: #1a73e8;
-  border: 1px solid #d2e3fc;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 500;
+  border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  width: 50%;
+  padding: 0.5rem;
+  text-decoration: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  border-radius: 0.7em;
+  display: grid;
+  justify-self: center;
+  font-size: 0.9rem;
 }
 
 .btnPrincipalAction:hover {
-  background-color: #d2e3fc;
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+@media (max-width: 1239px) {
+  .conteudoLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 1240px) {
+  .btnAtualizar {
+    width: 25%;
+    padding: 0.5rem;
+  }
+  .subtitulo {
+    font-size: 1.8rem;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 768px) {
+  .subtitulo{
+    font-size: 1.5rem;
+    width:65%;
+  }
+
+  .btnAtualizar {
+  width: 30%;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+}
+
+@media (min-width: 200px) and (max-width: 599px) {
+  .subtitulo{
+    font-size: 1.3rem;
+    width:65%;
+  }
+
+  .btnAtualizar {
+  width: 30%;
+  padding: 0.5rem;
+  font-size: .8rem;
+}
+
+.btnSalvar {
+  width: 60%;
+  font-size: .9rem;
+}
+
+.btnLimpar {
+  width: 40%;
+  font-size: .9rem;
+}
 }

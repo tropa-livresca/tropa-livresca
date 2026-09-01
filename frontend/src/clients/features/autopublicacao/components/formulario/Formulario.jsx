@@ -9,6 +9,7 @@ import Detalhes from "../../pages/Detalhes/Detalhes";
 import Conteudo from "../../pages/Conteudo/Conteudo";
 import Orcamento from "../../pages/Orcamento/Orcamento";
 import Confirmacao from "../../pages/Confirmacao/Confirmacao";
+import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Formulario({ idLivroEdicao }) {
   const {
@@ -61,13 +62,13 @@ export default function Formulario({ idLivroEdicao }) {
   }, [idLivroEdicao, carregarDadosParaEdicao, buscarLivroById]);
 
   if (carregandoLivro) {
-    return <div>Carregando dados do livro para edição...</div>;
+    return <Carregando mensagem="Carregando dados do livro para edição..."/>;
   }
 
   if (idLivroEdicao && !carregandoLivro && erroCarregar) {
     return (
-      <main className={styles.container}>
-        <div style={{ color: "red", fontWeight: "bold", marginBottom: "1rem" }}>
+      <main>
+        <div className={styles.erro}>
           {erroCarregar}
         </div>
         <Link to="/meuslivros" className={styles.btn}>
@@ -84,7 +85,7 @@ export default function Formulario({ idLivroEdicao }) {
     : "Novo Livro";
 
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>{tituloFormulario}</h1>
         {isBloqueadoParaEdicao && (
@@ -104,6 +105,8 @@ export default function Formulario({ idLivroEdicao }) {
           <span className={styles.numero}>4</span>
         </span>
       </div>
+
+      <div className={styles.container}>
 
       {etapa === 1 && (
         <Detalhes
@@ -144,10 +147,7 @@ export default function Formulario({ idLivroEdicao }) {
           publicarLivro={publicarLivro}
         />
       )}
-
-      <Link to="/meuslivros" className={styles.btn}>
-        Voltar a Meus Livros
-      </Link>
+      </div>
     </main>
   );
 }
