@@ -14,6 +14,8 @@ import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCatego
 import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
 import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
 
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios"
+
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 
@@ -59,6 +61,12 @@ const RoutesAdm = () => {
         <Route path="categoria/:id" element={
           <PrivateRoute>
             <Categoria />
+          </PrivateRoute>
+        } />
+
+        <Route path="funcionarios" element={
+          <PrivateRoute>
+            <GerenciaUsuarios />
           </PrivateRoute>
         } />
 

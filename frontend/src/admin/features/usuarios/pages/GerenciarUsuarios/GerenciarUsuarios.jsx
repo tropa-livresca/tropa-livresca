@@ -1,43 +1,39 @@
-import { useLivros } from "../../../../hooks/useLivros";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useUsuarios } from "../../hooks/useUsuarios"
 import { FaSearch } from "react-icons/fa";
-import Carregando from "../../../../components/Carregando/Carregando";
-import styles from "./Livros.module.css";
+import Carregando from "../../../../../clients/components/Carregando/Carregando";
+import styles from "../../../../../clients/features/livros/pages/Livros/Livros.module.css";
 import { FiChevronDown } from "react-icons/fi";
 
-export default function Livros() {
-  const { Livros, BuscarLivros, carregando, meta } = useLivros();
 
+export default function GerenciarUsuarios(){
+ 
+  const {BuscarUsuarios, usuarios, carregando, meta} = useUsuarios();
+  
   const [busca, setBusca] = useState("");
-  const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");
+  const [funcao, setFuncao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
 
   useEffect(() => {
     const carregarDados = async () => {
-      await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
+      await BuscarUsuarios(paginaAtual, 12, busca, funcao, ordem);
     };
 
     carregarDados();
-  }, [paginaAtual, filtro, ordem, busca, BuscarLivros]);
+  }, [paginaAtual, funcao, ordem, busca, BuscarUsuarios]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
-    BuscarLivros(1, 12, busca, filtro, ordem);
+    BuscarUsuarios(1, 12, busca, funcao, ordem);
   };
 
   return (
     <main>
       <div className={styles.topo}>
-        <h1 className={styles.titulo}>Livros publicados pela editora</h1>
-
-        <p>
-          Histórias que transformam, ideias que inspiram: explore nosso
-          catálogo.
-        </p>
+        <h1 className={styles.titulo}>usuarios</h1>
       </div>
 
       <div className={styles.container}>
@@ -49,7 +45,7 @@ export default function Livros() {
           <input
             className={styles.inputBusca}
             type="text"
-            placeholder="Buscar livro"
+            placeholder="Buscar usuario"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
           />
@@ -62,11 +58,13 @@ export default function Livros() {
               }
             >
               <span>
-                {filtro === "alfabetico"
-                  ? "Ordem Alfabética"
-                  : filtro === "data"
-                    ? "Data de Publicação"
-                    : "Ordenar por"}
+                {funcao === "cliente"
+                  ? "clientes"
+                  : funcao === "autor"
+                    ? "autores"
+                    : funcao === "funcionario"
+                    ? "funcionarios"
+                    : ""}
               </span>
 
               <FiChevronDown
@@ -78,7 +76,7 @@ export default function Livros() {
               <div className={styles.options}>
                 <div
                   onClick={() => {
-                    setFiltro("");
+                    setFuncao("");
                     setPaginaAtual(1);
                     setDropdownAberto(null);
                   }}
@@ -88,24 +86,41 @@ export default function Livros() {
 
                 <div
                   onClick={() => {
-                    setFiltro("alfabetico");
+                    setFuncao("cliente");
                     setPaginaAtual(1);
                     setDropdownAberto(null);
                   }}
                 >
-                  <span>Ordem Alfabética</span>
+                  <span>cliente</span>
                 </div>
 
                 <div
                   onClick={() => {
-                    setFiltro("data");
+                    setFuncao("autor");
                     setPaginaAtual(1);
                     setDropdownAberto(null);
                   }}
                 >
-                  <span>Data de Publicação</span>
+
+                  
+                  <span>autor</span>
                 </div>
+
+                <div
+                  onClick={() => {
+                    setFuncao("funcionario");
+                    setPaginaAtual(1);
+                    setDropdownAberto(null);
+                  }}
+                >
+
+                  
+                  <span>funcionario</span>
+                </div>
+
               </div>
+
+              
             )}
           </div>
 
@@ -157,44 +172,24 @@ export default function Livros() {
 
         {carregando ? (
           <div className={styles.carregando}>
-            <Carregando mensagem="Carregando livros..." />
+            <Carregando mensagem="Carregando usuarios..." />
           </div>
-        ) : !Livros || Livros.length === 0 ? (
+        ) : !usuarios || usuarios.length === 0 ? (
           <p className={styles.semLivros}>Nenhum livro encontrado</p>
         ) : (
           <div className={styles.livros}>
-            {Livros.map((livro) => {
+            {usuarios.map((usuario) => {
               return (
-                <div key={livro.id} className={styles.cardLivro}>
-                  <Link
-                    to={`/livros/detalhes/${livro.id}`}
-                    className={styles.linkCapa}
-                  >
-                    <div className={styles.capaContainer}>
-                      {livro?.capa?.frente ? (
-                        <img
-                          src={livro.capa.frente}
-                          alt={livro.titulo}
-                          className={styles.capa}
-                        />
-                      ) : (
-                        <div className={styles.semImagem}>Sem imagem</div>
-                      )}
-                    </div>
-                  </Link>
+                <div key={usuario.id} className={styles.cardLivro}>
 
                   <div className={styles.infoLivro}>
-                    <Link
-                      to={`/livros/detalhes/${livro.id}`}
-                      className={styles.linkLivro}
-                    >
-                      <h3>{livro.titulo || "Sem título"}</h3>
+
+                      <h3>{usuario.nome || "Sem título"}</h3>
 
                       <p className={styles.autor}>
-                        {livro.autor_nome || "Sem autor"}{" "}
-                        {livro.autor_sobrenome || ""}
+                        {usuario.funcao || "Cliente"}
                       </p>
-                    </Link>
+
                   </div>
                 </div>
               );
@@ -226,6 +221,8 @@ export default function Livros() {
             </button>
           </div>
         )}
+
+        {funcao === "" ? <button>promover</button> : funcao === "funcionario" ? <button>deletarr</button> : <></>}
 
       </div>
     </main>
