@@ -20,6 +20,7 @@ export class LivrosController {
   static async GetLivrosById(req, res, next) {
     try {
       const { id } = req.params;
+      console.log(id);
       const livro = await LivrosService.getLivrosById(id);
 
       return res.status(200).json(livro);

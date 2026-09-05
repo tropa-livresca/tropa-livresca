@@ -17,8 +17,17 @@ export class UsuariosService {
           funcao,
           }
         );
+
+        console.log(usuarios.count)
   
-        return usuarios;
+        return {data:usuarios.data, 
+          count: usuarios.count,
+          meta: {
+          page,
+          limit,
+          totalItems: usuarios.count,
+          totalPages: Math.ceil(usuarios.count / limit),
+        }};
       } catch (error) {
         if (!error.statusCode) error.statusCode = 500;
         throw error;

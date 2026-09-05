@@ -7,17 +7,17 @@ export class PerfilModel {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
+
+
     let query = supabaseAdmin
       .from("users_profile")
-      .select("*, livros (fk_user_profile_id)", { count: "exact" })
+      .select("id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, encrypted_admin_password ,livros (ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", { count: "exact" })
 
     if (busca) {
       query = query.or(`nome.ilike.%${busca}%`);
     }
 
     const isAsc = ordem !== "descendente";
-    console.log(ordem);
-    console.log(isAsc);
     query = query.order("nome", { ascending: isAsc });
 
 
@@ -25,16 +25,45 @@ export class PerfilModel {
       query = query.neq("funcao", "");
     } else if (funcao === "autor") {
       query = supabaseAdmin.from("users_profile")
-      .select("*, livros!inner(ativo, estado)", {
+      .select("id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, encrypted_admin_password , livros!inner(ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", {
         count: "exact",
       })
       .eq("livros.ativo", true)
       .eq("livros.estado", "publicado")
-    }else if (funcao === "cliente") {
-      query = query.eq("is_admin", "FALSE");
     } 
 
-    const { data, error, count } = await query.range(start, end);
+    let { data, error, count } = await query.range(start, end);
+
+    const isAutor = data.map(usuario => {
+      if(usuario.livros.length > 0){
+
+        let livroPublicado = false;
+
+        usuario.livros.map((livro) => {
+          if(livro.ativo == true && livro.estado == "publicado"){
+            livroPublicado = true
+          }
+  
+        })
+
+         if(livroPublicado == true){
+            return true
+          }else{
+            return false
+          }
+      }else{
+        return false
+      }
+    })
+
+    console.log(isAutor);
+
+    data = data.map((usuario, c) => {
+      usuario = {...usuario, autor: isAutor[c]};
+      return usuario
+    })
+
+    console.log(data)
 
     if (error) {
       error.statusCode = 500;

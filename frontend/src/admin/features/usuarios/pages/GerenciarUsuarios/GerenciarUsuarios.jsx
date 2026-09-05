@@ -3,6 +3,7 @@ import { useUsuarios } from "../../hooks/useUsuarios"
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../../clients/components/Carregando/Carregando";
 import styles from "../../../../../clients/features/livros/pages/Livros/Livros.module.css";
+import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
 
@@ -15,20 +16,48 @@ export default function GerenciarUsuarios(){
   const [funcao, setFuncao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
+  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
 
   useEffect(() => {
     const carregarDados = async () => {
-      await BuscarUsuarios(paginaAtual, 12, busca, funcao, ordem);
-    };
+      await BuscarUsuarios(paginaAtual, 3, busca, funcao, ordem);
+    }
 
     carregarDados();
   }, [paginaAtual, funcao, ordem, busca, BuscarUsuarios]);
 
+  useEffect(() => {
+
+  }, [usuarios]);
+
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
-    BuscarUsuarios(1, 12, busca, funcao, ordem);
+    BuscarUsuarios(1, 3, busca, funcao, ordem);
+    setUsuarioSelecionado(null)
   };
+
+  const handleFiltro = (filtro, funcao) => {
+    if(funcao == true){
+      setFuncao(filtro);
+    }
+    else{
+      setOrdem(filtro);
+    }
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+    setUsuarioSelecionado(null)
+  }
+
+  const handleDetalhes = (id) => {
+    if(id == usuarioSelecionado){
+      setUsuarioSelecionado(null)
+    }else{
+      setUsuarioSelecionado(id)  
+      }
+  }
+
+  console.log(usuarios)
 
   return (
     <main>
@@ -47,7 +76,7 @@ export default function GerenciarUsuarios(){
             type="text"
             placeholder="Buscar usuario"
             value={busca}
-            onChange={(e) => setBusca(e.target.value)}
+            onChange={(e) => {setBusca(e.target.value); setUsuarioSelecionado(null) }}
           />
 
           <div className={styles.selectContainer}>
@@ -76,9 +105,7 @@ export default function GerenciarUsuarios(){
               <div className={styles.options}>
                 <div
                   onClick={() => {
-                    setFuncao("");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
+                    handleFiltro("", true)
                   }}
                 >
                   <span>Ordenar por</span>
@@ -86,9 +113,7 @@ export default function GerenciarUsuarios(){
 
                 <div
                   onClick={() => {
-                    setFuncao("cliente");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
+                    handleFiltro("cliente", true)
                   }}
                 >
                   <span>cliente</span>
@@ -96,9 +121,7 @@ export default function GerenciarUsuarios(){
 
                 <div
                   onClick={() => {
-                    setFuncao("autor");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
+                    handleFiltro("autor", true)
                   }}
                 >
 
@@ -108,9 +131,7 @@ export default function GerenciarUsuarios(){
 
                 <div
                   onClick={() => {
-                    setFuncao("funcionario");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
+                    handleFiltro("funcionario", true)
                   }}
                 >
 
@@ -144,9 +165,7 @@ export default function GerenciarUsuarios(){
               <div className={styles.options}>
                 <div
                   onClick={() => {
-                    setOrdem("ascendente");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
+                    handleFiltro("ascendente", false)
                   }}
                 >
                   Mais Antigos
@@ -154,9 +173,7 @@ export default function GerenciarUsuarios(){
 
                 <div
                   onClick={() => {
-                    setOrdem("descendente");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
+                    handleFiltro("descendente", false)
                   }}
                 >
                   Mais Recentes
@@ -177,30 +194,109 @@ export default function GerenciarUsuarios(){
         ) : !usuarios || usuarios.length === 0 ? (
           <p className={styles.semLivros}>Nenhum livro encontrado</p>
         ) : (
-          <div className={styles.livros}>
-            {usuarios.map((usuario) => {
+          <table>
+
+             <tr>
+                    <td >nome</td>
+                    <td >funcao</td>
+                    <td >autor</td>
+             </tr>
+
+            {usuarios.map((usuario, c) => {
               return (
-                <div key={usuario.id} className={styles.cardLivro}>
+ 
+                <>
+                  
 
-                  <div className={styles.infoLivro}>
+                  <tr>
+                    <td >{usuario.nome}</td>
+                    <td >{usuario.funcao || "Cliente"}</td>
+                    <td >{usuario.autor == true ? "sim" : "não"}</td>
+                  </tr>
 
-                      <h3>{usuario.nome || "Sem título"}</h3>
+                  <button onClick={() => handleDetalhes(c)}></button>
+                </>
 
-                      <p className={styles.autor}>
-                        {usuario.funcao || "Cliente"}
-                      </p>
-
-                  </div>
-                </div>
               );
             })}
-          </div>
+          </table>
         )}
+
+       {console.log(usuarioSelecionado)}
+
+        {usuarioSelecionado != null ? <div>
+        {usuarios[usuarioSelecionado]?.imagem  ? <img src={usuarios[usuarioSelecionado].imagem}></img> : <div>sem imagem</div> }
+        <div>{usuarios[usuarioSelecionado].nome}</div>
+        <div>{usuarios[usuarioSelecionado].telefone}</div>
+        <div>{usuarios[usuarioSelecionado].descricao}</div>
+        <div>{usuarios[usuarioSelecionado].nome}</div>
+        <div>{usuarios[usuarioSelecionado].funcao}</div>
+        <div>{usuarios[usuarioSelecionado].redes_sociais?.email}</div>
+
+        {usuarios[usuarioSelecionado].autor == true ? <div>
+          {usuarios[usuarioSelecionado].livros.map(livro => {
+            if(livro.ativo == true && livro.estado == "publicado"){
+             return(  <>
+                    <div>
+                      {console.log(livro?.capa)}
+                      {console.log(JSON.parse(livro?.capa) )}
+                      {livro?.capa ?  JSON.parse(livro?.capa).frente != undefined ?  
+                      <img src={JSON.parse(livro?.capa).frente}></img>  
+                      : <div>sem capa</div>
+                      : <div>sem capa</div>} 
+                      
+                      
+                      <p>{livro.titulo}</p></div>
+                        <Link to={"../livros/detalhes/"+livro.id}>ver detalhes</Link>
+                      </> )
+            }
+            
+          })
+          }
+      </div> : <></>}
+
+      {usuarios[usuarioSelecionado].revisoes[0] != undefined  ? <div>{usuarios[usuarioSelecionado].revisoes.map(revisao => {
+
+        let livroRevisado = usuarios.map(usuario => {
+          let detalhes =  usuario.livros.filter(livro =>{if(livro.id == revisao.fk_livro_id){return true}} )
+          
+          if(detalhes != []){
+            return detalhes
+          }else{
+            return
+          }
+         
+          }
+        )
+
+        console.log(livroRevisado)
+
+        livroRevisado = livroRevisado.filter(livro => {if(livro[0] != undefined){return true}})
+
+        livroRevisado = livroRevisado[0][0]
+
+        console.log(livroRevisado)
+
+        return(
+        <div>
+        <div>{revisao.data_criacao}</div>
+        <div>{revisao.apontamento}</div>
+        <div>{revisao.nome}</div>
+        {livroRevisado?.capa != undefined ? JSON.parse(livroRevisado.capa).frente != undefined ? <img src={JSON.parse(livroRevisado?.capa).frente}></img> : <div>sem capa</div> : <div>sem capa</div>}
+        <div>{livroRevisado.titulo}</div>
+        </div>
+        )
+      })}</div> : <></>}
+
+      
+
+      </div> : <></>}
+
 
         {!carregando && meta && meta.totalPages > 1 && (
           <div className={styles.paginacao}>
             <button
-              onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+              onClick={() => {setPaginaAtual((prev) => Math.max(prev - 1, 1)); setUsuarioSelecionado(null)}}
               disabled={paginaAtual === 1}
             >
               Anterior
@@ -213,7 +309,7 @@ export default function GerenciarUsuarios(){
 
             <button
               onClick={() =>
-                setPaginaAtual((prev) => Math.min(prev + 1, meta.totalPages))
+                setPaginaAtual((prev) => {Math.min(prev + 1, meta.totalPages); setUsuarioSelecionado(null)})
               }
               disabled={paginaAtual === meta.totalPages}
             >
@@ -222,7 +318,7 @@ export default function GerenciarUsuarios(){
           </div>
         )}
 
-        {funcao === "" ? <button>promover</button> : funcao === "funcionario" ? <button>deletarr</button> : <></>}
+        {funcao === "" ? <button>promover</button> : funcao === "funcionario" ? <button>deletar</button> : <></>}
 
       </div>
     </main>

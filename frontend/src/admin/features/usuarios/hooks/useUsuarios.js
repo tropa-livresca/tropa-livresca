@@ -30,6 +30,7 @@ export const useUsuarios = () => {
       }
 
       setUsuarios(result.data || []);
+      console.log(result.meta);
       setMeta(result.meta);
       setCarregando(false);
     } catch (error) {

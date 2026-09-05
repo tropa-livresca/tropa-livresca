@@ -239,7 +239,7 @@ export class AuthController {
   }
 
   static async callbackRedefinirSenha(req, res) {
-    return res.redirect("https://urban-zebra-r4q9wg546jp2pqjp-5173.app.github.dev/auth/callback");
+    return res.redirect(process.env.SUPABASE_RESET_PASSWORD_URL);
   }
 
   static async redefinirSenha(req, res, next) {
