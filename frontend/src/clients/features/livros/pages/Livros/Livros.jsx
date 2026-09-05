@@ -21,12 +21,25 @@ export default function Livros() {
     };
 
     carregarDados();
-  }, [paginaAtual, filtro, ordem, busca, BuscarLivros]);
+  }, [paginaAtual, filtro, ordem]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
+
     setPaginaAtual(1);
     BuscarLivros(1, 12, busca, filtro, ordem);
+  };
+
+  const handleFiltro = (novoFiltro) => {
+    setFiltro(novoFiltro);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+  };
+
+  const handleOrdem = (novaOrdem) => {
+    setOrdem(novaOrdem);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
   };
 
   return (
@@ -58,7 +71,9 @@ export default function Livros() {
             <div
               className={styles.select}
               onClick={() =>
-                setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
+                setDropdownAberto(
+                  dropdownAberto === "filtro" ? null : "filtro"
+                )
               }
             >
               <span>
@@ -70,39 +85,23 @@ export default function Livros() {
               </span>
 
               <FiChevronDown
-                className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
+                className={
+                  dropdownAberto === "filtro" ? styles.setaAberta : ""
+                }
               />
             </div>
 
             {dropdownAberto === "filtro" && (
               <div className={styles.options}>
-                <div
-                  onClick={() => {
-                    setFiltro("");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
-                  }}
-                >
+                <div onClick={() => handleFiltro("")}>
                   <span>Ordenar por</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    setFiltro("alfabetico");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
-                  }}
-                >
+                <div onClick={() => handleFiltro("alfabetico")}>
                   <span>Ordem Alfabética</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    setFiltro("data");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
-                  }}
-                >
+                <div onClick={() => handleFiltro("data")}>
                   <span>Data de Publicação</span>
                 </div>
               </div>
@@ -113,7 +112,9 @@ export default function Livros() {
             <div
               className={styles.select1}
               onClick={() =>
-                setDropdownAberto(dropdownAberto === "ordem" ? null : "ordem")
+                setDropdownAberto(
+                  dropdownAberto === "ordem" ? null : "ordem"
+                )
               }
             >
               <span>
@@ -125,39 +126,23 @@ export default function Livros() {
               </span>
 
               <FiChevronDown
-                className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
+                className={
+                  dropdownAberto === "ordem" ? styles.setaAberta : ""
+                }
               />
             </div>
 
             {dropdownAberto === "ordem" && (
               <div className={styles.options}>
-                <div
-                  onClick={() => {
-                    setOrdem("");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
-                  }}
-                >
+                <div onClick={() => handleOrdem("")}>
                   <span>Ordenar por</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    setOrdem("ascendente");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
-                  }}
-                >
+                <div onClick={() => handleOrdem("ascendente")}>
                   <span>Mais Antigos</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    setOrdem("descendente");
-                    setPaginaAtual(1);
-                    setDropdownAberto(null);
-                  }}
-                >
+                <div onClick={() => handleOrdem("descendente")}>
                   <span>Mais Recentes</span>
                 </div>
               </div>
@@ -219,7 +204,9 @@ export default function Livros() {
         {!carregando && meta && meta.totalPages > 1 && (
           <div className={styles.paginacao}>
             <button
-              onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
+              onClick={() =>
+                setPaginaAtual((prev) => Math.max(prev - 1, 1))
+              }
               disabled={paginaAtual === 1}
             >
               Anterior
@@ -231,8 +218,11 @@ export default function Livros() {
 
             <button
               onClick={() =>
-                setPaginaAtual((prev) => Math.min(prev + 1, meta.totalPages))
+                setPaginaAtual((prev) =>
+                  Math.min(prev + 1, meta.totalPages)
+                )
               }
+              disabled={paginaAtual === meta.totalPages}
             >
               Próximo
             </button>

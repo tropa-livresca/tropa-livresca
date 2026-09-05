@@ -152,17 +152,17 @@
 }
 
 .selectContainer:nth-of-type(1)  {
-  left: -20px;
-  width: calc(100% + 0px);
-}
-
-.selectContainer:nth-of-type(2){
   left: -10px;
   width: calc(100% + 0px);
 }
 
+.selectContainer:nth-of-type(2){
+  left: 0px;
+  width: calc(100% + 0px);
+}
+
 .selectContainer:nth-of-type(3){
-  left: 0;
+  left: +10px;
   width: calc(100% + 0px);
 }
 
@@ -195,9 +195,59 @@
   transition: 0.3s;
 }
 
-@import url("https://googleapis.com");
+.topo {
+  width: 100%;
+   padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
 
-/* ---------- Suas Regras Originais (Mantidas Intactas) ---------- */
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 7rem;
+  height: 3px;
+  margin-top: 1rem;
+  background-color: #d4b46a;
+  border-radius: 999px;
+}
+
+.subcontainer {
+  display: grid;
+  grid-template-columns: 1fr auto; 
+  align-items: center;
+  gap: 20px;
+}
+
+.subcontainer p {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.btn {
+  background-color: #67170c;
+  padding: 1rem 2rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 1rem;
+  display: grid;
+  justify-self: center;
+  color: #ede6b3;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
 
 .container {
   width: 100%;
@@ -206,7 +256,6 @@
   padding: 5rem 6%;
 }
 
-
 .cardnenhumlivro {
   display: flex;
   flex-direction: column;
@@ -214,11 +263,8 @@
   justify-content: center;
   padding: 3rem 1rem;
   background: #fffdf7;
-  box-shadow:
-    0 8px 20px rgba(103, 23, 12, 0.08),
-    0 2px 6px rgba(103, 23, 12, 0.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   border-radius: 1.5rem;
-  margin-bottom: 5%;
 }
 
 .cardnenhumlivro svg {
@@ -235,25 +281,7 @@
 }
 
 .sub {
-  color: var(--cor-texto-muted);
-}
-
-.btn {
-  background-color: #67170c;
-  padding: 1rem 2rem;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  border-radius: 1rem;
-  display: grid;
-  justify-self: center;
-  margin-top: 1.5rem;
-  color: #ede6b3;
-}
-
-.btn:hover {
-  background-color: #ffbb33;
-  transition: 0.3s;
+      color: var(--cor-texto-muted);
 }
 
 .inputBusca {
@@ -264,84 +292,34 @@
   font-size: 1rem;
 }
 
-@media (min-width: 1920px) {
-  .container {
-    max-width: 1800px;
-  }
-}
-
-/* ---------- Estrutura Complementar para Tabela e Filtros ---------- */
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2.5rem;
-  border-bottom: 2px dashed #d4b46a;
-  padding-bottom: 1.5rem;
-}
-
-.tituloHeader {
-   margin: 0;
-  color: #67170c;
-  font-size: clamp(2rem, 4vw, 4rem);
-  font-family: "Jacques Francois", serif;
-}
-
-.tituloHeader::after {
-  content: "";
-  display: block;
-  width: 8rem;
-  height: 4px;
-  margin-top: 1rem;
-  background: #d4b46a;
-  border-radius: 999px;
-}
-
-.filtroForm {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1.5rem;
-  background: var(--cor-superficie);
-  padding: 1.5rem;
-  border-radius: 1.5rem;
-  box-shadow: var(--sombra-suave);
-  margin-bottom: 2rem;
-  align-items: center;
-}
-
-.buscaWrapper {
-  position: relative;
+.btnAdicionar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-decoration: none;
+ background-color: #67170c;
+  color: #ede6b3;
+  font-size: 2.5rem;
+  transition: 0.2s;
+  margin-bottom: -3rem;
+  margin-top: 3rem;
 }
 
-.buscaIcon {
-  position: absolute;
-  left: 1rem;
-  color: var(--cor-texto-muted);
+.btnAdicionar:hover {
+   background-color: #ffbb33;
+  transition: 0.3s;
 }
 
-
-
-.inputBusca:focus {
-  border-color: #67170c;
-}
-
-.selectsGrid {
+.adicionardiv{
   display: flex;
-  gap: 1rem;
+  justify-content: end;
 }
 
-.selectsGrid select {
-  padding: 0.75rem 1.5rem;
-  border: 1px solid var(--cor-superficie-clara);
-    border-radius: 1rem;
-  background-color: var(--cor-fundo);
-  color: var(--cor-primaria);
-  font-size: 0.9rem;
-  outline: none;
-  cursor: pointer;
+.select:hover, .select1:hover, .select2:hover{
+  background-color: #ffecc9;
 }
 
 /* Tabela de Linhas Grandes */
@@ -357,15 +335,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 2rem;
-  background: var(--cor-superficie);
-  border-radius: 1.25rem;
-  box-shadow: var(--sombra-card);
+  background-color: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .linhaLivro:hover {
   transform: translateX(4px);
-  box-shadow: 0 6px 12px rgba(103, 23, 12, 0.08);
 }
 
 .infoColuna {
@@ -380,7 +357,7 @@
   flex-shrink: 0;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: var(--sombra-suave);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   background: var(--cor-superficie-clara);
 }
 
@@ -395,7 +372,7 @@
   height: 100%;
   display: grid;
   place-items: center;
-  color: var(--cor-texto-muted);
+  color: #67170c;
   font-size: 1.5rem;
 }
 
@@ -415,7 +392,7 @@
 .badge {
   display: inline-block;
   padding: 0.3rem 0.8rem;
-  border-radius: 999px;
+  border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -446,10 +423,9 @@
 .btnAcao {
   text-decoration: none;
   padding: 0.6rem 1.2rem;
-  border-radius: 1rem;
+  border-radius: 0.5rem;
   font-size: 0.85rem;
-  font-weight: 600;
-  transition: 0.2s;
+  transition: 0.3s;
   border: none;
   cursor: pointer;
   display: inline-flex;
@@ -458,42 +434,51 @@
 }
 
 .btnVisualizar {
-  background-color: var(--cor-superficie-clara);
+  border: 1px solid #e2c77c;
   color: #67170c;
+  background: rgb(255, 248, 215);
 }
 
 .btnVisualizar:hover {
-  background-color: #67170c;
+     background-color: #ffbb33;
   color: #ede6b3;
+  transition: 0.3s;
 }
 
 .btnEditar {
-  background-color: #edf2f7;
-  color: #2d3748;
+ border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
 }
 
 .btnEditar:hover {
-  background-color: #e2e8f0;
+ background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 .btnPublicar {
-  background-color: #e6fffa;
-  color: #006d5b;
+   border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
 }
 
 .btnPublicar:hover {
-  background-color: #319795;
-  color: #fff;
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 .btnInativar {
-  background-color: #fff5f5;
-  color: #e53e3e;
+   border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
 }
 
 .btnInativar:hover {
-  background-color: #e53e3e;
-  color: #fff;
+   background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 /* Paginação */
@@ -532,34 +517,276 @@
   font-family: "Jacques Francois", serif;
 }
 
-/* Responsivo para Filtros e Linhas */
-@media (max-width: 992px) {
-  .filtroForm {
-    grid-template-columns: 1fr;
+
+
+@media (max-width: 1150px) {
+  .container {
+    padding-left: 4%;
+    padding-right: 4%;
   }
-  .selectsGrid {
-    width: 100%;
-    flex-wrap: wrap;
+
+  .topo {
+    padding-left: 4%;
+    padding-right: 4%;
   }
-  .selectsGrid select {
-    flex: 1;
-    min-width: 140px;
+
+  .busca {
+    grid-template-columns:
+      3rem
+      minmax(120px, 1fr)
+      180px
+      180px
+      180px
+      6rem;
   }
 }
 
-@media (max-width: 768px) {
-  .linhaLivro {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.5rem;
-    padding: 1.25rem;
+@media (max-width: 900px) {
+  .container {
+    padding: 3rem 4%;
   }
-  .acoesColuna {
+
+  .topo {
+    padding: 3rem 4%;
+  }
+
+  .busca {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    padding: 0.8rem;
+    border-radius: 1.2rem;
+  }
+
+  .iconebusca {
+    display: none;
+  }
+
+  .inputBusca {
+    grid-column: 1;
+    height: 3.2rem;
+    padding: 0 1rem;
+    border-radius: 0.9rem;
+  }
+
+  .selectContainer {
+    grid-column: 1;
     width: 100%;
-    justify-content: flex-start;
   }
-  .btnAcao {
-    flex: 1;
-    min-width: max-content;
+
+  .select {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+    margin-left: 10px;
+  }
+
+  .select1{
+    min-height: 3.2rem;
+    padding: 0 1rem;
+    margin:0;
+  }
+
+  .select2{
+    min-height: 3.2rem;
+    padding: 0 1rem;
+    margin-left: -10px;
+  }
+
+  .btnbuscar {
+    grid-column: 1;
+    width: 100%;
+    height: 3.2rem;
+  }
+}
+
+@media (max-width: 650px) {
+  .topo {
+    padding: 2.5rem 5%;
+  }
+
+  .container {
+    padding: 2.5rem 5%;
+  }
+
+  .titulo {
+    font-size: clamp(1.9rem, 8vw, 2.7rem);
+  }
+
+  .busca {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    padding: 0.8rem;
+    border-radius: 1.2rem;
+  }
+
+  .iconebusca {
+    display: none;
+  }
+
+  .inputBusca {
+    grid-column: 1;
+    height: 3.2rem;
+    padding: 0 1rem;
+    border-radius: 0.9rem;
+  }
+
+  .selectContainer {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  .select {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+    margin-left:10px;
+  }
+
+  .select1 {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+    margin:0;
+  }
+
+  .select2 {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+     margin-left:-10px;
+  }
+
+  .btnbuscar {
+    grid-column: 1;
+    width: 100%;
+    height: 3.2rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .topo {
+    padding: 2.2rem 5%;
+  }
+
+  .container {
+    padding: 2rem 5%;
+  }
+
+  .busca {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    padding: 0.8rem;
+    border-radius: 1.2rem;
+  }
+
+  .iconebusca {
+    display: none;
+  }
+
+  .inputBusca {
+    grid-column: 1;
+    height: 3.2rem;
+    padding: 0 1rem;
+    border-radius: 0.9rem;
+  }
+
+  .selectContainer {
+    grid-column: 1;
+    width: 100%;
+  }
+
+  .select {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+  }
+
+  .select1 {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+    margin:0;
+  }
+
+  .btnbuscar {
+    grid-column: 1;
+    width: 100%;
+    height: 3.2rem;
+  }
+
+  .livros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-top: 2rem;
+  }
+
+  .infoLivro {
+    padding: 0.8rem;
+  }
+
+  .infoLivro h3 {
+    font-size: 1rem;
+  }
+
+  .autor {
+    font-size: 0.8rem;
+  }
+
+  .verLivro {
+    padding: 0.7rem 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .paginacao {
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .paginacao span {
+    order: -1;
+  }
+
+  .paginacao button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .topo {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+
+  .container {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+
+  .titulo {
+    font-size: 1.7rem;
+  }
+
+  .topo p {
+    font-size: 0.9rem;
+  }
+
+  .livros {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .capa {
+    aspect-ratio: 2 / 2.8;
+  }
+
+  .infoLivro {
+    padding: 1rem;
+  }
+
+  .infoLivro h3 {
+    font-size: 1.1rem;
+  }
+
+  .autor {
+    font-size: 0.85rem;
+  }
+
+  .verLivro {
+    font-size: 0.9rem;
   }
 }
