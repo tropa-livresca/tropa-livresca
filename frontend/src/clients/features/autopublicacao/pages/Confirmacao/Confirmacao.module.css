@@ -350,7 +350,7 @@ label {
 
 .orcamentoCapa {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
   width: 100%;
 }
@@ -374,7 +374,7 @@ label {
   font-size: 1.2rem;
   font-weight: bold;
   font-family: "Jacques Francois", serif;
-  text-align: left;
+  text-align: center;
   background: #fff8d7;
   border-bottom: 1px solid #e2c77c;
 }

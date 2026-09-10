@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import NavBar from "../NavBar/NavBar";
-import Breadcrumbs from "../../../common/components/BreadCrumbs/BreadCrumbs";
+import Breadcrumbs from "../../../common/components/Breadcrumbs/Breadcrumbs";
 import Footer from "../Footer/Footer";
 import Container from "../Container/Container";
 

@@ -13,7 +13,7 @@ router.post("/session", AuthController.setSession);
 
 router.post("/redefinir-senha", AuthController.redefinirSenha);
 router.post("/esquecer-senha", AuthController.esqueciSenha);
-router.get("/callback-redefinir-senha", AuthController.callbackRedefinirSenha);
+router.get(/callback-redefinir-senha/, AuthController.callbackRedefinirSenha);
 
 router.patch("/senha", checkAuth, AuthController.atualizarSenhaAntiga);
 
