@@ -1,19 +1,21 @@
 import { FuncionariosService } from "./funcionarios.service.js";
 
 export class FuncionariosController {
-  static async promoverAdm(req, res, next) {
-    const { usuarioComumId, senhaTemporaria, funcao } = req.body;
+  static async alterarFuncao(req, res, next) {
+    const { usuarioId, funcao} = req.body;
+
+    console.log("b");
+    console.log(req.body);
+
 
     try {
-      const data = await FuncionariosService.promoverAdm(
-        usuarioComumId,
-        senhaTemporaria,
-        funcao,
+      const data = await FuncionariosService.alterarFuncao(
+        usuarioId, funcao
       );
 
       return res.status(201).json({
         success: true,
-        message: "Usuário promovido com sucesso!",
+        message: "função de Usuário modificada com sucesso!",
         data: data,
       });
     } catch (err) {

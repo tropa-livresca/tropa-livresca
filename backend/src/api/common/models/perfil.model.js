@@ -11,7 +11,7 @@ export class PerfilModel {
 
     let query = supabaseAdmin
       .from("users_profile")
-      .select("id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, encrypted_admin_password ,livros (ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", { count: "exact" })
+      .select("id, nome, funcao , is_admin ,telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status,livros (ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", { count: "exact" })
 
     if (busca) {
       query = query.or(`nome.ilike.%${busca}%`);
@@ -22,14 +22,16 @@ export class PerfilModel {
 
 
     if (funcao === "funcionario") {
-      query = query.neq("funcao", "");
+      query = query.eq("funcao", "funcionario");
     } else if (funcao === "autor") {
       query = supabaseAdmin.from("users_profile")
-      .select("id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, encrypted_admin_password , livros!inner(ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", {
+      .select("id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, livros!inner(ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", {
         count: "exact",
       })
       .eq("livros.ativo", true)
       .eq("livros.estado", "publicado")
+    }else if(funcao === "cliente"){
+      query = query.eq("is_admin", false);
     } 
 
     let { data, error, count } = await query.range(start, end);
@@ -56,14 +58,10 @@ export class PerfilModel {
       }
     })
 
-    console.log(isAutor);
-
     data = data.map((usuario, c) => {
       usuario = {...usuario, autor: isAutor[c]};
       return usuario
     })
-
-    console.log(data)
 
     if (error) {
       error.statusCode = 500;

@@ -15,6 +15,8 @@ export const checkAuth = async (req, res, next) => {
       return res.status(401).json({ error: "Token de autenticação inválido." });
     }
 
+    console.log("c");
+
     req.user = data.user;
     return next();
   } catch (err) {
@@ -56,6 +58,8 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
       .eq("id", user.id)
       .single();
 
+      console.log(adm, error)
+
     if (dbError || !adm || !adm.is_admin) {
       return res.status(403).json({
         error: "Acesso negado: Recursos restritos a administradores ativos.",
@@ -65,7 +69,9 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
     req.user = user;
     req.adm = adm;
 
-    next();
+    console.log("a");
+
+    return next();
   } catch (err) {
     next(err);
   }
@@ -109,6 +115,8 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
         error: "Acesso negado: Recursos restritos a administradores ativos.",
       });
     }
+
+    console.log("b");
 
     req.user = user;
     req.adm = adm;

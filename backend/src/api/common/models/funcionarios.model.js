@@ -1,21 +1,38 @@
 import supabase from "../config/supabase.js";
+import {supabaseAdmin} from "../config/supabase.js";
+
 
 export class FuncionariosModel{
-    static async promoverAdm(usuarioComumId, senhaTemporaria, funcao)    { 
-      const { data, error } = await supabase.
-      rpc('promover_usuario_para_adm', {
-        p_user_profile_id: usuarioComumId,
-        p_senha_inicial_adm: senhaTemporaria,
-        p_funcao: funcao
-      });
-      
-      if(error){
-        error.statusCode = 500;
-        throw error;
-      }
+    static async alterarFuncao(usuarioId, funcao)    { 
+      console.log("c")
+      console.log(usuarioId)
 
-      return data;
-}
+        const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .update({ funcao: funcao, is_admin: funcao == "funcionario"})
+      .eq("id", usuarioId)
+      .select()
+      .maybeSingle()
+
+      console.log(data);
+
+    if (error) {
+      console.log(error)
+      throw error;
+    }
+
+    if (!data) {
+      const erroRegistro = new Error("Nenhum perfil foi encontrado para atualização.");
+      erroRegistro.statusCode = 404;
+      throw erroRegistro;
+    }
+
+    console.log(data);
+    console.log(1);
+    console.log(error);
+
+    return data;
+  }
 
     static async deletarFuncionario(funcionarioId){
         const {data, error} = await supabase
