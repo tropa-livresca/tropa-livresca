@@ -42,6 +42,7 @@ const RoutesClients = () => {
           <Route path="/" element={<Inicio />} />
           <Route path="/historia" element={<Historia />} />
           <Route path="/sobreautopublicacao" element={<SobreAutopublicacao />} />
+          
           <Route path="/loja" element={<Loja />} />
 
           <Route path="/autores" element={<Autores />} />
