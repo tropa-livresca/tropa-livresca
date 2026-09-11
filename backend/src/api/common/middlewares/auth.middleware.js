@@ -24,7 +24,6 @@ export const checkAuth = async (req, res, next) => {
 };
 
 export const verificarAutenticacaoAdm = async (req, res, next) => {
-  // AJUSTE: Tenta pegar o token do Header. Se não existir, pega do Cookie.
   let token = null;
   const authHeader = req.headers.authorization;
 
@@ -41,10 +40,7 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
   }
 
   try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       return res.status(401).json({ error: "Sessão expirada ou inválida." });
@@ -52,13 +48,13 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
 
     const { data: adm, error: dbError } = await supabase
       .from("users_profile")
-      .select("is_admin, funcao")
+      .select("is_admin, funcao, senha_adm")
       .eq("id", user.id)
       .single();
 
-    if (dbError || !adm || !adm.is_admin) {
+    if (dbError || !adm || !adm.is_admin || !adm.senha_adm) {
       return res.status(403).json({
-        error: "Acesso negado: Recursos restritos a administradores ativos.",
+        error: "Acesso negado: Perfil de administrador inválido ou desativado.",
       });
     }
 
@@ -72,7 +68,6 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
 };
 
 export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
-  // AJUSTE: Tenta pegar o token do Header. Se não existir, pega do Cookie.
   let token = null;
   const authHeader = req.headers.authorization;
 
@@ -89,10 +84,7 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
   }
 
   try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       return res.status(401).json({ error: "Sessão expirada ou inválida." });
@@ -100,13 +92,13 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
 
     const { data: adm, error: dbError } = await supabase
       .from("users_profile")
-      .select("is_admin, funcao")
+      .select("is_admin, funcao, senha_adm")
       .eq("id", user.id)
       .single();
 
-    if (dbError || !adm || !adm.is_admin || adm.funcao !== "master") {
+    if (dbError || !adm || !adm.is_admin || adm.funcao !== "master" || !adm.senha_adm) {
       return res.status(403).json({
-        error: "Acesso negado: Recursos restritos a administradores ativos.",
+        error: "Acesso negado: Recursos restritos a administradores master ativos.",
       });
     }
 

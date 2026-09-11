@@ -21,12 +21,12 @@ export const useLoginAdmin = () => {
     setError("");
 
     try {
-      const res = await apiFetch("/api/v1/auth/signin", {
+      const res = await apiFetch("/api/v1/auth/signinadmin", {
         skipAuthRedirect: true,
         method: "POST",
         body: JSON.stringify({
           email: email,
-          password: senha,
+          senha: senha,
         }),
       });
 

@@ -21,7 +21,7 @@ export class AuthService {
   static async esqueciSenha(email) {
     if (!email) {
       const erroEmail = new Error("O e-mail é obrigatório.");
-      erroEmail.statusCode = 400; // Corrigido de 500 para 400 (Bad Request)
+      erroEmail.statusCode = 400;
       throw erroEmail;
     }
 
@@ -67,8 +67,8 @@ export class AuthService {
       const dataLogin = await AuthModel.signin(email, senhaAntiga);
 
       await AuthModel.setSession(
-        dataLogin.session.access_token, 
-        dataLogin.session.refresh_token
+        dataLogin.session.access_token,
+        dataLogin.session.refresh_token,
       );
 
       const dataUpdate = await AuthModel.atualizarSenha(senhaNova);
@@ -170,6 +170,58 @@ export class AuthService {
       error.statusCode = error.status || 400;
       throw error;
     }
+  }
+
+  static async signinAdmin(email, senhaAdmin) {
+    if (!email || !senhaAdmin) {
+      const erroCredenciais = new Error(
+        "Email e ou senha não informados para o login!",
+      );
+      erroCredenciais.statusCode = 500;
+      throw erroCredenciais;
+    }
+
+    const { data, error } = await AuthModel.signinAdmin(email, senhaAdmin);
+
+    if (error) {
+      throw error;
+    }
+
+    const userId = data.userId;
+
+    const primeiroAcesso = await AuthModel.conferirPrimeiroAcesso(userId);
+
+    const redirectUrl = primeiroAcesso ? process.env.SUPABASE_REDIRECT_ADMIN_URL : null;
+
+    return {data: data, redirectUrl: redirectUrl};
+  }
+
+  static async alterarSenhaAdm(userId, novaSenha){
+    if (!userId || !novaSenha) {
+      const erroCampos = new Error(
+        "ID do usuário e nova senha são obrigatórios para a alteração de senha.",
+      );
+      erroCampos.statusCode = 400;
+      throw erroCampos;
+    }
+
+    const resultado = await AuthModel.alterarSenhaAdmin(userId, novaSenha);
+
+    return resultado;
+  }
+
+  static async alterarSenhaAntigaAdm(email, senhaAntiga, novaSenha){
+    if(!email || !novaSenha || !senhaAntiga){
+      const erroCampos = new Error("Erro ao informar as credenciais para alteração de senha.");
+      erroCampos.statusCode = 400;
+      throw erroCampos;
+    }
+
+    const login = await AuthModel.signinAdmin(email, senhaAntiga);
+
+    const resultado = login ? await AuthModel.alterarSenhaAdmin(login.userId, novaSenha) : null;
+
+    return resultado;
   }
 
   static async atualizarSenha(novaSenha) {

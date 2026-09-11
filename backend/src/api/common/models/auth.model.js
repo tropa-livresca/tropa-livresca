@@ -1,34 +1,110 @@
 import supabase from "../config/supabase.js";
 
 export class AuthModel {
-  static async conferirAdmin(userId) {
-  const { data, error } = await supabase
+  static async conferirPrimeiroAcesso(userId){
+    const {data, error} = await supabase
     .from("users_profile")
-    .select("is_admin")
+    .select("primeiro_acesso")
     .eq("id", userId)
-    .single(); 
+    .maybeSingle();
 
-  if (error) {
-    const erroBanco = new Error(error.message || "Erro no banco de dados.");
-    erroBanco.statusCode = 500;
-    throw erroBanco;
+    if (error){
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
   }
 
-  if (!data || data.is_admin == false) {
-    const erroAdmin = new Error("Acesso negado. Apenas administradores.");
-    erroAdmin.statusCode = 403; 
-    throw erroAdmin;
+  static async alterarSenhaAdmin(userId, novaSenha){
+    const {data, error} = await supabase
+    .from("users_profile")
+    .update("senha_adm", novaSenha)
+    .select("id, primeiro_acesso")
+    .eq("id", userId)
+    .maybeSingle();
+
+    if (error){
+      error.statusCode = 500;
+      throw error;
+    }
+
+    const mudanca = data.primeiro_acesso ? await AuthModel.alterarPrimeiroAcesso(userId) : null;
+
+    return {
+      data: data,
+      mudanca: mudanca
+    };
   }
 
-  return data;
-}
+  static async alterarPrimeiroAcesso(userId){
+    const {data, error} = await supabase
+    .from("users_profile")
+    .update("primeiro_acesso", false)
+    .select("primeiro_acesso")
+    .eq("id", userId)
+    .maybeSingle();
 
+    if(error){
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async signinAdmin(email, senha){
+    const {data: busca, error: buscaError} = await supabase
+    .from("users_profile")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+    if (buscaError){
+      buscaError.statusCode = 500;
+      throw buscaError;
+    }
+
+    const {data, error} = await supabase.rpc('verificar_senha_adm', {
+      user_id: busca.id,
+      senha_digitada: senha
+    });
+
+    if(error){
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return {data: data, userId: busca.id, user: busca};
+  }
+
+  static async conferirAdmin(userId) {
+    const { data, error } = await supabase
+      .from("users_profile")
+      .select("is_admin")
+      .eq("id", userId)
+      .single();
+
+    if (error) {
+      const erroBanco = new Error(error.message || "Erro no banco de dados.");
+      erroBanco.statusCode = 500;
+      throw erroBanco;
+    }
+
+    if (!data || data.is_admin == false) {
+      const erroAdmin = new Error("Acesso negado. Apenas administradores.");
+      erroAdmin.statusCode = 403;
+      throw erroAdmin;
+    }
+
+    return data;
+  }
 
   static async atualizarSenha(senhaNova) {
     const { data, error } = await supabase.auth.updateUser({
       password: senhaNova,
     });
-    
+
     if (error) {
       error.statusCode = 400;
       throw error;
@@ -36,7 +112,6 @@ export class AuthModel {
 
     return data;
   }
-
 
   static async enviarEmailRecuperacao(email, redirectUrl) {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {

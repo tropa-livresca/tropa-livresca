@@ -1,5 +1,21 @@
-import supabase, {supabaseAdmin} from "../config/supabase.js";
+import supabase, { supabaseAdmin } from "../config/supabase.js";
 export class RevisaoModel {
+  static async BuscarLivraoRevisao(busca) {
+    const { data, error } = supabase
+      .from("livros")
+      .select(
+        "id, titulo, subtitulo, capa, autor_nome, autor_sobrenome, estado",
+      )
+      .ilike("titulo", `%${busca}%`);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async BuscarRevisoes(
     page = 1,
     limit = 12,
@@ -13,7 +29,10 @@ export class RevisaoModel {
 
     let query = supabase
       .from("revisoes")
-      .select("*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)", { count: "exact" })
+      .select(
+        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
+        { count: "exact" },
+      )
       .eq("ativo", true);
 
     if (busca) {
@@ -61,7 +80,7 @@ export class RevisaoModel {
 
     return {
       data: data,
-      livro: data.livros
+      livro: data.livros,
     };
   }
 

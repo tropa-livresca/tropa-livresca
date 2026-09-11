@@ -194,6 +194,54 @@ export class AuthController {
     }
   }
 
+  static async signinAdm(req, res, next){
+    try{
+      const email = req.body.email;
+      const senha = req.body.senha;
+
+      const resultado = await AuthService.signinAdmin(email, senha);
+
+      if(resultado.redirectUrl){
+        return res.redirect(resultado.redirectUrl);
+      }
+
+      return res.status(200).json({
+        user: resultado.user,
+        message:  "Login realizado com sucesso!"
+      });
+
+    }catch(err){
+      next(err);
+    }
+  }
+
+  static async alterarSenhaAdm(req, res, next){
+    try{
+      const userId = req.user?.id;
+      const novaSenha = req.body.novaSenha;
+
+      const resultado = await AuthService.alterarSenhaAdm(userId, novaSenha);
+
+      return res.status(200).json({
+        resultado,
+      });
+      
+    }catch(err){next(err);}
+  }
+
+  static async alterarSenhaAntiga(req, res, next){
+    try{
+      const email = req.body.email;
+      const senhaAntiga = req.body.senhaAntiga;
+      const novaSenha = req.body.novaSenha;
+
+      const resultado = await AuthService.alterarSenhaAntiga(email, senhaAntiga, novaSenha);
+
+      return res.status(200).json({resultado, message: "Senha alterada com sucesso!"});
+    }catch(err){
+      next(err);
+    }
+  }
   static async atualizarSenha(req, res, next) {
     try {
       const novaSenha = req.body.novaSenha || req.body.senha;
