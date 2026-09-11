@@ -4,10 +4,6 @@ export class FuncionariosController {
   static async alterarFuncao(req, res, next) {
     const { usuarioId, funcao} = req.body;
 
-    console.log("b");
-    console.log(req.body);
-
-
     try {
       const data = await FuncionariosService.alterarFuncao(
         usuarioId, funcao

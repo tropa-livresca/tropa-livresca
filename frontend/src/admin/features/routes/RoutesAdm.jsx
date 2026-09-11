@@ -2,6 +2,10 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound";
 
+import BoasVindas from "../geral/pages/BoasVindas/BoasVindas.jsx";
+
+import NovaSenha from "../perfil/pages/NovaSenha/NovaSenha";
+
 import Revisoes from "../revisoes/pages/Revisoes/Revisoes";
 import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
 import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
@@ -39,6 +43,10 @@ const RoutesAdm = () => {
   return (
     <MainLayout>
       <Routes>
+        <Route path = "/" element = {<PrivateRoute><BoasVindas/></PrivateRoute>}/>
+
+        <Route path = "configuracoes/novasenha" element = {<PrivateRoute><NovaSenha/></PrivateRoute>}/>
+
         <Route path="livros/painel" element={
           <PrivateRoute>
             <GerenciaLivros />

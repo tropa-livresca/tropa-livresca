@@ -17,7 +17,7 @@ export class FuncionariosService {
 
       return resultado;
     } catch (error) {
-      const erroBanco = new Error("Erro ao executar função no banco.");
+      error.statusCode = 500;
       throw error;
     }
   }
@@ -34,8 +34,8 @@ export class FuncionariosService {
 
       return resultado;
     } catch (error) {
-      const dbError = new Error("Erro ao deletar funcionário.");
-      throw dbError;
+      error.statusCode = 500;
+      throw error;
     }
   }
 
@@ -56,8 +56,8 @@ export class FuncionariosService {
 
       return resultado;
     } catch (error) {
-      const dbError = new Error("Erro ao atualizar cargo do funcionário.");
-      throw dbError;
+        error.statusCode = 500;
+        throw error;
     }
   }
 }

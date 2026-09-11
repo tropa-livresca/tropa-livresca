@@ -1,5 +1,8 @@
+import { BACKEND_URL } from "../config/environment.js";
+
 export const apiFetch = async (endpoint, options = {}) => {
   const { skipAuthRedirect = false, ...fetchOptions } = options;
+
   fetchOptions.credentials = "include";
   fetchOptions.headers = { ...fetchOptions.headers };
 
@@ -9,17 +12,19 @@ export const apiFetch = async (endpoint, options = {}) => {
     delete fetchOptions.headers["Content-Type"];
   }
 
-  const originalFormData = fetchOptions.body instanceof FormData ? fetchOptions.body : null;
+  const originalFormData =
+    fetchOptions.body instanceof FormData
+      ? fetchOptions.body
+      : null;
 
-  const fallbackUrlBase = import.meta.env.DEV ? "" : "";
-  const urlBase = import.meta.env.VITE_API_URL
-    ? import.meta.env.VITE_API_URL.replace(/\/$/, "")
-    : fallbackUrlBase;
   const caminhoEndpoint = (
     endpoint.startsWith("/") ? endpoint : `/${endpoint}`
   ).replace(/\/$/, "");
 
-  let response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
+  let response = await fetch(
+    `${BACKEND_URL}${caminhoEndpoint}`,
+    fetchOptions
+  );
 
   const ehRotaIgnorada =
     caminhoEndpoint.endsWith("/auth/refresh") ||
@@ -30,11 +35,17 @@ export const apiFetch = async (endpoint, options = {}) => {
   if (response.status === 401 && !ehRotaIgnorada && !skipAuthRedirect) {
     try {
       const URL_ATUAL = window.location.pathname;
-      const ehAdmin =
-        URL_ATUAL.startsWith("/admin") || URL_ATUAL.includes("/auth/admin");
 
-      const urlRefresh = `${urlBase}/api/v1/auth/refresh`;
-      const rotaLogin = ehAdmin ? "/auth/admin" : "/auth/login";
+      const ehAdmin =
+        URL_ATUAL.startsWith("/admin") ||
+        URL_ATUAL.includes("/auth/admin");
+
+      const urlRefresh =
+        `${BACKEND_URL}/api/v1/auth/refresh`;
+
+      const rotaLogin = ehAdmin
+        ? "/auth/admin"
+        : "/auth/login";
 
       const refreshResponse = await fetch(urlRefresh, {
         method: "POST",
@@ -44,20 +55,31 @@ export const apiFetch = async (endpoint, options = {}) => {
       if (refreshResponse.ok) {
         if (originalFormData) {
           const novoSubmitData = new FormData();
+
           for (const [key, value] of originalFormData.entries()) {
             novoSubmitData.append(key, value);
           }
+
           fetchOptions.body = novoSubmitData;
+
           delete fetchOptions.headers["Content-Type"];
         }
 
-        // Como o refresh deu ok, o navegador já atualizou o Cookie de autenticação.
-        // O fetch com credentials: "include" vai repassar as novas credenciais automaticamente para o backend.
-        response = await fetch(`${urlBase}${caminhoEndpoint}`, fetchOptions);
+        response = await fetch(
+          `${BACKEND_URL}${caminhoEndpoint}`,
+          fetchOptions
+        );
+
         return response;
       } else {
-        const payload = await refreshResponse.json().catch(() => ({}));
-        if (payload?.error === "Token de atualização não fornecido.") {
+        const payload = await refreshResponse
+          .json()
+          .catch(() => ({}));
+
+        if (
+          payload?.error ===
+          "Token de atualização não fornecido."
+        ) {
           return response;
         }
 
@@ -66,11 +88,18 @@ export const apiFetch = async (endpoint, options = {}) => {
         }
       }
     } catch (error) {
-      console.error("Erro ao tentar renovar sessão:", error);
+      console.error(
+        "Erro ao tentar renovar sessão:",
+        error
+      );
+
       const ehAdmin =
         window.location.pathname.startsWith("/admin") ||
         window.location.pathname.includes("/auth/admin");
-      const rotaLogin = ehAdmin ? "/auth/admin" : "/auth/login";
+
+      const rotaLogin = ehAdmin
+        ? "/auth/admin"
+        : "/auth/login";
 
       if (window.location.pathname !== rotaLogin) {
         window.location.href = rotaLogin;

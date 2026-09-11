@@ -1,5 +1,9 @@
 import { AuthModel } from "../../common/models/auth.model.js";
 
+import {
+  SUPABASE_RESET_PASSWORD_CALLBACK_URL,
+  SUPABASE_REDIRECT_ADMIN_URL,
+} from "../../common/config/environment.js";
 export class AuthService {
   static async signinComGoogle(redirectTo) {
     try {
@@ -25,9 +29,7 @@ export class AuthService {
       throw erroEmail;
     }
 
-    const redirectUrl =
-      process.env.SUPABASE_RESET_PASSWORD_CALLBACK_URL ||
-      "http://localhost:3000/api/v1/auth/callback-redefinir-senha";
+    const redirectUrl = SUPABASE_RESET_PASSWORD_CALLBACK_URL;
 
     const { data, error } = await AuthModel.enviarEmailRecuperacao(
       email,
@@ -175,28 +177,42 @@ export class AuthService {
   static async signinAdmin(email, senhaAdmin) {
     if (!email || !senhaAdmin) {
       const erroCredenciais = new Error(
-        "Email e ou senha não informados para o login!",
+        "Email e/ou senha não informados para o login!",
       );
-      erroCredenciais.statusCode = 500;
+      erroCredenciais.statusCode = 400;
       throw erroCredenciais;
     }
 
-    const { data, error } = await AuthModel.signinAdmin(email, senhaAdmin);
+    const { data: authData, error } = await AuthModel.signinAdmin(
+      email,
+      senhaAdmin,
+    );
 
     if (error) {
       throw error;
     }
 
-    const userId = data.userId;
+    const userId = authData?.userId;
+
+    if (!userId) {
+      const erroId = new Error(
+        "Usuário não encontrado ou credenciais inválidas.",
+      );
+      erroId.statusCode = 401;
+      throw erroId;
+    }
 
     const primeiroAcesso = await AuthModel.conferirPrimeiroAcesso(userId);
 
-    const redirectUrl = primeiroAcesso ? process.env.SUPABASE_REDIRECT_ADMIN_URL : null;
-
-    return {data: data, redirectUrl: redirectUrl};
+    const redirectUrl = primeiroAcesso ? SUPABASE_REDIRECT_ADMIN_URL : null;
+    return {
+      data: authData.data,
+      user: authData.user,
+      redirectUrl,
+    };
   }
 
-  static async alterarSenhaAdm(userId, novaSenha){
+  static async alterarSenhaAdm(userId, novaSenha) {
     if (!userId || !novaSenha) {
       const erroCampos = new Error(
         "ID do usuário e nova senha são obrigatórios para a alteração de senha.",
@@ -210,16 +226,20 @@ export class AuthService {
     return resultado;
   }
 
-  static async alterarSenhaAntigaAdm(email, senhaAntiga, novaSenha){
-    if(!email || !novaSenha || !senhaAntiga){
-      const erroCampos = new Error("Erro ao informar as credenciais para alteração de senha.");
+  static async alterarSenhaAntigaAdm(email, senhaAntiga, novaSenha) {
+    if (!email || !novaSenha || !senhaAntiga) {
+      const erroCampos = new Error(
+        "Erro ao informar as credenciais para alteração de senha.",
+      );
       erroCampos.statusCode = 400;
       throw erroCampos;
     }
 
     const login = await AuthModel.signinAdmin(email, senhaAntiga);
 
-    const resultado = login ? await AuthModel.alterarSenhaAdmin(login.userId, novaSenha) : null;
+    const resultado = login
+      ? await AuthModel.alterarSenhaAdmin(login.userId, novaSenha)
+      : null;
 
     return resultado;
   }

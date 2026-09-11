@@ -13,7 +13,9 @@ export class AuthController {
   static async obterDadosUsuarioUnificado(userId) {
     const { data } = await supabase
       .from("users_profile")
-      .select("nome, telefone, imagem, descricao, redes_sociais, is_admin, funcao")
+      .select(
+        "nome, telefone, imagem, descricao, redes_sociais, is_admin, funcao",
+      )
       .eq("id", userId)
       .single();
     return data || {};
@@ -41,21 +43,29 @@ export class AuthController {
       let finalUser = data?.user || data?.session?.user;
 
       if (!finalUser && finalAccessToken) {
-        const { data: userData } = await supabase.auth.getUser(finalAccessToken);
+        const { data: userData } =
+          await supabase.auth.getUser(finalAccessToken);
         finalUser = userData?.user;
       }
 
       if (!finalAccessToken || !finalRefreshToken || !finalUser) {
         return res.status(502).json({
-          error: "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
+          error:
+            "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
         });
       }
 
-      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(finalUser.id);
+      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(
+        finalUser.id,
+      );
       const usuarioCompleto = { ...finalUser, ...dadosPerfil };
 
       res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", finalRefreshToken, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "refresh-token",
+        finalRefreshToken,
+        AuthController.COOKIE_OPTIONS,
+      );
 
       return res.json({
         user: usuarioCompleto,
@@ -123,7 +133,8 @@ export class AuthController {
 
       if (!data?.url) {
         return res.status(502).json({
-          error: "Não foi possível gerar a URL de autenticação com Google no momento.",
+          error:
+            "Não foi possível gerar a URL de autenticação com Google no momento.",
         });
       }
 
@@ -144,7 +155,8 @@ export class AuthController {
 
       return res.status(201).json({
         data: data,
-        message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+        message:
+          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
     } catch (err) {
       return next(err);
@@ -172,7 +184,9 @@ export class AuthController {
         return res.status(401).json({ error: "E-mail ou senha incorretos." });
       }
 
-      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(data.user.id);
+      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(
+        data.user.id,
+      );
       const usuarioCompleto = { ...data.user, ...dadosPerfil };
 
       res.cookie(
@@ -188,35 +202,36 @@ export class AuthController {
 
       return res
         .status(200)
-        .json({ user: usuarioCompleto, message: "Login realizado com sucesso!" });
+        .json({
+          user: usuarioCompleto,
+          message: "Login realizado com sucesso!",
+        });
     } catch (err) {
       return next(err);
     }
   }
 
-  static async signinAdm(req, res, next){
-    try{
-      const email = req.body.email;
-      const senha = req.body.senha;
+  static async signinAdm(req, res, next) {
+    try {
+      const { email, senha } = req.body;
 
       const resultado = await AuthService.signinAdmin(email, senha);
 
-      if(resultado.redirectUrl){
+      if (resultado.redirectUrl) {
         return res.redirect(resultado.redirectUrl);
       }
 
       return res.status(200).json({
         user: resultado.user,
-        message:  "Login realizado com sucesso!"
+        message: "Login realizado com sucesso!",
       });
-
-    }catch(err){
+    } catch (err) {
       next(err);
     }
   }
 
-  static async alterarSenhaAdm(req, res, next){
-    try{
+  static async alterarSenhaAdm(req, res, next) {
+    try {
       const userId = req.user?.id;
       const novaSenha = req.body.novaSenha;
 
@@ -225,20 +240,27 @@ export class AuthController {
       return res.status(200).json({
         resultado,
       });
-      
-    }catch(err){next(err);}
+    } catch (err) {
+      next(err);
+    }
   }
 
-  static async alterarSenhaAntiga(req, res, next){
-    try{
+  static async alterarSenhaAntiga(req, res, next) {
+    try {
       const email = req.body.email;
       const senhaAntiga = req.body.senhaAntiga;
       const novaSenha = req.body.novaSenha;
 
-      const resultado = await AuthService.alterarSenhaAntiga(email, senhaAntiga, novaSenha);
+      const resultado = await AuthService.alterarSenhaAntiga(
+        email,
+        senhaAntiga,
+        novaSenha,
+      );
 
-      return res.status(200).json({resultado, message: "Senha alterada com sucesso!"});
-    }catch(err){
+      return res
+        .status(200)
+        .json({ resultado, message: "Senha alterada com sucesso!" });
+    } catch (err) {
       next(err);
     }
   }
@@ -279,7 +301,8 @@ export class AuthController {
       await AuthService.esqueciSenha(email);
 
       return res.status(200).json({
-        message: "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+        message:
+          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
       });
     } catch (err) {
       return next(err);

@@ -1,14 +1,18 @@
 import supabase from "../config/supabase.js";
 
+import {
+    SUPABASE_AUTH_REDIRECT_URL,
+  SUPABASE_RESET_PASSWORD_URL,
+SUPABASE_EMAIL_CONFIRMATION_URL} from "../config/environment.js";
 export class AuthModel {
-  static async conferirPrimeiroAcesso(userId){
-    const {data, error} = await supabase
-    .from("users_profile")
-    .select("primeiro_acesso")
-    .eq("id", userId)
-    .maybeSingle();
+  static async conferirPrimeiroAcesso(userId) {
+    const { data, error } = await supabase
+      .from("users_profile")
+      .select("primeiro_acesso")
+      .eq("id", userId)
+      .maybeSingle();
 
-    if (error){
+    if (error) {
       error.statusCode = 500;
       throw error;
     }
@@ -16,36 +20,38 @@ export class AuthModel {
     return data;
   }
 
-  static async alterarSenhaAdmin(userId, novaSenha){
-    const {data, error} = await supabase
-    .from("users_profile")
-    .update("senha_adm", novaSenha)
-    .select("id, primeiro_acesso")
-    .eq("id", userId)
-    .maybeSingle();
+  static async alterarSenhaAdmin(userId, novaSenha) {
+    const { data, error } = await supabase
+      .from("users_profile")
+      .update("senha_adm", novaSenha)
+      .select("id, primeiro_acesso")
+      .eq("id", userId)
+      .maybeSingle();
 
-    if (error){
+    if (error) {
       error.statusCode = 500;
       throw error;
     }
 
-    const mudanca = data.primeiro_acesso ? await AuthModel.alterarPrimeiroAcesso(userId) : null;
+    const mudanca = data.primeiro_acesso
+      ? await AuthModel.alterarPrimeiroAcesso(userId)
+      : null;
 
     return {
       data: data,
-      mudanca: mudanca
+      mudanca: mudanca,
     };
   }
 
-  static async alterarPrimeiroAcesso(userId){
-    const {data, error} = await supabase
-    .from("users_profile")
-    .update("primeiro_acesso", false)
-    .select("primeiro_acesso")
-    .eq("id", userId)
-    .maybeSingle();
+  static async alterarPrimeiroAcesso(userId) {
+    const { data, error } = await supabase
+      .from("users_profile")
+      .update("primeiro_acesso", false)
+      .select("primeiro_acesso")
+      .eq("id", userId)
+      .maybeSingle();
 
-    if(error){
+    if (error) {
       error.statusCode = 500;
       throw error;
     }
@@ -53,32 +59,36 @@ export class AuthModel {
     return data;
   }
 
-  static async signinAdmin(email, senha){
-    const {data: busca, error: buscaError} = await supabase
-    .from("users_profile")
-    .select("*")
-    .eq("email", email)
-    .single();
+static async signinAdmin(email, senha) {
+    const { data: busca, error: buscaError } = await supabase
+        .from("users_profile")
+        .select("*")
+        .eq("email", email)
+        .maybeSingle();
 
-    if (buscaError){
-      buscaError.statusCode = 500;
-      throw buscaError;
+    if (buscaError || !busca) {
+        return { data: null, error: new Error("E-mail não cadastrado.") };
     }
 
-    const {data, error} = await supabase.rpc('verificar_senha_adm', {
-      user_id: busca.id,
-      senha_digitada: senha
+    const { data: rpcResult, error: rpcError } = await supabase.rpc('verificar_senha_adm', {
+        user_id: busca.id,
+        senha_digitada: senha
     });
 
-    if(error){
-      error.statusCode = 400;
-      throw error;
+    if (rpcError || !rpcResult) {
+        return { data: null, error: new Error("Senha incorreta.") };
     }
 
-    return {data: data, userId: busca.id, user: busca};
-  }
+    return { 
+        data: { 
+            userId: busca.id, 
+            user: busca 
+        }, 
+        error: null 
+    };
+}  
 
-  static async conferirAdmin(userId) {
+static async conferirAdmin(userId) {
     const { data, error } = await supabase
       .from("users_profile")
       .select("is_admin")
@@ -115,7 +125,7 @@ export class AuthModel {
 
   static async enviarEmailRecuperacao(email, redirectUrl) {
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
+      redirectTo: redirectUrl || SUPABASE_RESET_PASSWORD_URL,
     });
 
     if (error) {
@@ -127,10 +137,8 @@ export class AuthModel {
   }
 
   static async signinComGoogle(redirectTo) {
-    const callbackUrl =
-      redirectTo ||
-      process.env.SUPABASE_AUTH_REDIRECT_URL ||
-      "http://localhost:5173/auth/callback";
+     const callbackUrl =
+      redirectTo || SUPABASE_AUTH_REDIRECT_URL;
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -218,8 +226,7 @@ export class AuthModel {
     }
 
     const redirectUrl =
-      process.env.SUPABASE_REDIRECT_URL ||
-      "http://localhost:5173/confirmacao-email";
+      SUPABASE_EMAIL_CONFIRMATION_URL;
 
     const { data, error } = await supabase.auth.signUp({
       email,
