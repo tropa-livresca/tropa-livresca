@@ -21,6 +21,7 @@ import NovoLivro from "../autopublicacao/pages/NovoLivro/NovoLivro";
 import LivroById from "../livros/pages/LivroById/LivroById";
 import Suporte from "../suporte/pages/Suporte/Suporte";
 import Loja from "../loja/pages/Loja/Loja";
+import Carrinho from "../loja/pages/Carrinho/Carrinho";
 
 const Private = ({ Item, redirectTo = "/auth/login" }) => {
   const { signed, loading } = useAuth();
@@ -45,6 +46,8 @@ const RoutesClients = () => {
           <Route path="/sobreautopublicacao" element={<SobreAutopublicacao />} />
           
           <Route path="/loja" element={<Loja />} />
+
+           <Route path="/carrinho" element={<Carrinho />} />
 
           <Route path="/autores" element={<Autores />} />
           <Route path="/autores/:id" element={<AutorById />} />

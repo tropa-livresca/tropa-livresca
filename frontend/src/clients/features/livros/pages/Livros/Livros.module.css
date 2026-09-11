@@ -251,7 +251,6 @@
 .capa {
   width: 100%;
   aspect-ratio: 2 / 3;
-  transition: transform 0.4s ease;
   display: block;
   object-fit: cover;
   transition: transform 0.3s ease;
