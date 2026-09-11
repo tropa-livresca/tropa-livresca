@@ -14,6 +14,11 @@ import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCatego
 import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
 import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
 
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios"
+
+import PromoverUsuario from "../usuarios/pages/PromoverUsuario/PromoverUsuario";
+import InativarFuncionario from "../usuarios/pages/InativarFuncionario/InativarFuncionario";
+
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 
@@ -59,6 +64,24 @@ const RoutesAdm = () => {
         <Route path="categoria/:id" element={
           <PrivateRoute>
             <Categoria />
+          </PrivateRoute>
+        } />
+
+        <Route path="funcionarios" element={
+          <PrivateRoute>
+            <GerenciaUsuarios />
+          </PrivateRoute>
+        } />
+
+        <Route path="funcionarios/promover" element={
+          <PrivateRoute>
+            <PromoverUsuario />
+          </PrivateRoute>
+        } />
+
+        <Route path="funcionarios/inativar" element={
+          <PrivateRoute>
+            <InativarFuncionario />
           </PrivateRoute>
         } />
 

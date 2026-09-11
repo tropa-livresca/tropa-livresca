@@ -4,7 +4,7 @@ import { FuncionariosController } from "./funcionarios.controller.js";
 
 const router = express.Router();
 
-router.post("/", verificarAutenticacaoAdm,FuncionariosController.promoverAdm);
+router.patch("/", FuncionariosController.alterarFuncao);
 router.patch("/funcao", FuncionariosController.atualizarFuncao);
 router.delete("/", FuncionariosController.deletarFuncionario);
 

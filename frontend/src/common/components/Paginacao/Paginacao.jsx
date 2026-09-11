@@ -2,7 +2,7 @@ import styles from "./Paginacao.module.css";
 
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-export default function Paginacao({ paginaAtual, totalPaginas, totalItems, onMudarPagina }) {
+export default function Paginacao() {
   if (!totalPaginas || totalPaginas <= 1) return null;
 
   return (
