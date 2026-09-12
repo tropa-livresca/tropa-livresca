@@ -1,10 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
-
 .container {
   width: 100%;
   max-width: 100%;
   margin: auto;
-  padding: 5rem 6%;
 }
 .topo {
   width: 100%;
@@ -23,363 +20,603 @@
 .titulo::after {
   content: "";
   display: block;
-  width: 8rem;
-  height: 4px;
+  width: 7rem;
+  height: 3px;
   margin-top: 1rem;
-  background: #d4b46a;
+  background-color: #d4b46a;
   border-radius: 999px;
 }
 
 .topo p {
-  color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
+  color: var(--cor-texto-muted);
+  margin-bottom: 2rem;
 }
 
-.containerbloco {
-  position: relative;
+.historiaSecao {
   width: 100%;
-  margin-top: -1rem;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 5rem;
-  padding: 1rem 0;
+  padding: 5rem 6%;
+  background: #fff8c9;
 }
 
-.containerbloco::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 3px;
-  transform: translateX(-50%);
-  background: linear-gradient(
-    transparent,
-    #d4b46a 8%,
-    #d4b46a 92%,
-    transparent
-  );
+.tituloSecao {
+  max-width: 850px;
+  margin: 0 auto 4rem;
+  text-align: center;
+  margin-bottom: 0;
 }
 
-.bloco {
-  position: relative;
-  width: 100%;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: center;
-  gap: 3rem;
+.tituloSecao > span {
+  display: block;
+  margin-bottom: 1em;
+  color: #ffbb33;
+  font-family: "Jacques Francois", serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.35rem;
 }
 
-.bloco::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 16px;
-  height: 16px;
-  transform: translate(-50%, -50%);
-  background: #67170c;
-  border: 4px solid #fffcf4;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px #d4b46a;
-  z-index: 3;
-}
-
-.texto {
-  width: 100%;
-  min-width: 0;
-  min-height: 260px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 2rem 2.2rem;
-  background-color: #fffdf7;
-  border-left: 7px solid #d4b46a;
-  border-radius: 16px;
-  box-shadow:
-    0 8px 20px rgba(103, 23, 12, 0.08),
-    0 2px 6px rgba(103, 23, 12, 0.05);
-  box-sizing: border-box;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-.texto:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.11);
-}
-
-.texto h2 {
+.tituloSecao h2 {
   margin: 0 0 1rem;
   color: #67170c;
   font-family: "Jacques Francois", serif;
-  font-size: clamp(1.6rem, 2.2vw, 2.1rem);
-  line-height: 1.2;
+  font-size: 2.8rem;
 }
 
-.texto h2::after {
-  content: "";
-  display: block;
-  width: 3rem;
-  height: 3px;
-  margin-top: 0.7rem;
-  background: #d4b46a;
-  border-radius: 999px;
-}
-
-.texto p {
-  margin: 0;
-  color: #67170c;
-  font-size: clamp(0.9rem, 1vw, 1rem);
+.tituloSecao p {
+  max-width: 700px;
+  margin: 0 auto;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 1.05rem;
   line-height: 1.7;
-  text-align: justify;
 }
 
-.img {
-  position: relative;
+.timeline {
   width: 100%;
-  height: 300px;
-  min-width: 0;
-  overflow: hidden;
-  display: block;
-  border-radius: 16px;
-  background: #d9d2a6;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  margin-top: -1rem;
 }
 
-.img img {
+.bloco {
+  width: 100%;
+  min-height: 380px;
+  display: grid;
+  grid-template-columns: 46% 54%;
+  align-items: center;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.bloco:last-child {
+  border-bottom: none;
+}
+
+.bloco.invertido {
+  grid-template-columns: 54% 46%;
+}
+
+.imagem {
+  width: calc(100% - 3rem);
+  height: 320px;
+  overflow: hidden;
+  border-radius: 4px;
+  position: relative;
+}
+
+.bloco.invertido .imagem {
+  grid-column: 2;
+  grid-row: 1;
+  margin-left: 3rem;
+}
+
+.imagem::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(212, 180, 106, 0.65);
+  pointer-events: none;
+}
+
+.imagem img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
-.img:hover img {
-  transform: scale(1.05);
+.imagem:hover img {
+  transform: scale(1.04);
 }
 
-.img::after {
+.conteudo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 3rem 0rem;
+  align-items: start;
+}
+
+.conteudo h3::after {
   content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(103, 23, 12, 0.08),
-    transparent 60%
-  );
-  pointer-events: none;
+  display: block;
+  width: 5rem;
+  height: 3px;
+  margin-top: 1rem;
+  background-color: #d4b46a;
+  border-radius: 999px;
 }
 
-@media (max-width: 1200px) {
+.bloco.invertido .conteudo {
+  grid-column: 1;
+  grid-row: 1;
+}
 
-  .containerbloco {
-    gap: 4rem;
+.numero {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: #67170c;
+  color: #ede6b3;
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.conteudo h3 {
+  margin: 0 0 1.2rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 2.3rem;
+  font-weight: 400;
+}
+
+.conteudo p {
+  margin: 0 0 1rem;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  line-height: 1.75;
+  text-align: justify;
+}
+
+.conteudo p:last-child {
+  margin-bottom: 0;
+}
+
+.valores {
+  width: 100%;
+  padding: 5rem 6%;
+  background: #f7f0cfb1;
+  border-top: 1px solid #e3d5ad;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.valores .tituloSecao {
+  margin-bottom: 3.5rem;
+}
+
+.valoresGrid {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.valor {
+  min-height: 190px;
+  padding: 1rem 2.5rem;
+  text-align: center;
+  border-right: 1px solid #e3d5ad;
+}
+
+.valor:last-child {
+  border-right: none;
+}
+
+.icone {
+  height: 55px;
+  margin-bottom: 0.7rem;
+  color: #67170c;
+  font-family: Georgia, serif;
+  font-size: 2.7rem;
+  line-height: 1;
+}
+
+.valor h3 {
+  margin: 0 0 0.7rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+}
+
+.valor p {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.final {
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: 45% 55%;
+  background: #3a140d;
+  color: #fffdf7;
+}
+
+.finalImagem {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.finalImagem img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  opacity: 0.7;
+}
+
+.finalTexto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5rem 6%;
+  background: #3a140d;
+}
+.finalTexto > span {
+  margin-bottom: 1rem;
+  color: #ffbb33;
+  font-family: "Jacques Francois", serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.3rem;
+  text-align: center;
+}
+
+.finalTexto h2 {
+  margin: 0 0 1.5rem;
+  color: #fffdf7;
+  text-align: center;
+  font-family: "Jacques Francois", serif;
+  font-size: 2.8rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+.finalTexto p {
+  margin: 0;
+  text-align: center;
+  color: #ede6b3;
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 1100px) {
+  .hero h1 {
+    font-size: 4.3rem;
+  }
+
+  .historiaSecao,
+  .valores {
+    padding-left: 5%;
+    padding-right: 5%;
   }
 
   .bloco {
-    max-width: 950px;
-    gap: 2.5rem;
+    grid-template-columns: 45% 55%;
   }
 
-  .texto {
-    min-height: 240px;
-    padding: 1.7rem 1.8rem;
+  .bloco.invertido {
+    grid-template-columns: 55% 45%;
   }
 
-  .texto h2 {
-    font-size: 1.8rem;
+  .conteudo {
+    padding: 2.5rem 2.5rem;
+    gap: 1.2rem;
   }
 
-  .texto p {
-    font-size: 0.92rem;
-    line-height: 1.65;
+  .bloco.invertido .conteudo {
+    padding-left: 2.5rem;
+    padding-right: 2rem;
   }
 
-  .img {
-    height: 270px;
-  }
-}
-
-@media (max-width: 1000px) {
-
-  .containerbloco {
-    gap: 3.5rem;
+  .conteudo h3 {
+    font-size: 2rem;
   }
 
-  .bloco {
-    max-width: 850px;
-    gap: 2rem;
+  .conteudo p {
+    font-size: 0.95rem;
   }
 
-  .texto {
-    min-height: 230px;
-    padding: 1.5rem;
+  .imagem {
+    width: calc(100% - 2rem);
+    height: 290px;
   }
 
-  .texto h2 {
-    font-size: 1.65rem;
+  .bloco.invertido .imagem {
+    margin-left: 2rem;
   }
 
-  .texto p {
-    font-size: 0.88rem;
-    line-height: 1.6;
-  }
-
-  .img {
-    height: 240px;
+  .valor {
+    padding: 1rem 1.5rem;
   }
 }
 
 @media (max-width: 900px) {
-
-  .titulo {
-    text-align: center;
+  .hero {
+    min-height: 330px;
   }
 
-  .titulo::after {
-    margin-inline: auto;
+  .heroConteudo {
+    padding: 4rem 7%;
   }
 
-  .containerbloco {
-    gap: 3rem;
-    padding: 0;
+  .hero h1 {
+    font-size: 3.8rem;
   }
 
-  .containerbloco::before {
-    display: none;
+  .historiaSecao {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 
-  .bloco {
-    max-width: 700px;
-    grid-template-columns: 1fr;
-    gap: 1.3rem;
+  .tituloSecao h2 {
+    font-size: 2.5rem;
   }
 
-  .bloco::before {
-    display: none;
+  .bloco,
+  .bloco.invertido {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 3rem 0;
   }
 
-  .img {
+  .imagem,
+  .bloco.invertido .imagem {
+    width: 100%;
     height: 300px;
+    margin: 0;
     order: 1;
   }
 
-  .texto {
+  .conteudo,
+  .bloco.invertido .conteudo {
+    width: 100%;
+    padding: 2rem 0 0;
     order: 2;
-    min-height: auto;
-    padding: 1.8rem;
+    grid-template-columns: 1fr;
   }
 
-  .texto h2 {
-    font-size: 1.9rem;
+  .conteudo h3 {
+    font-size: 2.1rem;
   }
 
-  .texto p {
-    font-size: 0.95rem;
-    line-height: 1.7;
+  .valoresGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .valor {
+    padding: 2rem;
+    border-bottom: 1px solid #d4b46a;
+  }
+
+  .valor:nth-child(2) {
+    border-right: none;
+  }
+
+  .valor:nth-child(3),
+  .valor:nth-child(4) {
+    border-bottom: none;
+  }
+
+  .final {
+    grid-template-columns: 1fr;
+  }
+
+  .finalImagem {
+    min-height: 280px;
+    height: 280px;
+  }
+
+  .finalTexto {
+    min-height: 330px;
   }
 }
 
-@media (max-width: 700px) {
-
-  .containerbloco {
-    gap: 2.5rem;
+@media (max-width: 650px) {
+  .hero {
+    min-height: 290px;
   }
 
-  .bloco {
-    width: 100%;
+  .heroConteudo {
+    padding: 3.5rem 7%;
+  }
+
+  .heroEtiqueta {
+    font-size: 0.7rem;
+    letter-spacing: 0.25rem;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .hero p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .historiaSecao,
+  .valores {
+    padding-left: 7%;
+    padding-right: 7%;
+  }
+
+  .tituloSecao {
+    margin-bottom: 2.5rem;
+  }
+
+  .tituloSecao > span {
+    font-size: 0.7rem;
+    letter-spacing: 0.25rem;
+  }
+
+  .tituloSecao h2 {
+    font-size: 2rem;
+  }
+
+  .tituloSecao p {
+    font-size: 0.9rem;
+  }
+
+  .imagem,
+  .bloco.invertido .imagem {
+    height: 240px;
+  }
+
+  .conteudo,
+  .bloco.invertido .conteudo {
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
-  .img {
-    height: 250px;
-    border-radius: 14px;
+  .numero {
+    width: 44px;
+    height: 44px;
+    font-size: 0.75rem;
   }
 
-  .texto {
-    padding: 1.5rem;
-    border-left-width: 5px;
-    border-radius: 14px;
-  }
-
-  .texto h2 {
-    margin-bottom: 0.9rem;
+  .conteudo h3 {
     font-size: 1.7rem;
+    margin-bottom: 0.8rem;
   }
 
-  .texto p {
-    font-size: 0.92rem;
+  .conteudo p {
+    font-size: 0.9rem;
     line-height: 1.65;
+    text-align: left;
+  }
+
+  .valoresGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .valor,
+  .valor:nth-child(2),
+  .valor:nth-child(3),
+  .valor:nth-child(4) {
+    border-right: none;
+    border-bottom: 1px solid #d4b46a;
+    padding: 2rem 1rem;
+  }
+
+  .valor:last-child {
+    border-bottom: none;
+  }
+
+  .finalImagem {
+    min-height: 220px;
+    height: 220px;
+  }
+
+  .finalTexto {
+    min-height: 300px;
+    padding: 3rem 7%;
+  }
+
+  .finalTexto h2 {
+    font-size: 2rem;
+  }
+
+  .finalTexto p {
+    font-size: 0.9rem;
   }
 }
 
-@media (max-width: 480px) {
-
-  .container {
-    padding: 3rem 5%;
+@media (max-width: 500px) {
+  .hero {
+    min-height: 260px;
   }
 
-  .containerbloco {
-    gap: 2.2rem;
+  .heroConteudo {
+    padding: 3rem 6%;
   }
 
-  .bloco {
-    gap: 0.9rem;
+  .hero h1 {
+    font-size: 2.5rem;
   }
 
-  .img {
-    height: 210px;
-    border-radius: 12px;
+  .hero p {
+    font-size: 0.85rem;
   }
 
-  .texto {
-    padding: 1.3rem;
-    border-left-width: 4px;
-    border-radius: 12px;
+  .historiaSecao,
+  .valores {
+    padding-left: 6%;
+    padding-right: 6%;
   }
 
-  .texto h2 {
-    font-size: 1.5rem;
+  .tituloSecao h2 {
+    font-size: 1.8rem;
   }
 
-  .texto h2::after {
-    width: 2.5rem;
-    margin-top: 0.6rem;
+  .tituloSecao p {
+    font-size: 0.85rem;
   }
 
-  .texto p {
-    font-size: 0.88rem;
-    line-height: 1.6;
-  }
-}
-
-@media (max-width: 360px) {
-
-  .container {
-    padding: 2.5rem 4%;
+  .bloco,
+  .bloco.invertido {
+    padding: 2.2rem 0;
   }
 
-  .containerbloco {
-    gap: 2rem;
+  .imagem,
+  .bloco.invertido .imagem {
+    height: 200px;
   }
 
-  .img {
+  .conteudo,
+  .bloco.invertido .conteudo {
+    grid-template-columns: 1fr;
+    padding-top: 1.5rem;
+  }
+
+  .numero {
+    width: 42px;
+    height: 42px;
+  }
+
+  .conteudo h3 {
+    font-size: 1.6rem;
+  }
+
+  .conteudo p {
+    font-size: 0.85rem;
+  }
+
+  .finalImagem {
     height: 180px;
+    min-height: 180px;
   }
 
-  .texto {
-    padding: 1.1rem;
+  .finalTexto {
+    min-height: 280px;
+    padding: 2.5rem 6%;
   }
 
-  .texto h2 {
-    font-size: 1.4rem;
-  }
-
-  .texto p {
-    font-size: 0.84rem;
+  .finalTexto h2 {
+    font-size: 1.7rem;
   }
 }
