@@ -7,11 +7,13 @@ import his4 from "../../images/historia4.png";
 
 export default function Historia() {
   return (
-    <main className={styles.container}>
+    <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Sobre Nós</h1>
+        <p>Conheça a nossa história, nossos valores e o que nos move todos os dias.</p>
       </div>
 
+      <div className={styles.container}>
       <div className={styles.containerbloco}>
         <div className={styles.bloco}>
           <div className={styles.texto}>
@@ -84,6 +86,7 @@ export default function Historia() {
             </p>
           </div>
         </div>
+      </div>
       </div>
     </main>
   );

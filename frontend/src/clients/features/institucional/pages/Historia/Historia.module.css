@@ -2,40 +2,48 @@
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
 }
-
 .topo {
   width: 100%;
-  display: grid;
-  gap: 1.5rem;
+  padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
 }
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
-  text-align: left;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
 }
 
 .titulo::after {
   content: "";
   display: block;
-  width: 7rem;
-  height: 3px;
+  width: 8rem;
+  height: 4px;
   margin-top: 1rem;
-  background-color: #d4b46a;
+  background: #d4b46a;
   border-radius: 999px;
-  margin-bottom: 8%;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
 }
 
 .containerbloco {
   position: relative;
+  width: 100%;
+  margin-top: -1rem;
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(3rem, 6vw, 5rem);
+  gap: 5rem;
+  padding: 1rem 0;
 }
 
 .containerbloco::before {
@@ -48,65 +56,182 @@
   transform: translateX(-50%);
   background: linear-gradient(
     transparent,
-    #d4b46a 10%,
-    #d4b46a 90%,
+    #d4b46a 8%,
+    #d4b46a 92%,
     transparent
   );
 }
 
 .bloco {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(18rem, 1fr) minmax(18rem, 1fr);
-  align-items: stretch;
-  gap: clamp(2rem, 4vw, 4rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 3rem;
+}
+
+.bloco::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  transform: translate(-50%, -50%);
+  background: #67170c;
+  border: 4px solid #fffcf4;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #d4b46a;
+  z-index: 3;
 }
 
 .texto {
-  display: grid;
-  align-content: center;
-  padding: clamp(1.8rem, 3vw, 3rem);
-  background: #fffcf4;
-  border-left: 8px solid #d4b46a;
-  border-radius: clamp(12px, 2vw, 20px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  transition: .3s;
+  width: 100%;
+  min-width: 0;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2rem 2.2rem;
+  background-color: #fffdf7;
+  border-left: 7px solid #d4b46a;
+  border-radius: 16px;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .texto:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.11);
 }
 
 .texto h2 {
   margin: 0 0 1rem;
   color: #67170c;
-  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  font-family: "Jacques Francois", serif;
+  font-size: clamp(1.6rem, 2.2vw, 2.1rem);
+  line-height: 1.2;
+}
+
+.texto h2::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 3px;
+  margin-top: 0.7rem;
+  background: #d4b46a;
+  border-radius: 999px;
 }
 
 .texto p {
   margin: 0;
   color: #67170c;
+  font-size: clamp(0.9rem, 1vw, 1rem);
+  line-height: 1.7;
   text-align: justify;
-  line-height: 1.8;
-  font-size: clamp(.95rem, 1vw, 1.15rem);
 }
 
 .img {
-  border-radius: 20px;
-  min-height: clamp(18rem, 32vw, 32rem);
-  border-radius: clamp(12px, 2vw, 20px);
-  display: grid;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+  position: relative;
+  width: 100%;
+  height: 300px;
+  min-width: 0;
+  overflow: hidden;
+  display: block;
+  border-radius: 16px;
+  background: #d9d2a6;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .img img {
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
-  transition: .4s;
+  transition: transform 0.5s ease;
 }
 
 .img:hover img {
-  transform: scale(1.04);
+  transform: scale(1.05);
+}
+
+.img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(103, 23, 12, 0.08),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+@media (max-width: 1200px) {
+
+  .containerbloco {
+    gap: 4rem;
+  }
+
+  .bloco {
+    max-width: 950px;
+    gap: 2.5rem;
+  }
+
+  .texto {
+    min-height: 240px;
+    padding: 1.7rem 1.8rem;
+  }
+
+  .texto h2 {
+    font-size: 1.8rem;
+  }
+
+  .texto p {
+    font-size: 0.92rem;
+    line-height: 1.65;
+  }
+
+  .img {
+    height: 270px;
+  }
+}
+
+@media (max-width: 1000px) {
+
+  .containerbloco {
+    gap: 3.5rem;
+  }
+
+  .bloco {
+    max-width: 850px;
+    gap: 2rem;
+  }
+
+  .texto {
+    min-height: 230px;
+    padding: 1.5rem;
+  }
+
+  .texto h2 {
+    font-size: 1.65rem;
+  }
+
+  .texto p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  .img {
+    height: 240px;
+  }
 }
 
 @media (max-width: 900px) {
@@ -119,17 +244,76 @@
     margin-inline: auto;
   }
 
+  .containerbloco {
+    gap: 3rem;
+    padding: 0;
+  }
+
   .containerbloco::before {
     display: none;
   }
 
   .bloco {
+    max-width: 700px;
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.3rem;
+  }
+
+  .bloco::before {
+    display: none;
   }
 
   .img {
-    min-height: 20rem;
+    height: 300px;
+    order: 1;
+  }
+
+  .texto {
+    order: 2;
+    min-height: auto;
+    padding: 1.8rem;
+  }
+
+  .texto h2 {
+    font-size: 1.9rem;
+  }
+
+  .texto p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .containerbloco {
+    gap: 2.5rem;
+  }
+
+  .bloco {
+    width: 100%;
+    gap: 1rem;
+  }
+
+  .img {
+    height: 250px;
+    border-radius: 14px;
+  }
+
+  .texto {
+    padding: 1.5rem;
+    border-left-width: 5px;
+    border-radius: 14px;
+  }
+
+  .texto h2 {
+    margin-bottom: 0.9rem;
+    font-size: 1.7rem;
+  }
+
+  .texto p {
+    font-size: 0.92rem;
+    line-height: 1.65;
   }
 }
 
@@ -139,19 +323,63 @@
     padding: 3rem 5%;
   }
 
-  .texto {
-    padding: 1.5rem;
+  .containerbloco {
+    gap: 2.2rem;
   }
 
-  .texto h2 {
-    font-size: 1.7rem;
-  }
-
-  .texto p {
-    font-size: .95rem;
+  .bloco {
+    gap: 0.9rem;
   }
 
   .img {
-    min-height: 16rem;
+    height: 210px;
+    border-radius: 12px;
+  }
+
+  .texto {
+    padding: 1.3rem;
+    border-left-width: 4px;
+    border-radius: 12px;
+  }
+
+  .texto h2 {
+    font-size: 1.5rem;
+  }
+
+  .texto h2::after {
+    width: 2.5rem;
+    margin-top: 0.6rem;
+  }
+
+  .texto p {
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 360px) {
+
+  .container {
+    padding: 2.5rem 4%;
+  }
+
+  .containerbloco {
+    gap: 2rem;
+  }
+
+  .img {
+    height: 180px;
+  }
+
+  .texto {
+    padding: 1.1rem;
+  }
+
+  .texto h2 {
+    font-size: 1.4rem;
+  }
+
+  .texto p {
+    font-size: 0.84rem;
   }
 }
