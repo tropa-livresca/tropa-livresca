@@ -1,6 +1,6 @@
 import { AuthService } from "./auth.service.js";
 import supabase from "../../common/config/supabase.js";
-
+import jwt from "jsonwebtoken";
 export class AuthController {
   static COOKIE_OPTIONS = {
     httpOnly: true,
@@ -60,7 +60,11 @@ export class AuthController {
       );
       const usuarioCompleto = { ...finalUser, ...dadosPerfil };
 
-      res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "admin-token",
+        finalAccessToken,
+        AuthController.COOKIE_OPTIONS,
+      );
       res.cookie(
         "refresh-token",
         finalRefreshToken,
@@ -200,12 +204,10 @@ export class AuthController {
         AuthController.COOKIE_OPTIONS,
       );
 
-      return res
-        .status(200)
-        .json({
-          user: usuarioCompleto,
-          message: "Login realizado com sucesso!",
-        });
+      return res.status(200).json({
+        user: usuarioCompleto,
+        message: "Login realizado com sucesso!",
+      });
     } catch (err) {
       return next(err);
     }
@@ -217,14 +219,59 @@ export class AuthController {
 
       const resultado = await AuthService.signinAdmin(email, senha);
 
-      if (resultado.redirectUrl) {
-        return res.redirect(resultado.redirectUrl);
+      const usuario = resultado.user;
+
+      if (!usuario || !usuario.is_admin) {
+        return res.status(403).json({
+          error: "Acesso negado.",
+        });
       }
 
+      const token = jwt.sign(
+        {
+          id: usuario.id,
+          email: usuario.email,
+          is_admin: usuario.is_admin,
+          funcao: usuario.funcao,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "7d",
+        },
+      );
+
+      res.cookie("admin-token", token, AuthController.COOKIE_OPTIONS);
+
       return res.status(200).json({
-        user: resultado.user,
+        user: usuario,
+        primeiroAcesso: resultado.primeiroAcesso,
         message: "Login realizado com sucesso!",
       });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  static async getSessionAdm(req, res, next) {
+    try {
+      return res.status(200).json({
+        user: {
+          id: req.user.id,
+          email: req.user.email,
+          ...req.adm,
+        },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async signoutAdm(req, res, next) {
+    try {
+      res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
+      res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
+
+      return res.status(200).json({ message: "Desconectado com sucesso." });
     } catch (err) {
       next(err);
     }

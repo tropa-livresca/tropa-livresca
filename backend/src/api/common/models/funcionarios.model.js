@@ -11,7 +11,6 @@ export class FuncionariosModel {
       .maybeSingle();
 
     if (error) {
-      console.log(error);
       throw error;
     }
 

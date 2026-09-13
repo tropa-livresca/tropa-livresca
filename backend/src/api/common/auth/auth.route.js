@@ -1,11 +1,31 @@
 import express from "express";
 import { AuthController } from "./auth.controller.js";
-import { checkAuth, verificarAutenticacaoAdm } from "../../common/middlewares/auth.middleware.js";
+import {
+  checkAuth,
+  verificarAutenticacaoAdm,
+} from "../../common/middlewares/auth.middleware.js";
 const router = express.Router();
 
-router.post("/signinadm", AuthController.signinAdm);
-router.patch("/senhaadm", verificarAutenticacaoAdm, AuthController.alterarSenhaAdm);
-router.patch("/senhaantiga", verificarAutenticacaoAdm, AuthController.alterarSenhaAntiga);
+router.post("/signin-adm", AuthController.signinAdm);
+
+router.post("/signout-adm", AuthController.signoutAdm);
+router.patch(
+  "/senhaadm",
+  verificarAutenticacaoAdm,
+  AuthController.alterarSenhaAdm,
+);
+
+router.get(
+  "/session-adm",
+  verificarAutenticacaoAdm,
+  AuthController.getSessionAdm,
+);
+
+router.patch(
+  "/senhaantiga",
+  verificarAutenticacaoAdm,
+  AuthController.alterarSenhaAntiga,
+);
 
 router.post("/signup", AuthController.signup);
 router.post("/signin", AuthController.signin);

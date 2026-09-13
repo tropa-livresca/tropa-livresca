@@ -1,16 +1,19 @@
 ﻿import { useState, useEffect } from "react";
-import { apiFetch } from "../services/api";
+import { apiFetch } from "../../services/api";
 import { AuthContext } from "./AuthContext";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUserState] = useState(null);
-  
+
   const [loading, setLoading] = useState(() => {
     const hash = window.location.hash;
     const search = window.location.search;
     const pathname = window.location.pathname;
 
-    const temTokens = hash.includes("access_token") || search.includes("code") || search.includes("token");
+    const temTokens =
+      hash.includes("access_token") ||
+      search.includes("code") ||
+      search.includes("token");
     const ehRotaAuth = pathname.includes("/auth/");
 
     return !(temTokens || ehRotaAuth);
@@ -33,7 +36,10 @@ export const AuthProvider = ({ children }) => {
     const search = window.location.search;
     const pathname = window.location.pathname;
 
-    const temTokens = hash.includes("access_token") || search.includes("code") || search.includes("token");
+    const temTokens =
+      hash.includes("access_token") ||
+      search.includes("code") ||
+      search.includes("token");
     const ehRotaAuth = pathname.includes("/auth/");
 
     if (temTokens || ehRotaAuth) {
@@ -45,7 +51,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkSession = async () => {
       try {
-        const res = await apiFetch("/api/v1/auth/dados-sessao", {
+        const res = await apiFetch("/api/v1/auth/session", {
           skipAuthRedirect: true,
           signal,
         });

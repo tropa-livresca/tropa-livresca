@@ -26,7 +26,7 @@ const SUPABASE_EMAIL_CONFIRMATION_URL =
   `${FRONTEND_URL}/confirmacao-email`;
 
 const SUPABASE_REDIRECT_ADMIN_URL =
-  `${FRONTEND_URL}/admin/primeiro-acesso`;
+  `${FRONTEND_URL}/admin/configuracoes/novasenha`;
 
 export {
   FRONTEND_URL,

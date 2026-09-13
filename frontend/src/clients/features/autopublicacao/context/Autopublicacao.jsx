@@ -2,7 +2,7 @@
 import { useState, useCallback, useContext, useEffect } from "react";
 import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
-import { AuthContext } from "../../../../common/context/AuthContext";
+import { AuthContext } from "../../../../common/context/auth/AuthContext";
 import Popup from "../../../components/PopUp/Popup";
 
 const ESTADO_INICIAL_LIVRO = {

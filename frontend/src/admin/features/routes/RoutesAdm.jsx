@@ -3,34 +3,30 @@ import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound";
 
 import BoasVindas from "../geral/pages/BoasVindas/BoasVindas.jsx";
-
 import NovaSenha from "../perfil/pages/NovaSenha/NovaSenha";
-
 import Revisoes from "../revisoes/pages/Revisoes/Revisoes";
 import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
 import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
-
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
-
 import Categoria from "../categorias/pages/Categoria/Categoria";
 import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
 import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
 import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
-
-import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios"
-
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";
 import PromoverUsuario from "../usuarios/pages/PromoverUsuario/PromoverUsuario";
 import InativarFuncionario from "../usuarios/pages/InativarFuncionario/InativarFuncionario";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
-import useAuth from "../../../common/hooks/useAuth";
+import useAdmin from "../../../common/hooks/useAdmin";
 
-const PrivateRoute = ({ children, redirectTo = "/auth/login" }) => {
-  const { signed, loading } = useAuth();
+const PrivateRoute = ({ children, redirectTo = "/auth/admin" }) => {
+  const { signed, loading } = useAdmin();
   const location = useLocation();
 
-  if (loading) return null;
+  if (loading) {
+    return null;
+  }
 
   if (!signed) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
@@ -41,73 +37,137 @@ const PrivateRoute = ({ children, redirectTo = "/auth/login" }) => {
 
 const RoutesAdm = () => {
   return (
-    <MainLayout>
-      <Routes>
-        <Route path = "/" element = {<PrivateRoute><BoasVindas/></PrivateRoute>}/>
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route
+          index
+          element={
+            <PrivateRoute>
+              <BoasVindas />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path = "configuracoes/novasenha" element = {<PrivateRoute><NovaSenha/></PrivateRoute>}/>
+        <Route
+          path="livros/painel"
+          element={
+            <PrivateRoute>
+              <GerenciaLivros />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="livros/painel" element={
-          <PrivateRoute>
-            <GerenciaLivros />
-          </PrivateRoute>
-        } />
+        <Route
+          path="livros/detalhes/:id"
+          element={
+            <PrivateRoute>
+              <VisualizarLivro />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="livros/detalhes/:id" element={
-          <PrivateRoute>
-            <VisualizarLivro />
-          </PrivateRoute>
-        } />
+        <Route
+          path="livros/revisoes"
+          element={
+            <PrivateRoute>
+              <Revisoes />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path = "livros/revisoes" element = {<PrivateRoute><Revisoes/></PrivateRoute>}/>
-        <Route path = "livros/revisoes/nova-revisao/:id" element = {<PrivateRoute><NovaRevisao/></PrivateRoute>}/>
-        <Route path = "livros/revisoes/visualizar/:id" element = {<PrivateRoute><RevisaoById/></PrivateRoute>}/>
+        <Route
+          path="livros/revisoes/nova-revisao/:id"
+          element={
+            <PrivateRoute>
+              <NovaRevisao />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="categorias" element={
-          <PrivateRoute>
-            <PainelCategoria />
-          </PrivateRoute>
-        } />
+        <Route
+          path="livros/revisoes/visualizar/:id"
+          element={
+            <PrivateRoute>
+              <RevisaoById />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="categoria/:id" element={
-          <PrivateRoute>
-            <Categoria />
-          </PrivateRoute>
-        } />
+        <Route
+          path="categorias"
+          element={
+            <PrivateRoute>
+              <PainelCategoria />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="funcionarios" element={
-          <PrivateRoute>
-            <GerenciaUsuarios />
-          </PrivateRoute>
-        } />
+        <Route
+          path="categoria/:id"
+          element={
+            <PrivateRoute>
+              <Categoria />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="funcionarios/promover" element={
-          <PrivateRoute>
-            <PromoverUsuario />
-          </PrivateRoute>
-        } />
+        <Route
+          path="categoria/nova"
+          element={
+            <PrivateRoute>
+              <NovaCategoria />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="funcionarios/inativar" element={
-          <PrivateRoute>
-            <InativarFuncionario />
-          </PrivateRoute>
-        } />
+        <Route
+          path="categoria/alterar/:id"
+          element={
+            <PrivateRoute>
+              <AlterarCategoria />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="categoria/nova" element={
-          <PrivateRoute>
-            <NovaCategoria />
-          </PrivateRoute>
-        } />
+        <Route
+          path="funcionarios"
+          element={
+            <PrivateRoute>
+              <GerenciaUsuarios />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="categoria/alterar/:id" element={
-          <PrivateRoute>
-            <AlterarCategoria />
-          </PrivateRoute>
-        } />
+        <Route
+          path="funcionarios/promover"
+          element={
+            <PrivateRoute>
+              <PromoverUsuario />
+            </PrivateRoute>
+          }
+        />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </MainLayout>
+        <Route
+          path="funcionarios/inativar"
+          element={
+            <PrivateRoute>
+              <InativarFuncionario />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="configuracoes/novasenha"
+          element={
+            <PrivateRoute>
+              <NovaSenha />
+            </PrivateRoute>
+          }
+        />
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 };
 

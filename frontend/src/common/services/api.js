@@ -13,39 +13,31 @@ export const apiFetch = async (endpoint, options = {}) => {
   }
 
   const originalFormData =
-    fetchOptions.body instanceof FormData
-      ? fetchOptions.body
-      : null;
+    fetchOptions.body instanceof FormData ? fetchOptions.body : null;
 
   const caminhoEndpoint = (
     endpoint.startsWith("/") ? endpoint : `/${endpoint}`
   ).replace(/\/$/, "");
 
-  let response = await fetch(
-    `${BACKEND_URL}${caminhoEndpoint}`,
-    fetchOptions
-  );
+  let response = await fetch(`${BACKEND_URL}${caminhoEndpoint}`, fetchOptions);
 
   const ehRotaIgnorada =
     caminhoEndpoint.endsWith("/auth/refresh") ||
     caminhoEndpoint.endsWith("/refresh") ||
     caminhoEndpoint.endsWith("/auth/session") ||
-    caminhoEndpoint.endsWith("/session");
+    caminhoEndpoint.endsWith("/session") ||
+    caminhoEndpoint.endsWith("/auth/session-adm");
 
   if (response.status === 401 && !ehRotaIgnorada && !skipAuthRedirect) {
     try {
       const URL_ATUAL = window.location.pathname;
 
       const ehAdmin =
-        URL_ATUAL.startsWith("/admin") ||
-        URL_ATUAL.includes("/auth/admin");
+        URL_ATUAL.startsWith("/admin") || URL_ATUAL.includes("/auth/admin");
 
-      const urlRefresh =
-        `${BACKEND_URL}/api/v1/auth/refresh`;
+      const urlRefresh = `${BACKEND_URL}/api/v1/auth/refresh`;
 
-      const rotaLogin = ehAdmin
-        ? "/auth/admin"
-        : "/auth/login";
+      const rotaLogin = ehAdmin ? "/auth/admin" : "/auth/login";
 
       const refreshResponse = await fetch(urlRefresh, {
         method: "POST",
@@ -67,19 +59,14 @@ export const apiFetch = async (endpoint, options = {}) => {
 
         response = await fetch(
           `${BACKEND_URL}${caminhoEndpoint}`,
-          fetchOptions
+          fetchOptions,
         );
 
         return response;
       } else {
-        const payload = await refreshResponse
-          .json()
-          .catch(() => ({}));
+        const payload = await refreshResponse.json().catch(() => ({}));
 
-        if (
-          payload?.error ===
-          "Token de atualização não fornecido."
-        ) {
+        if (payload?.error === "Token de atualização não fornecido.") {
           return response;
         }
 
@@ -88,18 +75,13 @@ export const apiFetch = async (endpoint, options = {}) => {
         }
       }
     } catch (error) {
-      console.error(
-        "Erro ao tentar renovar sessão:",
-        error
-      );
+      console.error("Erro ao tentar renovar sessão:", error);
 
       const ehAdmin =
         window.location.pathname.startsWith("/admin") ||
         window.location.pathname.includes("/auth/admin");
 
-      const rotaLogin = ehAdmin
-        ? "/auth/admin"
-        : "/auth/login";
+      const rotaLogin = ehAdmin ? "/auth/admin" : "/auth/login";
 
       if (window.location.pathname !== rotaLogin) {
         window.location.href = rotaLogin;

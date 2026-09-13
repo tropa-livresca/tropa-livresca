@@ -1,9 +1,10 @@
 import supabase from "../config/supabase.js";
 
 import {
-    SUPABASE_AUTH_REDIRECT_URL,
+  SUPABASE_AUTH_REDIRECT_URL,
   SUPABASE_RESET_PASSWORD_URL,
-SUPABASE_EMAIL_CONFIRMATION_URL} from "../config/environment.js";
+  SUPABASE_EMAIL_CONFIRMATION_URL,
+} from "../config/environment.js";
 export class AuthModel {
   static async conferirPrimeiroAcesso(userId) {
     const { data, error } = await supabase
@@ -17,78 +18,58 @@ export class AuthModel {
       throw error;
     }
 
-    return data;
+    return data?.primeiro_acesso ?? false;
   }
 
   static async alterarSenhaAdmin(userId, novaSenha) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .update("senha_adm", novaSenha)
-      .select("id, primeiro_acesso")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    const mudanca = data.primeiro_acesso
-      ? await AuthModel.alterarPrimeiroAcesso(userId)
-      : null;
-
-    return {
-      data: data,
-      mudanca: mudanca,
-    };
-  }
-
-  static async alterarPrimeiroAcesso(userId) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .update("primeiro_acesso", false)
-      .select("primeiro_acesso")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
-  }
-
-static async signinAdmin(email, senha) {
-    const { data: busca, error: buscaError } = await supabase
-        .from("users_profile")
-        .select("*")
-        .eq("email", email)
-        .maybeSingle();
-
-    if (buscaError || !busca) {
-        return { data: null, error: new Error("E-mail não cadastrado.") };
-    }
-
-    const { data: rpcResult, error: rpcError } = await supabase.rpc('verificar_senha_adm', {
-        user_id: busca.id,
-        senha_digitada: senha
+    const { data, error } = await supabase.rpc("alterar_senha_adm", {
+      p_user_id: userId,
+      p_nova_senha: novaSenha,
     });
 
-    if (rpcError || !rpcResult) {
-        return { data: null, error: new Error("Senha incorreta.") };
+    if (error) {
+      error.statusCode = 500;
+      throw error;
     }
 
-    return { 
-        data: { 
-            userId: busca.id, 
-            user: busca 
-        }, 
-        error: null 
+    return {
+      data: data?.[0] ?? null,
     };
-}  
+  }
 
-static async conferirAdmin(userId) {
+  static async signinAdmin(email, senha) {
+    const { data: busca, error: buscaError } = await supabase
+      .from("users_profile")
+      .select("*")
+      .eq("email", email)
+      .maybeSingle();
+
+    if (buscaError || !busca) {
+      return { data: null, error: new Error("E-mail não cadastrado.") };
+    }
+
+    const { data: rpcResult, error: rpcError } = await supabase.rpc(
+      "verificar_senha_adm",
+      {
+        user_id: busca.id,
+        senha_digitada: senha,
+      },
+    );
+
+    if (rpcError || !rpcResult) {
+      return { data: null, error: new Error("Senha incorreta.") };
+    }
+
+    return {
+      data: {
+        userId: busca.id,
+        user: busca,
+      },
+      error: null,
+    };
+  }
+
+  static async conferirAdmin(userId) {
     const { data, error } = await supabase
       .from("users_profile")
       .select("is_admin")
@@ -137,8 +118,7 @@ static async conferirAdmin(userId) {
   }
 
   static async signinComGoogle(redirectTo) {
-     const callbackUrl =
-      redirectTo || SUPABASE_AUTH_REDIRECT_URL;
+    const callbackUrl = redirectTo || SUPABASE_AUTH_REDIRECT_URL;
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -225,8 +205,7 @@ static async conferirAdmin(userId) {
       throw erroCampos;
     }
 
-    const redirectUrl =
-      SUPABASE_EMAIL_CONFIRMATION_URL;
+    const redirectUrl = SUPABASE_EMAIL_CONFIRMATION_URL;
 
     const { data, error } = await supabase.auth.signUp({
       email,

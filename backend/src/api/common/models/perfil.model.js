@@ -1,17 +1,22 @@
 import { supabaseAdmin } from "../config/supabase.js";
 
 export class PerfilModel {
-
-  static async buscarPerfilAdmin({ page = 1, limit = 12, busca = "", ordem = "", funcao= "" }) {
-
+  static async buscarPerfilAdmin({
+    page = 1,
+    limit = 12,
+    busca = "",
+    ordem = "",
+    funcao = "",
+  }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
-
-
     let query = supabaseAdmin
       .from("users_profile")
-      .select("id, nome, funcao , is_admin ,telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status,livros (ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", { count: "exact" })
+      .select(
+        "id, nome, funcao , is_admin ,telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status,livros (ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)",
+        { count: "exact" },
+      );
 
     if (busca) {
       query = query.or(`nome.ilike.%${busca}%`);
@@ -20,48 +25,49 @@ export class PerfilModel {
     const isAsc = ordem !== "descendente";
     query = query.order("nome", { ascending: isAsc });
 
-
     if (funcao === "funcionario") {
       query = query.eq("funcao", "funcionario");
     } else if (funcao === "autor") {
-      query = supabaseAdmin.from("users_profile")
-      .select("id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, livros!inner(ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)", {
-        count: "exact",
-      })
-      .eq("livros.ativo", true)
-      .eq("livros.estado", "publicado")
-    }else if(funcao === "cliente"){
+      query = supabaseAdmin
+        .from("users_profile")
+        .select(
+          "id, nome, funcao , telefone, imagem, descricao, redes_sociais, is_admin, transicao_de_status, livros!inner(ativo, estado, titulo, capa, id), revisoes(data_criacao, apontamento, fk_livro_id, nome)",
+          {
+            count: "exact",
+          },
+        )
+        .eq("livros.ativo", true)
+        .eq("livros.estado", "publicado");
+    } else if (funcao === "cliente") {
       query = query.eq("is_admin", false);
-    } 
+    }
 
     let { data, error, count } = await query.range(start, end);
 
-    const isAutor = data.map(usuario => {
-      if(usuario.livros.length > 0){
-
+    const isAutor = data.map((usuario) => {
+      if (usuario.livros.length > 0) {
         let livroPublicado = false;
 
         usuario.livros.map((livro) => {
-          if(livro.ativo == true && livro.estado == "publicado"){
-            livroPublicado = true
+          if (livro.ativo == true && livro.estado == "publicado") {
+            livroPublicado = true;
           }
-  
-        })
+        });
 
-         if(livroPublicado == true){
-            return true
-          }else{
-            return false
-          }
-      }else{
-        return false
+        if (livroPublicado == true) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return false;
       }
-    })
+    });
 
     data = data.map((usuario, c) => {
-      usuario = {...usuario, autor: isAutor[c]};
-      return usuario
-    })
+      usuario = { ...usuario, autor: isAutor[c] };
+      return usuario;
+    });
 
     if (error) {
       error.statusCode = 500;
@@ -72,22 +78,6 @@ export class PerfilModel {
       data: data || [],
       count: count || 0,
     };
-
-
-    /*
-
-    const response = await supabaseAdmin
-      .from("users_profile")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (!response) return null;
-    if (response.error) throw response.error;
-
-    return response.data;
-
-    */
   }
 
   static async buscarPerfil(id) {
@@ -132,7 +122,9 @@ export class PerfilModel {
     }
 
     if (!data) {
-      const erroRegistro = new Error("Nenhum perfil foi encontrado para atualização.");
+      const erroRegistro = new Error(
+        "Nenhum perfil foi encontrado para atualização.",
+      );
       erroRegistro.statusCode = 404;
       throw erroRegistro;
     }

@@ -204,11 +204,10 @@ export class AuthService {
 
     const primeiroAcesso = await AuthModel.conferirPrimeiroAcesso(userId);
 
-    const redirectUrl = primeiroAcesso ? SUPABASE_REDIRECT_ADMIN_URL : null;
     return {
-      data: authData.data,
+      data: authData,
       user: authData.user,
-      redirectUrl,
+      primeiroAcesso,
     };
   }
 
@@ -237,11 +236,13 @@ export class AuthService {
 
     const login = await AuthModel.signinAdmin(email, senhaAntiga);
 
-    const resultado = login
-      ? await AuthModel.alterarSenhaAdmin(login.userId, novaSenha)
-      : null;
+    if (login.error || !login.data?.userId) {
+      const erroLogin = new Error("Credenciais administrativas inválidas!");
+      erroLogin.statusCode = 401;
+      throw erroLogin;
+    }
 
-    return resultado;
+    return await AuthModel.alterarSenhaAdmin(login.data.userId, novaSenha);
   }
 
   static async atualizarSenha(novaSenha) {

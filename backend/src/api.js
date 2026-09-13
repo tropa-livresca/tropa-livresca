@@ -8,43 +8,12 @@ import { errorHandler } from "./api/common/middlewares/error.middleware.js";
 
 const app = express();
 
-/* 
-// VERSÃO ANTERIOR (Validação restrita de origens):
-const allowedOrigins = [
-  "https://tropa-livresca.vercel.app",
-  "http://localhost:5173",
-];
-
-const corsOptionsAnterior = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-
-    const originHostname = new URL(origin).hostname;
-
-    const isAllowed =
-      allowedOrigins.includes(origin) ||
-      originHostname.endsWith(".app.github.dev") ||
-      originHostname.endsWith(".vercel.app");
-
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      callback(new Error(`Bloqueado pelo CORS: A origem ${origin} não é permitida.`));
-    }
-  },
-  credentials: true,
-  optionsSuccessStatus: 200,
-};
-*/
-
-// VERSÃO ATUAL: Liberado para qualquer origem mantendo suporte a cookies/credentials
-
 app.use(
   cors({
     origin: true,
     credentials: true,
     optionsSuccessStatus: 200,
-  })
+  }),
 );
 
 app.use(express.json({ limit: "10mb" }));
