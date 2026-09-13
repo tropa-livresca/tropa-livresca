@@ -35,6 +35,8 @@ export default function Autores() {
             Brasil. Descubra escritores que compartilham histórias únicas,
             cheias de emoção e originalidade em suas obras.
           </p>
+        </div>
+        <div className={styles.container}>
           <form className={styles.busca} onSubmit={handleBuscar}>
             <span className={styles.iconebusca}>
               <FaSearch />
@@ -51,50 +53,44 @@ export default function Autores() {
               Buscar
             </button>
           </form>
+          <div className={styles.autorescontainer}>
+            {carregando ? (
+              <Carregando mensagem="Carregando autores..." />
+            ) : !autores || autores.length === 0 ? (
+              <p>Nenhum autor encontrado</p>
+            ) : (
+              autores.map((autor) => {
+                return (
+                  <div className={styles.autorinf} key={autor.id}>
+                    {autor.imagem ? (
+                      <img src={autor.imagem} alt={autor.nome} />
+                    ) : (
+                      <div className={styles.semfoto}>
+                        <FaUserCircle />
+                      </div>
+                    )}
+                    <h3>{autor.nome || "Autor anônimo"}</h3>
+                    <p>{autor.descricao || "Sem descrição"}</p>
+                    <Link
+                      to={`/autores/${autor.id}`}
+                      className={styles.btndetalhes}
+                    >
+                      Ver perfil
+                    </Link>
+                  </div>
+                );
+              })
+            )}
 
-         
-        </div>
-         <div className={styles.container}>
-          
-
-        <div className={styles.autorescontainer}>
-          {carregando ? (
-            <Carregando mensagem="Carregando autores..."/>
-          ) : !autores || autores.length === 0 ? (
-            <p>Nenhum autor encontrado</p>
-          ) : (
-            autores.map((autor) => {
-              return (
-                <div className={styles.autorinf} key={autor.id}>
-                  {autor.imagem ? (
-                    <img src={autor.imagem} alt={autor.nome} />
-                  ) : (
-                    <div className={styles.semfoto}>
-                      <FaUserCircle />
-                    </div>
-                  )}
-                  <h3>{autor.nome || "Autor anônimo"}</h3>
-                  <p>{autor.descricao || "Sem descrição"}</p>
-                  <Link
-                    to={`/autores/${autor.id}`}
-                    className={styles.btndetalhes}
-                  >
-                    Ver perfil
-                  </Link>
-                </div>
-              );
-            })
-          )}
-
-          {!carregando && meta && meta.totalPages > 1 && (
-            <Paginacao
-              paginaAtual={paginaAtual}
-              totalPaginas={meta?.totalPages}
-              totalItems={meta?.totalItems}
-              onMudarPagina={setPaginaAtual}
-            />
-          )}
-        </div>
+            {!carregando && meta && meta.totalPages > 1 && (
+              <Paginacao
+                paginaAtual={paginaAtual}
+                totalPaginas={meta?.totalPages}
+                totalItems={meta?.totalItems}
+                onMudarPagina={setPaginaAtual}
+              />
+            )}
+          </div>
         </div>
       </main>
     </div>

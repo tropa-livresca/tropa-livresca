@@ -26,10 +26,6 @@ export default function GerenciarUsuarios(){
     carregarDados();
   }, [paginaAtual, funcao, ordem, busca, BuscarUsuarios]);
 
-  useEffect(() => {
-
-  }, [usuarios]);
-
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
@@ -58,6 +54,7 @@ export default function GerenciarUsuarios(){
   }
 
   console.log(usuarios)
+  console.log(meta);
 
   return (
     <main>
@@ -200,6 +197,7 @@ export default function GerenciarUsuarios(){
                     <td >nome</td>
                     <td >funcao</td>
                     <td >autor</td>
+                    {funcao == "funcionario" ? <td >email</td> : <></>}
              </tr>
 
             {usuarios.map((usuario, c) => {
@@ -212,6 +210,7 @@ export default function GerenciarUsuarios(){
                     <td >{usuario.nome}</td>
                     <td >{usuario.funcao || "Cliente"}</td>
                     <td >{usuario.autor == true ? "sim" : "não"}</td>
+                    {funcao == "funcionario" ? <td >{usuario.redes_sociais?.email}</td> : <></>}
                   </tr>
 
                   <button onClick={() => handleDetalhes(c)}></button>
@@ -296,7 +295,8 @@ export default function GerenciarUsuarios(){
         {!carregando && meta && meta.totalPages > 1 && (
           <div className={styles.paginacao}>
             <button
-              onClick={() => {setPaginaAtual((prev) => Math.max(prev - 1, 1)); setUsuarioSelecionado(null)}}
+              onClick={() => {setPaginaAtual((prev) => {return prev - 1}); 
+              setUsuarioSelecionado(null)}}
               disabled={paginaAtual === 1}
             >
               Anterior
@@ -308,8 +308,10 @@ export default function GerenciarUsuarios(){
             </span>
 
             <button
-              onClick={() =>
-                setPaginaAtual((prev) => {Math.min(prev + 1, meta.totalPages); setUsuarioSelecionado(null)})
+              onClick={() =>{
+                setPaginaAtual((prev) => {return prev + 1})
+                setUsuarioSelecionado(null)
+              }
               }
               disabled={paginaAtual === meta.totalPages}
             >
@@ -318,7 +320,7 @@ export default function GerenciarUsuarios(){
           </div>
         )}
 
-        {funcao === "" ? <button>promover</button> : funcao === "funcionario" ? <button>deletar</button> : <></>}
+        {funcao === "funcionario" ? <div> <Link to={"/admin/funcionarios/promover"}>promover</Link> <Link to={"/admin/funcionarios/inativar"}>inativar</Link> </div> : <></>}
 
       </div>
     </main>

@@ -1,5 +1,9 @@
 import { AuthModel } from "../../common/models/auth.model.js";
 
+import {
+  SUPABASE_RESET_PASSWORD_CALLBACK_URL,
+  SUPABASE_REDIRECT_ADMIN_URL,
+} from "../../common/config/environment.js";
 export class AuthService {
   static async signinComGoogle(redirectTo) {
     try {
@@ -21,13 +25,11 @@ export class AuthService {
   static async esqueciSenha(email) {
     if (!email) {
       const erroEmail = new Error("O e-mail é obrigatório.");
-      erroEmail.statusCode = 400; // Corrigido de 500 para 400 (Bad Request)
+      erroEmail.statusCode = 400;
       throw erroEmail;
     }
 
-    const redirectUrl =
-      process.env.SUPABASE_RESET_PASSWORD_CALLBACK_URL ||
-      "http://localhost:3000/api/v1/auth/callback-redefinir-senha";
+    const redirectUrl = SUPABASE_RESET_PASSWORD_CALLBACK_URL;
 
     const { data, error } = await AuthModel.enviarEmailRecuperacao(
       email,
@@ -67,8 +69,8 @@ export class AuthService {
       const dataLogin = await AuthModel.signin(email, senhaAntiga);
 
       await AuthModel.setSession(
-        dataLogin.session.access_token, 
-        dataLogin.session.refresh_token
+        dataLogin.session.access_token,
+        dataLogin.session.refresh_token,
       );
 
       const dataUpdate = await AuthModel.atualizarSenha(senhaNova);
@@ -170,6 +172,77 @@ export class AuthService {
       error.statusCode = error.status || 400;
       throw error;
     }
+  }
+
+  static async signinAdmin(email, senhaAdmin) {
+    if (!email || !senhaAdmin) {
+      const erroCredenciais = new Error(
+        "Email e/ou senha não informados para o login!",
+      );
+      erroCredenciais.statusCode = 400;
+      throw erroCredenciais;
+    }
+
+    const { data: authData, error } = await AuthModel.signinAdmin(
+      email,
+      senhaAdmin,
+    );
+
+    if (error) {
+      throw error;
+    }
+
+    const userId = authData?.userId;
+
+    if (!userId) {
+      const erroId = new Error(
+        "Usuário não encontrado ou credenciais inválidas.",
+      );
+      erroId.statusCode = 401;
+      throw erroId;
+    }
+
+    const primeiroAcesso = await AuthModel.conferirPrimeiroAcesso(userId);
+
+    return {
+      data: authData,
+      user: authData.user,
+      primeiroAcesso,
+    };
+  }
+
+  static async alterarSenhaAdm(userId, novaSenha) {
+    if (!userId || !novaSenha) {
+      const erroCampos = new Error(
+        "ID do usuário e nova senha são obrigatórios para a alteração de senha.",
+      );
+      erroCampos.statusCode = 400;
+      throw erroCampos;
+    }
+
+    const resultado = await AuthModel.alterarSenhaAdmin(userId, novaSenha);
+
+    return resultado;
+  }
+
+  static async alterarSenhaAntigaAdm(email, senhaAntiga, novaSenha) {
+    if (!email || !novaSenha || !senhaAntiga) {
+      const erroCampos = new Error(
+        "Erro ao informar as credenciais para alteração de senha.",
+      );
+      erroCampos.statusCode = 400;
+      throw erroCampos;
+    }
+
+    const login = await AuthModel.signinAdmin(email, senhaAntiga);
+
+    if (login.error || !login.data?.userId) {
+      const erroLogin = new Error("Credenciais administrativas inválidas!");
+      erroLogin.statusCode = 401;
+      throw erroLogin;
+    }
+
+    return await AuthModel.alterarSenhaAdmin(login.data.userId, novaSenha);
   }
 
   static async atualizarSenha(novaSenha) {

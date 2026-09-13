@@ -53,6 +53,7 @@ main {
   background-color: #fffdf7;
   border-radius: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 5rem;
 }
 
 .iconebusca {
@@ -99,11 +100,10 @@ main {
   justify-items: center;
   gap: 0.8rem;
   padding: 1rem;
-
   background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   transition: 0.3s;
 }
 

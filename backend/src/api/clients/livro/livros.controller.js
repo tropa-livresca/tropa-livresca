@@ -9,7 +9,13 @@ export class LivrosController {
       const filtro = req.query.filtro || "";
       const ordem = req.query.ordem || "";
 
-      const resultado = await LivrosService.getLivros({ page, limit, busca, filtro, ordem });
+      const resultado = await LivrosService.getLivros({
+        page,
+        limit,
+        busca,
+        filtro,
+        ordem,
+      });
 
       return res.status(200).json(resultado);
     } catch (err) {
@@ -20,7 +26,6 @@ export class LivrosController {
   static async GetLivrosById(req, res, next) {
     try {
       const { id } = req.params;
-      console.log(id);
       const livro = await LivrosService.getLivrosById(id);
 
       return res.status(200).json(livro);

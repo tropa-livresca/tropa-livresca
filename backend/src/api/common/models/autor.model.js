@@ -45,12 +45,10 @@ export class AutorModel {
       .order("nome", { ascending: true });
 
     if (error) {
-      
-          console.log("Erro:", error);
       error.statusCode = 500;
       throw error;
     }
-    
+
     return { data: data || [], count: count || 0 };
   }
 
@@ -59,7 +57,9 @@ export class AutorModel {
 
     const { data, error } = await supabase
       .from("users_profile")
-      .select("id, nome, imagem, descricao, redes_sociais, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)")
+      .select(
+        "id, nome, imagem, descricao, redes_sociais, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)",
+      )
       .eq("id", id)
       .eq("livros.ativo", true)
       .eq("livros.estado", "publicado")

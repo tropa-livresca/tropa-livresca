@@ -40,6 +40,37 @@ export const useUsuarios = () => {
     }
   }, []);
 
+  const alterarFuncao = async (usuarioId, funcao) => {
+    setCarregando(true);
+
+    console.log(usuarioId, funcao);
+
+    
+    const res = await apiFetch(
+        `/api/v1/admin/funcionarios`,
+        { method: "PATCH",
+        body: JSON.stringify({
+          usuarioId: usuarioId, 
+          funcao: funcao
+        }), },
+      );
+
+      
+      const result = await res.json();
+
+      console.log(result)
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          setCarregando(false);
+          return;
+        }
+        throw new Error(result.error || `Erro ${res.status}`);
+      }
+
+      setCarregando(false);
+  }
+
 
 
 
@@ -51,5 +82,6 @@ export const useUsuarios = () => {
     setMeta,
     setCarregando,
     BuscarUsuarios,
+    alterarFuncao,
   };
 };

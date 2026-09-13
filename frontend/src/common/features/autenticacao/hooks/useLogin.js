@@ -37,7 +37,7 @@ export const useLogin = () => {
       navigate(destinoAdmin, { replace: true });
     } else {
       const destinoComum =
-        ehRotaAdmin || deOndeVeio === "/" ? "/" : deOndeVeio;
+        ehRotaAdmin || deOndeVeio === "/" ? "/ " : deOndeVeio;
       navigate(destinoComum, { replace: true });
     }
   };

@@ -79,7 +79,7 @@ export const useRevisao = () => {
   }, []);
 
   const CriarRevisao = useCallback(
-    async (idLivro) => {
+    async (idLivro, novoEstado) => {
       if (!ValidarCamposTexto() || !manuscrito) {
         throw new Error("Preencha todos os campos e anexe o manuscrito.");
       }
@@ -96,7 +96,6 @@ export const useRevisao = () => {
           formData.append("manuscritoRevisto", manuscrito);
         }
 
-        // Adicionamos a flag isFormData abaixo
         const response = await apiFetch(`/api/v1/admin/revisao`, {
           method: "POST",
           body: formData,
@@ -109,6 +108,17 @@ export const useRevisao = () => {
           );
         }
 
+        if(novoEstado){
+          const responseEstado = await apiFetch(`/api/v1/admin/revisao/novoEstado`, {
+            method: "PATCH",
+            body: JSON.stringify({ idLivro, novoEstado }),
+          });
+
+          if (!responseEstado.ok){
+            throw new Error(`Erro encontrado ao atualizar o estado do livro`);
+          }
+        }
+        
         return response.data;
       } catch (err) {
         setError(err.message);

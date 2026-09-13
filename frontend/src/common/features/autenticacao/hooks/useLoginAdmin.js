@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { apiFetch } from "../../../services/api.js";
-import useAuth from "../../../hooks/useAuth";
+import useAdmin from "../../../hooks/useAdmin";
 
 export const useLoginAdmin = () => {
-  const { setUser } = useAuth(); 
+  const { setUser } = useAdmin();
 
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
@@ -21,12 +21,12 @@ export const useLoginAdmin = () => {
     setError("");
 
     try {
-      const res = await apiFetch("/api/v1/auth/signin", {
+      const res = await apiFetch("/api/v1/auth/signin-adm", {
         skipAuthRedirect: true,
         method: "POST",
         body: JSON.stringify({
-          email: email,
-          password: senha,
+          email,
+          senha,
         }),
       });
 
@@ -40,13 +40,23 @@ export const useLoginAdmin = () => {
 
       const usuario = data.user;
 
+      console.log(`${usuario}`);
+
       if (!usuario || usuario.is_admin !== true) {
-        setError("Acesso negado. Você não possui privilégios de administrador.");
+        setError(
+          "Acesso negado. Você não possui privilégios de administrador.",
+        );
         return null;
       }
 
       setUserLocal(usuario);
-      setUser(usuario); 
+      setUser(usuario);
+
+      if (data.primeiroAcesso) {
+        navigate("/admin/configuracoes/novasenha");
+        return data;
+      }
+
       return data;
     } catch (err) {
       console.error("Erro em useLoginAdmin", err);
@@ -55,7 +65,7 @@ export const useLoginAdmin = () => {
     } finally {
       setLoading(false);
     }
-  }, [email, senha, setUser]);
+  }, [email, senha, setUser, navigate]);
 
   const handleLoginAdmin = useCallback(
     async (e) => {
@@ -68,6 +78,10 @@ export const useLoginAdmin = () => {
 
       const loginSucesso = await signinAdmin();
 
+      if (loginSucesso?.primeiroAcesso) {
+        return;
+      }
+
       if (loginSucesso) {
         navigate(from, { replace: true });
       }
@@ -77,8 +91,9 @@ export const useLoginAdmin = () => {
 
   const signoutAdmin = useCallback(async () => {
     setLoading(true);
+
     try {
-      const res = await apiFetch("/api/v1/auth/signout", {
+      const res = await apiFetch("/api/v1/auth/signout-adm", {
         method: "POST",
       });
 
@@ -92,6 +107,7 @@ export const useLoginAdmin = () => {
 
       setUserLocal(null);
       setUser(null);
+
       navigate("/auth/admin", { replace: true });
     } catch (err) {
       console.error("Erro no logout", err);

@@ -19,9 +19,6 @@ O projeto utiliza isolamento de escopo com arquivos de configuração separados 
 ### Backend (`backend/.env`)
 
 * `PORT`: Porta de execução do servidor Express (Padrão: 3000)
-* `NODE_ENV`: Modo de ambiente da aplicação (development ou production)
-* `SUPABASE_URL`: Endpoint de API do seu projeto Supabase
-* `SUPABASE_ANON_KEY`: Chave pública anônima do Supabase Auth/Client
 * `SUPABASE_SERVICE_ROLE_KEY`: Chave privada administrativa para bypass de políticas RLS
 * `SMTP_HOST`: Endereço do servidor de e-mail de saída (ex: ://gmail.com)
 * `SMTP_PORT`: Porta do servidor SMTP de e-mail (ex: 587 ou 465)
@@ -30,7 +27,6 @@ O projeto utiliza isolamento de escopo com arquivos de configuração separados 
 
 ### Frontend (`frontend/.env`)
 
-* `VITE_API_URL`: URL base de comunicação com o backend Express (ex: http://localhost:3000)
 * `VITE_SUPABASE_URL`: Endpoint de API do seu projeto Supabase
 * `VITE_SUPABASE_ANON_KEY`: Chave pública anônima do Supabase
 
@@ -58,14 +54,6 @@ Para rodar o ecossistema completo simultaneamente através da automação da rai
 ```bash
 npm run dev
 ```
-
-Endereços padrão de escuta local:
-
-* Backend Express: http://localhost:3000
-* Frontend Vite: http://localhost:5173
-
----
-
 ## Scripts Disponíveis
 
 A tabela abaixo descreve as ferramentas de execução configuradas no projeto:

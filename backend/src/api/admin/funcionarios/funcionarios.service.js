@@ -1,26 +1,24 @@
 import { FuncionariosModel } from "../../common/models/funcionarios.model.js";
 
 export class FuncionariosService {
-  static async promoverAdm(usuarioComumId, senhaTemporaria, funcao) {
-    if (!usuarioComumId || !senhaTemporaria || !funcao) {
+  static async alterarFuncao(usuarioId, funcao) {
+    if (!usuarioId) {
       const erroDados = new Error(
-        "Id do usuário, senha temporária e/ou funcao não informado",
+        "Id do usuário e/ou funcao não informado",
       );
       erroDados.statusCode = 400;
       throw erroDados;
     }
 
     try {
-      const resultado = await FuncionariosModel.promoverAdm(
-        usuarioComumId,
-        senhaTemporaria,
-        funcao,
+      const resultado = await FuncionariosModel.alterarFuncao(
+        usuarioId, funcao
       );
 
       return resultado;
     } catch (error) {
-      const erroBanco = new Error("Erro ao executar função no banco.");
-      throw erroBanco;
+      error.statusCode = 500;
+      throw error;
     }
   }
 
@@ -36,8 +34,8 @@ export class FuncionariosService {
 
       return resultado;
     } catch (error) {
-      const dbError = new Error("Erro ao deletar funcionário.");
-      throw dbError;
+      error.statusCode = 500;
+      throw error;
     }
   }
 
@@ -58,8 +56,8 @@ export class FuncionariosService {
 
       return resultado;
     } catch (error) {
-      const dbError = new Error("Erro ao atualizar cargo do funcionário.");
-      throw dbError;
+        error.statusCode = 500;
+        throw error;
     }
   }
 }

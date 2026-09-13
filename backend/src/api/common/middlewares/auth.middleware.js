@@ -1,4 +1,5 @@
 import supabase from "../config/supabase.js";
+import jwt from "jsonwebtoken";
 
 export const checkAuth = async (req, res, next) => {
   const token = req.cookies["auth-token"];
@@ -24,97 +25,116 @@ export const checkAuth = async (req, res, next) => {
 };
 
 export const verificarAutenticacaoAdm = async (req, res, next) => {
-  // AJUSTE: Tenta pegar o token do Header. Se não existir, pega do Cookie.
-  let token = null;
-  const authHeader = req.headers.authorization;
-
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  } else if (req.cookies && req.cookies["auth-token"]) {
-    token = req.cookies["auth-token"];
-  }
+  const token = req.cookies?.["admin-token"];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: "Token de acesso não fornecido ou inválido." });
+    return res.status(401).json({
+      error: "Sessão administrativa não encontrada.",
+    });
   }
 
   try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (error || !user) {
-      return res.status(401).json({ error: "Sessão expirada ou inválida." });
-    }
-
-    const { data: adm, error: dbError } = await supabase
-      .from("users_profile")
-      .select("is_admin, funcao")
-      .eq("id", user.id)
-      .single();
-
-    if (dbError || !adm || !adm.is_admin) {
+    if (!decoded.is_admin) {
       return res.status(403).json({
-        error: "Acesso negado: Recursos restritos a administradores ativos.",
+        error: "Acesso restrito a administradores.",
       });
     }
 
-    req.user = user;
+    const { data: adm, error } = await supabase
+      .from("users_profile")
+      .select("is_admin, funcao, senha_adm, primeiro_acesso")
+      .eq("id", decoded.id)
+      .single();
+
+    if (error) {
+      console.error("ERRO AO BUSCAR ADMIN:", error);
+
+      return res.status(500).json({
+        error: "Erro ao consultar administrador.",
+        details: error.message,
+      });
+    }
+
+    if (!adm) {
+      return res.status(403).json({
+        error: "Administrador não encontrado.",
+      });
+    }
+
+    if (!adm.is_admin) {
+      return res.status(403).json({
+        error: "Usuário não possui privilégios de administrador.",
+      });
+    }
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+    };
+
     req.adm = adm;
 
-    next();
+    return next();
   } catch (err) {
-    next(err);
+    console.error("Erro ao validar admin-token:", err);
+
+    return res.status(401).json({
+      error: "Sessão administrativa inválida ou expirada.",
+    });
   }
 };
 
 export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
-  // AJUSTE: Tenta pegar o token do Header. Se não existir, pega do Cookie.
-  let token = null;
-  const authHeader = req.headers.authorization;
-
-  if (authHeader && authHeader.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  } else if (req.cookies && req.cookies["auth-token"]) {
-    token = req.cookies["auth-token"];
-  }
+  const token =
+    req.cookies?.["admin-token"] ||
+    req.headers.authorization?.replace("Bearer ", "");
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: "Token de acesso não fornecido ou inválido." });
+    return res.status(401).json({
+      error: "Não autenticado.",
+    });
   }
 
   try {
-    const {
-      data: { user },
-      error,
-    } = await supabase.auth.getUser(token);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (error || !user) {
-      return res.status(401).json({ error: "Sessão expirada ou inválida." });
+    if (!decoded.is_admin) {
+      return res.status(403).json({
+        error: "Acesso restrito a administradores.",
+      });
     }
 
     const { data: adm, error: dbError } = await supabase
       .from("users_profile")
-      .select("is_admin, funcao")
-      .eq("id", user.id)
+      .select("is_admin, funcao, senha_adm")
+      .eq("id", decoded.id)
       .single();
 
-    if (dbError || !adm || !adm.is_admin || adm.funcao !== "master") {
+    if (
+      dbError ||
+      !adm ||
+      !adm.is_admin ||
+      adm.funcao !== "master" ||
+      !adm.senha_adm
+    ) {
       return res.status(403).json({
-        error: "Acesso negado: Recursos restritos a administradores ativos.",
+        error:
+          "Acesso negado: Recursos restritos a administradores master ativos.",
       });
     }
 
-    req.user = user;
+    req.user = {
+      id: decoded.id,
+      email: decoded.email,
+    };
+
     req.adm = adm;
 
     next();
   } catch (err) {
-    next(err);
+    return res.status(401).json({
+      error: "Sessão administrativa inválida ou expirada.",
+    });
   }
 };
