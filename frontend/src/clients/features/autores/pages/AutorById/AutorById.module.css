@@ -157,10 +157,12 @@ main {
   align-content: start;
   gap: 0.8rem;
   padding: 2rem;
-  background: var(--cor-superficie);
+   background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;
-  box-shadow: var(--sombra-card);
+ box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
   transition: 0.3s;
 }
 
@@ -215,7 +217,8 @@ main {
 
 .btnlivro {
   text-decoration: none;
-  margin-top: 1rem;
+  margin-top: -0.1rem;
+  margin-bottom: -0.1rem;
   padding: 0.7rem 1.4rem;
   background-color: #67170c;
   color: #ede6b3;

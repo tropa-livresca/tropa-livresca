@@ -7,6 +7,7 @@ import livrosRoutes from "./livro/livros.route.js";
 import autorRoutes from "./autores/autor.route.js";
 import suporteRoutes from "./suporte/suporte.route.js";
 import perfilRoutes from "./perfil/perfil.route.js";
+import lojaRoutes from "./loja/loja.route.js";
 
 router.use("/autopublicacao", autopublicacaoRoutes);
 router.use("/enderecos", enderecoRoutes);
@@ -14,5 +15,6 @@ router.use("/livros", livrosRoutes);
 router.use("/autores", autorRoutes);
 router.use("/suporte", suporteRoutes);
 router.use("/perfil", perfilRoutes);
+router.use("/loja", lojaRoutes);
 
 export default router;

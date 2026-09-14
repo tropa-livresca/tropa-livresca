@@ -7,4 +7,9 @@ export const authMiddlewareMock = {
     req.user = mockUserIntegration;
     next();
   }),
+  verificarAutenticacaoAdm: jest.fn((req, res, next) => {
+    req.user = mockUserIntegration;
+    req.adm = mockUserIntegration;
+    next();
+  }),
 };

@@ -31,7 +31,7 @@ export default function Login() {
           </button>
 
           <img src={logo2} alt="Tropa Livresca" width="100" />
-          <form onSubmit={handleSignin}>
+          <form onSubmit={handleSignin} className={styles.form}>
             <h1>LOGIN</h1>
             <h2>Bem-vindo de volta</h2>
             <h3>Insira seus dados para acessar sua conta</h3>

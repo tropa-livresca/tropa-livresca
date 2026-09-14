@@ -1,5 +1,4 @@
 import { supabaseAdmin } from "../config/supabase.js";
-
 export class PerfilModel {
   static async buscarPerfil(id) {
     const response = await supabaseAdmin
@@ -43,7 +42,9 @@ export class PerfilModel {
     }
 
     if (!data) {
-      const erroRegistro = new Error("Nenhum perfil foi encontrado para atualização.");
+      const erroRegistro = new Error(
+        "Nenhum perfil foi encontrado para atualização.",
+      );
       erroRegistro.statusCode = 404;
       throw erroRegistro;
     }

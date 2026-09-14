@@ -2,6 +2,11 @@ import { supabaseAdmin } from "../../common/config/supabase.js";
 import { RevisaoModel } from "../../common/models/revisao.model.js";
 
 export class RevisaoService {
+  static async BuscarLivroRevisao(busca){
+    const livros = await RevisaoModel.BuscarLivraoRevisao(busca);
+    return livros;
+  }
+
   static async BuscarRevisoes({
     page = 1,
     limit = 12,

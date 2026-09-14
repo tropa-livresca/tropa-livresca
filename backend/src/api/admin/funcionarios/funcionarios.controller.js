@@ -1,19 +1,34 @@
 import { FuncionariosService } from "./funcionarios.service.js";
 
 export class FuncionariosController {
-  static async promoverAdm(req, res, next) {
-    const { usuarioComumId, senhaTemporaria, funcao } = req.body;
+  static async buscarFuncionarios(req, res, next) {
+    const { page, limit, busca, ordem } = req.params;
 
     try {
-      const data = await FuncionariosService.promoverAdm(
-        usuarioComumId,
-        senhaTemporaria,
-        funcao,
-      );
+      const data = await FuncionariosService.buscarFuncionarios({
+        page,
+        limit,
+        busca,
+        ordem,
+      });
+
+      return res.status(201).json({
+        data: data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async alterarFuncao(req, res, next) {
+    const { usuarioId, funcao } = req.body;
+
+    try {
+      const data = await FuncionariosService.alterarFuncao(usuarioId, funcao);
 
       return res.status(201).json({
         success: true,
-        message: "Usuário promovido com sucesso!",
+        message: "função de Usuário modificada com sucesso!",
         data: data,
       });
     } catch (err) {
@@ -21,34 +36,16 @@ export class FuncionariosController {
     }
   }
 
-  static async atualizarFuncao(req, res, next) {
-    const { funcionarioId, funcao } = req.body;
+  static async alterarIsAdminFuncionario(req, res, next) {
+    const { funcionarioId } = req.params;
 
     try {
-      const data = await FuncionariosService.atualizarCargo(
-        funcionarioId,
-        funcao,
-      );
+      const data =
+        await FuncionariosService.alterarIsAdminFuncionario(funcionarioId);
 
       return res.json({
         success: true,
-        message: "Cargo de funcionário alterado com sucesso!",
-        data: data,
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async deletarFuncionario(req, res, next) {
-    const { funcionarioId } = req.body;
-
-    try {
-      const data = await FuncionariosService.deletarFuncionario(funcionarioId);
-
-      return res.json({
-        success: true,
-        message: "Usuário deletado com sucesso!",
+        message: "Usuário inativado com sucesso!",
         data: data,
       });
     } catch (err) {

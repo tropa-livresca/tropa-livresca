@@ -19,7 +19,7 @@ export const useMeusLivros = () => {
       setCarregando(true);
       try {
         const url = `/api/v1/clients/autopublicacao/buscar/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&estado=${estado}`;
-        
+
         const res = await apiFetch(url, { method: "GET" });
         const data = await res.json();
 
@@ -47,7 +47,7 @@ export const useMeusLivros = () => {
   const buscarLivroById = useCallback(async (id) => {
     setCarregando(true);
     try {
-      const res = await apiFetch(`/api/v1/clients/autopublicacao/${id}`, {
+      const res = await apiFetch("/api/v1/clients/autopublicacao/" + id, {
         method: "GET",
       });
       const data = await res.json();
