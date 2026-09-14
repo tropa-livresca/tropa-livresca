@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { useUsuarios } from "../../hooks/useUsuarios"
+import { useUsuarios } from "../../hooks/useUsuarios";
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../../clients/components/Carregando/Carregando";
 import styles from "../../../../../clients/features/livros/pages/Livros/Livros.module.css";
-import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
+export default function GerenciarUsuarios() {
+  const { buscarUsuarios, usuarios, carregando, meta, alterarFuncao } =
+    useUsuarios();
 
-export default function GerenciarUsuarios(){
- 
-  const {BuscarUsuarios, usuarios, carregando, meta, alterarFuncao} = useUsuarios();
-  
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
@@ -20,48 +18,42 @@ export default function GerenciarUsuarios(){
 
   useEffect(() => {
     const carregarDados = async () => {
-      await BuscarUsuarios(paginaAtual, 3, busca, "cliente", ordem);
-    }
+      await buscarUsuarios(paginaAtual, 3, busca, "cliente", ordem);
+    };
 
     carregarDados();
-  }, [paginaAtual, ordem, busca, BuscarUsuarios]);
+  }, [paginaAtual, ordem, busca, buscarUsuarios]);
 
-  useEffect(() => {
-
-  }, [usuarios]);
+  useEffect(() => {}, [usuarios]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
-    BuscarUsuarios(1, 3, busca, "cliente", ordem);
-    setUsuarioSelecionado(null)
+    buscarUsuarios(1, 3, busca, "cliente", ordem);
+    setUsuarioSelecionado(null);
   };
 
   const handleFiltro = (filtro) => {
-      setOrdem(filtro);
-    
+    setOrdem(filtro);
+
     setPaginaAtual(1);
     setDropdownAberto(null);
-    setUsuarioSelecionado(null)
-  }
+    setUsuarioSelecionado(null);
+  };
 
   const handleSelecao = (id) => {
-    if(id == usuarioSelecionado){
-      setUsuarioSelecionado(null)
-    }else{
-      setUsuarioSelecionado(id)  
-      }
-  }
+    if (id == usuarioSelecionado) {
+      setUsuarioSelecionado(null);
+    } else {
+      setUsuarioSelecionado(id);
+    }
+  };
 
   const handlePromover = async (id, funcao) => {
-
-      setConfirmado(false)
-      await alterarFuncao(id, funcao)
-      await BuscarUsuarios(1, 3, busca, "cliente", ordem);
-  
-  }
-
-  console.log(usuarios)
+    setConfirmado(false);
+    await alterarFuncao(id, funcao);
+    await buscarUsuarios(1, 3, busca, "cliente", ordem);
+  };
 
   return (
     <main>
@@ -80,7 +72,10 @@ export default function GerenciarUsuarios(){
             type="text"
             placeholder="Buscar usuario"
             value={busca}
-            onChange={(e) => {setBusca(e.target.value); setUsuarioSelecionado(null) }}
+            onChange={(e) => {
+              setBusca(e.target.value);
+              setUsuarioSelecionado(null);
+            }}
           />
 
           <div className={styles.selectContainer}>
@@ -103,7 +98,7 @@ export default function GerenciarUsuarios(){
               <div className={styles.options}>
                 <div
                   onClick={() => {
-                    handleFiltro("ascendente", false)
+                    handleFiltro("ascendente", false);
                   }}
                 >
                   Mais Antigos
@@ -111,7 +106,7 @@ export default function GerenciarUsuarios(){
 
                 <div
                   onClick={() => {
-                    handleFiltro("descendente", false)
+                    handleFiltro("descendente", false);
                   }}
                 >
                   Mais Recentes
@@ -133,36 +128,30 @@ export default function GerenciarUsuarios(){
           <p className={styles.semLivros}>Nenhum livro encontrado</p>
         ) : (
           <div>
-
-            
-
-
-              <div>nome</div>
-              <br></br>
+            <div>nome</div>
+            <br></br>
 
             {usuarios.map((usuario, c) => {
               return (
- 
                 <>
-                  
-                  <div >{usuario.nome}</div>
+                  <div>{usuario.nome}</div>
 
                   <button onClick={() => handleSelecao(c)}>selecionar</button>
                 </>
-
               );
             })}
           </div>
         )}
 
-       {console.log(usuarioSelecionado)}
-
-
         {!carregando && meta && meta.totalPages > 1 && (
           <div className={styles.paginacao}>
             <button
-              onClick={() => {setPaginaAtual((prev) => {return prev - 1}); 
-              setUsuarioSelecionado(null)}}
+              onClick={() => {
+                setPaginaAtual((prev) => {
+                  return prev - 1;
+                });
+                setUsuarioSelecionado(null);
+              }}
               disabled={paginaAtual === 1}
             >
               Anterior
@@ -174,11 +163,12 @@ export default function GerenciarUsuarios(){
             </span>
 
             <button
-              onClick={() =>{
-                setPaginaAtual((prev) => {return prev + 1})
-                setUsuarioSelecionado(null)
-              }
-              }
+              onClick={() => {
+                setPaginaAtual((prev) => {
+                  return prev + 1;
+                });
+                setUsuarioSelecionado(null);
+              }}
               disabled={paginaAtual === meta.totalPages}
             >
               Próximo
@@ -186,10 +176,34 @@ export default function GerenciarUsuarios(){
           </div>
         )}
 
-        {confirmado == true ? <div>deseja mesmo promover? <button onClick={() => {handlePromover(usuarios[usuarioSelecionado].id, "funcionario")}}>sim</button> <button onClick={() => {setConfirmado(false)}}>não</button> </div> : <button disabled={usuarioSelecionado == null} onClick={() => {setConfirmado(true)}}>promover</button>}
-
-        
-
+        {confirmado == true ? (
+          <div>
+            deseja mesmo promover?{" "}
+            <button
+              onClick={() => {
+                handlePromover(usuarios[usuarioSelecionado].id, "funcionario");
+              }}
+            >
+              sim
+            </button>{" "}
+            <button
+              onClick={() => {
+                setConfirmado(false);
+              }}
+            >
+              não
+            </button>{" "}
+          </div>
+        ) : (
+          <button
+            disabled={usuarioSelecionado == null}
+            onClick={() => {
+              setConfirmado(true);
+            }}
+          >
+            promover
+          </button>
+        )}
       </div>
     </main>
   );

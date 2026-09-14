@@ -1,17 +1,42 @@
 import styles from "./Loja.module.css";
+import Carregando from "../../../../components/Carregando/Carregando";
+import { useLivrosLoja } from "../../hooks/useLivrosLoja";
+
 import { FaSearch } from "react-icons/fa";
-import { FiChevronDown } from "react-icons/fi";
-import { useState } from "react";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiChevronDown, FiShoppingCart } from "react-icons/fi";
+
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Loja() {
+  const { livros, meta, carregando, buscarLivros } = useLivrosLoja();
+
   const [dropdownAberto, setDropdownAberto] = useState(null);
   const [filtro, setFiltro] = useState("");
+  const [ordem, setOrdem] = useState("");
+  const [busca, setBusca] = useState("");
+  const [buscaEnviada, setBuscaEnviada] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
+
+  useEffect(() => {
+    buscarLivros(paginaAtual, 12, buscaEnviada, filtro, ordem);
+  }, [buscarLivros, paginaAtual, filtro, buscaEnviada, ordem]);
 
   const handleFiltro = (novoFiltro) => {
     setFiltro(novoFiltro);
+    setOrdem("");
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+  };
+
+  const handleBusca = (e) => {
+    e.preventDefault();
+    setPaginaAtual(1);
+    setBuscaEnviada(busca.trim());
+  };
+
+  const handleOrdem = (novaOrdem) => {
+    setOrdem(novaOrdem);
     setPaginaAtual(1);
     setDropdownAberto(null);
   };
@@ -20,6 +45,7 @@ export default function Loja() {
     <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Loja</h1>
+
         <p>
           Nosso site é feito por quem respira livros, pensando na melhor
           experiência para você.
@@ -32,6 +58,7 @@ export default function Loja() {
             <div className={styles.oi}>
               <h1>Gênero</h1>
             </div>
+
             <ul>
               <li>Romance</li>
               <li>Fantasia</li>
@@ -44,8 +71,9 @@ export default function Loja() {
               <li>História</li>
             </ul>
           </div>
+
           <div>
-            <form onSubmit className={styles.busca}>
+            <form onSubmit={handleBusca} className={styles.busca}>
               <span className={styles.iconebusca}>
                 <FaSearch />
               </span>
@@ -54,6 +82,8 @@ export default function Loja() {
                 className={styles.inputBusca}
                 type="text"
                 placeholder="Buscar livro"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
               />
 
               <div className={styles.selectContainer}>
@@ -82,7 +112,12 @@ export default function Loja() {
 
                 {dropdownAberto === "filtro" && (
                   <div className={styles.options}>
-                    <div onClick={() => handleFiltro("")}>
+                    <div
+                      onClick={() => {
+                        handleFiltro("");
+                        setOrdem("");
+                      }}
+                    >
                       <span>Ordenar por</span>
                     </div>
 
@@ -93,6 +128,18 @@ export default function Loja() {
                     <div onClick={() => handleFiltro("data")}>
                       <span>Data de Publicação</span>
                     </div>
+
+                    {filtro && (
+                      <>
+                        <div onClick={() => handleOrdem("ascendente")}>
+                          <span>Ascendente</span>
+                        </div>
+
+                        <div onClick={() => handleOrdem("descendente")}>
+                          <span>Descendente</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
@@ -102,6 +149,7 @@ export default function Loja() {
               </button>
             </form>
           </div>
+
           <div className={styles.carrinho}>
             <Link to="/carrinho">
               <FiShoppingCart />
@@ -109,26 +157,93 @@ export default function Loja() {
           </div>
 
           <div className={styles.cards}>
-            <div className={styles.card}>
-              <h2>Livro 1</h2>
-              <p>Autor do livro</p>
-            </div>
+            {carregando ? (
+              <Carregando mensagem="Carregando loja ..." />
+            ) : livros.length === 0 ? (
+              <p>Nenhum livro encontrado.</p>
+            ) : (
+              livros.map((livro) => (
+                <Link
+                  key={livro.id}
+                  to={`/loja/livro/${livro.id}`}
+                  className={styles.card}
+                >
+                  {livro?.capa?.frente ? (
+                    <img
+                      src={livro.capa.frente}
+                      alt={`Capa de ${livro.titulo}`}
+                    />
+                  ) : (
+                    <div className={styles.semImagem}>Sem imagem</div>
+                  )}
 
-            <div className={styles.card}>
-              <h2>Livro 2</h2>
-              <p>Autor do livro</p>
-            </div>
+                  <div>
+                    <span
+                      className={
+                        livro.origem === "tropa" ? styles.tropa : styles.externo
+                      }
+                    >
+                      {livro.origem === "tropa"
+                        ? "Publicado na Tropa"
+                        : "Catálogo externo"}
+                    </span>
 
-            <div className={styles.card}>
-              <h2>Livro 3</h2>
-              <p>Autor do livro</p>
-            </div>
+                    <h2>{livro.titulo}</h2>
 
-            <div className={styles.card}>
-              <h2>Livro 4</h2>
-              <p>Autor do livro</p>
-            </div>
+                    <p>{livro.autor}</p>
+
+                    {livro.vendaInterna && (
+                      <div className={styles.precos}>
+                        {livro.precoDigital != null && (
+                          <span>
+                            Digital:{" "}
+                            <strong>
+                              R$ {Number(livro.precoDigital).toFixed(2)}
+                            </strong>
+                          </span>
+                        )}
+
+                        {livro.precoFisico != null && (
+                          <span>
+                            Físico:{" "}
+                            <strong>
+                              R$ {Number(livro.precoFisico).toFixed(2)}
+                            </strong>
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {livro.vendaSimulada && (
+                      <small className={styles.precoFicticio}>
+                        Preços demonstrativos
+                      </small>
+                    )}
+                  </div>
+                </Link>
+              ))
+            )}
           </div>
+
+          {meta && (
+            <div className={styles.paginacao}>
+              <button
+                disabled={paginaAtual <= 1}
+                onClick={() => setPaginaAtual((pagina) => pagina - 1)}
+              >
+                Anterior
+              </button>
+
+              <span>Página {paginaAtual}</span>
+
+              <button
+                disabled={livros.length < 12}
+                onClick={() => setPaginaAtual((pagina) => pagina + 1)}
+              >
+                Próxima
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </main>

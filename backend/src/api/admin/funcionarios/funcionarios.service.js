@@ -1,18 +1,49 @@
 import { FuncionariosModel } from "../../common/models/funcionarios.model.js";
 
 export class FuncionariosService {
+  static async buscarFuncionarios({
+    page = 1,
+    limit = 12,
+    busca = "",
+    ordem = "",
+  }) {
+    const funcionarios = await FuncionariosModel.buscarFuncionarios({
+      page,
+      limit,
+      busca,
+      ordem,
+    });
+
+    if (!funcionarios) {
+      const erroFuncionarios = new Error("Erro ao buscar funcionários.");
+      erroFuncionarios.statusCode = 400;
+      throw erroFuncionarios;
+    }
+
+    if (funcionarios.error) {
+      throw funcionarios.error;
+    }
+
+    return funcionarios;
+  }
+
   static async alterarFuncao(usuarioId, funcao) {
     if (!usuarioId) {
-      const erroDados = new Error(
-        "Id do usuário e/ou funcao não informado",
-      );
+      const erroDados = new Error("Id do usuário e/ou funcao não informado");
       erroDados.statusCode = 400;
       throw erroDados;
     }
 
+    if (funcao !== "Master" && funcao !== "funcionarios") {
+      const erroFuncao = new Error("A função informado é inválida.");
+      erroFuncao.statusCode = 400;
+      throw erroFuncao;
+    }
+
     try {
       const resultado = await FuncionariosModel.alterarFuncao(
-        usuarioId, funcao
+        usuarioId,
+        funcao,
       );
 
       return resultado;
@@ -22,7 +53,7 @@ export class FuncionariosService {
     }
   }
 
-  static async deletarFuncionario(funcionarioId) {
+  static async alterarIsAdminFuncionario(funcionarioId) {
     if (!funcionarioId) {
       const erroId = new Error("Funcionário a deletar não informado.");
       throw erroId;
@@ -30,34 +61,12 @@ export class FuncionariosService {
 
     try {
       const resultado =
-        await FuncionariosModel.deletarFuncionario(funcionarioId);
+        await FuncionariosModel.alterarIsAdminFuncionario(funcionarioId);
 
       return resultado;
     } catch (error) {
       error.statusCode = 500;
       throw error;
-    }
-  }
-
-  static async atualizarCargo(funcionarioId, funcao) {
-    if (!funcionarioId || !funcao) {
-      const erroCredenciais = new Error(
-        "Função ou id do funcionário não fornecido.",
-      );
-      erroCredenciais.statusCode = 400;
-      throw erroCredenciais;
-    }
-
-    try {
-      const resultado = await FuncionariosModel.atualizarCargo(
-        funcionarioId,
-        funcao,
-      );
-
-      return resultado;
-    } catch (error) {
-        error.statusCode = 500;
-        throw error;
     }
   }
 }

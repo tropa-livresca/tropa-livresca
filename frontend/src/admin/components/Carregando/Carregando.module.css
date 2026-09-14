@@ -1,0 +1,32 @@
+.container {
+  display: grid;
+  min-height: 8rem;
+  place-items: center;
+  width: 100%;
+}
+
+.carregando {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #67170c;
+}
+
+.carregando p {
+  margin: 0;
+}
+
+.giro {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 3px solid #ead9b5;
+  border-top-color: #67170c;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,32 +1,22 @@
-import { PerfilModel } from "../../common/models/perfil.model.js";
-
+import { UsuariosModel } from "../../common/models/usuarios.model.js";
 export class UsuariosService {
-  static async BuscarLivros(
+  static async buscarUsuarios(
     page = 1,
     limit = 12,
     busca = "",
     ordem = "",
-    funcao = "",
+    filtro = "",
   ) {
     try {
-      const usuarios = await PerfilModel.buscarPerfilAdmin({
+      const usuarios = await UsuariosModel.buscarUsuarios({
         page,
         limit,
         busca,
         ordem,
-        funcao,
+        filtro,
       });
 
-      return {
-        data: usuarios.data,
-        count: usuarios.count,
-        meta: {
-          page,
-          limit,
-          totalItems: usuarios.count,
-          totalPages: Math.ceil(usuarios.count / limit),
-        },
-      };
+      return usuarios;
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
       throw error;

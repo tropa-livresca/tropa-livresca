@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
-import { useUsuarios } from "../../hooks/useUsuarios"
+import { useUsuarios } from "../../hooks/useUsuarios";
 import { FaSearch } from "react-icons/fa";
-import Carregando from "../../../../../clients/components/Carregando/Carregando";
-import styles from "../../../../../clients/features/livros/pages/Livros/Livros.module.css";
+import Carregando from "../../../../components/Carregando/Carregando";
+import styles from "./GerenciarUsuarios.module.css";
 import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
+export default function GerenciarUsuarios() {
+  const { buscarUsuarios, usuarios, carregando, meta } = useUsuarios();
 
-export default function GerenciarUsuarios(){
- 
-  const {BuscarUsuarios, usuarios, carregando, meta} = useUsuarios();
-  
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("");
   const [funcao, setFuncao] = useState("");
@@ -20,41 +18,37 @@ export default function GerenciarUsuarios(){
 
   useEffect(() => {
     const carregarDados = async () => {
-      await BuscarUsuarios(paginaAtual, 3, busca, funcao, ordem);
-    }
+      await buscarUsuarios(paginaAtual, 3, busca, funcao, ordem);
+    };
 
     carregarDados();
-  }, [paginaAtual, funcao, ordem, busca, BuscarUsuarios]);
+  }, [paginaAtual, funcao, ordem, busca, buscarUsuarios]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
-    BuscarUsuarios(1, 3, busca, funcao, ordem);
-    setUsuarioSelecionado(null)
+    buscarUsuarios(1, 3, busca, funcao, ordem);
+    setUsuarioSelecionado(null);
   };
 
   const handleFiltro = (filtro, funcao) => {
-    if(funcao == true){
+    if (funcao == true) {
       setFuncao(filtro);
-    }
-    else{
+    } else {
       setOrdem(filtro);
     }
     setPaginaAtual(1);
     setDropdownAberto(null);
-    setUsuarioSelecionado(null)
-  }
+    setUsuarioSelecionado(null);
+  };
 
   const handleDetalhes = (id) => {
-    if(id == usuarioSelecionado){
-      setUsuarioSelecionado(null)
-    }else{
-      setUsuarioSelecionado(id)  
-      }
-  }
-
-  console.log(usuarios)
-  console.log(meta);
+    if (id == usuarioSelecionado) {
+      setUsuarioSelecionado(null);
+    } else {
+      setUsuarioSelecionado(id);
+    }
+  };
 
   return (
     <main>
@@ -73,7 +67,10 @@ export default function GerenciarUsuarios(){
             type="text"
             placeholder="Buscar usuario"
             value={busca}
-            onChange={(e) => {setBusca(e.target.value); setUsuarioSelecionado(null) }}
+            onChange={(e) => {
+              setBusca(e.target.value);
+              setUsuarioSelecionado(null);
+            }}
           />
 
           <div className={styles.selectContainer}>
@@ -89,8 +86,8 @@ export default function GerenciarUsuarios(){
                   : funcao === "autor"
                     ? "autores"
                     : funcao === "funcionario"
-                    ? "funcionarios"
-                    : ""}
+                      ? "funcionarios"
+                      : ""}
               </span>
 
               <FiChevronDown
@@ -100,45 +97,22 @@ export default function GerenciarUsuarios(){
 
             {dropdownAberto === "filtro" && (
               <div className={styles.options}>
-                <div
-                  onClick={() => {
-                    handleFiltro("", true)
-                  }}
-                >
+                <div onClick={() => handleFiltro("", true)}>
                   <span>Ordenar por</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    handleFiltro("cliente", true)
-                  }}
-                >
+                <div onClick={() => handleFiltro("cliente", true)}>
                   <span>cliente</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    handleFiltro("autor", true)
-                  }}
-                >
-
-                  
+                <div onClick={() => handleFiltro("autor", true)}>
                   <span>autor</span>
                 </div>
 
-                <div
-                  onClick={() => {
-                    handleFiltro("funcionario", true)
-                  }}
-                >
-
-                  
+                <div onClick={() => handleFiltro("funcionario", true)}>
                   <span>funcionario</span>
                 </div>
-
               </div>
-
-              
             )}
           </div>
 
@@ -160,19 +134,11 @@ export default function GerenciarUsuarios(){
 
             {dropdownAberto === "ordem" && (
               <div className={styles.options}>
-                <div
-                  onClick={() => {
-                    handleFiltro("ascendente", false)
-                  }}
-                >
+                <div onClick={() => handleFiltro("ascendente", false)}>
                   Mais Antigos
                 </div>
 
-                <div
-                  onClick={() => {
-                    handleFiltro("descendente", false)
-                  }}
-                >
+                <div onClick={() => handleFiltro("descendente", false)}>
                   Mais Recentes
                 </div>
               </div>
@@ -189,140 +155,136 @@ export default function GerenciarUsuarios(){
             <Carregando mensagem="Carregando usuarios..." />
           </div>
         ) : !usuarios || usuarios.length === 0 ? (
-          <p className={styles.semLivros}>Nenhum livro encontrado</p>
+          <p className={styles.semUsuarios}>Nenhum usuário encontrado</p>
         ) : (
-          <table>
-
-             <tr>
-                    <td >nome</td>
-                    <td >funcao</td>
-                    <td >autor</td>
-                    {funcao == "funcionario" ? <td >email</td> : <></>}
-             </tr>
-
-            {usuarios.map((usuario, c) => {
-              return (
- 
-                <>
-                  
-
-                  <tr>
-                    <td >{usuario.nome}</td>
-                    <td >{usuario.funcao || "Cliente"}</td>
-                    <td >{usuario.autor == true ? "sim" : "não"}</td>
-                    {funcao == "funcionario" ? <td >{usuario.redes_sociais?.email}</td> : <></>}
-                  </tr>
-
-                  <button onClick={() => handleDetalhes(c)}></button>
-                </>
-
-              );
-            })}
-          </table>
-        )}
-
-       {console.log(usuarioSelecionado)}
-
-        {usuarioSelecionado != null ? <div>
-        {usuarios[usuarioSelecionado]?.imagem  ? <img src={usuarios[usuarioSelecionado].imagem}></img> : <div>sem imagem</div> }
-        <div>{usuarios[usuarioSelecionado].nome}</div>
-        <div>{usuarios[usuarioSelecionado].telefone}</div>
-        <div>{usuarios[usuarioSelecionado].descricao}</div>
-        <div>{usuarios[usuarioSelecionado].nome}</div>
-        <div>{usuarios[usuarioSelecionado].funcao}</div>
-        <div>{usuarios[usuarioSelecionado].redes_sociais?.email}</div>
-
-        {usuarios[usuarioSelecionado].autor == true ? <div>
-          {usuarios[usuarioSelecionado].livros.map(livro => {
-            if(livro.ativo == true && livro.estado == "publicado"){
-             return(  <>
-                    <div>
-                      {console.log(livro?.capa)}
-                      {console.log(JSON.parse(livro?.capa) )}
-                      {livro?.capa ?  JSON.parse(livro?.capa).frente != undefined ?  
-                      <img src={JSON.parse(livro?.capa).frente}></img>  
-                      : <div>sem capa</div>
-                      : <div>sem capa</div>} 
-                      
-                      
-                      <p>{livro.titulo}</p></div>
-                        <Link to={"../livros/detalhes/"+livro.id}>ver detalhes</Link>
-                      </> )
-            }
-            
-          })
-          }
-      </div> : <></>}
-
-      {usuarios[usuarioSelecionado].revisoes[0] != undefined  ? <div>{usuarios[usuarioSelecionado].revisoes.map(revisao => {
-
-        let livroRevisado = usuarios.map(usuario => {
-          let detalhes =  usuario.livros.filter(livro =>{if(livro.id == revisao.fk_livro_id){return true}} )
-          
-          if(detalhes != []){
-            return detalhes
-          }else{
-            return
-          }
-         
-          }
-        )
-
-        console.log(livroRevisado)
-
-        livroRevisado = livroRevisado.filter(livro => {if(livro[0] != undefined){return true}})
-
-        livroRevisado = livroRevisado[0][0]
-
-        console.log(livroRevisado)
-
-        return(
-        <div>
-        <div>{revisao.data_criacao}</div>
-        <div>{revisao.apontamento}</div>
-        <div>{revisao.nome}</div>
-        {livroRevisado?.capa != undefined ? JSON.parse(livroRevisado.capa).frente != undefined ? <img src={JSON.parse(livroRevisado?.capa).frente}></img> : <div>sem capa</div> : <div>sem capa</div>}
-        <div>{livroRevisado.titulo}</div>
-        </div>
-        )
-      })}</div> : <></>}
-
-      
-
-      </div> : <></>}
-
-
-        {!carregando && meta && meta.totalPages > 1 && (
-          <div className={styles.paginacao}>
-            <button
-              onClick={() => {setPaginaAtual((prev) => {return prev - 1}); 
-              setUsuarioSelecionado(null)}}
-              disabled={paginaAtual === 1}
-            >
-              Anterior
-            </button>
-
-            <span>
-              Página {paginaAtual} de {meta.totalPages} (Total:{" "}
-              {meta.totalItems})
-            </span>
-
-            <button
-              onClick={() =>{
-                setPaginaAtual((prev) => {return prev + 1})
-                setUsuarioSelecionado(null)
-              }
-              }
-              disabled={paginaAtual === meta.totalPages}
-            >
-              Próximo
-            </button>
+          <div>
+            {usuarios.map((usuario, c) => (
+              <div key={c}>
+                <div>{usuario.nome}</div>
+                <div>{usuario.isAdmin ? "Funcionário" : "Cliente"}</div>
+                <div>{usuario.isAutor ? "sim" : "não"}</div>
+                {funcao === "funcionario" && (
+                  <div>{usuario.redes_sociais?.email}</div>
+                )}
+                <button onClick={() => handleDetalhes(c)}>Detalhes</button>
+              </div>
+            ))}
           </div>
         )}
 
-        {funcao === "funcionario" ? <div> <Link to={"/admin/funcionarios/promover"}>promover</Link> <Link to={"/admin/funcionarios/inativar"}>inativar</Link> </div> : <></>}
+        {usuarioSelecionado != null && usuarios[usuarioSelecionado] && (
+          <div>
+            {usuarios[usuarioSelecionado].imagem ? (
+              <img src={usuarios[usuarioSelecionado].imagem} alt="Perfil"></img>
+            ) : (
+              <div>sem imagem</div>
+            )}
+            <div>{usuarios[usuarioSelecionado].nome}</div>
+            <div>{usuarios[usuarioSelecionado].telefone}</div>
+            <div>{usuarios[usuarioSelecionado].descricao}</div>
+            <div>{usuarios[usuarioSelecionado].nome}</div>
+            <div>
+              {usuarios[usuarioSelecionado].isAdmin ? "Funcionário" : "Cliente"}
+            </div>
+            <div>{usuarios[usuarioSelecionado].redes_sociais?.email}</div>
 
+            {usuarios[usuarioSelecionado].isAutor && (
+              <div>
+                {usuarios[usuarioSelecionado].livros?.map((livro, index) => {
+                  if (livro.ativo && livro.estado === "publicado") {
+                    const capaObj = livro.capa ? JSON.parse(livro.capa) : null;
+                    return (
+                      <div key={index}>
+                        <div>
+                          {capaObj?.frente ? (
+                            <img src={capaObj.frente} alt="Capa"></img>
+                          ) : (
+                            <div>sem capa</div>
+                          )}
+                          <p>{livro.titulo}</p>
+                        </div>
+                        <Link to={`../livros/detalhes/${livro.id}`}>
+                          ver detalhes
+                        </Link>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            )}
+
+            {usuarios[usuarioSelecionado].revisoes && (
+              <div>
+                {usuarios[usuarioSelecionado].revisoes.map(
+                  (revisao, rIndex) => {
+                    const livroRevisado = usuarios[
+                      usuarioSelecionado
+                    ].livros?.find((livro) => livro.id === revisao.fk_livro_id);
+                    const capaRevisadaObj = livroRevisado?.capa
+                      ? JSON.parse(livroRevisado.capa)
+                      : null;
+
+                    return (
+                      <div key={rIndex}>
+                        <div>{revisao.data}</div>
+                        <div>{revisao.apontamento}</div>
+                        <div>{revisao.nome}</div>
+                        {capaRevisadaObj?.frente ? (
+                          <img
+                            src={capaRevisadaObj.frente}
+                            alt="Capa do Livro"
+                          ></img>
+                        ) : (
+                          <div>sem capa</div>
+                        )}
+                        <div>
+                          {livroRevisado?.titulo || "Título não encontrado"}
+                        </div>
+                      </div>
+                    );
+                  },
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
+
+      {!carregando && meta && meta.totalPages > 1 && (
+        <div className={styles.paginacao}>
+          <button
+            onClick={() => {
+              setPaginaAtual((prev) => prev - 1);
+              setUsuarioSelecionado(null);
+            }}
+            disabled={paginaAtual === 1}
+          >
+            Anterior
+          </button>
+
+          <span>
+            Página {paginaAtual} de {meta.totalPages} (Total: {meta.totalItems})
+          </span>
+
+          <button
+            onClick={() => {
+              setPaginaAtual((prev) => prev + 1);
+              setUsuarioSelecionado(null);
+            }}
+            disabled={paginaAtual === meta.totalPages}
+          >
+            Próximo
+          </button>
+        </div>
+      )}
+
+      {funcao === "funcionario" && (
+        <div>
+          <Link to="/admin/funcionarios/promover">promover</Link>
+          <Link to="/admin/funcionarios/inativar">inativar</Link>
+        </div>
+      )}
     </main>
   );
 }

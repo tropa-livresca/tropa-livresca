@@ -6,73 +6,40 @@ export const useUsuarios = () => {
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
 
-  const BuscarUsuarios = useCallback(async (page = 1, limit = 12, busca = "", funcao = "", ordem = "") => {
-    setCarregando(true);
-    setMeta(null);
+  const buscarUsuarios = useCallback(
+    async (page = 1, limit = 12, busca = "", ordem = "", filtro = "") => {
+      setCarregando(true);
+      setMeta(null);
 
-    try {
-      console.log(ordem);
-      const res = await apiFetch(
-        `/api/v1/admin/usuarios/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&funcao=${funcao}&ordem=${ordem}`,
-        { method: "GET", skipAuthRedirect: true },
-      );
+      try {
+        const res = await apiFetch(
+          `/api/v1/admin/usuarios/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&ordem=${ordem}&filtro=${filtro}`,
+          { method: "GET", skipAuthRedirect: true },
+        );
 
-      const result = await res.json();
+        const result = await res.json();
 
-      if (!res.ok) {
-        if (res.status === 404) {
-          setUsuarios([]);
-          setMeta(null);
-          setCarregando(false);
-          return;
+        if (!res.ok) {
+          if (res.status === 404) {
+            setUsuarios([]);
+            setMeta(null);
+            setCarregando(false);
+            return;
+          }
+          throw new Error(result.error || `Erro ${res.status}`);
         }
-        throw new Error(result.error || `Erro ${res.status}`);
+
+        setUsuarios(result.data || []);
+        setMeta(result.meta);
+        setCarregando(false);
+      } catch (error) {
+        console.error("Erro ao buscar livros:", error);
+        setUsuarios([]);
+        setCarregando(false);
       }
-
-      setUsuarios(result.data || []);
-      console.log(result.meta);
-      setMeta(result.meta);
-      setCarregando(false);
-    } catch (error) {
-      console.error("Erro ao buscar livros:", error);
-      setUsuarios([]);
-      setCarregando(false);
-    }
-  }, []);
-
-  const alterarFuncao = async (usuarioId, funcao) => {
-    setCarregando(true);
-
-    console.log(usuarioId, funcao);
-
-    
-    const res = await apiFetch(
-        `/api/v1/admin/funcionarios`,
-        { method: "PATCH",
-        body: JSON.stringify({
-          usuarioId: usuarioId, 
-          funcao: funcao
-        }), },
-      );
-
-      
-      const result = await res.json();
-
-      console.log(result)
-
-      if (!res.ok) {
-        if (res.status === 404) {
-          setCarregando(false);
-          return;
-        }
-        throw new Error(result.error || `Erro ${res.status}`);
-      }
-
-      setCarregando(false);
-  }
-
-
-
+    },
+    [],
+  );
 
   return {
     meta,
@@ -81,7 +48,6 @@ export const useUsuarios = () => {
     setUsuarios,
     setMeta,
     setCarregando,
-    BuscarUsuarios,
-    alterarFuncao,
+    buscarUsuarios,
   };
 };

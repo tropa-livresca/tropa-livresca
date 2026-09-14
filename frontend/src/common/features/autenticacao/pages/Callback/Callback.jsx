@@ -37,8 +37,6 @@ export default function Callback() {
           accessToken = hashParams.get("access_token");
           refreshToken = hashParams.get("refresh_token");
           type = hashParams.get("type");
-          console.log(hashParams.get("type"));
-          console.log(type);
         }
 
         if (
@@ -84,7 +82,7 @@ export default function Callback() {
 
         if (!response.ok) {
           throw new Error(
-            payload?.error || "Falha ao sincronizar a sessão no servidor."
+            payload?.error || "Falha ao sincronizar a sessão no servidor.",
           );
         }
 
@@ -100,9 +98,6 @@ export default function Callback() {
         } else {
           throw new Error("Dados de usuário não fornecidos pelo servidor.");
         }
-
-        console.log(response);
-        console.log(payload);
 
         if (type !== "recovery") {
           navigate("/", { replace: true });
@@ -129,11 +124,9 @@ export default function Callback() {
     setCarregando(true);
 
     try {
-      console.log("a");
-      const { data, error } = await supabase.auth.updateUser({
+      await supabase.auth.updateUser({
         password: novaSenha,
       });
-      console.log(data);
 
       setSucesso("Senha atualizada com sucesso!");
       setNovaSenha("");
@@ -145,8 +138,6 @@ export default function Callback() {
       setCarregando(false);
     }
   };
-
-  console.log(deveRedefinirSenha);
 
   if (deveRedefinirSenha == true) {
     return (
