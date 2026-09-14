@@ -1,11 +1,14 @@
 ﻿import RoutesApp from "./common/routes/RoutesApp";
-import { AuthProvider } from "./common/context/Auth";
+import { AuthProvider } from "./common/context/auth/Auth";
+import { AdminProvider } from "./common/context/admin/Admin";
 
 function App() {
   return (
-    <AuthProvider>
-      <RoutesApp />
-    </AuthProvider>
+    <AdminProvider>
+      <AuthProvider>
+        <RoutesApp />
+      </AuthProvider>
+    </AdminProvider>
   );
 }
 

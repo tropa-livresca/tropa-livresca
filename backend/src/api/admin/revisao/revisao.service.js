@@ -2,6 +2,11 @@ import { supabaseAdmin } from "../../common/config/supabase.js";
 import { RevisaoModel } from "../../common/models/revisao.model.js";
 
 export class RevisaoService {
+  static async BuscarLivroRevisao(busca){
+    const livros = await RevisaoModel.BuscarLivraoRevisao(busca);
+    return livros;
+  }
+
   static async BuscarRevisoes({
     page = 1,
     limit = 12,
@@ -110,9 +115,9 @@ export class RevisaoService {
       const dadosRevisao = {
         nome: nome,
         apontamento: apontamento,
-        fk_livros_id: idLivro,
+        fk_livro_id: idLivro,
         arquivo: manuscritoUrl,
-        fk_usuario_id: userId,
+        fk_user_profile_id: userId,
       };
 
       const revisaoCriada = await RevisaoModel.CriarRevisao(dadosRevisao);

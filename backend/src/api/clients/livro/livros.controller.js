@@ -9,20 +9,15 @@ export class LivrosController {
       const filtro = req.query.filtro || "";
       const ordem = req.query.ordem || "";
 
-      const resultado = await LivrosService.getLivros({ page, limit, busca, filtro, ordem });
+      const resultado = await LivrosService.getLivros({
+        page,
+        limit,
+        busca,
+        filtro,
+        ordem,
+      });
 
       return res.status(200).json(resultado);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async GetLivrosByAutor(req, res, next) {
-    try {
-      const { id } = req.params;
-      const livroDetalhes = await LivrosService.getLivrosByAutor(id);
-
-      return res.status(200).json(livroDetalhes);
     } catch (err) {
       next(err);
     }

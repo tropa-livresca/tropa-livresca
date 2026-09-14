@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Banco de dados para a editora Tropa Livresca.",
   "license": "ISC",
-  "author": "Gabriel",
   "type": "module",
   "main": "api.js",
   "scripts": {

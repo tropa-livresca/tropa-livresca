@@ -1,6 +1,17 @@
 import { RevisaoService } from "./revisao.service.js";
 
 export class RevisaoController {
+  static async BuscarLivroRevisao(req, res, next){
+    try{
+      const busca = req.query.busca || "";
+      const livros = await RevisaoService.BuscarLivroRevisao(busca);
+
+      return res.status(200).json(livros);
+    }catch(err){
+      next(err)
+    };
+  }
+
   static async BuscarRevisoes(req, res, next) {
     try {
       const page = parseInt(req.query.page, 10) || 1;
@@ -21,6 +32,7 @@ export class RevisaoController {
 
       return res.status(200).json(revisoes);
     } catch (err) {
+      next(err);
       return res.json(err.message);
     }
   }
@@ -59,7 +71,7 @@ export class RevisaoController {
 
   static async CriarRevisao(req, res, next) {
     try {
-      const userId = req.user?.id;
+      const userId = req.user?.id || req.userId || req.usuario;
       const nome = req.body.nome;
       const apontamento = req.body.apontamento;
       const idLivro = req.body.idLivro;
@@ -104,3 +116,4 @@ export class RevisaoController {
     }
   }
 }
+ 

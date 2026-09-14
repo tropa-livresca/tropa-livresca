@@ -1,6 +1,6 @@
 import { AuthService } from "./auth.service.js";
 import supabase from "../../common/config/supabase.js";
-
+import jwt from "jsonwebtoken";
 export class AuthController {
   static COOKIE_OPTIONS = {
     httpOnly: true,
@@ -13,7 +13,9 @@ export class AuthController {
   static async obterDadosUsuarioUnificado(userId) {
     const { data } = await supabase
       .from("users_profile")
-      .select("nome, telefone, imagem, descricao, redes_sociais, is_admin, funcao")
+      .select(
+        "nome, telefone, imagem, descricao, redes_sociais, is_admin, funcao",
+      )
       .eq("id", userId)
       .single();
     return data || {};
@@ -41,21 +43,33 @@ export class AuthController {
       let finalUser = data?.user || data?.session?.user;
 
       if (!finalUser && finalAccessToken) {
-        const { data: userData } = await supabase.auth.getUser(finalAccessToken);
+        const { data: userData } =
+          await supabase.auth.getUser(finalAccessToken);
         finalUser = userData?.user;
       }
 
       if (!finalAccessToken || !finalRefreshToken || !finalUser) {
         return res.status(502).json({
-          error: "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
+          error:
+            "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
         });
       }
 
-      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(finalUser.id);
+      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(
+        finalUser.id,
+      );
       const usuarioCompleto = { ...finalUser, ...dadosPerfil };
 
-      res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", finalRefreshToken, AuthController.COOKIE_OPTIONS);
+      res.cookie(
+        "admin-token",
+        finalAccessToken,
+        AuthController.COOKIE_OPTIONS,
+      );
+      res.cookie(
+        "refresh-token",
+        finalRefreshToken,
+        AuthController.COOKIE_OPTIONS,
+      );
 
       return res.json({
         user: usuarioCompleto,
@@ -123,7 +137,8 @@ export class AuthController {
 
       if (!data?.url) {
         return res.status(502).json({
-          error: "Não foi possível gerar a URL de autenticação com Google no momento.",
+          error:
+            "Não foi possível gerar a URL de autenticação com Google no momento.",
         });
       }
 
@@ -144,7 +159,8 @@ export class AuthController {
 
       return res.status(201).json({
         data: data,
-        message: "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+        message:
+          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
       });
     } catch (err) {
       return next(err);
@@ -172,7 +188,9 @@ export class AuthController {
         return res.status(401).json({ error: "E-mail ou senha incorretos." });
       }
 
-      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(data.user.id);
+      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(
+        data.user.id,
+      );
       const usuarioCompleto = { ...data.user, ...dadosPerfil };
 
       res.cookie(
@@ -186,14 +204,113 @@ export class AuthController {
         AuthController.COOKIE_OPTIONS,
       );
 
-      return res
-        .status(200)
-        .json({ user: usuarioCompleto, message: "Login realizado com sucesso!" });
+      return res.status(200).json({
+        user: usuarioCompleto,
+        message: "Login realizado com sucesso!",
+      });
     } catch (err) {
       return next(err);
     }
   }
 
+  static async signinAdm(req, res, next) {
+    try {
+      const { email, senha } = req.body;
+
+      const resultado = await AuthService.signinAdmin(email, senha);
+
+      const usuario = resultado.user;
+
+      if (!usuario || !usuario.is_admin) {
+        return res.status(403).json({
+          error: "Acesso negado.",
+        });
+      }
+
+      const token = jwt.sign(
+        {
+          id: usuario.id,
+          email: usuario.email,
+          is_admin: usuario.is_admin,
+          funcao: usuario.funcao,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "7d",
+        },
+      );
+
+      res.cookie("admin-token", token, AuthController.COOKIE_OPTIONS);
+
+      return res.status(200).json({
+        user: usuario,
+        primeiroAcesso: resultado.primeiroAcesso,
+        message: "Login realizado com sucesso!",
+      });
+    } catch (err) {
+      return next(err);
+    }
+  }
+
+  static async getSessionAdm(req, res, next) {
+    try {
+      return res.status(200).json({
+        user: {
+          id: req.user.id,
+          email: req.user.email,
+          ...req.adm,
+        },
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async signoutAdm(req, res, next) {
+    try {
+      res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
+      res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
+
+      return res.status(200).json({ message: "Desconectado com sucesso." });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async alterarSenhaAdm(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const novaSenha = req.body.novaSenha;
+
+      const resultado = await AuthService.alterarSenhaAdm(userId, novaSenha);
+
+      return res.status(200).json({
+        resultado,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async alterarSenhaAntiga(req, res, next) {
+    try {
+      const email = req.body.email;
+      const senhaAntiga = req.body.senhaAntiga;
+      const novaSenha = req.body.novaSenha;
+
+      const resultado = await AuthService.alterarSenhaAntiga(
+        email,
+        senhaAntiga,
+        novaSenha,
+      );
+
+      return res
+        .status(200)
+        .json({ resultado, message: "Senha alterada com sucesso!" });
+    } catch (err) {
+      next(err);
+    }
+  }
   static async atualizarSenha(req, res, next) {
     try {
       const novaSenha = req.body.novaSenha || req.body.senha;
@@ -231,7 +348,8 @@ export class AuthController {
       await AuthService.esqueciSenha(email);
 
       return res.status(200).json({
-        message: "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+        message:
+          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
       });
     } catch (err) {
       return next(err);
@@ -239,29 +357,7 @@ export class AuthController {
   }
 
   static async callbackRedefinirSenha(req, res) {
-    const code = req.query.code;
-
-    if (!code) {
-      return res.redirect("http://localhost:5173/auth/login?error=Link_invalido");
-    }
-
-    try {
-      const data = await AuthService.setSessionWithCode(code);
-
-      const accessToken = data?.session?.access_token;
-      const refreshToken = data?.session?.refresh_token;
-
-      if (!accessToken || !refreshToken) {
-        throw new Error("Dados de sessao ausentes no retorno do provedor.");
-      }
-
-      res.cookie("auth-token", accessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie("refresh-token", refreshToken, AuthController.COOKIE_OPTIONS);
-
-      return res.redirect("http://localhost:5173/auth/redefinir-senha");
-    } catch (err) {
-      return res.redirect("http://localhost:5173/auth/login?error=Erro_na_autenticacao");
-    }
+    return res.redirect(process.env.SUPABASE_RESET_PASSWORD_URL);
   }
 
   static async redefinirSenha(req, res, next) {

@@ -1,7 +1,9 @@
+@import url("https://googleapis.com");
+
 .menu {
   position: fixed;
   top: 0;
-  left: -18rem;
+  left: -15.6rem;
   width: 15.6rem;
   height: 100vh;
   padding-top: 5.5rem;
@@ -44,8 +46,8 @@
   background: #f6f1dc;
 }
 
-.itemMenu svg{
-  color:#67170c;
+.itemMenu svg {
+  color: #67170c;
 }
 
 .subMenu {
@@ -62,6 +64,8 @@
   color: #8b6b5f;
   font-family: "Jacques Francois", serif;
   border-radius: 0.5rem;
+  text-decoration: none;
+  display: block;
 }
 
 .subItem:hover {
