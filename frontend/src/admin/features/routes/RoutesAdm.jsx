@@ -13,11 +13,7 @@ import Categoria from "../categorias/pages/Categoria/Categoria";
 import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
 import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
 import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
-import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";
-import PromoverUsuario from "../usuarios/pages/PromoverUsuario/PromoverUsuario";
-import InativarFuncionario from "../usuarios/pages/InativarFuncionario/InativarFuncionario";
-
-import MainLayout from "../../components/MainLayout/MainLayout";
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
 
 const PrivateRoute = ({ children, redirectTo = "/auth/admin" }) => {
@@ -135,26 +131,7 @@ const RoutesAdm = () => {
             <PrivateRoute>
               <GerenciaUsuarios />
             </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="funcionarios/promover"
-          element={
-            <PrivateRoute>
-              <PromoverUsuario />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="funcionarios/inativar"
-          element={
-            <PrivateRoute>
-              <InativarFuncionario />
-            </PrivateRoute>
-          }
-        />
+          }/>
 
         <Route
           path="configuracoes/novasenha"

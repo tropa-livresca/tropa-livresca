@@ -65,4 +65,33 @@ export class UsuariosModel {
       count: count || 0,
     };
   }
+
+  static async buscarFuncionarioById(funcionarioId) {
+    const { data, error } = await supabase
+      .from("users_profile")
+      .select("*")
+      .eq("id", funcionarioId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    const { data: revisoes, error: revisoesError } = await supabase
+      .from("users_profile")
+      .select("*")
+      .eq("fk_users_profile_id", funcionarioId)
+      .maybeSingle();
+
+    if (revisoesError) {
+      revisoesError.statusCode = 500;
+      throw revisoesError;
+    }
+
+    return {
+      data,
+      revisoes: revisoes,
+    };
+  }
 }

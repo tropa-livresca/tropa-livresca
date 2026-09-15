@@ -1,6 +1,23 @@
 import { FuncionariosModel } from "../../common/models/funcionarios.model.js";
 
 export class FuncionariosService {
+  static async buscarFuncionarioById(funcionarioId) {
+    const funcionario =
+      await FuncionariosModel.buscarFuncionarioById(funcionarioId);
+
+    if (!funcionario) {
+      const erroFuncionario = new Error("Funcionário não encontrado.");
+      erroFuncionario.statusCode = 404;
+      throw erroFuncionario;
+    }
+
+    if (funcionario.error) {
+      throw funcionario.error;
+    }
+
+    return funcionario;
+  }
+
   static async buscarFuncionarios({
     page = 1,
     limit = 12,
@@ -24,7 +41,17 @@ export class FuncionariosService {
       throw funcionarios.error;
     }
 
-    return funcionarios;
+    const totalItems = funcionarios.count;
+
+    return {
+      data: funcionarios,
+      meta: {
+        page,
+        limit,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+      },
+    };
   }
 
   static async alterarFuncao(usuarioId, funcao) {

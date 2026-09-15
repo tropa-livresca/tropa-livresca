@@ -1,6 +1,20 @@
 import { FuncionariosService } from "./funcionarios.service.js";
 
 export class FuncionariosController {
+  static async buscarFuncionarioById(req, res, next) {
+    try {
+      const { funcionarioId } = req.params;
+
+      const funcionario =
+        await FuncionariosService.buscarFuncionarioById(funcionarioId);
+
+      return res.status(200).json({
+        funcionario,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
   static async buscarFuncionarios(req, res, next) {
     const { page, limit, busca, ordem } = req.params;
 

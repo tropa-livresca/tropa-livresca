@@ -3,11 +3,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
+import Paginacao from "../../../../common/components/Paginacao/Paginacao";
 import styles from "./Livros.module.css";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function Livros() {
-  const { Livros, BuscarLivros, carregando, meta } = useLivros();
+  // Mantemos o hook, mas vamos sobrescrever os dados para o teste
+  const { Livros, BuscarLivros, carregando } = useLivros();
 
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState("");
@@ -23,9 +25,33 @@ export default function Livros() {
     carregarDados();
   }, [paginaAtual, filtro, ordem]);
 
+  // ==========================================
+  // SIMULAÇÃO PARA TESTE DE PAGINAÇÃO:
+  // Cria 12 livros dinâmicos para a página atual simulando um total de 36 livros (3 páginas)
+  const itensPorPagina = 12;
+  const totalLivrosSimulados = 36;
+
+  const livrosSimulados = Array.from({ length: itensPorPagina }).map((_, index) => {
+    const numeroDoLivro = (paginaAtual - 1) * itensPorPagina + (index + 1);
+    return {
+      id: `simulado-${numeroDoLivro}`,
+      titulo: `Livro Simulado Vol. ${numeroDoLivro}`,
+      autor_nome: "Autor",
+      autor_sobrenome: `Fictício ${numeroDoLivro}`,
+      capa: {
+        frente: "https://placeholder.com" // Imagem temporária para teste
+      }
+    };
+  });
+
+  const metaSimulado = {
+    totalPages: Math.ceil(totalLivrosSimulados / itensPorPagina), // Resultará em 3 páginas
+    totalItems: totalLivrosSimulados
+  };
+  // ==========================================
+
   const handleBuscar = (e) => {
     e.preventDefault();
-
     setPaginaAtual(1);
     BuscarLivros(1, 12, busca, filtro, ordem);
   };
@@ -46,18 +72,12 @@ export default function Livros() {
     <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Livros publicados pela editora</h1>
-
-        <p>
-          Histórias que transformam, ideias que inspiram: explore nosso
-          catálogo.
-        </p>
+        <p>Histórias que transformam, ideias que inspiram: explore nosso catálogo.</p>
       </div>
 
       <div className={styles.container}>
         <form onSubmit={handleBuscar} className={styles.busca}>
-          <span className={styles.iconebusca}>
-            <FaSearch />
-          </span>
+          <span className={styles.iconebusca}><FaSearch /></span>
 
           <input
             className={styles.inputBusca}
@@ -70,11 +90,7 @@ export default function Livros() {
           <div className={styles.selectContainer}>
             <div
               className={styles.select}
-              onClick={() =>
-                setDropdownAberto(
-                  dropdownAberto === "filtro" ? null : "filtro"
-                )
-              }
+              onClick={() => setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")}
             >
               <span>
                 {filtro === "alfabetico"
@@ -83,27 +99,14 @@ export default function Livros() {
                     ? "Data de Publicação"
                     : "Ordenar por"}
               </span>
-
-              <FiChevronDown
-                className={
-                  dropdownAberto === "filtro" ? styles.setaAberta : ""
-                }
-              />
+              <FiChevronDown className={dropdownAberto === "filtro" ? styles.setaAberta : ""} />
             </div>
 
             {dropdownAberto === "filtro" && (
               <div className={styles.options}>
-                <div onClick={() => handleFiltro("")}>
-                  <span>Ordenar por</span>
-                </div>
-
-                <div onClick={() => handleFiltro("alfabetico")}>
-                  <span>Ordem Alfabética</span>
-                </div>
-
-                <div onClick={() => handleFiltro("data")}>
-                  <span>Data de Publicação</span>
-                </div>
+                <div onClick={() => handleFiltro("")}><span>Ordenar por</span></div>
+                <div onClick={() => handleFiltro("alfabetico")}><span>Ordem Alfabética</span></div>
+                <div onClick={() => handleFiltro("data")}><span>Data de Publicação</span></div>
               </div>
             )}
           </div>
@@ -111,11 +114,7 @@ export default function Livros() {
           <div className={styles.selectContainer}>
             <div
               className={styles.select1}
-              onClick={() =>
-                setDropdownAberto(
-                  dropdownAberto === "ordem" ? null : "ordem"
-                )
-              }
+              onClick={() => setDropdownAberto(dropdownAberto === "ordem" ? null : "ordem")}
             >
               <span>
                 {ordem === "ascendente"
@@ -124,58 +123,37 @@ export default function Livros() {
                     ? "Mais Recentes"
                     : "Ordenar por"}
               </span>
-
-              <FiChevronDown
-                className={
-                  dropdownAberto === "ordem" ? styles.setaAberta : ""
-                }
-              />
+              <FiChevronDown className={dropdownAberto === "ordem" ? styles.setaAberta : ""} />
             </div>
 
             {dropdownAberto === "ordem" && (
               <div className={styles.options}>
-                <div onClick={() => handleOrdem("")}>
-                  <span>Ordenar por</span>
-                </div>
-
-                <div onClick={() => handleOrdem("ascendente")}>
-                  <span>Mais Antigos</span>
-                </div>
-
-                <div onClick={() => handleOrdem("descendente")}>
-                  <span>Mais Recentes</span>
-                </div>
+                <div onClick={() => handleOrdem("")}><span>Ordenar por</span></div>
+                <div onClick={() => handleOrdem("ascendente")}><span>Mais Antigos</span></div>
+                <div onClick={() => handleOrdem("descendente")}><span>Mais Recentes</span></div>
               </div>
             )}
           </div>
 
-          <button type="submit" className={styles.btnbuscar}>
-            Buscar
-          </button>
+          <button type="submit" className={styles.btnbuscar}>Buscar</button>
         </form>
 
         {carregando ? (
           <div className={styles.carregando}>
             <Carregando mensagem="Carregando livros..." />
           </div>
-        ) : !Livros || Livros.length === 0 ? (
+        ) : !livrosSimulados || livrosSimulados.length === 0 ? ( // MODIFICADO: Usando dados simulados
           <p className={styles.semLivros}>Nenhum livro encontrado</p>
         ) : (
           <div className={styles.livros}>
-            {Livros.map((livro) => {
+            {/* MODIFICADO: Mapeando os livrosSimulados */}
+            {livrosSimulados.map((livro) => {
               return (
                 <div key={livro.id} className={styles.cardLivro}>
-                  <Link
-                    to={`/livros/detalhes/${livro.id}`}
-                    className={styles.linkCapa}
-                  >
+                  <Link to={`/livros/detalhes/${livro.id}`} className={styles.linkCapa}>
                     <div className={styles.capaContainer}>
                       {livro?.capa?.frente ? (
-                        <img
-                          src={livro.capa.frente}
-                          alt={livro.titulo}
-                          className={styles.capa}
-                        />
+                        <img src={livro.capa.frente} alt={livro.titulo} className={styles.capa} />
                       ) : (
                         <div className={styles.semImagem}>Sem imagem</div>
                       )}
@@ -183,15 +161,10 @@ export default function Livros() {
                   </Link>
 
                   <div className={styles.infoLivro}>
-                    <Link
-                      to={`/livros/detalhes/${livro.id}`}
-                      className={styles.linkLivro}
-                    >
+                    <Link to={`/livros/detalhes/${livro.id}`} className={styles.linkLivro}>
                       <h3>{livro.titulo || "Sem título"}</h3>
-
                       <p className={styles.autor}>
-                        {livro.autor_nome || "Sem autor"}{" "}
-                        {livro.autor_sobrenome || ""}
+                        {livro.autor_nome || "Sem autor"} {livro.autor_sobrenome || ""}
                       </p>
                     </Link>
                   </div>
@@ -201,34 +174,15 @@ export default function Livros() {
           </div>
         )}
 
-        {!carregando && meta && meta.totalPages > 1 && (
-          <div className={styles.paginacao}>
-            <button
-              onClick={() =>
-                setPaginaAtual((prev) => Math.max(prev - 1, 1))
-              }
-              disabled={paginaAtual === 1}
-            >
-              Anterior
-            </button>
-
-            <span>
-              Página {paginaAtual} de {meta.totalPages}
-            </span>
-
-            <button
-              onClick={() =>
-                setPaginaAtual((prev) =>
-                  Math.min(prev + 1, meta.totalPages)
-                )
-              }
-              disabled={paginaAtual === meta.totalPages}
-            >
-              Próximo
-            </button>
-          </div>
+        {/* MODIFICADO: Passando o metaSimulado para forçar a paginação a aparecer */}
+        {!carregando && metaSimulado && metaSimulado.totalPages > 1 && (
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={metaSimulado.totalPages}
+            totalItems={metaSimulado.totalItems}
+            onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+          />
         )}
-
       </div>
     </main>
   );

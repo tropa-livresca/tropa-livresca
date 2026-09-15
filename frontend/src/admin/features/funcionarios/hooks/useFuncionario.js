@@ -4,6 +4,7 @@ import { apiFetch } from "../../../../common/services/api.js";
 export const useFuncionario = () => {
   const [funcionario, setFuncionario] = useState(null);
   const [funcionarios, setFuncionarios] = useState([]);
+  const [meta, setMeta] = useState();
   const [carregando, setCarregando] = useState(false);
 
   const buscarFuncionarios = useCallback(
@@ -29,6 +30,7 @@ export const useFuncionario = () => {
         }
 
         setFuncionarios(result.data || []);
+        setMeta(result.meta || []);
       } catch (err) {
         console.error("Erro ao buscar funcionários", err);
       } finally {
@@ -122,6 +124,7 @@ export const useFuncionario = () => {
   return {
     funcionario,
     funcionarios,
+    meta,
     buscarFuncionarios,
     buscarFuncionarioById,
     alterarFuncao,

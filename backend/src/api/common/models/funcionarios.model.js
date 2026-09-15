@@ -60,7 +60,7 @@ export class FuncionariosModel {
 
   static async inativarFuncionario(funcionarioId) {
     const { data, error } = await supabase
-      .from("adm_credenciais")
+      .from("users_profile")
       .update(false)
       .eq("id", funcionarioId)
       .select("is_admin")
@@ -74,12 +74,11 @@ export class FuncionariosModel {
     return data;
   }
 
-  static async atualizarCargo(funcionarioId, funcao) {
+  static async buscarFuncionarioById(funcionarioId) {
     const { data, error } = await supabase
-      .from("adm_credenciais")
-      .update({ funcao: funcao })
+      .from("users_profile")
+      .select("*")
       .eq("id", funcionarioId)
-      .select()
       .single();
 
     if (error) {
@@ -87,6 +86,20 @@ export class FuncionariosModel {
       throw error;
     }
 
-    return data;
+    const { count, error: revisoesError } = await supabase
+      .from("users_profile")
+      .select({ count: "exact" })
+      .eq("fk_users_profile_id", funcionarioId)
+      .maybeSingle();
+
+    if (revisoesError) {
+      revisoesError.statusCode = 500;
+      throw revisoesError;
+    }
+
+    return {
+      data,
+      count: count || 0,
+    };
   }
 }
