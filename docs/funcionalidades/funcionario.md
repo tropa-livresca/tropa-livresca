@@ -2,7 +2,6 @@
 
 ## Recursos administrativos comuns
 
-- Gerenciamento de categorias da loja
 - Gerenciamento de cupons
 - Monitoramento de entregas
 - Gerenciamento de pedidos
