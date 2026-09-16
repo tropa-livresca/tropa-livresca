@@ -9,11 +9,8 @@ import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
 import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
-import Categoria from "../categorias/pages/Categoria/Categoria";
-import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
-import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
-import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
-import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";import MainLayout from "../../components/MainLayout/MainLayout";
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";
+import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
 
 const PrivateRoute = ({ children, redirectTo = "/auth/admin" }) => {
@@ -90,48 +87,13 @@ const RoutesAdm = () => {
         />
 
         <Route
-          path="categorias"
-          element={
-            <PrivateRoute>
-              <PainelCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/:id"
-          element={
-            <PrivateRoute>
-              <Categoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/nova"
-          element={
-            <PrivateRoute>
-              <NovaCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/alterar/:id"
-          element={
-            <PrivateRoute>
-              <AlterarCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
           path="funcionarios"
           element={
             <PrivateRoute>
               <GerenciaUsuarios />
             </PrivateRoute>
-          }/>
+          }
+        />
 
         <Route
           path="configuracoes/novasenha"

@@ -86,9 +86,9 @@ export class FuncionariosModel {
       throw error;
     }
 
-    const { count, error: revisoesError } = await supabase
+    const { data: revisoes, error: revisoesError } = await supabase
       .from("users_profile")
-      .select({ count: "exact" })
+      .select("*")
       .eq("fk_users_profile_id", funcionarioId)
       .maybeSingle();
 
@@ -99,7 +99,7 @@ export class FuncionariosModel {
 
     return {
       data,
-      count: count || 0,
+      revisoes: revisoes,
     };
   }
 }

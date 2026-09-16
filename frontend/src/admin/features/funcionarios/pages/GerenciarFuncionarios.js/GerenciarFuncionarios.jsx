@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react"; // CORREÇÃO: era "reacct"
+import { useState, useEffect } from "react";
 import { useFuncionario } from "../../hooks/useFuncionario.js";
-import { FaSearch } from "react-icons/fa"; // CORREÇÃO: FiChevronDown não existe no 'fa', importei apenas FaSearch
-import { FiChevronDown } from "react-icons/fi"; // CORREÇÃO: FiChevronDown vem do 'fi'
+import { FaSearch } from "react-icons/fa";
+import { FiChevronDown } from "react-icons/fi";
+import { Link } from "react-router-dom";
 import Carregando from "../../../../../clients/components/Carregando/Carregando.jsx";
 import Paginacao from "../../../../common/components/Paginacao.jsx";
 
@@ -146,6 +147,9 @@ export default function GerenciarFuncionarios() {
                     <>Funcionário</>
                   )}
                 </p>
+                <Link to={`/admin/funcionarios/${funcionario.id}`}>
+                  Visualizar
+                </Link>
               </div>
             ))}
           </div>

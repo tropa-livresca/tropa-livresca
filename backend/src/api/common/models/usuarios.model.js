@@ -66,11 +66,11 @@ export class UsuariosModel {
     };
   }
 
-  static async buscarFuncionarioById(funcionarioId) {
+  static async buscarUsuarioById(usuarioId) {
     const { data, error } = await supabase
       .from("users_profile")
       .select("*")
-      .eq("id", funcionarioId)
+      .eq("id", usuarioId)
       .single();
 
     if (error) {
@@ -81,7 +81,7 @@ export class UsuariosModel {
     const { data: revisoes, error: revisoesError } = await supabase
       .from("users_profile")
       .select("*")
-      .eq("fk_users_profile_id", funcionarioId)
+      .eq("fk_users_profile_id", usuarioId)
       .maybeSingle();
 
     if (revisoesError) {
