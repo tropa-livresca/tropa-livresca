@@ -56,8 +56,11 @@
   border-top-right-radius: 0.5rem;
   color: #67170c;
   font-weight: 600;
-  border: 1px solid #e3d5ad;
-  background-color: #fffdf79f;
+  border-bottom: 1px solid #e3d5ad;
+  background-color: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .produto {
@@ -66,7 +69,6 @@
   grid-template-columns: minmax(18rem, 1fr) 7rem 9rem 7rem 2rem;
   align-items: center;
   gap: 1.5rem;
-  border: 1px solid #e3d5ad;
   border-top: none;
   padding: 1rem;
   padding-bottom: 0;
@@ -236,7 +238,9 @@
 .resumo {
   padding: 1.5rem 1.3rem;
   background-color: #fffdf7;
-  border: 1px solid #e3d5ad;
+    box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
   border-radius: 0.5rem;
 }
 
