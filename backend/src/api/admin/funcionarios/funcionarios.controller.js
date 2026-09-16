@@ -35,10 +35,13 @@ export class FuncionariosController {
   }
 
   static async alterarFuncao(req, res, next) {
-    const { usuarioId, funcao } = req.body;
+    const { usuarioId, is_master } = req.body;
 
     try {
-      const data = await FuncionariosService.alterarFuncao(usuarioId, funcao);
+      const data = await FuncionariosService.alterarFuncao(
+        usuarioId,
+        is_master,
+      );
 
       return res.status(201).json({
         success: true,

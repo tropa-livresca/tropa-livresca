@@ -151,7 +151,7 @@ export default function Livros() {
               return (
                 <div key={livro.id} className={styles.cardLivro}>
                   <Link
-                    to={`/livros/detalhes/${livro.id}`}
+                    to={`/livros/${livro.id}`}
                     className={styles.linkCapa}
                   >
                     <div className={styles.capaContainer}>
@@ -169,7 +169,7 @@ export default function Livros() {
 
                   <div className={styles.infoLivro}>
                     <Link
-                      to={`/livros/detalhes/${livro.id}`}
+                      to={`/livros/${livro.id}`}
                       className={styles.linkLivro}
                     >
                       <h3>{livro.titulo || "Sem título"}</h3>

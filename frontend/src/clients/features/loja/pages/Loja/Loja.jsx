@@ -1,7 +1,7 @@
 import styles from "./Loja.module.css";
 import Carregando from "../../../../components/Carregando/Carregando";
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
-
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import { FaSearch } from "react-icons/fa";
 import { FiChevronDown, FiShoppingCart } from "react-icons/fi";
 
@@ -225,24 +225,13 @@ export default function Loja() {
             )}
           </div>
 
-          {meta && (
-            <div className={styles.paginacao}>
-              <button
-                disabled={paginaAtual <= 1}
-                onClick={() => setPaginaAtual((pagina) => pagina - 1)}
-              >
-                Anterior
-              </button>
-
-              <span>Página {paginaAtual}</span>
-
-              <button
-                disabled={livros.length < 12}
-                onClick={() => setPaginaAtual((pagina) => pagina + 1)}
-              >
-                Próxima
-              </button>
-            </div>
+          {!carregando && meta && meta.totalPages > 1 && (
+            <Paginacao
+              paginaAtual={paginaAtual}
+              totalPaginas={meta.totalPages}
+              totalItems={meta.totalItems}
+              onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+            />
           )}
         </div>
       </div>
