@@ -9,18 +9,13 @@ export const useLivrosLoja = () => {
 
   const buscarLivroById = useCallback(async (id) => {
     setCarregando(true);
-
     try {
-      const response = apiFetch(`/api/v1/clients/loja/ ${id}`);
-
+      const response = await apiFetch(`/api/v1/clients/loja/${id}`);
       const data = await response.json();
-
       if (!response.ok) {
         console.error("Erro ao buscar livros:", data.error);
-
         return;
       }
-
       setLivro(data || []);
     } catch (err) {
       console.error("Erro ao buscar livro by id", err);
@@ -28,12 +23,18 @@ export const useLivrosLoja = () => {
     } finally {
       setCarregando(false);
     }
-  });
+  }, []);
 
   const buscarLivros = useCallback(
-    async (page = 1, limit = 12, busca = "", filtro = "", ordem = "") => {
+    async (
+      page = 1,
+      limit = 12,
+      busca = "",
+      filtro = "",
+      ordem = "",
+      categoria = "",
+    ) => {
       setCarregando(true);
-
       try {
         const params = new URLSearchParams({
           page: String(page),
@@ -41,21 +42,23 @@ export const useLivrosLoja = () => {
           busca,
           filtro,
           ordem,
+          categoria,
         });
 
         const response = await apiFetch(
           `/api/v1/clients/loja/?${params.toString()}`,
         );
-
         const data = await response.json();
-
         if (!response.ok) {
           console.error("Erro ao buscar livros:", data.error);
-
           return;
         }
-
-        setLivros(data.data || []);
+        const livros = Array.isArray(data.data)
+          ? data.data
+          : Array.isArray(data.data?.data)
+            ? data.data.data
+            : [];
+        setLivros(livros);
         setMeta(data.meta || null);
       } catch (err) {
         console.error("Erro ao buscar livros da loja:", err);

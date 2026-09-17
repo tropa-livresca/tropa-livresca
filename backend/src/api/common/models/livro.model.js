@@ -1,13 +1,19 @@
-import supabase, {supabaseAdmin} from "../config/supabase.js";
+import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 const COLUNAS_LIVRO =
-  "ISBN, imagens_explicitas, publico_alvo, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
+  "id, ISBN, imagens_explicitas, publico_alvo, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
 
 export class LivroModel {
-
   //admin
-  
-  static async buscarLivrosAdmin({ page = 1, limit = 12, busca = "", filtro = "", ordem = "", estado = "" }){
+
+  static async buscarLivrosAdmin({
+    page = 1,
+    limit = 12,
+    busca = "",
+    filtro = "",
+    ordem = "",
+    estado = "",
+  }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
@@ -33,7 +39,7 @@ export class LivroModel {
       query = query.eq("estado", "publicado");
     } else if (estado === "em_revisao") {
       query = query.eq("estado", "em_revisao");
-    } 
+    }
 
     const { data, error, count } = await query.range(start, end);
 
@@ -46,10 +52,10 @@ export class LivroModel {
       data: data || [],
       count: count || 0,
     };
-}
+  }
 
-  static async buscarLivroByIdAdmin(livroId){
-     if (!livroId) return null;
+  static async buscarLivroByIdAdmin(livroId) {
+    if (!livroId) return null;
 
     const { data, error } = await supabaseAdmin
       .from("livros")
@@ -66,8 +72,13 @@ export class LivroModel {
   }
 
   //clients
-  static async buscarComFiltros({ page = 1, limit = 12, busca = "", filtro = "", ordem = "" },
-  ) {
+  static async buscarComFiltros({
+    page = 1,
+    limit = 12,
+    busca = "",
+    filtro = "",
+    ordem = "",
+  }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 

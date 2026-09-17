@@ -46,30 +46,50 @@ export default function NavBar() {
         ☰
       </button>
 
-      <nav className={`${styles.navbar} ${menuAberto ? styles.menuAberto : ""}`}>
+      <nav
+        className={`${styles.navbar} ${menuAberto ? styles.menuAberto : ""}`}
+      >
         <ul className={styles.list}>
           <li className={styles.item}>
             <Link to="/">Sobre Nós</Link>
             <ul className={styles.subtema}>
-              <li><Link to="/">Início</Link></li>
-              <li><Link to="/historia">Quem Somos</Link></li>
-              <li><Link to="/sobreautopublicacao">Sobre a Autopublicação</Link></li>
+              <li>
+                <Link to="/">Início</Link>
+              </li>
+              <li>
+                <Link to="/historia">História</Link>
+              </li>
+              <li>
+                <Link to="/sobreautopublicacao">Sobre a Autopublicação</Link>
+              </li>
             </ul>
           </li>
-          <li className={styles.item}><Link to="/livros">Livros</Link></li>
-          <li className={styles.item}><Link to="/loja">Loja</Link></li>
-          <li className={styles.item}><Link to="/autores">Autores</Link></li>
+          <li className={styles.item}>
+            <Link to="/livros">Livros</Link>
+          </li>
+          <li className={styles.item}>
+            <Link to="/loja">Loja</Link>
+          </li>
+          <li className={styles.item}>
+            <Link to="/autores">Autores</Link>
+          </li>
           <li className={styles.item}>
             <Link to="/meuslivros">Se Autopublique</Link>
             <ul className={styles.subtema}>
-              <li><Link to="/meuslivros">Meus Livros</Link></li>
+              <li>
+                <Link to="/meuslivros">Meus Livros</Link>
+              </li>
             </ul>
           </li>
           <li className={styles.item}>
             <Link to="/">Suporte</Link>
             <ul className={styles.subtema}>
-              <li><Link to="/FAQ">Perguntas Frequentes</Link></li>
-              <li><Link to="/suporte">Contato</Link></li>
+              <li>
+                <Link to="/FAQ">Perguntas Frequentes</Link>
+              </li>
+              <li>
+                <Link to="/suporte">Contato</Link>
+              </li>
             </ul>
           </li>
         </ul>
@@ -116,7 +136,6 @@ export default function NavBar() {
                     Conta e Senha
                   </Link>
 
-
                   <button
                     className={styles.menuItem}
                     onClick={() => {
@@ -133,8 +152,12 @@ export default function NavBar() {
           </div>
         ) : (
           <div className={styles.navbutton}>
-            <Link to="/auth/cadastro" className={styles.button}>Cadastro</Link>
-            <Link to="/auth/login" className={styles.button}>Login</Link>
+            <Link to="/auth/cadastro" className={styles.button}>
+              Cadastro
+            </Link>
+            <Link to="/auth/login" className={styles.button}>
+              Login
+            </Link>
           </div>
         )}
       </nav>
