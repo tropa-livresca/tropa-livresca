@@ -6,6 +6,7 @@ export class FuncionariosModel {
     limit = 12,
     busca = "",
     ordem = "",
+    filtro = "",
   }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
@@ -17,6 +18,10 @@ export class FuncionariosModel {
 
     if (busca) {
       query = query.ilike("nome", `%${busca}%`);
+    }
+
+    if (filtro) {
+      query = query.ilike("funcao", `%${filtro}%`);
     }
 
     const isAsc = ordem !== "descendente";
@@ -38,7 +43,11 @@ export class FuncionariosModel {
   static async alterarFuncao(usuarioId, funcao) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .update({ funcao: funcao, is_admin: funcao == "funcionario" })
+      .update({
+        funcao: funcao,
+        is_admin: funcao == "funcionario" || funcao == "Master",
+        is_master: funcao == "Master",
+      })
       .eq("id", usuarioId)
       .select()
       .maybeSingle();
@@ -59,31 +68,27 @@ export class FuncionariosModel {
   }
 
   static async inativarFuncionario(funcionarioId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .update(false)
+      .update({
+        funcao: "",
+        is_admin: false,
+        is_master: false,
+      })
       .eq("id", funcionarioId)
-      .select("is_admin")
-      .single();
+      .select()
+      .maybeSingle();
 
     if (error) {
-      error.statusCode = 500;
       throw error;
     }
 
-    return data;
-  }
-
-  static async buscarFuncionarioById(funcionarioId) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("id", funcionarioId)
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    if (!data) {
+      const erroRegistro = new Error(
+        "Nenhum perfil foi encontrado para atualização.",
+      );
+      erroRegistro.statusCode = 404;
+      throw erroRegistro;
     }
 
     const { data: revisoes, error: revisoesError } = await supabase

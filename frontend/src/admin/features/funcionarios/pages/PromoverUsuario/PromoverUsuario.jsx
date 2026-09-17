@@ -1,24 +1,26 @@
 import { useEffect, useState } from "react";
-import { useUsuarios } from "../../hooks/useUsuarios";
+import { useUsuarios } from "../../../../hooks/useUsuarios";
+import { useFuncionario } from "../../hooks/useFuncionario";
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../../clients/components/Carregando/Carregando";
 import styles from "../../../../../clients/features/livros/pages/Livros/Livros.module.css";
 import { FiChevronDown } from "react-icons/fi";
 
-export default function GerenciarUsuarios() {
-  const { buscarUsuarios, usuarios, carregando, meta, alterarFuncao } =
-    useUsuarios();
+export default function PromoverUsuario() {
+  const { buscarUsuarios, usuarios, carregando, meta } = useUsuarios();
+  const { alterarFuncao } = useFuncionario();
 
   const [busca, setBusca] = useState("");
   const [ordem, setOrdem] = useState("");
+  const [funcao, setFuncao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  const [confirmado, setConfirmado] = useState(false);
+  const [estadoDePromover, setEstadoDePromover] = useState("");
 
   useEffect(() => {
     const carregarDados = async () => {
-      await buscarUsuarios(paginaAtual, 3, busca, "cliente", ordem);
+      await buscarUsuarios(paginaAtual, 3, busca, "", ordem);
     };
 
     carregarDados();
@@ -29,7 +31,7 @@ export default function GerenciarUsuarios() {
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
-    buscarUsuarios(1, 3, busca, "cliente", ordem);
+    buscarUsuarios(1, 3, busca, "", ordem);
     setUsuarioSelecionado(null);
   };
 
@@ -44,15 +46,22 @@ export default function GerenciarUsuarios() {
   const handleSelecao = (id) => {
     if (id == usuarioSelecionado) {
       setUsuarioSelecionado(null);
+      setEstadoDePromover("");
     } else {
       setUsuarioSelecionado(id);
+      setEstadoDePromover("");
     }
   };
 
-  const handlePromover = async (id, funcao) => {
-    setConfirmado(false);
+  const handleOpcoes = async (funcao) => {
+    setEstadoDePromover("confirmando");
+    setFuncao(funcao);
+  };
+
+  const handlePromover = async (id) => {
+    setEstadoDePromover("");
     await alterarFuncao(id, funcao);
-    await buscarUsuarios(1, 3, busca, "cliente", ordem);
+    await buscarUsuarios(1, 3, busca, "", ordem);
   };
 
   return (
@@ -98,7 +107,7 @@ export default function GerenciarUsuarios() {
               <div className={styles.options}>
                 <div
                   onClick={() => {
-                    handleFiltro("ascendente", false);
+                    handleFiltro("ascendente");
                   }}
                 >
                   Mais Antigos
@@ -106,7 +115,7 @@ export default function GerenciarUsuarios() {
 
                 <div
                   onClick={() => {
-                    handleFiltro("descendente", false);
+                    handleFiltro("descendente");
                   }}
                 >
                   Mais Recentes
@@ -147,10 +156,10 @@ export default function GerenciarUsuarios() {
           <div className={styles.paginacao}>
             <button
               onClick={() => {
+                setUsuarioSelecionado(null);
                 setPaginaAtual((prev) => {
                   return prev - 1;
                 });
-                setUsuarioSelecionado(null);
               }}
               disabled={paginaAtual === 1}
             >
@@ -164,10 +173,10 @@ export default function GerenciarUsuarios() {
 
             <button
               onClick={() => {
+                setUsuarioSelecionado(null);
                 setPaginaAtual((prev) => {
                   return prev + 1;
                 });
-                setUsuarioSelecionado(null);
               }}
               disabled={paginaAtual === meta.totalPages}
             >
@@ -176,29 +185,48 @@ export default function GerenciarUsuarios() {
           </div>
         )}
 
-        {confirmado == true ? (
+        {estadoDePromover == "confirmando" && usuarioSelecionado != null ? (
           <div>
             deseja mesmo promover?{" "}
             <button
               onClick={() => {
-                handlePromover(usuarios[usuarioSelecionado].id, "funcionario");
+                handlePromover(usuarios[usuarioSelecionado].id);
               }}
             >
               sim
             </button>{" "}
             <button
               onClick={() => {
-                setConfirmado(false);
+                setEstadoDePromover("false");
               }}
             >
               não
             </button>{" "}
           </div>
+        ) : estadoDePromover == "opcoes" && usuarioSelecionado != null ? (
+          <div>
+            <button
+              onClick={() => {
+                handleOpcoes("funcionario");
+              }}
+              disabled={usuarios[usuarioSelecionado].funcao == "funcionario"}
+            >
+              funcionario
+            </button>{" "}
+            <button
+              onClick={() => {
+                handleOpcoes("Master");
+              }}
+              disabled={usuarios[usuarioSelecionado].funcao == "Master"}
+            >
+              Master
+            </button>
+          </div>
         ) : (
           <button
             disabled={usuarioSelecionado == null}
             onClick={() => {
-              setConfirmado(true);
+              setEstadoDePromover("opcoes");
             }}
           >
             promover

@@ -16,9 +16,33 @@ export class UsuariosService {
         filtro,
       });
 
-      return usuarios;
+      return {
+        data: usuarios.data,
+        meta: {
+          page,
+          limit,
+          totalItems: usuarios.count,
+          totalPages: Math.ceil(usuarios.count / limit),
+        },
+      };
     } catch (error) {
       if (!error.statusCode) error.statusCode = 500;
+      throw error;
+    }
+  }
+
+  static async BuscarUsuarioById(usarioId) {
+    if (!usarioId) {
+      const erroUsarioId = new Error("Id do livro não informado.");
+      erroUsarioId.statusCode = 400;
+      throw erroUsarioId;
+    }
+
+    try {
+      const usuario = await UsuariosModel.buscarUsuarioById(usarioId);
+      return usuario;
+    } catch (error) {
+      if (!error.statusCode) error.statusCode = 400;
       throw error;
     }
   }

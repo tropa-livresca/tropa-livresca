@@ -9,7 +9,12 @@ import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
 import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
-import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
+import GerenciaFuncionarios from "../funcionarios/pages/GerenciarFuncionarios/GerenciarFuncionarios.jsx";
+import PromoverUsuario from "../funcionarios/pages/PromoverUsuario/PromoverUsuario.jsx";
+import InativarFuncionario from "../funcionarios/pages/InativarFuncionario/InativarFuncionario.jsx";
+import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
+
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
 
@@ -90,7 +95,43 @@ const RoutesAdm = () => {
           path="funcionarios"
           element={
             <PrivateRoute>
+              <GerenciaFuncionarios />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="funcionarios/promover"
+          element={
+            <PrivateRoute>
+              <PromoverUsuario />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="funcionarios/inativar"
+          element={
+            <PrivateRoute>
+              <InativarFuncionario />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="usuarios"
+          element={
+            <PrivateRoute>
               <GerenciaUsuarios />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="usuarios/:id"
+          element={
+            <PrivateRoute>
+              <VisualizarUsuario />
             </PrivateRoute>
           }
         />

@@ -22,6 +22,12 @@ export class UsuariosModel {
         .select("*, livros!inner(estado, ativo)", { count: "exact" })
         .eq("livros.estado", "publicado")
         .eq("livros.ativo", true);
+    } else if (filtro === "cliente") {
+      query = query
+        .select("*, livros(estado, ativo)", {
+          count: "exact",
+        })
+        .eq("is_admin", false);
     } else {
       query = query.select("*, livros(estado, ativo)", { count: "exact" });
     }
@@ -61,37 +67,27 @@ export class UsuariosModel {
       }) || [];
 
     return {
-      data: usuariosFormatados,
+      data: data,
       count: count || 0,
     };
   }
 
   static async buscarUsuarioById(usuarioId) {
-    const { data, error } = await supabase
+    if (!usuarioId) return null;
+
+    const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select("*")
+      .select(
+        `*, livros(estado, ativo, titulo, subtitulo, capa, data_de_publicacao), revisoes(data_criacao ,apontamento ,nome))`,
+      )
       .eq("id", usuarioId)
-      .single();
+      .maybeSingle();
 
     if (error) {
       error.statusCode = 500;
       throw error;
     }
 
-    const { data: revisoes, error: revisoesError } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("fk_users_profile_id", usuarioId)
-      .maybeSingle();
-
-    if (revisoesError) {
-      revisoesError.statusCode = 500;
-      throw revisoesError;
-    }
-
-    return {
-      data,
-      revisoes: revisoes,
-    };
+    return data;
   }
 }

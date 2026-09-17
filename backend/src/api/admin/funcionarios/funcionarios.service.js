@@ -23,12 +23,14 @@ export class FuncionariosService {
     limit = 12,
     busca = "",
     ordem = "",
+    filtro = "",
   }) {
     const funcionarios = await FuncionariosModel.buscarFuncionarios({
       page,
       limit,
       busca,
       ordem,
+      filtro,
     });
 
     if (!funcionarios) {
@@ -41,15 +43,13 @@ export class FuncionariosService {
       throw funcionarios.error;
     }
 
-    const totalItems = funcionarios.count;
-
     return {
-      data: funcionarios,
+      data: funcionarios.data,
       meta: {
         page,
         limit,
-        totalItems,
-        totalPages: Math.ceil(totalItems / limit),
+        totalItems: funcionarios.count,
+        totalPages: Math.ceil(funcionarios.count / limit),
       },
     };
   }
@@ -61,7 +61,7 @@ export class FuncionariosService {
       throw erroDados;
     }
 
-    if (funcao !== true && funcao !== false) {
+    if (funcao !== "Master" && funcao !== "funcionario") {
       const erroFuncao = new Error("A função informado é inválida.");
       erroFuncao.statusCode = 400;
       throw erroFuncao;
@@ -88,7 +88,7 @@ export class FuncionariosService {
 
     try {
       const resultado =
-        await FuncionariosModel.alterarIsAdminFuncionario(funcionarioId);
+        await FuncionariosModel.inativarFuncionario(funcionarioId);
 
       return resultado;
     } catch (error) {
