@@ -23,4 +23,15 @@ export class UsuariosController {
       next(err);
     }
   }
+
+  static async BuscarUsuarioById(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const usuario = await UsuariosService.BuscarUsuarioById(id);
+      return res.status(200).json(usuario);
+    } catch (err) {
+      next(err);
+    }
+  }
 }

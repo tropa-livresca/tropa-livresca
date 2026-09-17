@@ -13,9 +13,11 @@ import Categoria from "../categorias/pages/Categoria/Categoria";
 import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
 import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
 import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
-import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";
-import PromoverUsuario from "../usuarios/pages/PromoverUsuario/PromoverUsuario";
-import InativarFuncionario from "../usuarios/pages/InativarFuncionario/InativarFuncionario";
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
+import GerenciaFuncionarios from "../funcionarios/pages/GerenciarFuncionarios/GerenciarFuncionarios.jsx";
+import PromoverUsuario from "../funcionarios/pages/PromoverUsuario/PromoverUsuario.jsx";
+import InativarFuncionario from "../funcionarios/pages/InativarFuncionario/InativarFuncionario.jsx";
+import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
@@ -133,7 +135,7 @@ const RoutesAdm = () => {
           path="funcionarios"
           element={
             <PrivateRoute>
-              <GerenciaUsuarios />
+              <GerenciaFuncionarios />
             </PrivateRoute>
           }
         />
@@ -152,6 +154,24 @@ const RoutesAdm = () => {
           element={
             <PrivateRoute>
               <InativarFuncionario />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="usuarios"
+          element={
+            <PrivateRoute>
+              <GerenciaUsuarios />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="usuarios/:id"
+          element={
+            <PrivateRoute>
+              <VisualizarUsuario />
             </PrivateRoute>
           }
         />

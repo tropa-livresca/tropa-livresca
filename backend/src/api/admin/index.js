@@ -10,9 +10,9 @@ import usuariosRoutes from "./usuarios/usuarios.route.js";
 const router = Router();
 
 router.use("/livros", verificarAutenticacaoAdm, livrosRoutes);
-router.use("/funcionarios", verificarAutenticacaoAdmMaster, funcionarioRoutes);
+router.use("/funcionarios", verificarAutenticacaoAdm, funcionarioRoutes);
 router.use("/categorias", verificarAutenticacaoAdm, categoriasRoutes);
 router.use("/revisao", verificarAutenticacaoAdm, revisaoRoutes);
-router.use("/usuarios", verificarAutenticacaoAdmMaster, usuariosRoutes);
+router.use("/usuarios", verificarAutenticacaoAdm, usuariosRoutes);
 
 export default router;

@@ -2,7 +2,12 @@ import { FuncionariosService } from "./funcionarios.service.js";
 
 export class FuncionariosController {
   static async buscarFuncionarios(req, res, next) {
-    const { page, limit, busca, ordem } = req.params;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 12;
+    const busca = req.query.busca || "";
+    const ordem = req.query.ordem || "";
+
+    const filtro = req.query.filtro || "";
 
     try {
       const data = await FuncionariosService.buscarFuncionarios({
@@ -10,6 +15,7 @@ export class FuncionariosController {
         limit,
         busca,
         ordem,
+        filtro,
       });
 
       return res.status(201).json({
@@ -22,6 +28,8 @@ export class FuncionariosController {
 
   static async alterarFuncao(req, res, next) {
     const { usuarioId, funcao } = req.body;
+    console.log(usuarioId);
+    console.log(funcao);
 
     try {
       const data = await FuncionariosService.alterarFuncao(usuarioId, funcao);
@@ -37,7 +45,7 @@ export class FuncionariosController {
   }
 
   static async alterarIsAdminFuncionario(req, res, next) {
-    const { funcionarioId } = req.params;
+    const { funcionarioId } = req.body;
 
     try {
       const data =

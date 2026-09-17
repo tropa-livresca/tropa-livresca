@@ -3,7 +3,7 @@ import { useUsuarios } from "../../../../hooks/useUsuarios";
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./GerenciarUsuarios.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function GerenciarUsuarios() {
@@ -15,7 +15,6 @@ export default function GerenciarUsuarios() {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
   const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -44,7 +43,11 @@ export default function GerenciarUsuarios() {
   };
 
   const handleDetalhes = (id) => {
-    navigate("/admin/usuarios/" + id);
+    if (id == usuarioSelecionado) {
+      setUsuarioSelecionado(null);
+    } else {
+      setUsuarioSelecionado(id);
+    }
   };
 
   return (
@@ -163,11 +166,87 @@ export default function GerenciarUsuarios() {
                 {funcao === "funcionario" && (
                   <div>{usuario.redes_sociais?.email}</div>
                 )}
-                <button onClick={() => handleDetalhes(usuario.id)}>
-                  Detalhes
-                </button>
+                <button onClick={() => handleDetalhes(c)}>Detalhes</button>
               </div>
             ))}
+          </div>
+        )}
+
+        {usuarioSelecionado != null && usuarios[usuarioSelecionado] && (
+          <div>
+            {usuarios[usuarioSelecionado].imagem ? (
+              <img src={usuarios[usuarioSelecionado].imagem} alt="Perfil"></img>
+            ) : (
+              <div>sem imagem</div>
+            )}
+            <div>{usuarios[usuarioSelecionado].nome}</div>
+            <div>{usuarios[usuarioSelecionado].telefone}</div>
+            <div>{usuarios[usuarioSelecionado].descricao}</div>
+            <div>{usuarios[usuarioSelecionado].nome}</div>
+            <div>
+              {usuarios[usuarioSelecionado].isAdmin ? "Funcionário" : "Cliente"}
+            </div>
+            <div>{usuarios[usuarioSelecionado].redes_sociais?.email}</div>
+
+            {usuarios[usuarioSelecionado].isAutor && (
+              <div>
+                {usuarios[usuarioSelecionado].livros?.map((livro, index) => {
+                  if (livro.ativo && livro.estado === "publicado") {
+                    const capaObj = livro.capa ? JSON.parse(livro.capa) : null;
+                    return (
+                      <div key={index}>
+                        <div>
+                          {capaObj?.frente ? (
+                            <img src={capaObj.frente} alt="Capa"></img>
+                          ) : (
+                            <div>sem capa</div>
+                          )}
+                          <p>{livro.titulo}</p>
+                        </div>
+                        <Link to={`../livros/detalhes/${livro.id}`}>
+                          ver detalhes
+                        </Link>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
+            )}
+
+            {usuarios[usuarioSelecionado].revisoes && (
+              <div>
+                {usuarios[usuarioSelecionado].revisoes.map(
+                  (revisao, rIndex) => {
+                    const livroRevisado = usuarios[
+                      usuarioSelecionado
+                    ].livros?.find((livro) => livro.id === revisao.fk_livro_id);
+                    const capaRevisadaObj = livroRevisado?.capa
+                      ? JSON.parse(livroRevisado.capa)
+                      : null;
+
+                    return (
+                      <div key={rIndex}>
+                        <div>{revisao.data}</div>
+                        <div>{revisao.apontamento}</div>
+                        <div>{revisao.nome}</div>
+                        {capaRevisadaObj?.frente ? (
+                          <img
+                            src={capaRevisadaObj.frente}
+                            alt="Capa do Livro"
+                          ></img>
+                        ) : (
+                          <div>sem capa</div>
+                        )}
+                        <div>
+                          {livroRevisado?.titulo || "Título não encontrado"}
+                        </div>
+                      </div>
+                    );
+                  },
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

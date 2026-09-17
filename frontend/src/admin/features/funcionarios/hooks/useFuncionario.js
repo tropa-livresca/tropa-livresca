@@ -5,12 +5,16 @@ export const useFuncionario = () => {
   const [funcionario, setFuncionario] = useState(null);
   const [funcionarios, setFuncionarios] = useState([]);
   const [carregando, setCarregando] = useState(false);
+  const [meta, setMeta] = useState(null);
+  const [isMaster, setIsMaster] = useState(false);
 
   const buscarFuncionarios = useCallback(
-    async (page = 1, limit = 12, busca = "", ordem = "") => {
+    async (page = 1, limit = 12, busca = "", filtro = "", ordem = "") => {
       setCarregando(true);
 
-      const url = `/api/v1/admin/funcionarios/?page =${page} && limit = ${limit} && busca = ${busca} && ordem = ${ordem}`;
+      console.log(limit);
+
+      const url = `/api/v1/admin/funcionarios/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&ordem=${ordem}&filtro=${filtro}`;
 
       try {
         const res = await apiFetch(url, {
@@ -28,7 +32,8 @@ export const useFuncionario = () => {
           throw new Error(result.error || `Erro ${res.status}`);
         }
 
-        setFuncionarios(result.data || []);
+        setFuncionarios(result.data.data || []);
+        setMeta(result.data.meta);
       } catch (err) {
         console.error("Erro ao buscar funcionários", err);
       } finally {
@@ -66,10 +71,13 @@ export const useFuncionario = () => {
 
   const alterarFuncao = useCallback(async (usuarioId, funcao) => {
     setCarregando(true);
+    console.log(usuarioId);
+    console.log(funcao);
 
     try {
       const res = await apiFetch(`/api/v1/admin/funcionarios/funcao`, {
         method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           usuarioId: usuarioId,
           funcao: funcao,
@@ -96,9 +104,10 @@ export const useFuncionario = () => {
     setCarregando(true);
 
     try {
-      const res = await apiFetch(`/api/v1/admin/funcionarios/funcao/`, {
+      const res = await apiFetch(`/api/v1/admin/funcionarios/isadmin/`, {
         method: "PATCH",
-        body: JSON.stringfy({
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           funcionarioId: userId,
         }),
       });
@@ -119,6 +128,35 @@ export const useFuncionario = () => {
     }
   }, []);
 
+  const verificarMaster = useCallback(async () => {
+    setCarregando(true);
+
+    try {
+      const res = await apiFetch(`/api/v1/auth/session-adm-master`, {
+        method: "GET",
+      });
+
+      const result = await res.json();
+
+      console.log(result);
+
+      if (!res.ok) {
+        if (res.status === 403) {
+          setCarregando(false);
+          return;
+        } else {
+          throw new Error(result.error || `Erro ${res.status}`);
+        }
+      }
+
+      setIsMaster(true);
+    } catch (err) {
+      console.error("Erro ao alterar o isAdmin do funcionário", err);
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
   return {
     funcionario,
     funcionarios,
@@ -127,5 +165,8 @@ export const useFuncionario = () => {
     alterarFuncao,
     alterarIsAdminFuncionario,
     carregando,
+    meta,
+    isMaster,
+    verificarMaster,
   };
 };
