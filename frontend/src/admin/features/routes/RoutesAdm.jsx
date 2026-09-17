@@ -9,10 +9,6 @@ import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
 import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
-import Categoria from "../categorias/pages/Categoria/Categoria";
-import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
-import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
-import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
 import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
 import GerenciaFuncionarios from "../funcionarios/pages/GerenciarFuncionarios/GerenciarFuncionarios.jsx";
 import PromoverUsuario from "../funcionarios/pages/PromoverUsuario/PromoverUsuario.jsx";
@@ -91,42 +87,6 @@ const RoutesAdm = () => {
           element={
             <PrivateRoute>
               <RevisaoById />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categorias"
-          element={
-            <PrivateRoute>
-              <PainelCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/:id"
-          element={
-            <PrivateRoute>
-              <Categoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/nova"
-          element={
-            <PrivateRoute>
-              <NovaCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/alterar/:id"
-          element={
-            <PrivateRoute>
-              <AlterarCategoria />
             </PrivateRoute>
           }
         />

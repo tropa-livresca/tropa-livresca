@@ -91,6 +91,20 @@ export class FuncionariosModel {
       throw erroRegistro;
     }
 
-    return data;
+    const { data: revisoes, error: revisoesError } = await supabase
+      .from("users_profile")
+      .select("*")
+      .eq("fk_users_profile_id", funcionarioId)
+      .maybeSingle();
+
+    if (revisoesError) {
+      revisoesError.statusCode = 500;
+      throw revisoesError;
+    }
+
+    return {
+      data,
+      revisoes: revisoes,
+    };
   }
 }

@@ -11,13 +11,6 @@ Table users_profile {
   redes_sociais jsonb [default: '{}']
 }
 
-Table categorias {
-  id bigint [pk, increment]
-  nome text [not null]
-  tipo text [not null]
-  data_criacao timestamp [default: `now()`, not null]
-}
-
 Table livros {
   id bigint [pk, increment]
   ISBN text [not null]
@@ -41,7 +34,7 @@ Table livros {
   colaboradores jsonb [default: '[]']
   capa jsonb [default: '{}']
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id, not null]
+  categorias text [not null]
 }
 
 Table comentarios {
@@ -57,7 +50,6 @@ Table denuncias {
   data timestamp [default: `now()`, not null]
   descricao text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id, not null]
 }
 
 Table enderecos {

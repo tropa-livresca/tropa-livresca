@@ -100,6 +100,26 @@ export class RevisaoModel {
     return data;
   }
 
+  static async VerificarAutorLivro(livroId, funcionarioId) {
+    const { data, error } = await supabase
+      .from("livros")
+      .select()
+      .eq("id", livroId)
+      .eq("fk_user_profile_id", funcionarioId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (data) {
+      return false;
+    }
+
+    return true;
+  }
+
   static async CriarRevisao(dadosRevisao) {
     const { data, error } = await supabaseAdmin
       .from("revisoes")

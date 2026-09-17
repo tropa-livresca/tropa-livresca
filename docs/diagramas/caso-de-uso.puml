@@ -98,7 +98,6 @@ rectangle "Plataforma Literária" {
 
   package "Painel Admin: Operações da Loja" {
     usecase "Alterar Senha Painel" as UC_AdminSenha
-    usecase "Gerenciar Categorias da Loja" as UC_AdminCategorias
     usecase "Gerenciar Cupons" as UC_AdminCupons
     usecase "Editar Cupom" as UC_AdminEditarCupom
     usecase "Monitorar Entregas" as UC_AdminEntregas
