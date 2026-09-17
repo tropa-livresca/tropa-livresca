@@ -4,7 +4,6 @@ import { apiFetch } from "../../../../common/services/api.js";
 export const useFuncionario = () => {
   const [funcionario, setFuncionario] = useState(null);
   const [funcionarios, setFuncionarios] = useState([]);
-  const [meta, setMeta] = useState();
   const [carregando, setCarregando] = useState(false);
   const [meta, setMeta] = useState(null);
   const [isMaster, setIsMaster] = useState(false);
@@ -33,13 +32,8 @@ export const useFuncionario = () => {
           throw new Error(result.error || `Erro ${res.status}`);
         }
 
-<<<<<<< HEAD
         setFuncionarios(result.data.data || []);
         setMeta(result.data.meta);
-=======
-        setFuncionarios(result.data || []);
-        setMeta(result.meta || []);
->>>>>>> 0f4e28e6ed5fea4f341e4bf88a810accd0361802
       } catch (err) {
         console.error("Erro ao buscar funcionários", err);
       } finally {

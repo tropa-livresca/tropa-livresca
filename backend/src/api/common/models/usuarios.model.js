@@ -73,7 +73,6 @@ export class UsuariosModel {
   }
 
   static async buscarUsuarioById(usuarioId) {
-<<<<<<< HEAD
     if (!usuarioId) return null;
 
     const { data, error } = await supabaseAdmin
@@ -83,37 +82,12 @@ export class UsuariosModel {
       )
       .eq("id", usuarioId)
       .maybeSingle();
-=======
-    const { data, error } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("id", usuarioId)
-      .single();
->>>>>>> 0f4e28e6ed5fea4f341e4bf88a810accd0361802
 
     if (error) {
       error.statusCode = 500;
       throw error;
     }
 
-<<<<<<< HEAD
     return data;
-=======
-    const { data: revisoes, error: revisoesError } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("fk_users_profile_id", usuarioId)
-      .maybeSingle();
-
-    if (revisoesError) {
-      revisoesError.statusCode = 500;
-      throw revisoesError;
-    }
-
-    return {
-      data,
-      revisoes: revisoes,
-    };
->>>>>>> 0f4e28e6ed5fea4f341e4bf88a810accd0361802
   }
 }

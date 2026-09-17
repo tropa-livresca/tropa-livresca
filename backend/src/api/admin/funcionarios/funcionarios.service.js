@@ -61,11 +61,7 @@ export class FuncionariosService {
       throw erroDados;
     }
 
-<<<<<<< HEAD
     if (funcao !== "Master" && funcao !== "funcionario") {
-=======
-    if (funcao !== true && funcao !== false) {
->>>>>>> 0f4e28e6ed5fea4f341e4bf88a810accd0361802
       const erroFuncao = new Error("A função informado é inválida.");
       erroFuncao.statusCode = 400;
       throw erroFuncao;
