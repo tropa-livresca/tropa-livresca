@@ -1,11 +1,11 @@
 import { LivroModel } from "../../common/models/livro.model.js";
 
 export class LivrosService {
-  static _parseCapaUrls (livro) {
+  static _parseCapaUrls(livro) {
     if (!livro) return livro;
-    
+
     const livroClonado = { ...livro };
-    
+
     try {
       if (typeof livroClonado.capa === "string") {
         livroClonado.capa = JSON.parse(livroClonado.capa);
@@ -16,18 +16,24 @@ export class LivrosService {
     return livroClonado;
   }
 
-  static _parseCapasArray (livros) {
-    return livros.map(livro => this._parseCapaUrls(livro));
+  static _parseCapasArray(livros) {
+    return livros.map((livro) => this._parseCapaUrls(livro));
   }
 
-  static async getLivros ({ page, limit, busca, filtro, ordem }, alguns = true) {
+  static async buscarLivros(
+    { page, limit, busca, filtro, ordem },
+    alguns = true,
+  ) {
     try {
-      const { data, count } = await LivroModel.buscarComFiltros({ page, limit, busca, filtro, ordem}, alguns);
+      const { data, count } = await LivroModel.buscarComFiltros(
+        { page, limit, busca, filtro, ordem },
+        alguns,
+      );
 
       if (!data || data.length === 0) {
         const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
         erro404.statusCode = 404;
-        throw erro404; 
+        throw erro404;
       }
 
       const livrosComCapas = this._parseCapasArray(data);
@@ -49,17 +55,19 @@ export class LivrosService {
       throw erroBanco;
     }
   }
-  
-  static async getLivrosById(id) {
+
+  static async buscarLivroById(id) {
     try {
       const data = await LivroModel.buscarDetalhesPorId(id);
 
       if (!data) {
-        const erro404 = new Error("O livro solicitado não existe ou está indisponível.");
+        const erro404 = new Error(
+          "O livro solicitado não existe ou está indisponível.",
+        );
         erro404.statusCode = 404;
         throw erro404;
       }
-      
+
       return this._parseCapaUrls(data);
     } catch (error) {
       if (error.statusCode) throw error;

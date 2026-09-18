@@ -13,8 +13,8 @@ export default function MeusLivros() {
     carregando,
     meta,
     buscarLivrosById,
-    updateEstado,
-    inativarLivro,
+    atualizarEstado,
+    deletarLivro,
   } = useMeusLivros();
 
   const [busca, setBusca] = useState("");
@@ -175,9 +175,13 @@ export default function MeusLivros() {
                   ? "Rascunho"
                   : estado === "em_revisao"
                     ? "Em revisão"
-                    : estado === "publicado"
-                      ? "Publicado"
-                      : "Todos os estados"}
+                    : estado === "correcao"
+                      ? "Para correção"
+                      : estado === "negado"
+                        ? "Publicação negada"
+                        : estado === "publicado"
+                          ? "Publicado"
+                          : "Todos os estados"}
               </span>
 
               <FiChevronDown
@@ -259,7 +263,7 @@ export default function MeusLivros() {
                       </Link>
 
                       <button
-                        onClick={() => updateEstado(livro.id, "em_revisao")}
+                        onClick={() => atualizarEstado(livro.id, "em_revisao")}
                         className={`${styles.btnAcao} ${styles.btnPublicar}`}
                       >
                         Enviar para Revisão
@@ -269,10 +273,9 @@ export default function MeusLivros() {
 
                   {livro.estado === "em_revisao" && (
                     <button
-                      onClick={() => updateEstado(livro.id, "rascunho")}
                       className={`${styles.btnAcao} ${styles.btnPublicar}`}
                     >
-                      Cancelar Revisão
+                      Solicitar Cancelamento de Revisão
                     </button>
                   )}
 
@@ -280,26 +283,27 @@ export default function MeusLivros() {
                     <span className={styles.textoPublicado}>Publicado</span>
                   )}
 
-                  {livro.estado !== "em_revisao" && (
-                    <button
-                      onClick={() => {
-                        if (confirm("Deseja inativar este livro?")) {
-                          inativarLivro(livro.id);
-                        }
-                      }}
-                      className={`${styles.btnAcao} ${styles.btnInativar}`}
-                    >
-                      Excluir
-                    </button>
-                  )}
+                  {livro.estado !== "publicado" &&
+                    livro.estado !== "em_revisao" && (
+                      <button
+                        onClick={() => {
+                          if (confirm("Deseja excluir este livro?")) {
+                            deletarLivro(livro.id);
+                          }
+                        }}
+                        className={`${styles.btnAcao} ${styles.btnInativar}`}
+                      >
+                        Excluir
+                      </button>
+                    )}
                 </div>
               </div>
             ))}
-              <div className={styles.adicionardiv}>
-                  <Link to="/novo-livro" className={styles.btnAdicionar}>
-        +
-      </Link>
-      </div>
+            <div className={styles.adicionardiv}>
+              <Link to="/novo-livro" className={styles.btnAdicionar}>
+                +
+              </Link>
+            </div>
           </div>
         ) : (
           <div className={styles.cardnenhumlivro}>

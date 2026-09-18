@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 export const useMeusLivros = () => {
   const [livroSelecionado, setLivroSelecionado] = useState(null);
   const [livros, setLivros] = useState([]);
-  const [meta, setMeta] = useState("");
+  const [meta, setMeta] = useState([]);
   const [carregando, setCarregando] = useState(false);
 
   const buscarLivrosById = useCallback(
@@ -18,7 +18,7 @@ export const useMeusLivros = () => {
     ) => {
       setCarregando(true);
       try {
-        const url = `/api/v1/clients/autopublicacao/buscar/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&estado=${estado}`;
+        const url = `/api/v1/clients/autopublicacao/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&estado=${estado}`;
 
         const res = await apiFetch(url, { method: "GET" });
         const data = await res.json();
@@ -31,9 +31,9 @@ export const useMeusLivros = () => {
           throw new Error(data.error || `Erro ${res.status}`);
         }
 
-        const livrosData = data.data || data || [];
+        const livrosData = data || [];
         setLivros(livrosData);
-        setMeta(data.meta || "");
+        setMeta(data.meta || []);
       } catch (error) {
         console.error("Erro em buscarLivrosById", error);
         setLivros([]);
@@ -47,7 +47,7 @@ export const useMeusLivros = () => {
   const buscarLivroById = useCallback(async (id) => {
     setCarregando(true);
     try {
-      const res = await apiFetch("/api/v1/clients/autopublicacao/" + id, {
+      const res = await apiFetch(`/api/v1/clients/autopublicacao/${id}`, {
         method: "GET",
       });
       const data = await res.json();
@@ -65,18 +65,36 @@ export const useMeusLivros = () => {
     }
   }, []);
 
-  const updateEstado = useCallback(
+  const deletarLivro = useCallback(async (id) => {
+    setCarregando(true);
+
+    try {
+      const res = await apiFetch(`/api/v1/clients/autopublicacao/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (!res.ok) throw new Error(`Erro ${res.status}`);
+
+      const data = res.json();
+
+      return data;
+    } catch (error) {
+      console.error("Erro em deltar livro", error);
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const atualizarEstado = useCallback(
     async (id, novoEstado, callbackAtualizar) => {
       setCarregando(true);
       try {
-        const res = await apiFetch(
-          `/api/v1/clients/autopublicacao/updateEstado/${id}`,
-          {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ novoEstado }),
-          },
-        );
+        const res = await apiFetch(`/api/v1/clients/autopublicacao/${id}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ novoEstado }),
+        });
         if (!res.ok) throw new Error(`Erro ${res.status}`);
 
         if (callbackAtualizar) await callbackAtualizar();
@@ -87,21 +105,6 @@ export const useMeusLivros = () => {
     },
     [],
   );
-
-  const inativarLivro = useCallback(async (id, callbackAtualizar) => {
-    setCarregando(true);
-    try {
-      const res = await apiFetch(`/api/v1/clients/autopublicacao/ativo/${id}`, {
-        method: "PATCH",
-      });
-      if (!res.ok) throw new Error(`Erro ${res.status}`);
-
-      if (callbackAtualizar) await callbackAtualizar();
-    } catch (error) {
-      console.error("Erro em inativarLivro", error);
-      setCarregando(false);
-    }
-  }, []);
 
   return {
     carregando,
@@ -114,7 +117,7 @@ export const useMeusLivros = () => {
     setLivros,
     buscarLivrosById,
     buscarLivroById,
-    updateEstado,
-    inativarLivro,
+    atualizarEstado,
+    deletarLivro,
   };
 };

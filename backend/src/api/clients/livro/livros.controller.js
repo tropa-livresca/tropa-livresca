@@ -1,7 +1,7 @@
 import { LivrosService } from "./livros.service.js";
 
 export class LivrosController {
-  static async GetLivros(req, res, next) {
+  static async buscarLivros(req, res, next) {
     try {
       const page = parseInt(req.query.page, 10) || 1;
       const limit = parseInt(req.query.limit, 10) || 12;
@@ -9,7 +9,7 @@ export class LivrosController {
       const filtro = req.query.filtro || "";
       const ordem = req.query.ordem || "";
 
-      const resultado = await LivrosService.getLivros({
+      const resultado = await LivrosService.buscarLivros({
         page,
         limit,
         busca,
@@ -23,10 +23,10 @@ export class LivrosController {
     }
   }
 
-  static async GetLivrosById(req, res, next) {
+  static async buscarLivroById(req, res, next) {
     try {
       const { id } = req.params;
-      const livro = await LivrosService.getLivrosById(id);
+      const livro = await LivrosService.buscarLivroById(id);
 
       return res.status(200).json(livro);
     } catch (err) {

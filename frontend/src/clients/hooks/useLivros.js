@@ -52,7 +52,7 @@ export const useLivros = () => {
     setAutor(null);
     setCarregando(true);
     try {
-      const res = await apiFetch(`/api/v1/clients/livros/detalhes/${id}`, {
+      const res = await apiFetch(`/api/v1/clients/livros/${id}`, {
         skipAuthRedirect: true,
       });
       const json = await res.json();

@@ -1,6 +1,6 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 export class RevisaoModel {
-  static async BuscarLivraoRevisao(busca) {
+  static async BuscarLivroRevisao(busca) {
     const { data, error } = supabase
       .from("livros")
       .select(
