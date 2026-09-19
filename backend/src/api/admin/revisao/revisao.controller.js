@@ -1,15 +1,15 @@
 import { RevisaoService } from "./revisao.service.js";
 
 export class RevisaoController {
-  static async BuscarLivroRevisao(req, res, next){
-    try{
+  static async BuscarLivroRevisao(req, res, next) {
+    try {
       const busca = req.query.busca || "";
       const livros = await RevisaoService.BuscarLivroRevisao(busca);
 
       return res.status(200).json(livros);
-    }catch(err){
-      next(err)
-    };
+    } catch (err) {
+      next(err);
+    }
   }
 
   static async BuscarRevisoes(req, res, next) {
@@ -49,12 +49,26 @@ export class RevisaoController {
     }
   }
 
+  static async BuscarRevisaoByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const revisao = await RevisaoService.BuscarRevisaoByUserId(id);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async AtualizarRevisao(req, res, next) {
     try {
       const { id } = req.params;
       const nome = req.body.nome !== undefined ? req.body.nome : undefined;
-      const apontamento = req.body.apontamento !== undefined ? req.body.apontamento : undefined;
-      const idLivro = req.body.idLivro !== undefined ? req.body.idLivro : undefined;
+      const apontamento =
+        req.body.apontamento !== undefined ? req.body.apontamento : undefined;
+      const idLivro =
+        req.body.idLivro !== undefined ? req.body.idLivro : undefined;
 
       const revisaoAtualizada = await RevisaoService.AtualizarRevisao(
         id,
@@ -108,7 +122,10 @@ export class RevisaoController {
       const idLivro = req.body.idLivro;
       const novoEstado = req.body.novoEstado;
 
-      const livroRevisado = await RevisaoService.AlterarEstadoLivro(idLivro, novoEstado);
+      const livroRevisado = await RevisaoService.AlterarEstadoLivro(
+        idLivro,
+        novoEstado,
+      );
 
       return res.status(200).json(livroRevisado);
     } catch (err) {
@@ -116,4 +133,3 @@ export class RevisaoController {
     }
   }
 }
- 

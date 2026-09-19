@@ -3,7 +3,7 @@ import { useFuncionario } from "../../hooks/useFuncionario";
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./GerenciarFuncionarios.module.css";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function GerenciarFuncionarios() {
@@ -21,7 +21,8 @@ export default function GerenciarFuncionarios() {
   const [funcao, setFuncao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
-  const [funcionarioSelecionado, setFuncionarioSelecionado] = useState(null);
+
+  const navigate = useNavigate();
 
   console.log(meta);
 
@@ -45,7 +46,6 @@ export default function GerenciarFuncionarios() {
     e.preventDefault();
     setPaginaAtual(1);
     buscarFuncionarios(1, 3, busca, funcao, ordem);
-    setFuncionarioSelecionado(null);
   };
 
   console.log(funcionarios);
@@ -58,15 +58,10 @@ export default function GerenciarFuncionarios() {
     }
     setPaginaAtual(1);
     setDropdownAberto(null);
-    setFuncionarioSelecionado(null);
   };
 
   const handleDetalhes = (id) => {
-    if (id == funcionarioSelecionado) {
-      setFuncionarioSelecionado(null);
-    } else {
-      setFuncionarioSelecionado(id);
-    }
+    navigate("/admin/usuarios/" + id);
   };
 
   return (
@@ -88,7 +83,6 @@ export default function GerenciarFuncionarios() {
             value={busca}
             onChange={(e) => {
               setBusca(e.target.value);
-              setFuncionarioSelecionado(null);
             }}
           />
 
@@ -171,109 +165,19 @@ export default function GerenciarFuncionarios() {
           <p className={styles.semUsuarios}>Nenhum usuário encontrado</p>
         ) : (
           <div>
-            {funcionarios.map((usuario, c) => (
+            {funcionarios.map((funcionario, c) => (
               <div key={c}>
-                <div>{usuario.nome}</div>
-                <div>{usuario.isAutor ? "sim" : "não"}</div>
-                <div>{usuario.redes_sociais?.email}</div>
+                <div>{funcionario.nome}</div>
+                <div>{funcionario.isAutor ? "sim" : "não"}</div>
+                <div>{funcionario.redes_sociais?.email}</div>
 
-                <button onClick={() => handleDetalhes(c)}>Detalhes</button>
+                <button onClick={() => handleDetalhes(funcionario.id)}>
+                  Detalhes
+                </button>
               </div>
             ))}
           </div>
         )}
-
-        {funcionarioSelecionado != null &&
-          funcionarios[funcionarioSelecionado] && (
-            <div>
-              {funcionarios[funcionarioSelecionado].imagem ? (
-                <img
-                  src={funcionarios[funcionarioSelecionado].imagem}
-                  alt="Perfil"
-                ></img>
-              ) : (
-                <div>sem imagem</div>
-              )}
-              <div>{funcionarios[funcionarioSelecionado].nome}</div>
-              <div>{funcionarios[funcionarioSelecionado].telefone}</div>
-              <div>{funcionarios[funcionarioSelecionado].descricao}</div>
-              <div>{funcionarios[funcionarioSelecionado].nome}</div>
-              <div>
-                {funcionarios[funcionarioSelecionado].isAdmin
-                  ? "Funcionário"
-                  : "Cliente"}
-              </div>
-              <div>
-                {funcionarios[funcionarioSelecionado].redes_sociais?.email}
-              </div>
-
-              {funcionarios[funcionarioSelecionado].isAutor && (
-                <div>
-                  {funcionarios[funcionarioSelecionado].livros?.map(
-                    (livro, index) => {
-                      if (livro.ativo && livro.estado === "publicado") {
-                        const capaObj = livro.capa
-                          ? JSON.parse(livro.capa)
-                          : null;
-                        return (
-                          <div key={index}>
-                            <div>
-                              {capaObj?.frente ? (
-                                <img src={capaObj.frente} alt="Capa"></img>
-                              ) : (
-                                <div>sem capa</div>
-                              )}
-                              <p>{livro.titulo}</p>
-                            </div>
-                            <Link to={`../livros/detalhes/${livro.id}`}>
-                              ver detalhes
-                            </Link>
-                          </div>
-                        );
-                      }
-                      return null;
-                    },
-                  )}
-                </div>
-              )}
-
-              {funcionarios[funcionarioSelecionado].revisoes && (
-                <div>
-                  {funcionarios[funcionarioSelecionado].revisoes.map(
-                    (revisao, rIndex) => {
-                      const livroRevisado = funcionarios[
-                        funcionarioSelecionado
-                      ].livros?.find(
-                        (livro) => livro.id === revisao.fk_livro_id,
-                      );
-                      const capaRevisadaObj = livroRevisado?.capa
-                        ? JSON.parse(livroRevisado.capa)
-                        : null;
-
-                      return (
-                        <div key={rIndex}>
-                          <div>{revisao.data}</div>
-                          <div>{revisao.apontamento}</div>
-                          <div>{revisao.nome}</div>
-                          {capaRevisadaObj?.frente ? (
-                            <img
-                              src={capaRevisadaObj.frente}
-                              alt="Capa do Livro"
-                            ></img>
-                          ) : (
-                            <div>sem capa</div>
-                          )}
-                          <div>
-                            {livroRevisado?.titulo || "Título não encontrado"}
-                          </div>
-                        </div>
-                      );
-                    },
-                  )}
-                </div>
-              )}
-            </div>
-          )}
       </div>
 
       {!carregando && meta && meta.totalPages > 1 && (
@@ -281,7 +185,6 @@ export default function GerenciarFuncionarios() {
           <button
             onClick={() => {
               setPaginaAtual((prev) => prev - 1);
-              funcionarios[funcionarioSelecionado](null);
             }}
             disabled={paginaAtual === 1}
           >
@@ -295,7 +198,6 @@ export default function GerenciarFuncionarios() {
           <button
             onClick={() => {
               setPaginaAtual((prev) => prev + 1);
-              funcionarios[funcionarioSelecionado](null);
             }}
             disabled={paginaAtual === meta.totalPages}
           >

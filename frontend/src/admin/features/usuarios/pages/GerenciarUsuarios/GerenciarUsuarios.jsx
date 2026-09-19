@@ -3,7 +3,7 @@ import { useUsuarios } from "../../../../hooks/useUsuarios";
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./GerenciarUsuarios.module.css";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function GerenciarUsuarios() {
@@ -14,7 +14,6 @@ export default function GerenciarUsuarios() {
   const [funcao, setFuncao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
-  const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +28,6 @@ export default function GerenciarUsuarios() {
     e.preventDefault();
     setPaginaAtual(1);
     buscarUsuarios(1, 3, busca, funcao, ordem);
-    setUsuarioSelecionado(null);
   };
 
   const handleFiltro = (filtro, funcao) => {
@@ -40,7 +38,6 @@ export default function GerenciarUsuarios() {
     }
     setPaginaAtual(1);
     setDropdownAberto(null);
-    setUsuarioSelecionado(null);
   };
 
   const handleDetalhes = (id) => {
@@ -66,7 +63,6 @@ export default function GerenciarUsuarios() {
             value={busca}
             onChange={(e) => {
               setBusca(e.target.value);
-              setUsuarioSelecionado(null);
             }}
           />
 
@@ -177,7 +173,6 @@ export default function GerenciarUsuarios() {
           <button
             onClick={() => {
               setPaginaAtual((prev) => prev - 1);
-              setUsuarioSelecionado(null);
             }}
             disabled={paginaAtual === 1}
           >
@@ -191,7 +186,6 @@ export default function GerenciarUsuarios() {
           <button
             onClick={() => {
               setPaginaAtual((prev) => prev + 1);
-              setUsuarioSelecionado(null);
             }}
             disabled={paginaAtual === meta.totalPages}
           >

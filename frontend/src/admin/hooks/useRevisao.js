@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
-import { apiFetch } from "../../../../common/services/api.js";
+import { apiFetch } from "../../common/services/api.js";
 
 export const useRevisao = () => {
   const [revisoes, setRevisoes] = useState([]);
-  const [livros, setLivros] = useState([]);
-  const [livro, setLivro] = useState(null);
+  const [livrosRevisados, setLivrosRevisados] = useState([]);
+  const [livroRevisado, setLivroRevisado] = useState(null);
   const [count, setCount] = useState(0);
   const [revisaoAtual, setRevisaoAtual] = useState(null);
   const [nome, setNome] = useState("");
@@ -38,10 +38,13 @@ export const useRevisao = () => {
         );
       }
 
-      const data = response.data;
-      const dadosLivro = response.livros;
-      setRevisoes(data.data || []);
-      setLivros(dadosLivro || []);
+      const result = await response.json();
+
+      console.log(result);
+
+      const data = result.data;
+      setRevisoes(data || []);
+      setLivrosRevisados(data.livros || []);
       setCount(data.count || 0);
     } catch (err) {
       setError(err.message);
@@ -63,13 +66,42 @@ export const useRevisao = () => {
         );
       }
 
-      const data = response.data;
+      const result = await response.json();
 
-      setRevisaoAtual(data.data);
-      setLivro(data.livro);
-      setNome(data.data?.nome || "");
-      setApontamento(data.data?.apontamento || "");
-      setManuscrito(data.data?.manuscritoRevisto || null);
+      console.log(result);
+
+      setRevisaoAtual(result.data);
+      setLivrosRevisados(result.livro);
+      setNome(result.data.nome || "");
+      setApontamento(result.data?.apontamento || "");
+      setManuscrito(result.data?.arquivo || null);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const BuscarRevisaoByUserId = useCallback(async (id) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/user/${id}`);
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      console.log(result);
+
+      const data = result.data;
+      setRevisoes(data || []);
+      setCount(data.count || 0);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -108,17 +140,20 @@ export const useRevisao = () => {
           );
         }
 
-        if(novoEstado){
-          const responseEstado = await apiFetch(`/api/v1/admin/revisao/novoEstado`, {
-            method: "PATCH",
-            body: JSON.stringify({ idLivro, novoEstado }),
-          });
+        if (novoEstado) {
+          const responseEstado = await apiFetch(
+            `/api/v1/admin/revisao/novoEstado`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({ idLivro, novoEstado }),
+            },
+          );
 
-          if (!responseEstado.ok){
+          if (!responseEstado.ok) {
             throw new Error(`Erro encontrado ao atualizar o estado do livro`);
           }
         }
-        
+
         return response.data;
       } catch (err) {
         setError(err.message);
@@ -147,7 +182,7 @@ export const useRevisao = () => {
         if (nome) corpo.nome = nome;
         if (apontamento) corpo.apontamento = apontamento;
 
-        const libroIdAtual = idLivro || livro?.id;
+        const libroIdAtual = idLivro || livroRevisado?.id;
         if (libroIdAtual) corpo.idLivro = libroIdAtual;
 
         const response = await apiFetch(`/api/v1/admin/revisao/${id}`, {
@@ -174,7 +209,7 @@ export const useRevisao = () => {
         setCarregando(false);
       }
     },
-    [nome, apontamento, livro, ValidarCamposTexto],
+    [nome, apontamento, livroRevisado, ValidarCamposTexto],
   );
 
   const InativarRevisao = useCallback(async (id) => {
@@ -233,10 +268,10 @@ export const useRevisao = () => {
     count,
     revisaoAtual,
     setRevisaoAtual,
-    livro,
-    setLivro,
-    livros,
-    setLivros,
+    livroRevisado,
+    setLivroRevisado,
+    livrosRevisados,
+    setLivrosRevisados,
     nome,
     setNome,
     manuscrito,
@@ -247,6 +282,7 @@ export const useRevisao = () => {
     error,
     BuscarRevisoes,
     BuscarRevisaoById,
+    BuscarRevisaoByUserId,
     CriarRevisao,
     AtualizarRevisao,
     InativarRevisao,

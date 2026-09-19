@@ -166,7 +166,6 @@ export const useFuncionario = () => {
     alterarFuncao,
     alterarIsAdminFuncionario,
     carregando,
-    meta,
     isMaster,
     verificarMaster,
   };

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useFuncionario } from "../../hooks/useFuncionario.js";
 import { FaSearch } from "react-icons/fa";
 import { FiChevronDown } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Carregando from "../../../../../clients/components/Carregando/Carregando.jsx";
 import Paginacao from "../../../../common/components/Paginacao.jsx";
 
@@ -15,6 +15,8 @@ export default function GerenciarFuncionarios() {
   const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");
   const [dropdownAberto, setDropdownAberto] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -39,6 +41,10 @@ export default function GerenciarFuncionarios() {
     setOrdem(novaOrdem);
     setPaginaAtual(1);
     setDropdownAberto(null);
+  };
+
+  const handleDetalhes = (id) => {
+    navigate("/admin/usuarios/" + id);
   };
 
   return (
@@ -147,9 +153,9 @@ export default function GerenciarFuncionarios() {
                     <>Funcionário</>
                   )}
                 </p>
-                <Link to={`/admin/funcionarios/${funcionario.id}`}>
-                  Visualizar
-                </Link>
+                <button onClick={() => handleDetalhes(funcionario.id)}>
+                  Detalhes
+                </button>
               </div>
             ))}
           </div>
