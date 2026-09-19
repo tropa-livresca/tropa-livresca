@@ -4,34 +4,26 @@ import { checkAuth } from "../../common/middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/", checkAuth, AutopublicacaoController.GetLivrosById);
+router.get("/", checkAuth, AutopublicacaoController.buscarComFiltros);
 
-router.get("/buscar", checkAuth, AutopublicacaoController.BuscarComFiltros);
-
-router.get("/:id", checkAuth, AutopublicacaoController.BuscarLivroById);
+router.get("/:id", checkAuth, AutopublicacaoController.buscarLivroById);
 
 router.post(
   "/upload-url",
   checkAuth,
-  AutopublicacaoController.CriarUploadLivro,
+  AutopublicacaoController.criarUploadLivro,
 );
 
-router.post("/insertLivro", checkAuth, AutopublicacaoController.InsertLivro);
+router.post("/", checkAuth, AutopublicacaoController.criarLivro);
 
-router.put("/updateLivro/:id", checkAuth, AutopublicacaoController.UpdateLivro);
+router.patch("/:id", checkAuth, AutopublicacaoController.atualizarLivro);
 
 router.patch(
-  "/updateEstado/:id",
+  "/estado/:id",
   checkAuth,
-  AutopublicacaoController.UpdateEstado,
+  AutopublicacaoController.atualizarEstado,
 );
 
-router.patch("/ativo/:id", checkAuth, AutopublicacaoController.InativarLivro);
-
-router.delete(
-  "/rascunho/:id",
-  checkAuth,
-  AutopublicacaoController.DeletarLivroRascunho,
-);
+router.delete(":id", checkAuth, AutopublicacaoController.deletarLivroRascunho);
 
 export default router;

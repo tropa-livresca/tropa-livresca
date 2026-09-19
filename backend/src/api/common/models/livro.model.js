@@ -1,7 +1,7 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 const COLUNAS_LIVRO =
-  "ISBN, imagens_explicitas, publico_alvo, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
+  "id, ISBN, imagens_explicitas, publico_alvo, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
 
 export class LivroModel {
   //admin
@@ -59,7 +59,7 @@ export class LivroModel {
 
     const { data, error } = await supabaseAdmin
       .from("livros")
-      .select(`*, users_profile(*)`)
+      .select(`*, users_profile(*), vendas(*)`)
       .eq("id", livroId)
       .maybeSingle();
 

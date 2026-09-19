@@ -10,22 +10,27 @@ export class LivrosService {
     ativo = "",
     estado = "",
   ) {
-    try {
-      const livros = await LivroModel.buscarLivrosAdmin({
+    const livros = await LivroModel.buscarLivrosAdmin({
+      page,
+      limit,
+      busca,
+      filtro,
+      ordem,
+      ativo,
+      estado,
+    });
+
+    if (livros.error) throw livros.error;
+
+    return {
+      data: livros.data,
+      meta: {
         page,
         limit,
-        busca,
-        filtro,
-        ordem,
-        ativo,
-        estado,
-      });
-
-      return livros;
-    } catch (error) {
-      if (!error.statusCode) error.statusCode = 500;
-      throw error;
-    }
+        totalItems: livros.count,
+        totalPages: Math.ceil(livros.count / limit),
+      },
+    };
   }
 
   static async BuscarLivroById(livroId) {
@@ -35,13 +40,11 @@ export class LivrosService {
       throw erroLivroId;
     }
 
-    try {
-      const livro = await LivroModel.buscarLivroByIdAdmin(livroId);
-      return livro;
-    } catch (error) {
-      if (!error.statusCode) error.statusCode = 400;
-      throw error;
-    }
+    const livro = await LivroModel.buscarLivroByIdAdmin(livroId);
+
+    if (livro.error) throw livro.error;
+
+    return livro;
   }
 
   static async BuscarLivroByUserId(userId) {

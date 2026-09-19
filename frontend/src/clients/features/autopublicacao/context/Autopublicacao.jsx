@@ -17,7 +17,7 @@ const ESTADO_INICIAL_LIVRO = {
     descricao: "",
     direitoPublicacao: "",
     publicoPrincipal: "",
-    categorias: [],
+    categoria: "",
     palavrasChave: [],
   },
   conteudo: { manuscrito: null, capa: null },
@@ -404,10 +404,10 @@ export const AutopublicacaoProvider = ({ children }) => {
         };
 
         const rota = isEdicao
-          ? `/api/v1/clients/autopublicacao/updateLivro/${dadosDoLivro.id}`
-          : "/api/v1/clients/autopublicacao/insertLivro/";
+          ? `/api/v1/clients/autopublicacao/${dadosDoLivro.id}`
+          : "/api/v1/clients/autopublicacao/";
 
-        const metodo = isEdicao ? "PUT" : "POST";
+        const metodo = isEdicao ? "PATCH" : "POST";
 
         const res = await apiFetch(rota, {
           method: metodo,

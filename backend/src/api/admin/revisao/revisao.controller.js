@@ -117,17 +117,49 @@ export class RevisaoController {
     }
   }
 
-  static async AlterarEstadoLivro(req, res, next) {
+  static async PublicarLivro(req, res, next) {
     try {
-      const idLivro = req.body.idLivro;
-      const novoEstado = req.body.novoEstado;
+      const { idLivro } = req.body;
+      const userId = req.user.id;
 
-      const livroRevisado = await RevisaoService.AlterarEstadoLivro(
+      const livroPublicado = await RevisaoService.publicarLivro(
         idLivro,
-        novoEstado,
+        userId,
       );
 
-      return res.status(200).json(livroRevisado);
+      return res.status(200).json(livroPublicado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async SolicitarCorrecaoLivro(req, res, next) {
+    try {
+      const { idLivro } = req.body;
+      const userId = req.user.id;
+
+      const livroPublicado = await RevisaoService.solicitarCorrecaoLivro(
+        idLivro,
+        userId,
+      );
+
+      return res.status(200).json(livroPublicado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async NegarPublicacaoLivro(req, res, next) {
+    try {
+      const { idLivro } = req.body;
+      const userId = req.user.id;
+
+      const livroPublicado = await RevisaoService.negarPublicacaoLivro(
+        idLivro,
+        userId,
+      );
+
+      return res.status(200).json(livroPublicado);
     } catch (err) {
       next(err);
     }

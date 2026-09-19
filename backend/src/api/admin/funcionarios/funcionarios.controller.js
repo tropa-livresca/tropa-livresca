@@ -1,20 +1,6 @@
 import { FuncionariosService } from "./funcionarios.service.js";
 
 export class FuncionariosController {
-  static async buscarFuncionarioById(req, res, next) {
-    try {
-      const { funcionarioId } = req.params;
-
-      const funcionario =
-        await FuncionariosService.buscarFuncionarioById(funcionarioId);
-
-      return res.status(200).json({
-        funcionario,
-      });
-    } catch (err) {
-      next(err);
-    }
-  }
   static async buscarFuncionarios(req, res, next) {
     const page = parseInt(req.query.page, 10) || 1;
     const limit = parseInt(req.query.limit, 10) || 12;
@@ -32,42 +18,47 @@ export class FuncionariosController {
         filtro,
       });
 
-      return res.status(201).json({
-        data: data,
-      });
+      return res.status(201).json({ data });
     } catch (err) {
       next(err);
     }
   }
 
-  static async alterarFuncao(req, res, next) {
-    const { usuarioId, funcao } = req.body;
-    console.log(usuarioId);
-    console.log(funcao);
+  static async alterarIsMasterFuncionario(req, res, next) {
+    const { funcionarioId, isMaster } = req.body;
 
     try {
-      const data = await FuncionariosService.alterarFuncao(usuarioId, funcao);
+      const data = await FuncionariosService.alterarIsMasterFuncionario(
+        funcionarioId,
+        isMaster,
+      );
 
-      return res.status(201).json({
-        success: true,
-        message: "função de Usuário modificada com sucesso!",
-        data: data,
-      });
+      return res.status(200).json({ data });
     } catch (err) {
       next(err);
     }
   }
 
-  static async alterarIsAdminFuncionario(req, res, next) {
+  static async inativarFuncionario(req, res, next) {
     const { funcionarioId } = req.body;
 
     try {
-      const data =
-        await FuncionariosService.alterarIsAdminFuncionario(funcionarioId);
+      const data = await FuncionariosService.inativarFuncionario(funcionarioId);
+
+      return res.status(200).json({ data });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async promoverUsuario(req, res, next) {
+    const { funcionarioId } = req.body;
+
+    try {
+      const data = await FuncionariosService.promoverUsuario(funcionarioId);
 
       return res.json({
         success: true,
-        message: "Usuário inativado com sucesso!",
         data: data,
       });
     } catch (err) {

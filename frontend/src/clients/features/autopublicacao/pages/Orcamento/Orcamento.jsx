@@ -7,7 +7,6 @@ export default function Orcamento({
   onChange,
   irParaProximaEtapa,
   voltarEtapa,
-  isBloqueadoParaEdicao,
 }) {
   const numeroPaginas = Number(dados.numeroPaginas) || 100;
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
@@ -60,15 +59,6 @@ export default function Orcamento({
     custoMinimoDigitalCentavos,
   );
 
-  const lidarComProximaEtapa = () => {
-    onChange({
-      ...dados,
-      valorLivroFisico: valoresFisico.final,
-      valorLivroDigital: valoresDigital.final,
-    });
-    irParaProximaEtapa();
-  };
-
   return (
     <main>
       <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
@@ -76,20 +66,17 @@ export default function Orcamento({
 
         <div className={styles.card}>
           <legend>Especificações do Livro</legend>
-          <label>
-            Número de Páginas:          </label>
-            <Input
-              placeholder="Inserir número de páginas"
-              type="number"
-              className={styles.inputmodificado}
-              min="1"
-              value={dados.numeroPaginas || ""}
-              handleOnChange={(e) =>
-                atualizarCampo("numeroPaginas", e.target.value)
-              }
-              disabled={isBloqueadoParaEdicao}
-            />
-
+          <label>Número de Páginas: </label>
+          <Input
+            placeholder="Inserir número de páginas"
+            type="number"
+            className={styles.inputmodificado}
+            min="1"
+            value={dados.numeroPaginas || ""}
+            handleOnChange={(e) =>
+              atualizarCampo("numeroPaginas", e.target.value)
+            }
+          />
         </div>
 
         <div className={styles.card}>
@@ -99,19 +86,17 @@ export default function Orcamento({
             <span className={styles.numero}>0,08</span> por página): R${" "}
             <span className={styles.numero}>{valoresFisico.minimo}</span>
           </p>
-          <label>
-            Preço Base Desejado (R$):        </label>
-            <Input
-              type="text"
-              placeholder="0,00"
-              className={styles.inputmodificado}
-              value={dados.valorLivroFisico || ""}
-              handleOnChange={(e) =>
-                atualizarCampo("valorLivroFisico", e.target.value)
-              }
-              disabled={isBloqueadoParaEdicao}
-            />
-  
+          <label>Preço Base Desejado (R$): </label>
+          <Input
+            type="text"
+            placeholder="0,00"
+            className={styles.inputmodificado}
+            value={dados.valorLivroFisico || ""}
+            handleOnChange={(e) =>
+              atualizarCampo("valorLivroFisico", e.target.value)
+            }
+          />
+
           <div className={styles.div2}>
             <p>
               Comissão da Plataforma (+<span className={styles.numero}>20</span>
@@ -131,18 +116,16 @@ export default function Orcamento({
             Custo Digital Mínimo: R${" "}
             <span className={styles.numero}>{valoresDigital.minimo}</span>
           </p>
-          <label>
-            Preço Base Desejado (R$):          </label>
-            <Input
-              type="text"
-              placeholder="0,00"
-              className={styles.inputmodificado}
-              value={dados.valorLivroDigital || ""}
-              handleOnChange={(e) =>
-                atualizarCampo("valorLivroDigital", e.target.value)
-              }
-              disabled={isBloqueadoParaEdicao}
-            />
+          <label>Preço Base Desejado (R$): </label>
+          <Input
+            type="text"
+            placeholder="0,00"
+            className={styles.inputmodificado}
+            value={dados.valorLivroDigital || ""}
+            handleOnChange={(e) =>
+              atualizarCampo("valorLivroDigital", e.target.value)
+            }
+          />
 
           <div className={styles.div2}>
             <p>

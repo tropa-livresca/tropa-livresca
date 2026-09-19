@@ -40,28 +40,33 @@ export class FuncionariosModel {
     };
   }
 
-  static async alterarFuncao(usuarioId, funcao) {
+  static async promoverUsuario(usuarioId) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .update({
-        funcao: funcao,
-        is_admin: funcao == "funcionario" || funcao == "Master",
-        is_master: funcao == "Master",
-      })
-      .eq("id", usuarioId)
+      .update({ is_admin: true })
       .select()
-      .maybeSingle();
+      .eq("id", usuarioId)
+      .single();
 
     if (error) {
+      error.statusCode = 500;
       throw error;
     }
 
-    if (!data) {
-      const erroRegistro = new Error(
-        "Nenhum perfil foi encontrado para atualização.",
-      );
-      erroRegistro.statusCode = 404;
-      throw erroRegistro;
+    return data;
+  }
+
+  static async alterarIsMasterFuncionario(funcionarioId, isMaster) {
+    const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .update({ is_master: isMaster })
+      .select()
+      .eq("id", funcionarioId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
     }
 
     return data;
@@ -71,7 +76,6 @@ export class FuncionariosModel {
     const { data, error } = await supabaseAdmin
       .from("users_profile")
       .update({
-        funcao: "",
         is_admin: false,
         is_master: false,
       })
@@ -91,20 +95,6 @@ export class FuncionariosModel {
       throw erroRegistro;
     }
 
-    const { data: revisoes, error: revisoesError } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("fk_users_profile_id", funcionarioId)
-      .maybeSingle();
-
-    if (revisoesError) {
-      revisoesError.statusCode = 500;
-      throw revisoesError;
-    }
-
-    return {
-      data,
-      revisoes: revisoes,
-    };
+    return data;
   }
 }

@@ -4,6 +4,7 @@ import { useMeusLivros } from "../../hooks/useMeusLivros";
 import styles from "./MeusLivros.module.css";
 import { IoLibraryOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -13,8 +14,8 @@ export default function MeusLivros() {
     carregando,
     meta,
     buscarLivrosById,
-    updateEstado,
-    inativarLivro,
+    atualizarEstado,
+    deletarLivro,
   } = useMeusLivros();
 
   const [busca, setBusca] = useState("");
@@ -45,12 +46,6 @@ export default function MeusLivros() {
     setDropdownAberto(null);
   };
 
-  const handleEstado = (novoEstado) => {
-    setEstado(novoEstado);
-    setPaginaAtual(1);
-    setDropdownAberto(null);
-  };
-
   const possuiLivros = Array.isArray(livros) && livros.length > 0;
 
   if (carregando) {
@@ -77,6 +72,45 @@ export default function MeusLivros() {
           <span className={styles.iconebusca}>
             <FaSearch />
           </span>
+
+          <div>
+            <button
+              onClick={() => {
+                setEstado("");
+              }}
+            >
+              Todos
+            </button>
+
+            <button
+              onClick={() => {
+                setEstado("rascunho");
+              }}
+            >
+              Rascunhos
+            </button>
+            <button
+              onClick={() => {
+                setEstado("publicado");
+              }}
+            >
+              Livros Publicados
+            </button>
+            <button
+              onClick={() => {
+                setEstado("em_revisao");
+              }}
+            >
+              Livros em Revisão
+            </button>
+            <button
+              onClick={() => {
+                setEstado("negados");
+              }}
+            >
+              Livros Negados
+            </button>
+          </div>
 
           <input
             type="text"
@@ -163,49 +197,6 @@ export default function MeusLivros() {
             )}
           </div>
 
-          <div className={styles.selectContainer}>
-            <div
-              className={styles.select2}
-              onClick={() =>
-                setDropdownAberto(dropdownAberto === "estado" ? null : "estado")
-              }
-            >
-              <span>
-                {estado === "rascunho"
-                  ? "Rascunho"
-                  : estado === "em_revisao"
-                    ? "Em revisão"
-                    : estado === "publicado"
-                      ? "Publicado"
-                      : "Todos os estados"}
-              </span>
-
-              <FiChevronDown
-                className={dropdownAberto === "estado" ? styles.setaAberta : ""}
-              />
-            </div>
-
-            {dropdownAberto === "estado" && (
-              <div className={styles.options}>
-                <div onClick={() => handleEstado("")}>
-                  <span>Todos os estados</span>
-                </div>
-
-                <div onClick={() => handleEstado("rascunho")}>
-                  <span>Rascunho</span>
-                </div>
-
-                <div onClick={() => handleEstado("em_revisao")}>
-                  <span>Em revisão</span>
-                </div>
-
-                <div onClick={() => handleEstado("publicado")}>
-                  <span>Publicado</span>
-                </div>
-              </div>
-            )}
-          </div>
-
           <button type="submit" className={styles.btnbuscar}>
             Buscar
           </button>
@@ -259,7 +250,7 @@ export default function MeusLivros() {
                       </Link>
 
                       <button
-                        onClick={() => updateEstado(livro.id, "em_revisao")}
+                        onClick={() => atualizarEstado(livro.id, "em_revisao")}
                         className={`${styles.btnAcao} ${styles.btnPublicar}`}
                       >
                         Enviar para Revisão
@@ -269,10 +260,9 @@ export default function MeusLivros() {
 
                   {livro.estado === "em_revisao" && (
                     <button
-                      onClick={() => updateEstado(livro.id, "rascunho")}
                       className={`${styles.btnAcao} ${styles.btnPublicar}`}
                     >
-                      Cancelar Revisão
+                      Solicitar Cancelamento de Revisão
                     </button>
                   )}
 
@@ -280,26 +270,27 @@ export default function MeusLivros() {
                     <span className={styles.textoPublicado}>Publicado</span>
                   )}
 
-                  {livro.estado !== "em_revisao" && (
-                    <button
-                      onClick={() => {
-                        if (confirm("Deseja inativar este livro?")) {
-                          inativarLivro(livro.id);
-                        }
-                      }}
-                      className={`${styles.btnAcao} ${styles.btnInativar}`}
-                    >
-                      Excluir
-                    </button>
-                  )}
+                  {livro.estado !== "publicado" &&
+                    livro.estado !== "em_revisao" && (
+                      <button
+                        onClick={() => {
+                          if (confirm("Deseja excluir este livro?")) {
+                            deletarLivro(livro.id);
+                          }
+                        }}
+                        className={`${styles.btnAcao} ${styles.btnInativar}`}
+                      >
+                        Excluir
+                      </button>
+                    )}
                 </div>
               </div>
             ))}
-              <div className={styles.adicionardiv}>
-                  <Link to="/novo-livro" className={styles.btnAdicionar}>
-        +
-      </Link>
-      </div>
+            <div className={styles.adicionardiv}>
+              <Link to="/novo-livro" className={styles.btnAdicionar}>
+                +
+              </Link>
+            </div>
           </div>
         ) : (
           <div className={styles.cardnenhumlivro}>
@@ -317,30 +308,12 @@ export default function MeusLivros() {
         )}
 
         {!carregando && meta && meta.totalPages > 1 && (
-          <div className={styles.paginacao}>
-            <button
-              onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
-              disabled={paginaAtual === 1}
-              className={styles.btnPaginacao}
-            >
-              Anterior
-            </button>
-
-            <span className={styles.textoPaginacao}>
-              Página {paginaAtual} de {meta.totalPages}{" "}
-              <small>(Total: {meta.totalItems})</small>
-            </span>
-
-            <button
-              onClick={() =>
-                setPaginaAtual((prev) => Math.min(prev + 1, meta.totalPages))
-              }
-              disabled={paginaAtual === meta.totalPages}
-              className={styles.btnPaginacao}
-            >
-              Próximo
-            </button>
-          </div>
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={meta?.totalPages}
+            totalItems={meta?.totalItems}
+            onMudarPagina={setPaginaAtual}
+          />
         )}
       </div>
     </main>

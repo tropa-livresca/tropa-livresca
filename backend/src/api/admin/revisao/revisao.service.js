@@ -175,8 +175,8 @@ export class RevisaoService {
     return revisaoInativada;
   }
 
-  static async AlterarEstadoLivro(livroId, novoEstado, funcionarioId) {
-    if (!livroId || !novoEstado || !funcionarioId) {
+  static async publicarLivro(livroId, funcionarioId) {
+    if (!livroId || !funcionarioId) {
       const erroDados = new Error(
         "Erro ao informar os dados para alterar estado de livro.",
       );
@@ -200,15 +200,74 @@ export class RevisaoService {
       ).statusCode(400);
     }
 
-    const livroRevisado = await RevisaoModel.AlterarEstadoLivro(
-      livroId,
-      novoEstado,
-    );
+    const livroPublicado = await RevisaoModel.publicarLivro(livroId);
 
-    if (livroRevisado.error) {
-      throw livroRevisado.error;
+    if (livroPublicado.error) {
+      throw livroPublicado.error;
     }
 
-    return livroRevisado;
+    return livroPublicado;
+  }
+
+  static async negarPublicacaoLivro(idLivro, funcionarioId) {
+    if (!idLivro || !funcionarioId) {
+      const erroDados = new Error(
+        "Erro ao informar os dados para alterar estado de livro.",
+      );
+      erroDados.statusCode = 400;
+      throw erroDados;
+    }
+
+    const verificacao = await RevisaoModel.VerificarAutorLivro(
+      idLivro,
+      funcionarioId,
+    );
+
+    if (verificacao.error) {
+      throw verificacao.error;
+    }
+
+    if (!verificacao) {
+      throw new Error(
+        "Autor do livro não pode ser o mesmo que o revisor de livro.",
+      );
+    }
+
+    const livroNegado = await RevisaoModel.negarPublicacaoLivro(idLivro);
+
+    if (livroNegado.error) throw livroNegado.error;
+
+    return livroNegado;
+  }
+
+  static async solicitarCorrecaoLivro(idLivro, funcionarioId) {
+    if (!idLivro || !funcionarioId) {
+      const erroDados = new Error(
+        "Erro ao informar os dados para alterar estado de livro.",
+      );
+      erroDados.statusCode = 400;
+      throw erroDados;
+    }
+
+    const verificacao = await RevisaoModel.VerificarAutorLivro(
+      idLivro,
+      funcionarioId,
+    );
+
+    if (verificacao.error) {
+      throw verificacao.error;
+    }
+
+    if (!verificacao) {
+      throw new Error(
+        "Autor do livro não pode ser o mesmo que o revisor de livro.",
+      );
+    }
+
+    const livroCorrecao = await RevisaoModel.solicitarCorrecaoLivro(idLivro);
+
+    if (livroCorrecao.error) throw livroCorrecao.error;
+
+    return livroCorrecao;
   }
 }

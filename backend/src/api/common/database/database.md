@@ -33,6 +33,7 @@ CREATE TABLE public.users_profile (
     imagem text,
     descricao text,
     redes_sociais jsonb DEFAULT '{}'::jsonb,
+    senha_adm bytea DEFAULT 'Senh@Teste123!',
     CONSTRAINT users_profile_pkey PRIMARY KEY (id)
 );
 

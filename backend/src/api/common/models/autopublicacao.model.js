@@ -33,15 +33,15 @@ export class AutopublicacaoModel {
       query = query.order("titulo", { ascending: true });
     }
 
-    if(estado === "publicado"){
+    if (estado === "publicado") {
       query = query.eq("estado", "publicado");
-    } 
-    
-    if(estado === "em_revisao"){
+    }
+
+    if (estado === "em_revisao") {
       query = query.eq("estado", "em_revisao");
-    } 
-    
-    if(estado === "rascunho"){
+    }
+
+    if (estado === "rascunho") {
       query = query.eq("estado", "rascunho");
     }
 
@@ -53,7 +53,7 @@ export class AutopublicacaoModel {
     }
 
     return {
-      data: data || [],
+      data,
       count: count || 0,
     };
   }
@@ -75,14 +75,7 @@ export class AutopublicacaoModel {
     return data;
   }
 
-  static async updateEstado(id, novoEstado) {
-    const estadosValidos = ["rascunho", "em_revisao", "publicado"];
-    if (!estadosValidos.includes(novoEstado)) {
-      const error = new Error("Estado inválido.");
-      error.statusCode = 400;
-      throw error;
-    }
-
+  static async atualizarEstado(id) {
     const { data: livroAtual, error: fetchError } = await supabaseAdmin
       .from("livros")
       .select("estado")
@@ -100,101 +93,20 @@ export class AutopublicacaoModel {
       throw error;
     }
 
-    if (livroAtual.estado === "em_revisao" && novoEstado !== "rascunho") {
-      const error = new Error(
-        "A partir do estado em revisão, o livro só pode voltar para rascunho.",
-      );
-      error.statusCode = 400;
-      throw error;
-    }
-
-    if (livroAtual.estado === "publicado" && novoEstado === "rascunho") {
-      const error = new Error(
-        "Um livro publicado não pode voltar a ser rascunho.",
-      );
-      error.statusCode = 400;
-      throw error;
-    }
-
     const { error: updateError } = await supabaseAdmin
       .from("livros")
-      .update({ estado: novoEstado })
+      .update({ estado: "Em revisão." })
       .eq("id", id);
 
     if (updateError) {
       updateError.statusCode = 500;
       throw updateError;
     }
+
     return true;
   }
 
-  static async publicarLivro(id) {
-  const { data, error } = await supabase
-    .from("livros")
-    .update({ estado: "publicado" })
-    .eq("id", id)
-    .select("*")
-    .maybeSingle();
-
-  if (error) {
-    error.statusCode = 500;
-    throw error;
-  }
-
-  return data;
-}
-
-static async devolverRascunho(id) {
-  const { data, error } = await supabase
-    .from("livros")
-    .update({ estado: "rascunho" })
-    .eq("id", id)
-    .select("*")
-    .maybeSingle();
-
-  if (error) {
-    error.statusCode = 500;
-    throw error;
-  }
-
-  return data;
-}
-
-
-  static async inativarLivro(id, userId) {
-    const { data: livroAtual, error: fetchError } = await supabaseAdmin
-      .from("livros")
-      .select("estado")
-      .eq("id", id)
-      .maybeSingle();
-
-    if (fetchError) {
-      fetchError.statusCode = 500;
-      throw fetchError;
-    }
-
-    if (livroAtual?.estado === "em_revisao") {
-      const error = new Error(
-        "O livro está em revisão e não pode ser inativado.",
-      );
-      error.statusCode = 400;
-      throw error;
-    }
-
-    const { error } = await supabaseAdmin
-      .from("livros")
-      .update({ ativo: false })
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-    return true;
-  }
-
-  static async criar(dadosLivro) {
+  static async criarLivro(dadosLivro) {
     const { data, error } = await supabaseAdmin
       .from("livros")
       .insert(dadosLivro)
@@ -208,7 +120,7 @@ static async devolverRascunho(id) {
     return data;
   }
 
-  static async atualizar(id, dadosAtualizados) {
+  static async atualizarLivro(id, dadosAtualizados) {
     const { data, error } = await supabaseAdmin
       .from("livros")
       .update(dadosAtualizados)

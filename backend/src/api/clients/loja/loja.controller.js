@@ -9,7 +9,10 @@ export class LojaController {
         busca = "",
         filtro = "",
         ordem = "",
+        categoria = "",
       } = req.query;
+
+      console.warn("Conteúdo da query:", req.query);
 
       const resultado = await LojaService.buscarLivros({
         page: Number(page),
@@ -17,6 +20,7 @@ export class LojaController {
         busca,
         filtro,
         ordem,
+        categoria,
       });
 
       return res.status(200).json(resultado);

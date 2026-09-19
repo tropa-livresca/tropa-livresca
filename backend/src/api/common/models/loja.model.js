@@ -1,6 +1,7 @@
 import supabase from "../config/supabase.js";
 
 const COLUNAS_LIVRO = `
+  id,
   ISBN,
   imagens_explicitas,
   publico_alvo,
@@ -26,6 +27,7 @@ export class LojaModel {
     busca = "",
     filtro = "",
     ordem = "",
+    categoria = "",
   }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
@@ -38,6 +40,10 @@ export class LojaModel {
 
     if (busca) {
       query = query.ilike("titulo", `%${busca}%`);
+    }
+
+    if (categoria) {
+      query = query.ilike("categoria", categoria);
     }
 
     if (filtro === "alfabetico") {
