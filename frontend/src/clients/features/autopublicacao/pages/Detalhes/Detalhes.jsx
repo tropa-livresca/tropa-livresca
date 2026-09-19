@@ -4,15 +4,7 @@ import styles from "./Detalhes.module.css";
 import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
-export default function Detalhes({
-  dados,
-  onChange,
-  irParaProximaEtapa,
-  estadoAtualLivro,
-}) {
-  const deveBloquearCampos =
-    estadoAtualLivro === "publicado" || estadoAtualLivro === "em_revisao";
-
+export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
   const listaIdiomas = [
     { id: "", label: "Selecione um idioma" },
     { id: "portugues", label: "Português" },
@@ -91,12 +83,7 @@ export default function Detalhes({
 
         <div className={styles.card}>
           <legend>Título e subtítulo</legend>
-          {deveBloquearCampos && (
-            <p>
-              Título e subtítulo não podem ser alterados em revisão ou após
-              publicação.
-            </p>
-          )}
+
           <label>Título:</label>
           <Input
             placeholder="Inserir título"
@@ -104,7 +91,6 @@ export default function Detalhes({
             value={dados.titulo || ""}
             onChange={(e) => atualizarCampo("titulo", e.target.value)}
             handleOnChange={(e) => atualizarCampo("titulo", e.target.value)}
-            disabled={deveBloquearCampos}
             className={styles.inputmodificado}
           />
 
@@ -115,7 +101,6 @@ export default function Detalhes({
             value={dados.subtitulo || ""}
             onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
             handleOnChange={(e) => atualizarCampo("subtitulo", e.target.value)}
-            disabled={deveBloquearCampos}
             className={styles.inputmodificado}
           />
         </div>
@@ -132,17 +117,11 @@ export default function Detalhes({
               atualizarCampo("numeroEdicao", e.target.value)
             }
             className={styles.inputmodificado}
-            disabled={deveBloquearCampos}
           />
         </div>
 
         <div className={styles.card}>
           <legend>ISBN do livro</legend>
-          {deveBloquearCampos && (
-            <p>
-              *O ISBN não pode ser alterado em revisão ou após a publicação.*
-            </p>
-          )}
           <label>ISBN: </label>
           <Input
             placeholder="Inserir numero da edição"
@@ -151,18 +130,11 @@ export default function Detalhes({
             onChange={(e) => atualizarCampo("ISBN", e.target.value)}
             handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
             className={styles.inputmodificado}
-            disabled={deveBloquearCampos}
           />
         </div>
 
         <div className={styles.card}>
           <legend>Identificação do Autor no Livro</legend>
-          {deveBloquearCampos && (
-            <p>
-              *Os dados do autor principal não podem ser alterados em revisão ou
-              após a publicação.*
-            </p>
-          )}
           <label>Nome:</label>
           <Input
             placeholder="Inserir nome do autor"
@@ -170,7 +142,6 @@ export default function Detalhes({
             value={dados.autor?.nome || ""}
             onChange={(e) => atualizarAutor("nome", e.target.value)}
             handleOnChange={(e) => atualizarAutor("nome", e.target.value)}
-            disabled={deveBloquearCampos}
             className={styles.inputmodificado}
           />
 
@@ -181,7 +152,6 @@ export default function Detalhes({
             value={dados.autor?.sobrenome || ""}
             onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
             handleOnChange={(e) => atualizarAutor("sobrenome", e.target.value)}
-            disabled={deveBloquearCampos}
             className={styles.inputmodificado}
           />
         </div>
@@ -250,7 +220,6 @@ export default function Detalhes({
                   atualizarColaborador(index, "nome", e.target.value)
                 }
                 className={styles.inputmodificado}
-                disabled={deveBloquearCampos}
               />
 
               <label>Sobrenome:</label>
@@ -262,31 +231,26 @@ export default function Detalhes({
                   atualizarColaborador(index, "sobrenome", e.target.value)
                 }
                 className={styles.inputmodificado}
-                disabled={deveBloquearCampos}
               />
 
-              {!deveBloquearCampos && (
-                <button
-                  type="button"
-                  onClick={() => removerColaborador(index)}
-                  className={styles.btn}
-                >
-                  Remover este colaborador
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => removerColaborador(index)}
+                className={styles.btn}
+              >
+                Remover este colaborador
+              </button>
             </div>
           ))}
 
           <div className={styles.posterior}>
-            {!deveBloquearCampos && (
-              <button
-                type="button"
-                onClick={adicionarColaborador}
-                className={styles.btn2}
-              >
-                + Adicionar colaborador
-              </button>
-            )}
+            <button
+              type="button"
+              onClick={adicionarColaborador}
+              className={styles.btn2}
+            >
+              + Adicionar colaborador
+            </button>
           </div>
         </div>
 
@@ -297,7 +261,6 @@ export default function Detalhes({
             <div
               className={styles.select}
               onClick={() => setIdiomaAberto(!idiomaAberto)}
-              disabled={deveBloquearCampos}
             >
               <span>
                 {listaIdiomas.find((idioma) => idioma.id === dados.idioma)
@@ -337,7 +300,6 @@ export default function Detalhes({
             placeholder="Inserir descrição do livro"
             value={dados.descricao || ""}
             onChange={(e) => atualizarCampo("descricao", e.target.value)}
-            disabled={deveBloquearCampos}
           />
         </div>
 
@@ -351,7 +313,6 @@ export default function Detalhes({
               name="direitoPublicacao"
               checked={dados.direitoPublicacao === "sim"}
               onChange={() => atualizarCampo("direitoPublicacao", "sim")}
-              disabled={deveBloquearCampos}
             />
             <label htmlFor="direitoPublicacaoSim">Sim</label>
           </div>
@@ -363,7 +324,6 @@ export default function Detalhes({
               name="direitoPublicacao"
               checked={dados.direitoPublicacao === "nao"}
               onChange={() => atualizarCampo("direitoPublicacao", "nao")}
-              disabled={deveBloquearCampos}
             />
             <label htmlFor="direitoPublicacaoNao">Não</label>
           </div>
@@ -394,7 +354,6 @@ export default function Detalhes({
                   categorias: ["Adulto"],
                 });
               }}
-              disabled={deveBloquearCampos}
             />
             <label htmlFor="imagemExplicitaSim">Sim</label>
           </div>
@@ -420,7 +379,6 @@ export default function Detalhes({
                   categorias: [],
                 });
               }}
-              disabled={deveBloquearCampos}
             />
 
             <label htmlFor="imagemExplicitaNao">Não</label>
@@ -443,7 +401,6 @@ export default function Detalhes({
                 atualizarCampo("categorias", e.target.value.split(", "))
               }
               className={styles.inputmodificado}
-              disabled={deveBloquearCampos}
             />
           </div>
         ) : imagemExplicita === "sim" ? (
@@ -467,7 +424,6 @@ export default function Detalhes({
               atualizarCampo("palavrasChave", e.target.value.split("; "))
             }
             className={styles.inputmodificado}
-            disabled={deveBloquearCampos}
           />
         </div>
         <div className={styles.botao}>

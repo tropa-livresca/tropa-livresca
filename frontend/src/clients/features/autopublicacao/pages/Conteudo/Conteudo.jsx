@@ -8,7 +8,6 @@ export default function Conteudo({
   onChange,
   irParaProximaEtapa,
   voltarEtapa,
-  isBloqueadoParaEdicao,
 }) {
   const atualizarCampo = (chave, e) => {
     const arquivo = e.target.files?.[0];
@@ -75,7 +74,6 @@ export default function Conteudo({
               hidden
               accept=".pdf"
               onChange={(e) => atualizarCampo("manuscrito", e)}
-              disabled={isBloqueadoParaEdicao}
             />
           </label>
 
@@ -91,10 +89,7 @@ export default function Conteudo({
                 Abrir manuscrito (PDF)
               </a>
               <div className={styles.embed}>
-                <embed
-                  src={previewManuscrito}
-                  type="application/pdf"
-                />
+                <embed src={previewManuscrito} type="application/pdf" />
               </div>
             </div>
           ) : null}
@@ -119,7 +114,6 @@ export default function Conteudo({
                 hidden
                 accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("frente", e)}
-                disabled={isBloqueadoParaEdicao}
               />
             </label>
 
@@ -146,7 +140,6 @@ export default function Conteudo({
                 hidden
                 accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("verso", e)}
-                disabled={isBloqueadoParaEdicao}
               />
             </label>
 
@@ -172,7 +165,6 @@ export default function Conteudo({
                 hidden
                 accept=".jpg,.jpeg,.png"
                 onChange={(e) => atualizarCapa("orelhas", e)}
-                disabled={isBloqueadoParaEdicao}
               />
             </label>
 
