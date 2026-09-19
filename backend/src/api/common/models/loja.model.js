@@ -1,7 +1,7 @@
 import supabase from "../config/supabase.js";
 
 const COLUNAS_LIVRO = `
-id,
+  id,
   ISBN,
   imagens_explicitas,
   publico_alvo,

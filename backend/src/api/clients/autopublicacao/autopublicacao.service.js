@@ -2,17 +2,23 @@ import { supabaseAdmin } from "../../common/config/supabase.js";
 import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js";
 
 export class AutopublicacaoService {
-  static _parseCapasArray(livros) {
-    return livros.map((livro) => {
-      if (livro.capa && typeof livro.capa === "string") {
-        try {
-          livro.capa = JSON.parse(livro.capa);
-        } catch (e) {
-          livro.capa = { frente: null, verso: null, orelhas: null };
-        }
+  static _parseCapaUrls(livro) {
+    if (!livro) return livro;
+
+    const livroClonado = { ...livro };
+
+    try {
+      if (typeof livroClonado.capa === "string") {
+        livroClonado.capa = JSON.parse(livroClonado.capa);
       }
-      return livro;
-    });
+    } catch (e) {
+      console.warn("Erro ao parsear capa JSON", e);
+    }
+    return livroClonado;
+  }
+
+  static _parseCapasArray(livros) {
+    return livros.map((livro) => this._parseCapaUrls(livro));
   }
 
   static async atualizarEstado(livroId, userId) {
@@ -81,7 +87,7 @@ export class AutopublicacaoService {
     ordem,
     estado,
   }) {
-    const livros = await AutopublicacaoModel.buscarComFiltros({
+    const resultado = await AutopublicacaoModel.buscarComFiltros({
       userId,
       page,
       limit,
@@ -91,15 +97,20 @@ export class AutopublicacaoService {
       estado,
     });
 
-    if (livros.error) throw livros.error;
+    if (resultado.error) throw resultado.error;
+
+    const listaLivros = resultado.data;
+    const total = resultado.count;
+
+    const livrosFormatados = this._parseCapasArray(listaLivros);
 
     return {
-      data: livros,
+      data: livrosFormatados,
       meta: {
-        totalItems: livros.count,
+        totalItems: total,
         limit,
         page,
-        totalPages: Math.ceil(livros.count / limit),
+        totalPages: Math.ceil(total / limit),
       },
     };
   }

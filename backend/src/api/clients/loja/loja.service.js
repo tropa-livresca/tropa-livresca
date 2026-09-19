@@ -1,6 +1,25 @@
 import { LojaModel } from "../../common/models/loja.model.js";
 
 export class LojaService {
+  static _parseCapaUrls(livro) {
+    if (!livro) return livro;
+
+    const livroClonado = { ...livro };
+
+    try {
+      if (typeof livroClonado.capa === "string") {
+        livroClonado.capa = JSON.parse(livroClonado.capa);
+      }
+    } catch (e) {
+      console.warn("Erro ao parsear capa JSON", e);
+    }
+    return livroClonado;
+  }
+
+  static _parseCapasArray(livros) {
+    return livros.map((livro) => this._parseCapaUrls(livro));
+  }
+
   static async buscarLivros({
     page = 1,
     limit = 12,
@@ -22,12 +41,14 @@ export class LojaService {
       throw livrosTropa.error;
     }
 
+    const livrosComCapas = this._parseCapasArray(livrosTropa.data);
+
     const totalItems = livrosTropa.count;
 
     const totalPagesTropa = Math.ceil(livrosTropa.count / limit);
 
     return {
-      data: livrosTropa.data,
+      data: livrosComCapas,
       meta: {
         page,
         limit,

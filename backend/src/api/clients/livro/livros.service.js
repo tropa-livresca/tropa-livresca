@@ -20,60 +20,50 @@ export class LivrosService {
     return livros.map((livro) => this._parseCapaUrls(livro));
   }
 
-  static async buscarLivros(
-    { page, limit, busca, filtro, ordem },
-    alguns = true,
-  ) {
-    try {
-      const { data, count } = await LivroModel.buscarComFiltros(
-        { page, limit, busca, filtro, ordem },
-        alguns,
-      );
+  static async buscarLivros({ page, limit, busca, filtro, ordem }) {
+    const { data, error, count } = await LivroModel.buscarComFiltros({
+      page,
+      limit,
+      busca,
+      filtro,
+      ordem,
+    });
 
-      if (!data || data.length === 0) {
-        const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
-        erro404.statusCode = 404;
-        throw erro404;
-      }
-
-      const livrosComCapas = this._parseCapasArray(data);
-      const totalItems = count || livrosComCapas.length;
-
-      return {
-        data: livrosComCapas,
-        meta: {
-          page,
-          limit,
-          totalItems,
-          totalPages: Math.ceil(totalItems / limit),
-        },
-      };
-    } catch (error) {
-      if (error.statusCode) throw error;
-      const erroBanco = new Error("Erro ao buscar livros na vitrine.");
-      erroBanco.statusCode = 500;
-      throw erroBanco;
+    if (!data || data.length === 0) {
+      const erro404 = new Error("Nenhum livro foi encontrado na vitrine.");
+      erro404.statusCode = 404;
+      throw erro404;
     }
+
+    if (error) throw error;
+
+    const livrosComCapas = this._parseCapasArray(data);
+    const totalItems = count || livrosComCapas.length;
+
+    return {
+      data: livrosComCapas,
+      meta: {
+        page,
+        limit,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+      },
+    };
   }
 
   static async buscarLivroById(id) {
-    try {
-      const data = await LivroModel.buscarDetalhesPorId(id);
+    const data = await LivroModel.buscarDetalhesPorId(id);
 
-      if (!data) {
-        const erro404 = new Error(
-          "O livro solicitado não existe ou está indisponível.",
-        );
-        erro404.statusCode = 404;
-        throw erro404;
-      }
-
-      return this._parseCapaUrls(data);
-    } catch (error) {
-      if (error.statusCode) throw error;
-      const erroBanco = new Error("Erro ao buscar detalhes do livro.");
-      erroBanco.statusCode = 500;
-      throw erroBanco;
+    if (!data) {
+      const erro404 = new Error(
+        "O livro solicitado não existe ou está indisponível.",
+      );
+      erro404.statusCode = 404;
+      throw erro404;
     }
+
+    if (data.error) throw data.error;
+
+    return this._parseCapaUrls(data);
   }
 }
