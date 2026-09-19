@@ -1,23 +1,6 @@
 import { FuncionariosModel } from "../../common/models/funcionarios.model.js";
 
 export class FuncionariosService {
-  static async buscarFuncionarioById(funcionarioId) {
-    const funcionario =
-      await FuncionariosModel.buscarFuncionarioById(funcionarioId);
-
-    if (!funcionario) {
-      const erroFuncionario = new Error("Funcionário não encontrado.");
-      erroFuncionario.statusCode = 404;
-      throw erroFuncionario;
-    }
-
-    if (funcionario.error) {
-      throw funcionario.error;
-    }
-
-    return funcionario;
-  }
-
   static async buscarFuncionarios({
     page = 1,
     limit = 12,
@@ -54,35 +37,44 @@ export class FuncionariosService {
     };
   }
 
-  static async alterarFuncao(usuarioId, funcao) {
+  static async promoverUsuario(usuarioId) {
     if (!usuarioId) {
-      const erroDados = new Error("Id do usuário e/ou funcao não informado");
+      const erroDados = new Error(
+        "Dados não informados para alteração da função.",
+      );
       erroDados.statusCode = 400;
       throw erroDados;
     }
 
-    if (funcao !== "Master" && funcao !== "funcionario") {
-      const erroFuncao = new Error("A função informado é inválida.");
-      erroFuncao.statusCode = 400;
-      throw erroFuncao;
-    }
+    const resultado = await FuncionariosModel.promoverUsuario(usuarioId);
 
-    try {
-      const resultado = await FuncionariosModel.alterarFuncao(
-        usuarioId,
-        funcao,
-      );
+    if (resultado.error) throw resultado.error;
 
-      return resultado;
-    } catch (error) {
-      error.statusCode = 500;
-      throw error;
-    }
+    return resultado;
   }
 
-  static async alterarIsAdminFuncionario(funcionarioId) {
+  static async alterarIsMasterFuncionario(funcionarioId, isMaster) {
+    if (!funcionarioId || !isMaster) {
+      const erroDados = new Error(
+        "Dados não informados para alteração da função.",
+      );
+      erroDados.statusCode = 400;
+      throw erroDados;
+    }
+
+    const resultado = await FuncionariosModel.alterarIsMasterFuncionario(
+      funcionarioId,
+      isMaster,
+    );
+
+    if (resultado.error) throw resultado.error;
+
+    return resultado;
+  }
+
+  static async inativarFuncionario(funcionarioId) {
     if (!funcionarioId) {
-      const erroId = new Error("Funcionário a deletar não informado.");
+      const erroId = new Error("Funcionário a inativar não informado.");
       throw erroId;
     }
 

@@ -167,16 +167,48 @@ export class RevisaoModel {
     return data;
   }
 
-  static async AlterarEstadoLivro(idLivro, novoEstado) {
+  static async publicarLivro(idLivro) {
     const { data, error } = await supabase
       .from("livros")
-      .update({ estado: novoEstado })
+      .update({ estado: "publicado" })
       .eq("id", idLivro)
       .select()
       .single();
 
     if (error) {
       error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async solicitarCorrecaoLivro(idLivro) {
+    const { data, error } = await supabase
+      .from("livros")
+      .update({ estado: "correcao" })
+      .eq("id", idLivro)
+      .select()
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async negarPublicacaoLivro(idLivro) {
+    const { data, error } = await supabase
+      .from("livros")
+      .update({ estado: "negado" })
+      .eq("id", idLivro)
+      .select()
+      .single();
+
+    if (error) {
+      error.statuscode = 500;
       throw error;
     }
 

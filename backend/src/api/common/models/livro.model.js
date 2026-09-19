@@ -59,7 +59,7 @@ export class LivroModel {
 
     const { data, error } = await supabaseAdmin
       .from("livros")
-      .select(`*, users_profile(*)`)
+      .select(`*, users_profile(*), vendas(*)`)
       .eq("id", livroId)
       .maybeSingle();
 
