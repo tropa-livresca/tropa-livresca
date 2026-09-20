@@ -90,12 +90,14 @@ export default function Confirmacao({
               <div className={styles.containergrid}>
                 <div>
                   <label>ISBN do livro:</label>
-                  <div className={styles.liinput}>{dados.detalhes.Isbn}</div>
+                  <div className={styles.liinput}>{dados.detalhes.ISBN}</div>
                 </div>
 
                 <div>
                   <label>Número da edição:</label>
-                  <div className={styles.liinput}>{dados.detalhes.edicao}</div>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.numeroEdicao}
+                  </div>
                 </div>
               </div>
             </div>
@@ -110,7 +112,7 @@ export default function Confirmacao({
                 </div>
 
                 <div>
-                  <label>Direito de Publicação e Uso de IA:</label>
+                  <label>Direitos de Publicação e Uso de IA:</label>
                   <div className={styles.liinput}>
                     {dados.detalhes.direitoPublicacao}
                   </div>
@@ -125,16 +127,16 @@ export default function Confirmacao({
                 </div>
 
                 <div>
-                  <label>Restrição de Conteúdo:</label>
+                  <label>Imagem explícitas?</label>
                   <div className={styles.liinput}>
-                    {dados.detalhes.restricaoConteudo}
+                    {dados.detalhes.imagensExplicitas ? <>Sim</> : <>Não</>}
                   </div>
                 </div>
 
                 <div>
                   <label>Categoria:</label>
                   <div className={styles.liinput}>
-                    {dados.detalhes.categorias?.join(", ")}
+                    {dados.detalhes.categoria}
                   </div>
                 </div>
 
@@ -207,7 +209,7 @@ export default function Confirmacao({
                   </div>
                 </div>
 
-                {previews ? (
+                {previews.manga ? (
                   <div className={styles.previewContainer}>
                     <div className={styles.previewspan}>
                       <span>Documento PDF</span>
@@ -368,6 +370,8 @@ export default function Confirmacao({
                 </span>
               </div>
             </div>
+
+            <div>Número de páginas: {dados.orcamento.numeroPaginas}</div>
           </div>
         )}
       </div>

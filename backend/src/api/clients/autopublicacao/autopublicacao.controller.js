@@ -18,8 +18,13 @@ export class AutopublicacaoController {
     try {
       const { id } = req.params;
       const userId = req.user?.id;
+      const { novoEstado } = req.body;
 
-      const livro = await AutopublicacaoService.atualizarEstado(id, userId);
+      const livro = await AutopublicacaoService.atualizarEstado(
+        id,
+        userId,
+        novoEstado,
+      );
 
       return res.status(200).json(livro);
     } catch (err) {

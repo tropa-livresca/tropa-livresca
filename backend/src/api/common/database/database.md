@@ -45,7 +45,6 @@ CREATE TABLE public.livros (
     direitos_de_publicacao boolean NOT NULL,
     conteudo_por_IA boolean NOT NULL,
     imagens_explicitas boolean NOT NULL,
-    publico_alvo text,
     numero_edicao smallint,
     data_de_publicacao date NOT NULL,
     preco_digital numeric NOT NULL,

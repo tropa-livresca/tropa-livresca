@@ -12,16 +12,28 @@ const ESTADO_INICIAL_LIVRO = {
     subtitulo: "",
     ISBN: "",
     numeroEdicao: "",
-    autor: { nome: "", sobrenome: "" },
+    autor: {
+      nome: "",
+      sobrenome: "",
+    },
     colaboradores: [],
     descricao: "",
     direitoPublicacao: "",
-    publicoPrincipal: "",
+    imagensExplicitas: "",
     categoria: "",
     palavrasChave: [],
   },
-  conteudo: { manuscrito: null, capa: null },
-  orcamento: { valorLivroFisico: "", valorLivroDigital: "", numeroPaginas: "" },
+
+  conteudo: {
+    manuscrito: null,
+    capa: null,
+  },
+
+  orcamento: {
+    valorLivroFisico: "",
+    valorLivroDigital: "",
+    numeroPaginas: "",
+  },
 };
 
 export const AutopublicacaoProvider = ({ children }) => {
@@ -40,31 +52,34 @@ export const AutopublicacaoProvider = ({ children }) => {
     setPopup(null);
   }, []);
 
-  const [livro, setLivro] = useState([]);
-  const [autor, setAutor] = useState(null);
-  const [colaboradores, setColaboradores] = useState(null);
-  const [Livros, setLivros] = useState([]);
-  const [carregando, setCarregando] = useState(true);
-  const [meta, setMeta] = useState(null);
+  const [carregando, setCarregando] = useState(false);
 
   const [isEdicao, setIsEdicao] = useState(false);
   const [estadoAtualLivro, setEstadoAtualLivro] = useState(null);
 
   const [dadosLivro, setDadosLivro] = useState(() => {
     const salvos = localStorage.getItem("rascunhoDadosLivro");
-    return salvos ? JSON.parse(salvos) : ESTADO_INICIAL_LIVRO;
+
+    if (!salvos) {
+      return ESTADO_INICIAL_LIVRO;
+    }
+
+    try {
+      return JSON.parse(salvos);
+    } catch {
+      localStorage.removeItem("rascunhoDadosLivro");
+      return ESTADO_INICIAL_LIVRO;
+    }
   });
 
   const [etapa, setEtapa] = useState(() => {
-    const etapaSalva = localStorage.getItem("rascunhoEtapaLivro");
-    return etapaSalva ? Number(etapaSalva) : 1;
+    const etapaSalva = Number(localStorage.getItem("rascunhoEtapaLivro"));
+
+    return etapaSalva >= 1 && etapaSalva <= 4 ? etapaSalva : 1;
   });
 
-  const isBloqueadoParaEdicao =
-    estadoAtualLivro === "em_revisao" || estadoAtualLivro === "publicado";
-
   useEffect(() => {
-    if (isEdicao || isBloqueadoParaEdicao) return;
+    if (isEdicao) return;
 
     localStorage.setItem("rascunhoEtapaLivro", etapa.toString());
     const dadosParaSalvar = {
@@ -72,225 +87,193 @@ export const AutopublicacaoProvider = ({ children }) => {
       conteudo: { manuscrito: null, capa: null },
     };
     localStorage.setItem("rascunhoDadosLivro", JSON.stringify(dadosParaSalvar));
-  }, [dadosLivro, etapa, isEdicao, isBloqueadoParaEdicao]);
+  }, [dadosLivro, etapa, isEdicao]);
 
-  const carregarDadosParaEdicao = useCallback((dadosBanco) => {
+  const carregarDadosParaEdicao = useCallback(async (dadosBanco) => {
     if (!dadosBanco) return;
 
-    console.debug("carregarDadosParaEdicao payload:", dadosBanco);
-
     setIsEdicao(true);
-    setEstadoAtualLivro(
-      dadosBanco.estado ||
-        dadosBanco.estado_atual ||
-        dadosBanco.estadoAtual ||
-        "rascunho",
-    );
+    setEstadoAtualLivro(dadosBanco.estado || "rascunho");
     setEtapa(1);
 
-    const pick = (...keys) => {
-      for (const k of keys) {
-        if (k in dadosBanco && dadosBanco[k] != null) return dadosBanco[k];
-      }
-      return undefined;
-    };
+    let palavras = dadosBanco.palavras_chave || [];
 
-    const autorNome =
-      (dadosBanco.autor &&
-        (dadosBanco.autor.nome || dadosBanco.autor.nome === ""
-          ? dadosBanco.autor.nome
-          : undefined)) ||
-      pick("autor_nome", "autorNome", "autorNome") ||
-      "";
-
-    const autorSobrenome =
-      (dadosBanco.autor &&
-        (dadosBanco.autor.sobrenome || dadosBanco.autor.sobrenome === ""
-          ? dadosBanco.autor.sobrenome
-          : undefined)) ||
-      pick("autor_sobrenome", "autorSobrenome") ||
-      "";
-
-    let palavras = pick(
-      "palavras_chave",
-      "palavrasChave",
-      "keywords",
-      "tags",
-      "palavras",
-    );
     if (typeof palavras === "string") {
       palavras = palavras
         .split(/,|;|\n/)
-        .map((p) => p.trim())
+        .map((palavra) => palavra.trim())
         .filter(Boolean);
     }
-    if (!Array.isArray(palavras)) palavras = palavras || [];
 
-    const manuscrito =
-      pick(
-        "manuscrito",
-        "manuscrito_path",
-        "manuscritoPath",
-        "manuscrito_url",
-        "manuscritoUrl",
-        "arquivo",
-        "file",
-      ) || null;
+    if (!Array.isArray(palavras)) {
+      palavras = [];
+    }
 
-    let capa = pick("capa", "cover", "capa_json");
+    let capa = dadosBanco.capa;
+
     if (typeof capa === "string") {
       try {
         capa = JSON.parse(capa);
-      } catch (e) {
+      } catch {
         capa = null;
-        console.error("Erro ao converter a capa", e);
       }
     }
+
+    capa = {
+      frente: capa?.frente || null,
+      verso: capa?.verso || null,
+      orelhas: capa?.orelhas || null,
+    };
 
     if (!capa) {
-      const frente = pick(
-        "capa_frente",
-        "capaFrente",
-        "cover_front",
-        "coverFront",
-      );
-      const verso = pick("capa_verso", "capaVerso", "cover_back", "coverBack");
-      const orelhas = pick(
-        "capa_orelhas",
-        "capaOrelhas",
-        "cover_flaps",
-        "coverFlaps",
-      );
-      if (frente || verso || orelhas) {
-        capa = {
-          frente: frente || null,
-          verso: verso || null,
-          orelhas: orelhas || null,
-        };
+      capa = {
+        frente: null,
+        verso: null,
+        orelhas: null,
+      };
+    }
+
+    let manuscrito = dadosBanco.manuscrito || null;
+
+    if (manuscrito && !manuscrito.startsWith("http")) {
+      const { data, error } = await supabase.storage
+        .from("manuscritos-livros")
+        .createSignedUrl(manuscrito, 3600);
+
+      if (!error) {
+        manuscrito = data.signedUrl;
+      } else {
+        console.error("Erro ao gerar URL do manuscrito:", error);
       }
     }
 
-    if (!capa) capa = { frente: null, verso: null, orelhas: null };
-
-    const direitoRaw = pick(
-      "direitos_de_publicacao",
-      "direitoPublicacao",
-      "direito_publicacao",
-      "direito",
-      "has_publication_rights",
-    );
-
-    const imagensExplicitasRaw = pick(
-      "imagens_explicitas",
-      "imagensExplicitas",
-      "imagens_explicitas",
-      "has_explicit_images",
-    );
-
-    const normalizeBool = (v) => {
-      if (v === true || v === "true" || v === "sim" || v === "1" || v === 1)
-        return true;
+    const normalizeBool = (valor) => {
       if (
-        v === false ||
-        v === "false" ||
-        v === "nao" ||
-        v === "não" ||
-        v === "0" ||
-        v === 0
-      )
+        valor === true ||
+        valor === "true" ||
+        valor === "sim" ||
+        valor === "1" ||
+        valor === 1
+      ) {
+        return true;
+      }
+
+      if (
+        valor === false ||
+        valor === "false" ||
+        valor === "nao" ||
+        valor === "não" ||
+        valor === "0" ||
+        valor === 0
+      ) {
         return false;
+      }
+
       return undefined;
     };
 
-    const direitoNorm = (() => {
-      if (typeof direitoRaw === "string") {
-        const low = direitoRaw.toLowerCase();
-        if (low === "sim" || low === "true" || low === "1") return "sim";
-        if (low === "nao" || low === "não" || low === "false" || low === "0")
-          return "nao";
-      }
-      if (typeof direitoRaw === "boolean") return direitoRaw ? "sim" : "nao";
-      return direitoRaw || "";
-    })();
+    const direitoNorm = normalizeBool(dadosBanco.direitos_de_publicacao);
 
-    const imagensExplicitasNorm = (() => {
-      const b = normalizeBool(imagensExplicitasRaw);
-      if (b === true) return true;
-      if (b === false) return false;
-      if (typeof imagensExplicitasRaw === "string") {
-        const low = imagensExplicitasRaw.toLowerCase();
-        if (low === "sim" || low === "true") return true;
-        if (low === "nao" || low === "não" || low === "false") return false;
-      }
-      return undefined;
-    })();
+    const direitoPublicacao =
+      direitoNorm === true ? "sim" : direitoNorm === false ? "nao" : "";
+
+    const imagensExplicitasNorm = normalizeBool(dadosBanco.imagens_explicitas);
 
     setDadosLivro({
       id: dadosBanco.id,
+
       detalhes: {
-        idioma: pick("idioma", "language") || "",
-        titulo: pick("titulo", "title") || "",
-        subtitulo: pick("subtitulo", "subTitle") || "",
-        numeroEdicao: pick("numero_edicao", "numeroEdicao") || "",
-        ISBN: pick("ISBN", "isbn") || "",
+        idioma: dadosBanco.idioma || "",
+        titulo: dadosBanco.titulo || "",
+        subtitulo: dadosBanco.subtitulo || "",
+        numeroEdicao: dadosBanco.numero_edicao || "",
+        ISBN: dadosBanco.ISBN || "",
+
         autor: {
-          nome: autorNome,
-          sobrenome: autorSobrenome,
+          nome: dadosBanco.autor_nome || "",
+          sobrenome: dadosBanco.autor_sobrenome || "",
         },
-        colaboradores: pick("colaboradores", "contributors") || [],
-        descricao: pick("descricao", "description") || "",
-        direitoPublicacao: direitoNorm || "",
-        imagensExplicitas: imagensExplicitasNorm,
-        publicoPrincipal:
-          pick("publico_alvo", "publicoPrincipal", "publico") || "",
-        categorias: pick("categorias", "categories") || [],
+
+        colaboradores: dadosBanco.colaboradores || [],
+        descricao: dadosBanco.descricao || "",
+
+        direitoPublicacao,
+        imagensExplicitas: imagensExplicitasNorm ?? "",
+
+        publicoPrincipal: dadosBanco.publico_alvo || "",
+
+        categoria: dadosBanco.categoria || "",
+
         palavrasChave: palavras,
       },
+
       conteudo: {
         manuscrito,
         capa,
       },
+
       orcamento: {
-        valorLivroFisico: pick("preco_fisico", "valorLivroFisico") || "",
-        valorLivroDigital: pick("preco_digital", "valorLivroDigital") || "",
-        numeroPaginas: pick("numero_paginas", "numeroPaginas") || "",
+        valorLivroFisico: dadosBanco.preco_fisico ?? "",
+        valorLivroDigital: dadosBanco.preco_digital ?? "",
+        numeroPaginas: dadosBanco.numero_paginas ?? "",
       },
     });
   }, []);
 
-  const d = dadosLivro.detalhes;
-  const c = dadosLivro.conteudo;
-  const o = dadosLivro.orcamento;
+  const detalhes = dadosLivro.detalhes;
+  const conteudo = dadosLivro.conteudo;
+  const orcamento = dadosLivro.orcamento;
+
+  const validarDetalhes = () => {
+    const imagemExplicitaNaoInformada =
+      detalhes.imagensExplicitas === undefined ||
+      detalhes.imagensExplicitas === "";
+
+    if (
+      !detalhes.titulo ||
+      !detalhes.idioma ||
+      !detalhes.descricao ||
+      !detalhes.direitoPublicacao ||
+      !detalhes.categoria ||
+      !detalhes.subtitulo ||
+      !detalhes.numeroEdicao ||
+      imagemExplicitaNaoInformada
+    ) {
+      return false;
+    }
+
+    if (!detalhes.autor?.nome || !detalhes.autor?.sobrenome) {
+      return false;
+    }
+
+    return (
+      !detalhes.colaboradores?.length ||
+      detalhes.colaboradores.every(
+        (colaborador) =>
+          colaborador.funcao && colaborador.nome && colaborador.sobrenome,
+      )
+    );
+  };
+
+  const validarConteudo = () =>
+    !!conteudo.manuscrito &&
+    !!conteudo.capa?.frente &&
+    !!conteudo.capa?.verso &&
+    !!conteudo.capa?.orelhas;
+
+  const validarOrcamento = () =>
+    !!orcamento.numeroPaginas &&
+    !!orcamento.valorLivroFisico &&
+    !!orcamento.valorLivroDigital;
 
   const validarEtapaAtual = (etapaAtual) => {
     switch (etapaAtual) {
       case 1:
-        if (
-          !d?.titulo ||
-          !d?.idioma ||
-          !d?.descricao ||
-          !d?.direitoPublicacao ||
-          !d?.ISBN
-        )
-          return false;
-        if (!d.autor?.nome || !d.autor?.sobrenome) return false;
-        if (d.colaboradores?.length > 0) {
-          return d.colaboradores.every(
-            (c) => c.funcao && c.nome && c.sobrenome,
-          );
-        }
-        return true;
+        return validarDetalhes();
       case 2:
-        return (
-          !!c?.manuscrito &&
-          !!c?.capa?.frente &&
-          !!c?.capa?.verso &&
-          !!c?.capa?.orelhas
-        );
+        return validarConteudo();
       case 3:
-        return (
-          !!o?.numeroPaginas && !!o?.valorLivroFisico && !!o?.valorLivroDigital
-        );
+        return validarOrcamento();
       default:
         return true;
     }
@@ -329,7 +312,7 @@ export const AutopublicacaoProvider = ({ children }) => {
     setDadosLivro((atual) => ({ ...atual, [chave]: novosDados }));
   };
 
-  const InsertLivro = useCallback(
+  const inserirLivro = useCallback(
     async (dadosDoLivro, estadoDesejado = "rascunho") => {
       if (
         estadoAtualLivro === "em_revisao" ||
@@ -352,7 +335,9 @@ export const AutopublicacaoProvider = ({ children }) => {
           if (typeof arquivo === "string") return arquivo;
 
           const extensao =
-            arquivo.name?.split(".").pop() || arquivo.type?.split("/") || "bin";
+            arquivo.name?.split(".").pop() ||
+            arquivo.type?.split("/").pop() ||
+            "bin";
 
           const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",
@@ -429,7 +414,7 @@ export const AutopublicacaoProvider = ({ children }) => {
   );
 
   const publicarLivroNoContexto = async (estadoDesejado = "rascunho") => {
-    await InsertLivro(dadosLivro, estadoDesejado);
+    await inserirLivro(dadosLivro, estadoDesejado);
 
     localStorage.removeItem("rascunhoDadosLivro");
     localStorage.removeItem("rascunhoEtapaLivro");
@@ -442,29 +427,17 @@ export const AutopublicacaoProvider = ({ children }) => {
   return (
     <AutopublicacaoContext.Provider
       value={{
-        autor,
-        colaboradores,
-        meta,
         carregando,
-        livro,
-        Livros,
         dadosLivro,
         etapa,
         isEdicao,
         estadoAtualLivro,
-        isBloqueadoParaEdicao,
         carregarDadosParaEdicao,
         atualizarEtapa,
         irParaProximaEtapa,
         voltarEtapa,
         irParaEtapaEspecifica,
         publicarLivro: publicarLivroNoContexto,
-        setAutor,
-        setMeta,
-        setLivro,
-        setLivros,
-        setColaboradores,
-        setCarregando,
       }}
     >
       {children}

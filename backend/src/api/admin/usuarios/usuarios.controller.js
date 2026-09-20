@@ -34,4 +34,46 @@ export class UsuariosController {
       next(err);
     }
   }
+
+  static async alterarIsMasterFuncionario(req, res, next) {
+    const { funcionarioId, isMaster } = req.body;
+
+    try {
+      const data = await UsuariosService.alterarIsMasterFuncionario(
+        funcionarioId,
+        isMaster,
+      );
+
+      return res.status(200).json({ data });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async inativarFuncionario(req, res, next) {
+    const { funcionarioId } = req.body;
+
+    try {
+      const data = await UsuariosService.inativarFuncionario(funcionarioId);
+
+      return res.status(200).json({ data });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async promoverUsuario(req, res, next) {
+    const { funcionarioId } = req.body;
+
+    try {
+      const data = await UsuariosService.promoverUsuario(funcionarioId);
+
+      return res.json({
+        success: true,
+        data: data,
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
 }

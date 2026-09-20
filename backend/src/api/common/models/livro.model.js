@@ -1,7 +1,7 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 
 const COLUNAS_LIVRO =
-  "id, ISBN, imagens_explicitas, publico_alvo, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
+  "id, ISBN, imagens_explicitas, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
 
 export class LivroModel {
   //admin

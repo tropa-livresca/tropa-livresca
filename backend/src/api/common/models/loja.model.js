@@ -4,7 +4,6 @@ const COLUNAS_LIVRO = `
   id,
   ISBN,
   imagens_explicitas,
-  publico_alvo,
   data_de_publicacao,
   preco_digital,
   preco_fisico,

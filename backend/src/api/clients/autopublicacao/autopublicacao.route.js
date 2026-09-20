@@ -1,4 +1,5 @@
 import express from "express";
+
 import { AutopublicacaoController } from "./autopublicacao.controller.js";
 import { checkAuth } from "../../common/middlewares/auth.middleware.js";
 
@@ -16,14 +17,14 @@ router.post(
 
 router.post("/", checkAuth, AutopublicacaoController.criarLivro);
 
-router.patch("/:id", checkAuth, AutopublicacaoController.atualizarLivro);
-
 router.patch(
   "/estado/:id",
   checkAuth,
   AutopublicacaoController.atualizarEstado,
 );
 
-router.delete(":id", checkAuth, AutopublicacaoController.deletarLivroRascunho);
+router.patch("/:id", checkAuth, AutopublicacaoController.atualizarLivro);
+
+router.delete("/:id", checkAuth, AutopublicacaoController.deletarLivroRascunho);
 
 export default router;

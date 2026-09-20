@@ -28,6 +28,7 @@ export default function Loja() {
     "Drama",
     "Suspense",
     "História",
+    "Adulto",
   ];
 
   useEffect(() => {

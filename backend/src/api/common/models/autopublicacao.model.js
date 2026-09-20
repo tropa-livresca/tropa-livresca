@@ -75,11 +75,13 @@ export class AutopublicacaoModel {
     return data;
   }
 
-  static async atualizarEstado(id) {
+  static async atualizarEstado(id, novoEstado, userId) {
     const { data: livroAtual, error: fetchError } = await supabaseAdmin
       .from("livros")
       .select("estado")
       .eq("id", id)
+      .eq("fk_user_profile_id", userId)
+      .eq("ativo", true)
       .maybeSingle();
 
     if (fetchError) {
@@ -93,17 +95,21 @@ export class AutopublicacaoModel {
       throw error;
     }
 
-    const { error: updateError } = await supabaseAdmin
+    const { data, error: updateError } = await supabaseAdmin
       .from("livros")
-      .update({ estado: "Em revisão." })
-      .eq("id", id);
+      .update({ estado: novoEstado })
+      .eq("id", id)
+      .eq("fk_user_profile_id", userId)
+      .eq("ativo", true)
+      .select()
+      .single();
 
     if (updateError) {
       updateError.statusCode = 500;
       throw updateError;
     }
 
-    return true;
+    return data;
   }
 
   static async criarLivro(dadosLivro) {

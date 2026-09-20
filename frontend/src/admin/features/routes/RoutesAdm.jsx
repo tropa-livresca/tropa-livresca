@@ -10,9 +10,6 @@ import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
 import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
-import GerenciaFuncionarios from "../funcionarios/pages/GerenciarFuncionarios/GerenciarFuncionarios.jsx";
-import PromoverUsuario from "../funcionarios/pages/PromoverUsuario/PromoverUsuario.jsx";
-import InativarFuncionario from "../funcionarios/pages/InativarFuncionario/InativarFuncionario.jsx";
 import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
@@ -28,6 +25,20 @@ const PrivateRoute = ({ children, redirectTo = "/auth/admin" }) => {
 
   if (!signed) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  }
+
+  return children;
+};
+
+const MasterRoute = ({ children, redirectTo = "/admin" }) => {
+  const { signed, loading, user } = useAdmin();
+
+  if (loading) {
+    return null;
+  }
+
+  if (!signed || !user?.is_master) {
+    return <Navigate to={redirectTo} replace />;
   }
 
   return children;
@@ -92,47 +103,20 @@ const RoutesAdm = () => {
         />
 
         <Route
-          path="funcionarios"
-          element={
-            <PrivateRoute>
-              <GerenciaFuncionarios />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="funcionarios/promover"
-          element={
-            <PrivateRoute>
-              <PromoverUsuario />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="funcionarios/inativar"
-          element={
-            <PrivateRoute>
-              <InativarFuncionario />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
           path="usuarios"
           element={
-            <PrivateRoute>
+            <MasterRoute>
               <GerenciaUsuarios />
-            </PrivateRoute>
+            </MasterRoute>
           }
         />
 
         <Route
           path="usuarios/:id"
           element={
-            <PrivateRoute>
+            <MasterRoute>
               <VisualizarUsuario />
-            </PrivateRoute>
+            </MasterRoute>
           }
         />
 

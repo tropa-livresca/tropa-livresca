@@ -1,4 +1,4 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
+import { supabaseAdmin } from "../config/supabase.js";
 
 export class UsuariosModel {
   static async buscarUsuarios({
@@ -11,42 +11,31 @@ export class UsuariosModel {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
-    let query = supabaseAdmin.from("users_profile");
+    let query = supabaseAdmin
+      .from("users_profile")
+      .select("*, livros(estado, ativo)", { count: "exact" });
 
     if (filtro === "funcionario") {
-      query = query
-        .select("*, livros(estado, ativo)", { count: "exact" })
-        .eq("is_admin", true);
-    } else if (filtro === "autor") {
-      query = query
-        .select("*, livros!inner(estado, ativo)", { count: "exact" })
-        .eq("livros.estado", "publicado")
-        .eq("livros.ativo", true);
+      query = query.eq("is_admin", true);
     } else if (filtro === "cliente") {
-      query = query
-        .select("*, livros(estado, ativo)", {
-          count: "exact",
-        })
-        .eq("is_admin", false);
-    } else {
-      query = query.select("*, livros(estado, ativo)", { count: "exact" });
+      query = query.eq("is_admin", false);
     }
 
     if (busca) {
       query = query.ilike("nome", `%${busca}%`);
     }
 
-    const isAsc = ordem !== "descendente";
+    const isAsc = ordem === "ascendente";
     query = query.order("nome", { ascending: isAsc });
 
-    let { data, error, count } = await query.range(start, end);
+    let { data, error, count } = await query;
 
     if (error) {
       error.statusCode = 500;
       throw error;
     }
 
-    const usuariosFormatados =
+    let usuariosFormatados =
       data?.map((usuario) => {
         const temLivroPublicado =
           Array.isArray(usuario.livros) &&
@@ -54,20 +43,25 @@ export class UsuariosModel {
             (livro) => livro.estado === "publicado" && livro.ativo === true,
           );
 
-        const { ...dadosDoUsuario } = usuario;
-
         return {
-          ...dadosDoUsuario,
-          isFuncionario: {
-            isAdmin: !!usuario.is_admin,
-            primeiro_acesso: usuario.primeiro_acesso,
-          },
+          id: usuario.id,
+          nome: usuario.nome,
+          isAdmin: !!usuario.is_admin,
           isAutor: temLivroPublicado,
+          redes_sociais: usuario.redes_sociais,
+          primeiro_acesso: usuario.primeiro_acesso,
         };
       }) || [];
 
+    if (filtro === "autor") {
+      usuariosFormatados = usuariosFormatados.filter((u) => u.isAutor);
+      count = usuariosFormatados.length;
+    }
+
+    const dadosPaginados = usuariosFormatados.slice(start, end + 1);
+
     return {
-      data: data,
+      data: dadosPaginados,
       count: count || 0,
     };
   }
@@ -77,15 +71,71 @@ export class UsuariosModel {
 
     const { data, error } = await supabaseAdmin
       .from("users_profile")
-      .select(
-        `*, livros(estado, ativo, titulo, subtitulo, capa, data_de_publicacao), revisoes(data_criacao ,apontamento ,nome))`,
-      )
+      .select("*, livros(*), revisoes(*)")
       .eq("id", usuarioId)
       .maybeSingle();
 
     if (error) {
       error.statusCode = 500;
       throw error;
+    }
+
+    return data;
+  }
+
+  static async promoverUsuario(usuarioId) {
+    const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .update({ is_admin: true })
+      .select()
+      .eq("id", usuarioId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async alterarIsMasterFuncionario(funcionarioId, isMaster) {
+    const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .update({ is_master: isMaster })
+      .select()
+      .eq("id", funcionarioId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async inativarFuncionario(funcionarioId) {
+    const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .update({
+        is_admin: false,
+        is_master: false,
+      })
+      .eq("id", funcionarioId)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      throw error;
+    }
+
+    if (!data) {
+      const erroRegistro = new Error(
+        "Nenhum perfil foi encontrado para atualização.",
+      );
+      erroRegistro.statusCode = 404;
+      throw erroRegistro;
     }
 
     return data;

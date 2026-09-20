@@ -30,6 +30,21 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
     "Outro",
   ];
 
+  const categoriasOpcoes = [
+    "Romance",
+    "Fantasia",
+    "Ficção Científica",
+    "Mistério",
+    "Terror",
+    "Aventura",
+    "Drama",
+    "Suspense",
+    "História",
+    "Adulto",
+  ];
+
+  const [categoriaAberta, setCategoriaAberta] = useState(false);
+
   const [imagemExplicita, setImagemExplicita] = useState(() => {
     if (dados.imagensExplicitas === true) return "sim";
     if (dados.imagensExplicitas === false) return "nao";
@@ -304,7 +319,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
         </div>
 
         <div className={styles.card}>
-          <legend>Direitos de Publicação e Uso de IA</legend>
+          <legend>Direitos de Publicação</legend>
 
           <div className={styles.radioOpcao}>
             <Input
@@ -343,7 +358,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
                 onChange({
                   ...dados,
                   imagensExplicitas: true,
-                  categorias: ["Adulto"],
+                  categoria: "",
                 });
               }}
               handleOnChange={() => {
@@ -351,7 +366,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
                 onChange({
                   ...dados,
                   imagensExplicitas: true,
-                  categorias: ["Adulto"],
+                  categoria: "Adulto",
                 });
               }}
             />
@@ -368,7 +383,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
                 onChange({
                   ...dados,
                   imagensExplicitas: false,
-                  categorias: [],
+                  categoria: "",
                 });
               }}
               handleOnChange={() => {
@@ -376,7 +391,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
                 onChange({
                   ...dados,
                   imagensExplicitas: false,
-                  categorias: [],
+                  categoria: "",
                 });
               }}
             />
@@ -389,19 +404,37 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
           <div className={styles.card}>
             <legend>Classificação</legend>
             <label>Categoria do Livro</label>
-            <Input
-              placeholder="Inserir categoria do livro"
-              type="text"
-              value={
-                Array.isArray(dados.categorias)
-                  ? dados.categorias.join(", ")
-                  : ""
-              }
-              onChange={(e) =>
-                atualizarCampo("categorias", e.target.value.split(", "))
-              }
-              className={styles.inputmodificado}
-            />
+            <div className={styles.selectContainer}>
+              <div
+                className={styles.select}
+                onClick={() => setCategoriaAberta(!categoriaAberta)}
+              >
+                <span>{dados.categoria || "Selecione uma categoria"}</span>
+
+                <FiChevronDown
+                  className={`${styles.seta} ${
+                    categoriaAberta ? styles.setaAberta : ""
+                  }`}
+                />
+              </div>
+
+              {categoriaAberta && (
+                <div className={styles.opcoes}>
+                  {categoriasOpcoes.map((categoria) => (
+                    <div
+                      key={categoria}
+                      className={styles.opcao}
+                      onClick={() => {
+                        atualizarCampo("categoria", categoria);
+                        setCategoriaAberta(false);
+                      }}
+                    >
+                      {categoria}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         ) : imagemExplicita === "sim" ? (
           <div className={styles.avisoAdulto}>

@@ -13,7 +13,7 @@ export default function MeusLivros() {
     livros,
     carregando,
     meta,
-    buscarLivrosById,
+    buscarLivros,
     atualizarEstado,
     deletarLivro,
   } = useMeusLivros();
@@ -26,8 +26,8 @@ export default function MeusLivros() {
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   useEffect(() => {
-    buscarLivrosById(paginaAtual, 12, busca, filtro, ordem, estado);
-  }, [paginaAtual, filtro, ordem, estado, buscarLivrosById]);
+    buscarLivros(paginaAtual, 12, busca, filtro, ordem, estado);
+  }, [paginaAtual, filtro, ordem, estado, buscarLivros]);
 
   const handleBuscar = (e) => {
     e.preventDefault();

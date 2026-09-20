@@ -21,7 +21,7 @@ export class AutopublicacaoService {
     return livros.map((livro) => this._parseCapaUrls(livro));
   }
 
-  static async atualizarEstado(livroId, userId) {
+  static async atualizarEstado(livroId, userId, novoEstado) {
     if (!livroId) {
       const erroDados = new Error(
         "Erro ao alterar livro. Dados não informados.",
@@ -36,6 +36,20 @@ export class AutopublicacaoService {
       throw erroUserId;
     }
 
+    if (!novoEstado) {
+      const erroEstado = new Error("Novo estado não informado.");
+      erroEstado.statusCode = 400;
+      throw erroEstado;
+    }
+
+    const estadosPermitidos = ["rascunho", "em_revisao", "publicado"];
+
+    if (!estadosPermitidos.includes(novoEstado)) {
+      const erroEstado = new Error("Estado de livro inválido.");
+      erroEstado.statusCode = 400;
+      throw erroEstado;
+    }
+
     const estadoAtual = await AutopublicacaoModel.buscarDetalhesPorId(
       livroId,
       userId,
@@ -43,11 +57,9 @@ export class AutopublicacaoService {
 
     if (!estadoAtual) {
       const erroEstadoAtual = new Error("Livro não encontrado.");
-      erroEstadoAtual.statusCode = 400;
+      erroEstadoAtual.statusCode = 404;
       throw erroEstadoAtual;
     }
-
-    if (estadoAtual.error) throw estadoAtual.error;
 
     if (
       estadoAtual.estado === "em_revisao" ||
@@ -60,9 +72,11 @@ export class AutopublicacaoService {
       throw erroAtualizacao;
     }
 
-    const atualizado = await AutopublicacaoModel.atualizarEstado(livroId);
-
-    if (!atualizado.error) throw atualizado.error;
+    const atualizado = await AutopublicacaoModel.atualizarEstado(
+      livroId,
+      novoEstado,
+      userId,
+    );
 
     return atualizado;
   }
@@ -190,9 +204,14 @@ export class AutopublicacaoService {
       numero_edicao: dadosLivro.detalhes?.numeroEdicao
         ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
         : null,
+      numero_paginas: dadosLivro.orcamento?.numeroPaginas
+        ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
+        : null,
+      idioma: dadosLivro.detalhes.idioma,
+      palavras_chave: dadosLivro.detalhes?.palavrasChave || [],
+      categoria: dadosLivro.detalhes.categoria,
       autor_nome: dadosLivro.detalhes?.autor?.nome || null,
       autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome || null,
-      publico_alvo: dadosLivro.detalhes?.publicoPrincipal || null,
       colaboradores: dadosLivro.detalhes?.colaboradores || [],
       direitos_de_publicacao:
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
@@ -300,14 +319,19 @@ export class AutopublicacaoService {
       titulo: dadosLivro.detalhes?.titulo || livroAtual.titulo,
       subtitulo: dadosLivro.detalhes?.subtitulo || livroAtual.subtitulo,
       descricao: dadosLivro.detalhes?.descricao || livroAtual.descricao,
+      idioma: dadosLivro.detalhes?.idioma || livroAtual.idioma,
+      categoria: dadosLivro.detalhes?.categoria || livroAtual.categoria,
       numero_edicao: dadosLivro.detalhes?.numeroEdicao
         ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
         : livroAtual.numero_edicao,
       autor_nome: dadosLivro.detalhes?.autor?.nome || livroAtual.autor_nome,
       autor_sobrenome:
         dadosLivro.detalhes?.autor?.sobrenome || livroAtual.autor_sobrenome,
-      publico_alvo:
-        dadosLivro.detalhes?.publicoPrincipal || livroAtual.publico_alvo,
+      palavras_chave:
+        dadosLivro.detalhes?.palavrasChave || livroAtual.palavras_chave,
+      numero_paginas: dadosLivro.orcamento?.numeroPaginas
+        ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
+        : livroAtual.numero_paginas,
       colaboradores:
         dadosLivro.detalhes?.colaboradores || livroAtual.colaboradores,
       direitos_de_publicacao:

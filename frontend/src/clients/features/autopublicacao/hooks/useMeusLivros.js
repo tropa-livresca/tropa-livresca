@@ -7,7 +7,7 @@ export const useMeusLivros = () => {
   const [meta, setMeta] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
-  const buscarLivrosById = useCallback(
+  const buscarLivros = useCallback(
     async (
       page = 1,
       limit = 12,
@@ -89,11 +89,14 @@ export const useMeusLivros = () => {
     async (id, novoEstado, callbackAtualizar) => {
       setCarregando(true);
       try {
-        const res = await apiFetch(`/api/v1/clients/autopublicacao/${id}`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ novoEstado }),
-        });
+        const res = await apiFetch(
+          `/api/v1/clients/autopublicacao/estado/${id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ novoEstado }),
+          },
+        );
 
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || `Erro ${res.status}`);
@@ -118,7 +121,7 @@ export const useMeusLivros = () => {
     setCarregando,
     setLivroSelecionado,
     setLivros,
-    buscarLivrosById,
+    buscarLivros,
     buscarLivroById,
     atualizarEstado,
     deletarLivro,

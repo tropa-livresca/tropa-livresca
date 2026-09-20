@@ -11,10 +11,11 @@ router.post(
   upload.single("manuscritoRevisto"),
   RevisaoController.CriarRevisao,
 );
+router.get("/livro", RevisaoController.BuscarLivroRevisao);
 router.put("/:id", RevisaoController.AtualizarRevisao);
 router.patch("/:id/ativo", RevisaoController.InativarRevisao);
-router.patch("/:id/estadoPublicado", RevisaoController.PublicarLivro);
-router.patch("/:id/estadoCorrecao", RevisaoController.SolicitarCorrecaoLivro);
-router.patch("/:id/estadoNegado", RevisaoController.NegarPublicacaoLivro);
+router.patch("/estado-publicado", RevisaoController.PublicarLivro);
+router.patch("/estado-correcao", RevisaoController.SolicitarCorrecaoLivro);
+router.patch("/estado-negado", RevisaoController.NegarPublicacaoLivro);
 
 export default router;
