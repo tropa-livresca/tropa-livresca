@@ -49,6 +49,18 @@ export class RevisaoController {
     }
   }
 
+  static async BuscarRevisaoByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const revisao = await RevisaoService.BuscarRevisaoByUserId(id);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async AtualizarRevisao(req, res, next) {
     try {
       const { id } = req.params;

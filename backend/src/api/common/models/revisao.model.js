@@ -32,8 +32,7 @@ export class RevisaoModel {
       .select(
         "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
         { count: "exact" },
-      )
-      .eq("ativo", true);
+      );
 
     if (busca) {
       query = query.or(`nome.ilike.%${busca}%`);
@@ -65,12 +64,11 @@ export class RevisaoModel {
     };
   }
 
-  static async BuscarRevisaoById(id, livroId) {
+  static async BuscarRevisaoById(id) {
     const { data, error } = await supabase
-      .from("revisoes, livros!inner(*)")
-      .select("*")
+      .from("revisoes")
+      .select("*, livros!inner(*)")
       .eq("id", id)
-      .eq("livros.id", livroId)
       .single();
 
     if (error) {
@@ -81,6 +79,24 @@ export class RevisaoModel {
     return {
       data: data,
       livro: data.livros,
+    };
+  }
+
+  static async BuscarRevisaoByUserId(userId) {
+    const { data, error } = await supabase
+      .from("revisoes")
+      .select(
+        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
+      )
+      .eq("fk_user_profile_id", userId);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      data: data || [],
     };
   }
 

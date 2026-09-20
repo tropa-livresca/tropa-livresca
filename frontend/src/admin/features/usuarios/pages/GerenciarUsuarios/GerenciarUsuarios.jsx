@@ -3,8 +3,12 @@ import { useUsuarios } from "../../../../hooks/useUsuarios";
 import { FaSearch, FaUser, FaUserCheck, FaUserShield } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./GerenciarUsuarios.module.css";
+<<<<<<< HEAD
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import { Link } from "react-router-dom";
+=======
+import { useNavigate } from "react-router-dom";
+>>>>>>> 59fa0bcf720b4b1d1dda4f9f8cc96a5ccf4c709e
 import { FiChevronDown } from "react-icons/fi";
 
 export default function GerenciarUsuarios() {
@@ -15,6 +19,10 @@ export default function GerenciarUsuarios() {
   const [funcao, setFuncao] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [dropdownAberto, setDropdownAberto] = useState(null);
+<<<<<<< HEAD
+=======
+  const navigate = useNavigate();
+>>>>>>> 59fa0bcf720b4b1d1dda4f9f8cc96a5ccf4c709e
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -38,6 +46,13 @@ export default function GerenciarUsuarios() {
     }
     setPaginaAtual(1);
     setDropdownAberto(null);
+<<<<<<< HEAD
+=======
+  };
+
+  const handleDetalhes = (id) => {
+    navigate("/admin/usuarios/" + id);
+>>>>>>> 59fa0bcf720b4b1d1dda4f9f8cc96a5ccf4c709e
   };
 
   return (
@@ -47,6 +62,7 @@ export default function GerenciarUsuarios() {
       </div>
 
       <div className={styles.container}>
+<<<<<<< HEAD
         <form onSubmit={handleBuscar} className={styles.buscaForm}>
           <div className={styles.inputGrupo}>
             <span className={styles.iconebusca}>
@@ -59,6 +75,64 @@ export default function GerenciarUsuarios() {
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
             />
+=======
+        <form onSubmit={handleBuscar} className={styles.busca}>
+          <span className={styles.iconebusca}>
+            <FaSearch />
+          </span>
+
+          <input
+            className={styles.inputBusca}
+            type="text"
+            placeholder="Buscar usuario"
+            value={busca}
+            onChange={(e) => {
+              setBusca(e.target.value);
+            }}
+          />
+
+          <div className={styles.selectContainer}>
+            <div
+              className={styles.select}
+              onClick={() =>
+                setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
+              }
+            >
+              <span>
+                {funcao === "cliente"
+                  ? "clientes"
+                  : funcao === "autor"
+                    ? "autores"
+                    : funcao === "funcionario"
+                      ? "funcionarios"
+                      : ""}
+              </span>
+
+              <FiChevronDown
+                className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
+              />
+            </div>
+
+            {dropdownAberto === "filtro" && (
+              <div className={styles.options}>
+                <div onClick={() => handleFiltro("", true)}>
+                  <span>Ordenar por</span>
+                </div>
+
+                <div onClick={() => handleFiltro("cliente", true)}>
+                  <span>cliente</span>
+                </div>
+
+                <div onClick={() => handleFiltro("autor", true)}>
+                  <span>autor</span>
+                </div>
+
+                <div onClick={() => handleFiltro("funcionario", true)}>
+                  <span>funcionario</span>
+                </div>
+              </div>
+            )}
+>>>>>>> 59fa0bcf720b4b1d1dda4f9f8cc96a5ccf4c709e
           </div>
 
           <div className={styles.filtrosGrupo}>
@@ -222,12 +296,38 @@ export default function GerenciarUsuarios() {
       </div>
 
       {!carregando && meta && meta.totalPages > 1 && (
+<<<<<<< HEAD
         <Paginacao
           totalPaginas={meta.totalPages}
           totalItems={meta.totalItems}
           paginaAtual={paginaAtual}
           onMudarPagina={setPaginaAtual}
         />
+=======
+        <div className={styles.paginacao}>
+          <button
+            onClick={() => {
+              setPaginaAtual((prev) => prev - 1);
+            }}
+            disabled={paginaAtual === 1}
+          >
+            Anterior
+          </button>
+
+          <span>
+            Página {paginaAtual} de {meta.totalPages} (Total: {meta.totalItems})
+          </span>
+
+          <button
+            onClick={() => {
+              setPaginaAtual((prev) => prev + 1);
+            }}
+            disabled={paginaAtual === meta.totalPages}
+          >
+            Próximo
+          </button>
+        </div>
+>>>>>>> 59fa0bcf720b4b1d1dda4f9f8cc96a5ccf4c709e
       )}
     </main>
   );

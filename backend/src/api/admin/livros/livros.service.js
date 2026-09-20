@@ -46,4 +46,20 @@ export class LivrosService {
 
     return livro;
   }
+
+  static async BuscarLivroByUserId(userId) {
+    if (!userId) {
+      const erroLivroId = new Error("Id do livro não informado.");
+      erroLivroId.statusCode = 400;
+      throw erroLivroId;
+    }
+
+    try {
+      const livro = await LivroModel.buscarLivroByUserId(userId);
+      return livro;
+    } catch (error) {
+      if (!error.statusCode) error.statusCode = 400;
+      throw error;
+    }
+  }
 }

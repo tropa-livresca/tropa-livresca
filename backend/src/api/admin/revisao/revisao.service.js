@@ -43,7 +43,23 @@ export class RevisaoService {
       throw erroId;
     }
 
-    const revisao = await RevisaoModel.BuscarRevisaoById(id);
+    const revisoes = await RevisaoModel.BuscarRevisaoById(id);
+
+    if (revisoes.error) {
+      throw revisoes.error;
+    }
+
+    return revisoes;
+  }
+
+  static async BuscarRevisaoByUserId(userId) {
+    if (!userId) {
+      const erroId = new Error("Id não especificado.");
+      erroId.statusCode = 400;
+      throw erroId;
+    }
+
+    const revisao = await RevisaoModel.BuscarRevisaoByUserId(userId);
 
     if (revisao.error) {
       throw revisao.error;

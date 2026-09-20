@@ -4,6 +4,16 @@ import { useState, useCallback } from "react";
 export const useUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [usuario, setUsuario] = useState(null);
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [redesSociais, setRedesSociais] = useState({
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    email: "",
+  });
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
   const [isMaster, setIsMaster] = useState(false);
@@ -45,18 +55,20 @@ export const useUsuarios = () => {
 
   const buscarUsuarioById = useCallback(async (id) => {
     setCarregando(true);
-
     try {
       const res = await apiFetch(`/api/v1/admin/usuarios/${id}`, {
         method: "GET",
         skipAuthRedirect: true,
       });
+      console.log(id);
 
       const result = await res.json();
+      const dadosUsuario = result.data || result;
 
       if (!res.ok) {
         if (res.status === 404) {
-          setUsuario(null);
+          setUsuarios([]);
+          setMeta(null);
           setCarregando(false);
           return;
         }

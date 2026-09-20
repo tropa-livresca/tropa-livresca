@@ -71,6 +71,22 @@ export class LivroModel {
     return data;
   }
 
+  static async buscarLivroByUserId(userId) {
+    if (!userId) return null;
+
+    const { data, error } = await supabaseAdmin
+      .from("livros")
+      .select(`*, users_profile(*)`)
+      .eq("fk_user_profile_id", userId);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   //clients
   static async buscarComFiltros({
     page = 1,
