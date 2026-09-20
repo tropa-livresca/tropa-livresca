@@ -13,10 +13,8 @@ export const useUsuarios = () => {
     linkedin: "",
     email: "",
   });
-  const [previewUrl, setPreviewUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
-  const [isMaster, setIsMaster] = useState(false);
 
   const buscarUsuarios = useCallback(
     async (page = 1, limit = 12, busca = "", filtro = "", ordem = "") => {
@@ -60,10 +58,8 @@ export const useUsuarios = () => {
         method: "GET",
         skipAuthRedirect: true,
       });
-      console.log(id);
 
       const result = await res.json();
-      const dadosUsuario = result.data || result;
 
       if (!res.ok) {
         if (res.status === 404) {
@@ -148,48 +144,17 @@ export const useUsuarios = () => {
     }
   }, []);
 
-  const verificarMaster = useCallback(async () => {
-    setCarregando(true);
-
-    try {
-      const res = await apiFetch(`/api/v1/auth/session-adm-master`, {
-        method: "GET",
-      });
-
-      const result = await res.json();
-
-      console.log(result);
-
-      if (!res.ok) {
-        if (res.status === 403) {
-          setCarregando(false);
-          return;
-        } else {
-          throw new Error(result.error || `Erro ${res.status}`);
-        }
-      }
-
-      setIsMaster(true);
-    } catch (err) {
-      console.error("Erro ao alterar o isMaster do funcionário", err);
-    } finally {
-      setCarregando(false);
-    }
-  }, []);
-
   return {
     meta,
     carregando,
     usuarios,
     usuario,
-    isMaster,
     setUsuarios,
     setUsuario,
     promoverUsuario,
     alterarIsMasterFuncionario,
     inativarFuncionario,
     setMeta,
-    verificarMaster,
     setCarregando,
     buscarUsuarios,
     buscarUsuarioById,

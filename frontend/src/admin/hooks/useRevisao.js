@@ -44,7 +44,7 @@ export const useRevisao = () => {
       }
 
       const data = response.data.json();
-      setLivro(data);
+      setLivroRevisado(data);
     } catch (err) {
       console.error("Erro ao buscar livro para revisão", err);
     } finally {
@@ -110,7 +110,7 @@ export const useRevisao = () => {
     }
   }, []);
 
-  const BuscarRevisaoByUserId = useCallback(async (id) => {
+  const buscarRevisaoByUserId = useCallback(async (id) => {
     setCarregando(true);
     setError(null);
     try {
@@ -236,7 +236,7 @@ export const useRevisao = () => {
         setCarregando(false);
       }
     },
-    [nome, apontamento, livro, validarCamposTexto],
+    [nome, apontamento, livroRevisado, validarCamposTexto],
   );
 
   const inativarRevisao = useCallback(async (id) => {
@@ -373,6 +373,7 @@ export const useRevisao = () => {
     negarPublicacaoLivro,
     publicarLivro,
     solicitarCorrecaoLivro,
+    buscarRevisaoByUserId,
     limparCampos,
   };
 };
