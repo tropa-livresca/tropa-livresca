@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useRevisao } from "../../../../hooks/useRevisao.js";
+import { useRevisao } from "../../hooks/useRevisao.js";
 
 export default function RevisaoById() {
   const { id } = useParams();

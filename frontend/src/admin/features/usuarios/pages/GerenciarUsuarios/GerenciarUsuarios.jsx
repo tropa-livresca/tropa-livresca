@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUsuarios } from "../../../../hooks/useUsuarios";
+import { useUsuarios } from "../../hooks/useUsuarios";
 import { FaSearch, FaUser, FaUserCheck, FaUserShield } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./GerenciarUsuarios.module.css";

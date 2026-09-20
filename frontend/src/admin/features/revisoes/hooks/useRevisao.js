@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { apiFetch } from "../../common/services/api.js";
+import { apiFetch } from "../../../../common/services/api.js";
 
 export const useRevisao = () => {
   const [revisoes, setRevisoes] = useState([]);

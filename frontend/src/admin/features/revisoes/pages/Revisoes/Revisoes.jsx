@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { useRevisao } from "../../../../hooks/useRevisao.js";
+import { useRevisao } from "../../hooks/useRevisao.js";
 import { FaSearch } from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao.jsx";
 

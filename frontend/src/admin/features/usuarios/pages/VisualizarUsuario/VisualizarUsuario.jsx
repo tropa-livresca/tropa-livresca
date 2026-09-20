@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUsuarios } from "../../../../hooks/useUsuarios";
+import { useUsuarios } from "../../hooks/useUsuarios";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./VisualizarUsuario.module.css";
 import { useParams, Link } from "react-router-dom";
