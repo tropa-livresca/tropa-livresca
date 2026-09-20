@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { useLivros } from "../../../../hooks/useLivros";
+import { useLivros } from "../../hooks/useLivros";
 import styles from "./VisualizarLivro.module.css";
 
 export default function VisualizarLivro() {

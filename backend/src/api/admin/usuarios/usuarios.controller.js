@@ -36,7 +36,8 @@ export class UsuariosController {
   }
 
   static async alterarIsMasterFuncionario(req, res, next) {
-    const { funcionarioId, isMaster } = req.body;
+    const { isMaster } = req.body;
+    const funcionarioId = req.params.id;
 
     try {
       const data = await UsuariosService.alterarIsMasterFuncionario(
@@ -51,7 +52,7 @@ export class UsuariosController {
   }
 
   static async inativarFuncionario(req, res, next) {
-    const { funcionarioId } = req.body;
+    const funcionarioId = req.params.id;
 
     try {
       const data = await UsuariosService.inativarFuncionario(funcionarioId);
@@ -63,7 +64,7 @@ export class UsuariosController {
   }
 
   static async promoverUsuario(req, res, next) {
-    const { funcionarioId } = req.body;
+    const funcionarioId = req.params.id;
 
     try {
       const data = await UsuariosService.promoverUsuario(funcionarioId);

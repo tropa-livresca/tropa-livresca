@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useRevisao } from "../../hooks/useRevisao.js";
-import { useLivros } from "../../../../hooks/useLivros.js";
+import { useLivros } from "../../../livros/hooks/useLivros.js";
 
 export default function NovaRevisao() {
   const { id } = useParams();
