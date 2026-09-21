@@ -1,0 +1,13 @@
+.cards {
+  grid-column: 2 / 4;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.card {
+  min-height: 20rem;
+  background-color: #fffdf7;
+  padding: 1rem;
+}

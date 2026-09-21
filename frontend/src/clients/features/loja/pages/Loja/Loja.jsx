@@ -1,6 +1,8 @@
 import styles from "./Loja.module.css";
 import Carregando from "../../../../components/Carregando/Carregando";
+import CardProduto from "../../components/CardProduto/CardProduto";
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
+import { useCarrinho } from "../../hooks/useCarrinho";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import { FaSearch } from "react-icons/fa";
 import { FiChevronDown, FiShoppingCart } from "react-icons/fi";
@@ -10,6 +12,7 @@ import { Link } from "react-router-dom";
 
 export default function Loja() {
   const { livros = [], meta, carregando, buscarLivros } = useLivrosLoja();
+  const { adicionarItem } = useCarrinho();
   const [dropdownAberto, setDropdownAberto] = useState(false);
   const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");
@@ -163,68 +166,16 @@ export default function Loja() {
             ) : livros.length === 0 ? (
               <p>Nenhum livro encontrado.</p>
             ) : (
-              livros.map((livro) => {
-                const livroId = livro.id || livro.ISBN;
-                const nomeAutor =
-                  livro.autor ||
-                  (livro.autor_nome
-                    ? `${livro.autor_nome} ${livro.autor_sobrenome || ""}`.trim()
-                    : "Autor Desconhecido");
-                const precoFisico = livro.precoFisico ?? livro.preco_fisico;
-                const precoDigital = livro.precoDigital ?? livro.preco_digital;
-                const urlCapa =
-                  livro.capa?.frente ||
-                  (typeof livro.capa === "string" ? livro.capa : null);
-
-                return (
-                  <Link
-                    key={livroId}
-                    to={`/loja/livro/${livroId}`}
-                    className={styles.card}
-                  >
-                    {urlCapa ? (
-                      <img src={urlCapa} alt={`Capa de ${livro.titulo}`} />
-                    ) : (
-                      <div className={styles.semImagem}>Sem imagem</div>
-                    )}
-                    <div>
-                      <span
-                        className={
-                          livro.origem === "tropa"
-                            ? styles.tropa
-                            : styles.externo
-                        }
-                      >
-                        {livro.origem === "tropa"
-                          ? "Publicado na Tropa"
-                          : "Catálogo externo"}
-                      </span>
-                      <h2>{livro.titulo}</h2>
-                      <p>{nomeAutor}</p>
-                      <div className={styles.precos}>
-                        {precoDigital != null && (
-                          <span>
-                            Digital:{" "}
-                            <strong>
-                              R$ {Number(precoDigital).toFixed(2)}
-                            </strong>
-                          </span>
-                        )}
-                        {precoFisico != null && (
-                          <span>
-                            Físico:{" "}
-                            <strong>
-                              R\$ {Number(precoFisico).toFixed(2)}
-                            </strong>
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                );
-              })
+              livros.map((livro) => (
+                <CardProduto
+                  key={livro.id}
+                  livro={livro}
+                  aoAdicionar={adicionarItem}
+                />
+              ))
             )}
           </div>
+
           {!carregando && meta && meta.totalPages > 1 && (
             <Paginacao
               paginaAtual={paginaAtual}

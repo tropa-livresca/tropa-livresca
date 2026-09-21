@@ -3,6 +3,8 @@ import { useState, useCallback } from "react";
 
 export const useLivrosLoja = () => {
   const [livro, setLivro] = useState(null);
+  const [autor, setAutor] = useState(null);
+  const [colaboradores, setColaboradores] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [livros, setLivros] = useState([]);
   const [meta, setMeta] = useState(null);
@@ -16,7 +18,11 @@ export const useLivrosLoja = () => {
         console.error("Erro ao buscar livros:", data.error);
         return;
       }
-      setLivro(data || []);
+
+      setLivro(data);
+
+      setAutor(data.users_profile);
+      setColaboradores(data.colaboradores || []);
     } catch (err) {
       console.error("Erro ao buscar livro by id", err);
       throw err;
@@ -73,6 +79,8 @@ export const useLivrosLoja = () => {
   return {
     livro,
     setLivro,
+    autor,
+    colaboradores,
     livros,
     setLivros,
     meta,

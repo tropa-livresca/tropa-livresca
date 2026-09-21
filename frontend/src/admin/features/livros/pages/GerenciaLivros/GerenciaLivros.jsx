@@ -187,7 +187,7 @@ export default function GerenciaLivros() {
                           to={`/admin/livros/detalhes/${livro.id}`}
                           className={`${styles.btnAcao} ${styles.btnVisualizar}`}
                         >
-                          Ver Livro
+                          Ver Livro {livro.id}
                         </Link>
 
                         {livro.estado === "em_revisao" && (
