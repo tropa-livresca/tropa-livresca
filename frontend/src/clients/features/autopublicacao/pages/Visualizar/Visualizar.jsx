@@ -43,13 +43,13 @@ export default function Visualizar() {
     } = livroSelecionado;
 
     return (
-        <main className={styles.container}>
-            <header className={styles.header}>
+        <main>
+            <header className={styles.topo}>
                 <div className={styles.headerInfo}>
-                    <span className={`${styles.badge} ${styles[estado]}`}>{estado}</span>
+                    
                     <h1 className={styles.titulo}>{titulo}</h1>
-                    {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
-                    <p className={styles.autor}>Por: <strong>{autor_nome} {autor_sobrenome}</strong></p>
+                    {subtitulo && <p className={styles.sub}>{subtitulo}</p>}
+                    <p>Escrito por:  {autor_nome} {autor_sobrenome}</p>
                 </div>
                 <div className={styles.headerActions}>
                     {estado === "rascunho" && (
@@ -62,6 +62,8 @@ export default function Visualizar() {
                     </Link>
                 </div>
             </header>
+
+            <div className={styles.container}>
 
             <section className={styles.layoutGrid}>
                 <div className={styles.mainContent}>
@@ -93,24 +95,25 @@ export default function Visualizar() {
                         <div className={styles.precosGrid}>
                             <div className={styles.precoItem}>
                                 <span>Físico</span>
-                                <strong>R$ {preco_fisico || "0,00"}</strong>
+                                <strong className={styles.numero}>R$ {preco_fisico || "0,00"}</strong>
                             </div>
                             <div className={styles.precoItem}>
                                 <span>Digital</span>
-                                <strong>R$ {preco_digital || "0,00"}</strong>
+                                <strong className={styles.numero}>R$ {preco_digital || "0,00"}</strong>
                             </div>
                         </div>
                     </div>
 
-                    <div className={styles.card}>
+                    <div className={styles.card2}>
                         <h2>Metadados e Regras</h2>
                         <ul className={styles.metaList}>
                             <li><span>Idioma:</span> <strong>{idioma}</strong></li>
-                            <li><span>Edição:</span> <strong>{numero_edicao || "1"}</strong></li>
+                            <li><span>Edição:</span> <strong className={styles.numero2}>{numero_edicao || "1"}</strong></li>
                             <li><span>Público-alvo:</span> <strong>{publico_alvo}</strong></li>
                             <li><span>Imagens Explícitas:</span> <strong>{imagens_explicitas ? "Sim" : "Não"}</strong></li>
                             <li><span>Conteúdo por IA:</span> <strong>{conteudo_por_IA ? "Sim" : "Não"}</strong></li>
                             <li><span>Direitos de Autopublicação:</span> <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong></li>
+                            <li><span>Estado:</span><strong className={`${styles.badge} ${styles[estado]}`}>{estado}</strong></li>
                             <li>
                                 <span>Colaboradores:</span>
                                 <div>
@@ -149,6 +152,7 @@ export default function Visualizar() {
                     )}
                 </aside>
             </section>
+            </div>
         </main>
     );
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUsuarios } from "../../hooks/useUsuarios"
 import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../../clients/components/Carregando/Carregando";
-import styles from "../../../../../clients/features/livros/pages/Livros/Livros.module.css";
+import styles from "./GerenciarUsuarios.module.css";
 import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
@@ -83,15 +83,16 @@ export default function GerenciarUsuarios(){
                 setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
               }
             >
-              <span>
-                {funcao === "cliente"
-                  ? "clientes"
-                  : funcao === "autor"
-                    ? "autores"
-                    : funcao === "funcionario"
-                    ? "funcionarios"
-                    : ""}
-              </span>
+             <span>
+  {funcao === "cliente"
+    ? "clientes"
+    : funcao === "autor"
+      ? "autores"
+      : funcao === "funcionario"
+      ? "funcionarios"
+      : "Ordenar por"}
+</span>
+
 
               <FiChevronDown
                 className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
@@ -150,8 +151,13 @@ export default function GerenciarUsuarios(){
               }
             >
               <span>
-                {ordem === "ascendente" ? "Mais Antigos" : "Mais Recentes"}
-              </span>
+  {ordem === "ascendente"
+    ? "Mais Antigos"
+    : ordem === "descendente"
+      ? "Mais Recentes"
+      : "Ordenar por"}
+</span>
+
 
               <FiChevronDown
                 className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
