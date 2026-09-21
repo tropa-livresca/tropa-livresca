@@ -43,8 +43,10 @@ export const useLivros = () => {
           throw new Error(`Erro encontrado ao buscar livros: ${res.status}`);
         }
 
+        console.log(result);
+
         setLivros(result.data || []);
-        setCount(result.count);
+        setCount(result.meta.totalPages);
         setCarregando(false);
       } catch (error) {
         console.error("Erro detectado ao buscar os livros", error);

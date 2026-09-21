@@ -15,15 +15,19 @@ export default function GerenciaLivros() {
   const itensPorPagina = 12;
   const totalPages = count ? Math.ceil(count / itensPorPagina) : 1;
 
+  console.log(count);
+
   useEffect(() => {
-    buscarLivros(paginaAtual, 12, busca, filtro, ordem, estado);
+    buscarLivros(paginaAtual, itensPorPagina, busca, filtro, ordem, estado);
   }, [paginaAtual, buscarLivros, filtro, ordem, estado]);
 
   const handleBuscar = (e) => {
     e.preventDefault();
     setPaginaAtual(1);
-    buscarLivros(1, 12, busca, filtro, ordem, estado);
+    buscarLivros(1, itensPorPagina, busca, filtro, ordem, estado);
   };
+
+  console.log("q");
 
   return (
     <main className={styles.container}>
