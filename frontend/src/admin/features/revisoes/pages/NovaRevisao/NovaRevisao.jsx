@@ -11,7 +11,7 @@ export default function NovaRevisao() {
     setManuscrito,
     apontamento,
     setApontamento,
-    CriarRevisao,
+    criarRevisao,
   } = useRevisao();
   const { buscarLivroById, livro } = useLivros();
 
@@ -24,7 +24,7 @@ export default function NovaRevisao() {
   const salvarRevisao = async (e, status) => {
     e.preventDefault();
     try {
-      await CriarRevisao(id, status);
+      await criarRevisao(id, status);
       alert(`Revisão salva com sucesso como ${status}!`);
     } catch (err) {
       alert(err.message || "Erro ao criar revisão.");
