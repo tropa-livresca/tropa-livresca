@@ -1,0 +1,285 @@
+.mainContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: #333;
+}
+
+.topo {
+  margin-bottom: 2rem;
+}
+
+.titulo {
+  font-size: 1.85rem;
+  font-weight: 700;
+  text-transform: capitalize;
+  color: #1a1a1a;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 0.75rem;
+}
+
+.container {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Formulário de busca e filtros */
+.buscaForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .buscaForm {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.inputGrupo {
+  position: relative;
+  flex: 1;
+}
+
+.iconebusca {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0a0a0;
+  display: flex;
+  align-items: center;
+}
+
+.inputBusca {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.inputBusca:focus {
+  border-color: #4a90e2;
+}
+
+.filtrosGrupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Custom Selects / Dropdowns */
+.selectContainer {
+  position: relative;
+  min-width: 170px;
+}
+
+.select,
+.select1 {
+  background: #f8f9fa;
+  border: 1px solid #dcdcdc;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.select:hover {
+  background: #f1f3f5;
+}
+
+.seta {
+  transition: transform 0.2s;
+  color: #666;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.options {
+  position: absolute;
+  top: 105%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.optionItem {
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.optionItem:hover {
+  background: #f1f3f5;
+  color: #4a90e2;
+}
+
+.btnbuscar {
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnbuscar:hover {
+  background: #357abd;
+}
+
+/* Estado de Carregamento e Sem Resultados */
+.carregando,
+.semUsuariosContainer {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.semUsuarios {
+  color: #777;
+  font-size: 1rem;
+}
+
+/* Estrutura da Tabela Semântica */
+.tabelaWrapper {
+  overflow-x: auto;
+  border: 1px solid #eaeaea;
+  border-radius: 6px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.tabela th {
+  background: #f8f9fa;
+  color: #555;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid #eaeaea;
+}
+
+.tabela td {
+  padding: 1rem;
+  border-bottom: 1px solid #eaeaea;
+  vertical-align: middle;
+}
+
+.linhaTabela:hover {
+  background: #fdfdfd;
+}
+
+.colunaNome {
+  font-weight: 500;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatarInline {
+  color: #888;
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+}
+
+.colunaEmail {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Badges de Identificação */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badgeAdmin {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.badgeCliente {
+  background: #f5f5f5;
+  color: #616161;
+}
+
+.badgeSim {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.badgeNao {
+  background: #ffebee;
+  color: #b71c1c;
+}
+
+/* Botões de Ação */
+.acoesHeader {
+  text-align: right;
+}
+
+.colunaAcoes {
+  text-align: right;
+}
+
+.btnDetalhes {
+  background: transparent;
+  color: #4a90e2;
+  border: 1px solid #4a90e2;
+  padding: 0.45rem 1rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnDetalhes:hover {
+  background: #4a90e2;
+  color: #ffffff;
+}
+
+.paginacaoContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+}

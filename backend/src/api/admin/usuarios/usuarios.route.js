@@ -1,9 +1,15 @@
 import express from "express";
-import { verificarAutenticacaoAdm } from "../../common/middlewares/auth.middleware.js";
 import { UsuariosController } from "./usuarios.controller.js";
 
 const router = express.Router();
 
-router.get("/", UsuariosController.BuscarUsuarios);
+router.get("/", UsuariosController.buscarUsuarios);
+router.get("/:id", UsuariosController.BuscarUsuarioById);
+
+router.patch("/:id/inativar", UsuariosController.inativarFuncionario);
+
+router.patch("/:id/master", UsuariosController.alterarIsMasterFuncionario);
+
+router.patch("/:id/promover", UsuariosController.promoverUsuario);
 
 export default router;

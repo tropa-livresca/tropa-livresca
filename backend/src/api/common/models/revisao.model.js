@@ -1,6 +1,6 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 export class RevisaoModel {
-  static async BuscarLivraoRevisao(busca) {
+  static async BuscarLivroRevisao(busca) {
     const { data, error } = supabase
       .from("livros")
       .select(
@@ -32,8 +32,7 @@ export class RevisaoModel {
       .select(
         "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
         { count: "exact" },
-      )
-      .eq("ativo", true);
+      );
 
     if (busca) {
       query = query.or(`nome.ilike.%${busca}%`);
@@ -65,12 +64,11 @@ export class RevisaoModel {
     };
   }
 
-  static async BuscarRevisaoById(id, livroId) {
+  static async BuscarRevisaoById(id) {
     const { data, error } = await supabase
-      .from("revisoes, livros!inner(*)")
-      .select("*")
+      .from("revisoes")
+      .select("*, livros!inner(*)")
       .eq("id", id)
-      .eq("livros.id", livroId)
       .single();
 
     if (error) {
@@ -81,6 +79,24 @@ export class RevisaoModel {
     return {
       data: data,
       livro: data.livros,
+    };
+  }
+
+  static async BuscarRevisaoByUserId(userId) {
+    const { data, error } = await supabase
+      .from("revisoes")
+      .select(
+        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
+      )
+      .eq("fk_user_profile_id", userId);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      data: data || [],
     };
   }
 
@@ -98,6 +114,26 @@ export class RevisaoModel {
     }
 
     return data;
+  }
+
+  static async VerificarAutorLivro(livroId, funcionarioId) {
+    const { data, error } = await supabase
+      .from("livros")
+      .select()
+      .eq("id", livroId)
+      .eq("fk_user_profile_id", funcionarioId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (data) {
+      return false;
+    }
+
+    return true;
   }
 
   static async CriarRevisao(dadosRevisao) {
@@ -147,16 +183,48 @@ export class RevisaoModel {
     return data;
   }
 
-  static async AlterarEstadoLivro(idLivro, novoEstado) {
+  static async publicarLivro(idLivro) {
     const { data, error } = await supabase
       .from("livros")
-      .update({ estado: novoEstado })
+      .update({ estado: "publicado" })
       .eq("id", idLivro)
       .select()
       .single();
 
     if (error) {
       error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async solicitarCorrecaoLivro(idLivro) {
+    const { data, error } = await supabase
+      .from("livros")
+      .update({ estado: "correcao" })
+      .eq("id", idLivro)
+      .select()
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
+  static async negarPublicacaoLivro(idLivro) {
+    const { data, error } = await supabase
+      .from("livros")
+      .update({ estado: "negado" })
+      .eq("id", idLivro)
+      .select()
+      .single();
+
+    if (error) {
+      error.statuscode = 500;
       throw error;
     }
 

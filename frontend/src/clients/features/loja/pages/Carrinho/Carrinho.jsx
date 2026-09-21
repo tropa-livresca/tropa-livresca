@@ -1,11 +1,5 @@
 import styles from "./Carrinho.module.css";
-import {
-  FiTrash2,
-  FiMinus,
-  FiPlus,
-  FiArrowLeft,
-  FiShoppingBag,
-} from "react-icons/fi";
+import { FiTrash2, FiMinus, FiPlus, FiArrowLeft } from "react-icons/fi";
 import { Link } from "react-router-dom";
 
 export default function Carrinho() {
@@ -17,20 +11,6 @@ export default function Carrinho() {
       </div>
 
       <div className={styles.container}>
-        {/*
-        <div className={styles.carrinhoVazio}>
-          <FiShoppingBag className={styles.iconeVazio} />
-
-          <h2>Seu carrinho está vazio</h2>
-
-          <p>Você ainda não adicionou nenhum livro ao seu carrinho.</p>
-
-          <Link to="/loja" className={styles.botaoLivros}>
-            Ver livros na loja
-          </Link>
-        </div>
-        */}
-
         <div className={styles.conteudo}>
           <section className={styles.listaProdutos}>
             <div className={styles.cabecalhoProdutos}>
@@ -49,8 +29,6 @@ export default function Carrinho() {
                     alt="O Menino Maluquinho"
                   />
                 </Link>
-
-                {/* <div className={styles.semfoto}>sem foto</div>*/}
 
                 <div className={styles.desc}>
                   <Link to="/" className={styles.nome}>

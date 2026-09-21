@@ -6,7 +6,11 @@ import { useEffect } from "react";
 import { FaUserCircle, FaArrowRight } from "react-icons/fa";
 
 export default function Inicio() {
-  const { autores, buscarAutores, carregando: carregandoAutores } = useAutores();
+  const {
+    autores,
+    buscarAutores,
+    carregando: carregandoAutores,
+  } = useAutores();
   const { Livros, BuscarLivros, carregando: carregandoLivros } = useLivros();
 
   useEffect(() => {
@@ -19,21 +23,29 @@ export default function Inicio() {
       <div className={styles.topo}>
         <section className={styles.hero_section}>
           <div className={styles.falecido}>
-            <span className={styles.hero_tagline}>Autopublicação de Alto Nível</span>
+            <span className={styles.hero_tagline}>
+              Autopublicação de Alto Nível
+            </span>
             <h1>Publique seu livro com quem entende do mercado</h1>
             <p>
-              A Tropa Livresca oferece projetos editoriais customizados, transformando originais de autores independentes em obras físicas e digitais de excelência.
+              A Tropa Livresca oferece projetos editoriais customizados,
+              transformando originais de autores independentes em obras físicas
+              e digitais de excelência.
             </p>
             <div className={styles.hero_actions}>
-              <Link to="/sobrenos" className={styles.btn_primary}>Publicar meu Projeto</Link>
-              <Link to="/livros" className={styles.btn_secondary}>Conhecer o Catálogo</Link>
+              <Link to="/sobrenos" className={styles.btn_primary}>
+                Publicar meu Projeto
+              </Link>
+              <Link to="/livros" className={styles.btn_secondary}>
+                Conhecer o Catálogo
+              </Link>
             </div>
           </div>
         </section>
       </div>
-      
+
       <div className={styles.divisao}></div>
-      
+
       <div className={styles.container}>
         <div className={styles.subcontainer}>
           <section className={styles.secao_livros}>
@@ -53,24 +65,42 @@ export default function Inicio() {
               {carregandoLivros ? (
                 <p className={styles.loading_text}>Carregando destaques...</p>
               ) : !Livros || Livros.length === 0 ? (
-                <p className={styles.empty_text}>Nenhum livro em destaque no momento.</p>
+                <p className={styles.empty_text}>
+                  Nenhum livro em destaque no momento.
+                </p>
               ) : (
                 Livros.slice(0, 4).map((livro, index) => (
-                  <article key={livro.id ? `livro-${livro.id}` : `livro-idx-${index}`} className={styles.card_livro_editorial}>
+                  <article
+                    key={livro.id ? `livro-${livro.id}` : `livro-idx-${index}`}
+                    className={styles.card_livro_editorial}
+                  >
                     <div className={styles.capa_wrapper}>
                       {livro?.capa?.frente ? (
-                        <img src={livro.capa.frente} alt={livro.titulo} className={styles.img_capa} />
+                        <img
+                          src={livro.capa.frente}
+                          alt={livro.titulo}
+                          className={styles.img_capa}
+                        />
                       ) : (
-                        <div className={styles.sem_capa_placeholder}>Sem Imagem</div>
+                        <div className={styles.sem_capa_placeholder}>
+                          Sem Imagem
+                        </div>
                       )}
                     </div>
                     <div className={styles.info_livro}>
-                      <span className={styles.idioma_tag}>{livro.idioma || "Português"}</span>
+                      <span className={styles.idioma_tag}>
+                        {livro.idioma || "Português"}
+                      </span>
                       <h3>{livro.titulo || "Sem título"}</h3>
                       <p className={styles.autor_nome_livro}>
-                        {livro.autor_nome ? `${livro.autor_nome} ${livro.autor_sobrenome || ""}` : "Autor Independente"}
+                        {livro.autor_nome
+                          ? `${livro.autor_nome} ${livro.autor_sobrenome || ""}`
+                          : "Autor Independente"}
                       </p>
-                      <Link to={`/livros/detalhes/${livro.id}`} className={styles.link_detalhe_obra}>
+                      <Link
+                        to={`/livros/${livro.id}`}
+                        className={styles.link_detalhe_obra}
+                      >
                         Ver detalhes
                       </Link>
                     </div>
@@ -100,10 +130,17 @@ export default function Inicio() {
                 <p className={styles.empty_text}>Nenhum autor registrado.</p>
               ) : (
                 autores.slice(0, 4).map((autor, index) => (
-                  <article key={autor.id ? `autor-${autor.id}` : `autor-idx-${index}`} className={styles.card_autor_editorial}>
+                  <article
+                    key={autor.id ? `autor-${autor.id}` : `autor-idx-${index}`}
+                    className={styles.card_autor_editorial}
+                  >
                     <div className={styles.avatar_container}>
                       {autor.imagem ? (
-                        <img src={autor.imagem} alt={autor.nome} className={styles.foto_perfil} />
+                        <img
+                          src={autor.imagem}
+                          alt={autor.nome}
+                          className={styles.foto_perfil}
+                        />
                       ) : (
                         <div className={styles.avatar_icon_placeholder}>
                           <FaUserCircle />
@@ -113,9 +150,14 @@ export default function Inicio() {
                     <div className={styles.info_autor}>
                       <h3>{autor.nome || "Autor anônimo"}</h3>
                       <p className={styles.sinopse_autor}>
-                        {autor.descricao ? `${autor.descricao.substring(0, 75)}...` : "Escritor independente parceiro da editora."}
+                        {autor.descricao
+                          ? `${autor.descricao.substring(0, 75)}...`
+                          : "Escritor independente parceiro da editora."}
                       </p>
-                      <Link to={`/autores/${autor.id}`} className={styles.link_perfil_autor}>
+                      <Link
+                        to={`/autores/${autor.id}`}
+                        className={styles.link_perfil_autor}
+                      >
                         Ver perfil completo
                       </Link>
                     </div>

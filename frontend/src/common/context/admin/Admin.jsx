@@ -27,11 +27,7 @@ export const AdminProvider = ({ children }) => {
         if (res.ok) {
           const data = await res.json();
           setUserState(data.user);
-          console.log("SESSÃO ADM:", data);
-          console.log("USUÁRIO ADM:", data.user);
         } else {
-          console.log("SESSION ADM STATUS:", res.status);
-
           setUserState(null);
         }
       } catch (err) {

@@ -3,7 +3,10 @@ import {
   builder,
   resetSupabaseMock,
 } from "../../mocks/supabase.mock.js";
-import { perfilCompleto, perfilAtualizado } from "../../fixtures/perfil.fixture.js";
+import {
+  perfilCompleto,
+  perfilAtualizado,
+} from "../../fixtures/perfil.fixture.js";
 import { PerfilModel } from "../../../src/api/common/models/perfil.model.js";
 
 jest.mock("../../../src/api/common/config/supabase.js", () => ({
@@ -11,23 +14,40 @@ jest.mock("../../../src/api/common/config/supabase.js", () => ({
 }));
 
 describe("PerfilModel - Testes Unitários", () => {
-  beforeEach(() => { resetSupabaseMock(); });
+  beforeEach(() => {
+    resetSupabaseMock();
+  });
 
   describe("buscarPorId", () => {
     it("retorna dados recebidos do supabase", async () => {
       builder.resolve(perfilCompleto, null);
-      
+
       const resultado = await PerfilModel.buscarPerfil("123");
 
       expect(resultado).toEqual(perfilCompleto);
     });
   });
 
+  describe("buscarPerfilAdmin", () => {
+    it("propaga o erro do Supabase sem tentar iterar dados nulos", async () => {
+      const erroBanco = new Error("Falha na consulta de usuários");
+      builder.resolve(null, erroBanco);
+
+      await expect(PerfilModel.buscarPerfilAdmin({})).rejects.toMatchObject({
+        message: "Falha na consulta de usuários",
+        statusCode: 500,
+      });
+    });
+  });
+
   describe("atualizarPerfil", () => {
     it("retorna dados recebidos do supabase", async () => {
-      builder.resolve(perfilAtualizado, null); 
+      builder.resolve(perfilAtualizado, null);
 
-      const resultado = await PerfilModel.atualizarPerfil("user-integration-123", "Carlos Atualizado");
+      const resultado = await PerfilModel.atualizarPerfil(
+        "user-integration-123",
+        "Carlos Atualizado",
+      );
 
       expect(resultado).toEqual(perfilAtualizado);
     });
@@ -35,9 +55,12 @@ describe("PerfilModel - Testes Unitários", () => {
 
   describe("atualizarApenasImagem", () => {
     it("retorna dados recebidos do supabase", async () => {
-      builder.resolve(perfilAtualizado, null); 
+      builder.resolve(perfilAtualizado, null);
 
-      const resultado = await PerfilModel.atualizarApenasImagem("user-integration-123", "Carlos Atualizado" );
+      const resultado = await PerfilModel.atualizarApenasImagem(
+        "user-integration-123",
+        "Carlos Atualizado",
+      );
 
       expect(resultado).toEqual(perfilAtualizado);
     });

@@ -5,39 +5,6 @@
   padding: 5rem 6%;
 }
 
-.topo {
-  width: 100%;
-   padding: 3rem 6%;
-  background: #f7f0cfb1;
-  border-bottom: 2px solid #d4b46a;
-}
-
-/*
-#fdf7d1f0;
-*/
-.topo p {
-  text-align: left;
-  font-size: 1.2rem;
-  color: var(--cor-texto-muted);
-}
-
-.titulo {
-  margin: 0;
-  color: #67170c;
-  font-size: clamp(2rem, 4vw, 4rem);
-  font-family: "Jacques Francois", serif;
-}
-
-.titulo::after {
-  content: "";
-  display: block;
-  width: 8rem;
-  height: 4px;
-  margin-top: 1rem;
-  background: #d4b46a;
-  border-radius: 999px;
-}
-
 .inputmodificado {
   width: 100% !important;
   background: #fff8d7 !important;
@@ -50,7 +17,7 @@
   margin-bottom: 1rem;
 }
 
-.form label{
+.form label {
   color: #67170c;
   font-size: 1rem;
   font-family: "Jacques Francois", serif;
@@ -134,7 +101,7 @@
   background: #fffdf4;
   overflow: hidden;
   border-radius: 1rem;
-   overflow: hidden;
+  overflow: hidden;
   z-index: 100;
 }
 
@@ -142,11 +109,10 @@
   max-height: 300px;
   margin-top: 0;
   border: 1px solid #e2c77c;
-   animation: abrir 0.2s ease;
-   top: calc(100% + 0.4rem);
-   transform: translate(auto, -3%);
+  animation: abrir 0.2s ease;
+  top: calc(100% + 0.4rem);
+  transform: translate(auto, -3%);
 }
-
 
 .opcao {
   background: #fffdf4;
@@ -156,7 +122,7 @@
   color: #67170c;
   text-align: left;
   cursor: pointer;
-  font-size:1rem;
+  font-size: 1rem;
 }
 
 .opcao:hover {
@@ -168,10 +134,7 @@
   border-bottom: none;
 }
 
-
-
-
-.button{
+.button {
   width: 100%;
   padding: 0.7rem;
   font-family: inherit;
@@ -182,12 +145,12 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
   margin-top: 1rem;
 }
 
-.button:hover{
-   background-color: #ffbb33;
+.button:hover {
+  background-color: #ffbb33;
   transition: 0.3s;
 }
 
@@ -208,16 +171,16 @@
   border-radius: 999px;
 }
 
-.erro{
-   background-color: rgba(103, 23, 12, 0.05);
-   margin: 0;
+.erro {
+  background-color: rgba(103, 23, 12, 0.05);
+  margin: 0;
   padding: 1rem;
   margin-top: 1%;
   border-radius: 8px;
   font-size: 0.95rem;
   line-height: 1.5;
   text-align: center;
-  color:#67170c;
+  color: #67170c;
 }
 
 @keyframes abrir {

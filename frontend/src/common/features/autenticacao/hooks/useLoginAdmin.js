@@ -40,8 +40,6 @@ export const useLoginAdmin = () => {
 
       const usuario = data.user;
 
-      console.log(`${usuario}`);
-
       if (!usuario || usuario.is_admin !== true) {
         setError(
           "Acesso negado. Você não possui privilégios de administrador.",
