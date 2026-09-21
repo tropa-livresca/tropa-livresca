@@ -155,6 +155,8 @@
 
 .filtros {
   grid-row: 1 / 3;
+  border-right: 1px solid #e3d5ad;
+  width:90%;
 }
 
 .filtros h1 {
