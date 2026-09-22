@@ -44,7 +44,7 @@ export default function Loja() {
               <li>História</li>
             </ul>
           </div>
-          <div>
+          <div className={styles.form}>
             <form onSubmit className={styles.busca}>
               <span className={styles.iconebusca}>
                 <FaSearch />
@@ -108,28 +108,240 @@ export default function Loja() {
             </Link>
           </div>
 
-          <div className={styles.cards}>
-            <div className={styles.card}>
-              <h2>Livro 1</h2>
-              <p>Autor do livro</p>
+          <div className={styles.livros}>
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780141441146-L.jpg" className={styles.capa}/>
+              {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>As Aventuras de David Balls</h3>
+              <p className={styles.autor}>DVD balls</p>
+              <h2><span className={styles.numero}>R$ 42,00</span></h2>
+              </Link>
+              </div>
+              
             </div>
 
-            <div className={styles.card}>
-              <h2>Livro 2</h2>
-              <p>Autor do livro</p>
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
             </div>
 
-            <div className={styles.card}>
-              <h2>Livro 3</h2>
-              <p>Autor do livro</p>
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
             </div>
 
-            <div className={styles.card}>
-              <h2>Livro 4</h2>
-              <p>Autor do livro</p>
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
             </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            <div className={styles.cardLivro}>
+              <Link to="/" className={styles.linkCapa}>
+              <div className={styles.capaContainer}>
+              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
+                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
+              </div>
+              </Link>
+
+              <div className={styles.infoLivro}>
+                <Link>
+              <h3>A Volta Dos Que Não Foram</h3>
+              <p className={styles.autor}>Lukas Soldera</p>
+              <h2><span className={styles.numero}>R$ 67,00</span></h2>
+              </Link>
+              </div>   
+            </div>
+
+            
           </div>
         </div>
+        <div className={styles.paginacao}>
+                  <button
+                    onClick={() =>
+                      setPaginaAtual((prev) => Math.max(prev - 1, 1))
+                    }
+                    disabled={paginaAtual === 1}
+                  >
+                    Anterior
+                  </button>
+      
+                  <span>
+                    Página {paginaAtual} 
+                  </span>
+      
+                  <button
+                    onClick={() =>
+                      setPaginaAtual((prev) =>
+                        Math.min(prev)
+                      )
+                    }
+                    disabled={paginaAtual}
+                  >
+                    Próximo
+                  </button>
+                </div>
       </div>
     </main>
   );
