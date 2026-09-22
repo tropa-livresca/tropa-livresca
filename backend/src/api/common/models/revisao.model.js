@@ -100,13 +100,35 @@ export class RevisaoModel {
     };
   }
 
+  static async BuscarRevisaoByLivroId(livroId) {
+    const { data, error } = await supabase
+      .from("revisoes")
+      .select(
+        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
+      )
+      .eq("fk_livro_id", livroId)
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      data: data || [],
+    };
+  }
+
   static async AtualizarRevisao(id, dadosAtualizados) {
     const { data, error } = await supabase
       .from("revisoes")
       .update(dadosAtualizados)
       .eq("id", id)
       .select()
-      .single();
+      .single()
+      
+
+      console.log(data);
 
     if (error) {
       error.statusCode = 500;
@@ -199,10 +221,10 @@ export class RevisaoModel {
     return data;
   }
 
-  static async solicitarCorrecaoLivro(idLivro) {
+  static async SolicitarRecallLivro(idLivro) {
     const { data, error } = await supabase
       .from("livros")
-      .update({ estado: "correcao" })
+      .update({ estado: "recall" })
       .eq("id", idLivro)
       .select()
       .single();

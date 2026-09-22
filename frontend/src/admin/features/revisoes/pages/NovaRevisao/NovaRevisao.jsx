@@ -6,12 +6,15 @@ import { useLivros } from "../../../livros/hooks/useLivros.js";
 export default function NovaRevisao() {
   const { id } = useParams();
   const {
+    revisaoAtual,
     nome,
     setNome,
     setManuscrito,
     apontamento,
     setApontamento,
     criarRevisao,
+    buscarRevisaoByLivroId,
+    carregando,
   } = useRevisao();
   const { buscarLivroById, livro } = useLivros();
 
@@ -20,6 +23,14 @@ export default function NovaRevisao() {
       buscarLivroById(id);
     }
   }, [buscarLivroById, id]);
+
+  useEffect(() => {
+    if (livro) {
+      buscarRevisaoByLivroId(livro.id);
+    }
+  }, [buscarRevisaoByLivroId, livro]);
+
+  console.log(revisaoAtual);
 
   const salvarRevisao = async (e, status) => {
     e.preventDefault();
@@ -61,6 +72,8 @@ export default function NovaRevisao() {
         </div>
       )}
 
+      {carregando == true && <p>carregando</p>}
+
       <form onSubmit={(e) => e.preventDefault()}>
         <div>
           <label>Nome da revisão:</label>
@@ -91,14 +104,17 @@ export default function NovaRevisao() {
           />
         </div>
 
-        <button type="button" onClick={(e) => salvarRevisao(e, "salvo")}>
+        <button type="button" onClick={(e) => salvarRevisao(e, "")}>
           Salvar Nova Revisão
         </button>
         <button type="button" onClick={(e) => salvarRevisao(e, "publicado")}>
           Enviar Revisão e Publicar
         </button>
-        <button type="button" onClick={(e) => salvarRevisao(e, "rascunho")}>
-          Enviar Revisão e Voltar a Rascunho
+        <button type="button" onClick={(e) => salvarRevisao(e, "recall")}>
+          Enviar Revisão e pedir corrção
+        </button>
+        <button type="button" onClick={(e) => salvarRevisao(e, "negado")}>
+          Enviar Revisão e negar livro
         </button>
       </form>
     </main>

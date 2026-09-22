@@ -61,6 +61,18 @@ export class RevisaoController {
     }
   }
 
+  static async BuscarRevisaoByLivroId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const revisao = await RevisaoService.BuscarRevisaoBylivroId(id);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async AtualizarRevisao(req, res, next) {
     try {
       const { id } = req.params;
@@ -133,12 +145,12 @@ export class RevisaoController {
     }
   }
 
-  static async SolicitarCorrecaoLivro(req, res, next) {
+  static async SolicitarRecallLivro(req, res, next) {
     try {
       const { idLivro } = req.body;
       const userId = req.user.id;
 
-      const livroPublicado = await RevisaoService.solicitarCorrecaoLivro(
+      const livroPublicado = await RevisaoService.SolicitarRecallLivro(
         idLivro,
         userId,
       );

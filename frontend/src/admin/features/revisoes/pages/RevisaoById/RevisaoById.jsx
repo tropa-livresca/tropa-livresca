@@ -24,7 +24,7 @@ export default function RevisaoById() {
     setManuscrito,
     apontamento,
     setApontamento,
-    AtualizarRevisao,
+    atualizarRevisao,
     LimparCampos,
   } = useRevisao();
 
@@ -43,7 +43,7 @@ export default function RevisaoById() {
   const executarSalvar = async (e) => {
     e.preventDefault();
     if (id) {
-      await AtualizarRevisao(id, e);
+      await atualizarRevisao(id, e);
       setIsEdicao(false);
     }
   };

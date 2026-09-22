@@ -129,6 +129,32 @@ export const useRevisao = () => {
       setCarregando(false);
     }
   }, []);
+  
+
+
+   const buscarRevisaoByLivroId = useCallback(async (id) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/livro/${id}`);
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      const data = result.data;
+      setRevisaoAtual(data || null);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
 
   const criarRevisao = useCallback(
     async (idLivro, novoEstado) => {
@@ -160,9 +186,14 @@ export const useRevisao = () => {
           );
         }
 
+        let responseEstado = null;
+
         if (novoEstado) {
-          const responseEstado = await apiFetch(
-            `/api/v1/admin/revisao/novoEstado`,
+
+          
+
+            responseEstado = await apiFetch(
+            `/api/v1/admin/revisao/estado-${novoEstado}`,
             {
               method: "PATCH",
               body: JSON.stringify({ idLivro, novoEstado }),
@@ -360,6 +391,7 @@ export const useRevisao = () => {
     buscarLivroRevisao,
     buscarRevisoes,
     buscarRevisaoById,
+    buscarRevisaoByLivroId,
     criarRevisao,
     atualizarRevisao,
     inativarRevisao,
