@@ -17,6 +17,8 @@ export default function VisualizarUsuario() {
   } = useUsuarios();
 
   const [executandoAcao, setExecutandoAcao] = useState(false);
+  const [verMaisLivros, setVerMaisLivros] = useState(false);
+  const [verMaisRevisoes, setVerMaisRevisoes] = useState(false);
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -102,6 +104,7 @@ export default function VisualizarUsuario() {
     }
   };
 
+
   return (
     <main className={styles.mainContainer}>
       <div className={styles.topo}>
@@ -185,11 +188,8 @@ export default function VisualizarUsuario() {
       </div>
 
       <div className={styles.secao}>
-        <h3 className={styles.secaoTitulo}>Livros do Autor</h3>
-        {!usuario.livros || usuario.livros.length === 0 ? (
-          <p className={styles.semDados}>
-            Nenhum livro criado por este usuário.
-          </p>
+        {!verMaisLivros ? (
+          <></>
         ) : (
           <div className={styles.listaWrapper}>
             <ul className={styles.lista}>
@@ -201,6 +201,11 @@ export default function VisualizarUsuario() {
                   >
                     {livro.estado}
                   </span>
+                  <span
+                    
+                  >
+                    <Link to={"../livros/detalhes/"+livro.id}>ver detalhes</Link>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -208,13 +213,10 @@ export default function VisualizarUsuario() {
         )}
       </div>
 
-      {isAdmin && (
-        <div className={styles.secao}>
-          <h3 className={styles.secaoTitulo}>Histórico de Revisões</h3>
-          {!usuario.revisoes || usuario.revisoes.length === 0 ? (
-            <p className={styles.semDados}>
-              Nenhuma revisão realizada por este funcionário.
-            </p>
+
+      <div className={styles.secao}>
+          {!verMaisRevisoes ? (
+            <></>
           ) : (
             <div className={styles.listaWrapper}>
               <ul className={styles.lista}>
@@ -231,6 +233,53 @@ export default function VisualizarUsuario() {
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+        </div>
+      
+
+      <div className={styles.secao}>
+        <h3 className={styles.secaoTitulo}>Livros do Autor</h3>
+        {!usuario.livros || usuario.livros.length === 0 ? (
+          <p className={styles.semDados}>
+            Nenhum livro criado por este usuário.
+          </p>
+        ) : (
+          
+          <div className={styles.listaWrapper}>
+
+              
+            <span className={styles.livroTitulo}>{usuario.livros[0].titulo}</span>
+            <span
+             className={`${styles.tagEstado} ${styles[usuario.livros[0].estado] || styles.padrao}`}
+            >
+            {usuario.livros[0].estado}
+            </span>
+
+            {usuario.livros.length > 1 ? (<button onClick={() => {setVerMaisLivros(!verMaisLivros)}}>ver mais livros</button>) : (<></>) }
+
+          </div>
+        )}
+      </div>
+
+      {isAdmin && (
+        <div className={styles.secao}>
+          {!usuario.revisoes || usuario.revisoes.length === 0 ? (
+            <p className={styles.semDados}>
+              Nenhuma revisão realizada por este funcionário.
+            </p>
+          ) : (
+            <div className={styles.listaWrapper}>
+                    <span className={styles.revisaoId}>
+                      Revisão Código: {usuario.revisoes[0].id}
+                    </span>
+                    <span
+                      className={`${styles.tagStatus} ${styles[usuario.revisoes[0].status] || styles.finalizado}`}
+                    >
+                      {usuario.revisoes[0].status || "Finalizada"}
+                    </span>
+
+                    {usuario.revisoes.length > 0 ? (<button onClick={() => {setVerMaisRevisoes(!verMaisRevisoes)}}>ver mais revisoes</button>) : (<></>) }
             </div>
           )}
         </div>

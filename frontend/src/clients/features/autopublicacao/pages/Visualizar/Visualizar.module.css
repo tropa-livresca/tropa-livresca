@@ -2,10 +2,43 @@
 
 .container {
   width: 100%;
-  max-width: 1400px;
+  max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
-  box-sizing: border-box;
+}
+
+
+.topo {
+  width: 100%;
+  padding: 3rem 6%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  font-weight: normal !important;
+  text-align: left;
+  font-size: 1.2rem;
 }
 
 .loading, .error {
@@ -18,61 +51,16 @@
   font-family: "Jacques Francois", serif;
 }
 
-/* ---------- Header & Hero adaptado ---------- */
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-  margin-bottom: 8%;
+.sub{
+  font-size: 1.5rem !important;
 }
 
-.headerInfo {
-  width: 100%;
-  display: grid;
-  gap: 1.5rem;
-}
-
-.titulo {
-  margin: 0;
-  color: #67170c;
-  font-size: clamp(3rem, 5vw, 5rem);
-  text-align: left;
-  font-family: "Jacques Francois", serif;
-}
-
-.titulo::after {
-  content: "";
-  display: block;
-  width: 7rem;
-  height: 3px;
-  margin-top: 1rem;
-  background-color: #d4b46a;
-  border-radius: 999px;
-}
-
-.subtitulo {
-  max-width: 50rem;
-  line-height: 1.8;
-  font-size: 1.2rem;
-  color: var(--cor-texto-muted);
-  font-family: "Jacques Francois", serif;
-  margin: 0;
-}
-
-.autor {
-  font-size: 1.1rem;
-  color: var(--cor-texto-muted);
-  font-family: "Jacques Francois", serif;
-  margin: 0;
-}
 
 .badge {
   display: inline-block;
   justify-self: start;
   padding: 0.5rem 1rem;
-  border-radius: 999px;
+  border-radius: 0.5rem;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -85,18 +73,18 @@
 .publicado { background-color: #c6f6d5; color: #22543d; }
 
 .headerActions {
-  display: flex;
-  flex-direction: column;
+  display:flex;
+  width:100%;
+  align-items:center;
+  justify-content:end;
   gap: 1rem;
   flex-shrink: 0;
 }
 
 .btn {
   text-decoration: none;
-  padding: 0.7rem 1.4rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
   text-align: center;
   transition: 0.3s;
   border: none;
@@ -104,31 +92,32 @@
 }
 
 .btnPrimary {
-  background-color: #67170c;
+    background-color: #67170c;
   color: #ede6b3;
 }
 
 .btnPrimary:hover {
   background-color: #ffbb33;
-  color: #67170c;
 }
 
 .btnSecondary {
-  background-color: var(--cor-superficie-clara);
-  color: var(--cor-primaria);
-  box-shadow: var(--sombra-suave);
+    background-color: #67170c;
+  color: #ede6b3;
 }
 
 .btnSecondary:hover {
-  background-color: var(--cor-primaria);
-  color: #fff;
+  background-color: #ffbb33;
 }
 
+
+.headerInfo{
+  text-align:top;
+}
 /* ---------- Layout em Grid ---------- */
 
 .layoutGrid {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 60% 40%;
   gap: 3rem;
   align-items: start;
 }
@@ -145,12 +134,15 @@
   padding: 2rem;
   background: var(--cor-superficie);
   border-radius: 1.5rem;
-  box-shadow: var(--sombra-card);
+    box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
 }
+
 
 .card h2 {
   margin: 0;
-  color: var(--cor-primaria);
+  color:#67170c;
   font-size: 1.8rem;
   font-family: "Jacques Francois", serif;
 }
@@ -165,18 +157,58 @@
   border-radius: 999px;
 }
 
-.descricao {
-  line-height: 1.8;
-  font-size: 1.1rem;
-  color: var(--cor-texto-muted);
-  white-space: pre-line;
+.card2 {
+  display: grid;
+  gap: 1rem;
+  padding: 2rem;
+  background: var(--cor-superficie);
+  border-radius: 1.5rem;
+    box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
 }
 
+
+.card2 h2 {
+  margin: 0;
+  color:#67170c;
+  font-size: 1.8rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.card2 h2::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 3px;
+  margin-top: 0.5rem;
+  background: var(--cor-dourado);
+  border-radius: 999px;
+}
+
+.descricao {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: var(--cor-texto-muted);
+  white-space: pre-line;
+  text-align: left;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 0;
+}
+
+
 .pdfWrapper {
+      display: block;
+    width: 100%;
+    height: 30rem;
   background: var(--cor-superficie-clara);
   border-radius: 0.75rem;
   overflow: hidden;
-  border: 1px solid var(--cor-superficie-clara);
+      border: 1px solid #e2c77c;
+      margin-top: 1rem;
 }
 
 /* ---------- Preços e Metadados ---------- */
@@ -192,20 +224,27 @@
   padding: 1.2rem;
   border-radius: 1rem;
   text-align: center;
-  box-shadow: var(--sombra-suave);
+  border:1px solid #d4b46a;
+  margin-top:1rem;
 }
 
 .precoItem span {
   display: block;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--cor-texto-muted);
   margin-bottom: 0.3rem;
   font-family: "Jacques Francois", serif;
 }
 
-.precoItem strong {
+.numero{
+  font-family: none;
+  color:  #67170c;
+  font-weight: bold;
   font-size: 1.4rem;
-  color: var(--cor-primaria);
+}
+.numero2{
+  font-family: none;
+  color:  #67170c;
 }
 
 .metaList {
@@ -214,6 +253,7 @@
   margin: 0;
   display: grid;
   gap: 0.8rem;
+  margin-top: 1rem;
 }
 
 .metaList li {
@@ -235,12 +275,13 @@
 }
 
 .metaList li strong {
-  color: var(--cor-primaria);
+  color: #67170c;
+  font-weight: normal;
 }
 
 .colabItem {
-  font-size: 0.9rem;
-  color: var(--cor-primaria);
+      color: #67170c;
+    font-weight: normal;
   text-align: right;
 }
 

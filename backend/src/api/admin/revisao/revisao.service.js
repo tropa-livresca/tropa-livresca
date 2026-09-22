@@ -33,7 +33,16 @@ export class RevisaoService {
       throw revisoes.error;
     }
 
-    return revisoes;
+    return {
+      data: revisoes.data,
+      livros: revisoes.livros,
+      meta: {
+        page,
+        limit,
+        totalItems: revisoes.count,
+        totalPages: Math.ceil(revisoes.count / limit),
+      },
+    };
   }
 
   static async BuscarRevisaoById(id) {

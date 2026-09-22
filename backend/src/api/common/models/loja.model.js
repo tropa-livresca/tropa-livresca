@@ -75,7 +75,7 @@ export class LojaModel {
   static async buscarLivroById(id) {
     const { data, error } = await supabase
       .from("livros")
-      .select(COLUNAS_LIVRO)
+      .select("*, users_profile(*)")
       .eq("id", id)
       .eq("ativo", true)
       .eq("estado", "publicado")

@@ -12,8 +12,6 @@ export class LojaController {
         categoria = "",
       } = req.query;
 
-      console.warn("Conteúdo da query:", req.query);
-
       const resultado = await LojaService.buscarLivros({
         page: Number(page),
         limit: Number(limit),
@@ -35,8 +33,10 @@ export class LojaController {
 
       const livro = await LojaService.buscarLivroById(id);
 
+      console.log("iii", livro);
+
       return res.status(200).json({
-        data: livro,
+        livro,
       });
     } catch (err) {
       next(err);

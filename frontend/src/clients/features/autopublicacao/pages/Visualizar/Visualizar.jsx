@@ -47,8 +47,11 @@ export default function Visualizar() {
       <header className={styles.header}>
         <div className={styles.headerInfo}>
           <span className={`${styles.badge} ${styles[estado]}`}>{estado}</span>
+
           <h1 className={styles.titulo}>{titulo}</h1>
+
           {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
+
           <p className={styles.autor}>
             Por:{" "}
             <strong>
@@ -56,6 +59,7 @@ export default function Visualizar() {
             </strong>
           </p>
         </div>
+
         <div className={styles.headerActions}>
           {estado === "rascunho" && (
             <Link
@@ -65,6 +69,7 @@ export default function Visualizar() {
               Editar Livro
             </Link>
           )}
+
           <Link
             to="/meuslivros"
             className={`${styles.btn} ${styles.btnSecondary}`}
@@ -78,6 +83,7 @@ export default function Visualizar() {
         <div className={styles.mainContent}>
           <div className={styles.card}>
             <h2>Sinopse / Descrição</h2>
+
             <p className={styles.descricao}>
               {descricao || "Nenhuma descrição informada."}
             </p>
@@ -86,6 +92,7 @@ export default function Visualizar() {
           {manuscrito && (
             <div className={styles.card}>
               <h2>Visualização do Manuscrito</h2>
+
               <div className={styles.pdfWrapper}>
                 <object
                   data={manuscrito}
@@ -114,44 +121,68 @@ export default function Visualizar() {
         <aside className={styles.sidebar}>
           <div className={styles.card}>
             <h2>Preços de Venda</h2>
+
             <div className={styles.precosGrid}>
               <div className={styles.precoItem}>
                 <span>Físico</span>
-                <strong>R$ {preco_fisico || "0,00"}</strong>
+                <strong className={styles.numero}>
+                  R$ {preco_fisico || "0,00"}
+                </strong>
               </div>
+
               <div className={styles.precoItem}>
                 <span>Digital</span>
-                <strong>R$ {preco_digital || "0,00"}</strong>
+                <strong className={styles.numero}>
+                  R$ {preco_digital || "0,00"}
+                </strong>
               </div>
             </div>
           </div>
 
-          <div className={styles.card}>
+          <div className={styles.card2}>
             <h2>Metadados e Regras</h2>
+
             <ul className={styles.metaList}>
               <li>
                 <span>Idioma:</span> <strong>{idioma}</strong>
               </li>
+
               <li>
-                <span>Edição:</span> <strong>{numero_edicao || "1"}</strong>
+                <span>Edição:</span>{" "}
+                <strong className={styles.numero2}>
+                  {numero_edicao || "1"}
+                </strong>
               </li>
+
               <li>
                 <span>Público-alvo:</span> <strong>{publico_alvo}</strong>
               </li>
+
               <li>
                 <span>Imagens Explícitas:</span>{" "}
                 <strong>{imagens_explicitas ? "Sim" : "Não"}</strong>
               </li>
+
               <li>
                 <span>Conteúdo por IA:</span>{" "}
                 <strong>{conteudo_por_IA ? "Sim" : "Não"}</strong>
               </li>
+
               <li>
                 <span>Direitos de Autopublicação:</span>{" "}
                 <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong>
               </li>
+
+              <li>
+                <span>Estado:</span>
+                <strong className={`${styles.badge} ${styles[estado]}`}>
+                  {estado}
+                </strong>
+              </li>
+
               <li>
                 <span>Colaboradores:</span>
+
                 <div>
                   {Array.isArray(colaboradores) && colaboradores.length > 0 ? (
                     colaboradores.map((colab, index) => (
@@ -170,6 +201,7 @@ export default function Visualizar() {
           {(capa?.frente || capa?.verso) && (
             <div className={styles.card}>
               <h2>Capas do Livro</h2>
+
               <div className={styles.capasContainer}>
                 {capa?.frente && (
                   <div className={styles.capaBox}>
@@ -177,6 +209,7 @@ export default function Visualizar() {
                     <img src={capa.frente} alt="Capa Frente" />
                   </div>
                 )}
+
                 {capa?.verso && (
                   <div className={styles.capaBox}>
                     <span>Verso</span>

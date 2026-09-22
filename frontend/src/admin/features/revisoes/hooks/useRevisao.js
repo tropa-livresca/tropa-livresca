@@ -5,7 +5,7 @@ export const useRevisao = () => {
   const [revisoes, setRevisoes] = useState([]);
   const [livrosRevisados, setLivrosRevisados] = useState([]);
   const [livroRevisado, setLivroRevisado] = useState(null);
-  const [count, setCount] = useState(0);
+  const [meta, setMeta] = useState(null);
   const [revisaoAtual, setRevisaoAtual] = useState(null);
   const [nome, setNome] = useState("");
   const [manuscrito, setManuscrito] = useState(null);
@@ -67,12 +67,9 @@ export const useRevisao = () => {
 
       const result = await response.json();
 
-      console.log(result);
-
-      const data = result.data;
-      setRevisoes(data || []);
-      setLivrosRevisados(data.livros || []);
-      setCount(data.count || 0);
+      setRevisoes(result.data || []);
+      setLivrosRevisados(result.livros || []);
+      setMeta(result.meta || null);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -94,8 +91,6 @@ export const useRevisao = () => {
       }
 
       const result = await response.json();
-
-      console.log(result);
 
       setRevisaoAtual(result.data);
       setLivrosRevisados(result.livro);
@@ -124,11 +119,9 @@ export const useRevisao = () => {
 
       const result = await response.json();
 
-      console.log(result);
-
       const data = result.data;
       setRevisoes(data || []);
-      setCount(data.count || 0);
+      setMeta(data.meta || 0);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -349,7 +342,7 @@ export const useRevisao = () => {
   return {
     revisoes,
     setRevisoes,
-    count,
+    meta,
     revisaoAtual,
     setRevisaoAtual,
     livroRevisado,

@@ -71,6 +71,6 @@ export class LojaService {
       throw livro.error;
     }
 
-    return livro;
+    return this._parseCapaUrls(livro);
   }
 }
