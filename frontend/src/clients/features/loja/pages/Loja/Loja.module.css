@@ -7,8 +7,8 @@
 
 .containerlivros {
   display: grid;
-  grid-template-columns: 15rem auto 3rem;
-  gap: 1rem;
+  grid-template-columns: 18rem auto 3rem;
+  gap:1rem;
 }
 
 .busca {
@@ -153,6 +153,11 @@
   transition: 0.25s;
 }
 
+
+.form{
+  height: 4rem;
+}
+
 .filtros {
   grid-row: 1 / 3;
   border-right: 1px solid #e3d5ad;
@@ -161,12 +166,14 @@
 
 .filtros h1 {
   color: #67170c;
+  font-size:1.5rem;
 }
 
 .filtros li {
   list-style: none;
   cursor: pointer;
   color: #67170c;
+  font-size:1.1rem;
 }
 
 .filtros ul {
@@ -182,4 +189,156 @@
   align-items: center;
   height: 3.5rem;
   margin-bottom: 1rem;
+}
+
+.livros {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 3rem;
+}
+
+
+.cardLivro {
+  width: 75%;
+  margin:0 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  /*
+  background-color: #fffcf4;
+  border-radius: 1rem;
+   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: 0.3s;*/
+}
+
+.cardLivro:last-child{
+ margin-bottom: 0;
+}
+
+
+.capaContainer {
+  width: 100%;
+  overflow: hidden;
+  /*
+  padding: 0.7rem;*/
+}
+
+.linkLivro {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.linkCapa {
+  margin-top: 0 !important;
+  margin-bottom: 0rem !important;
+}
+
+.capaContainer:hover .capa {
+  transform: scale(1.08);
+  transition: 0.3s;
+}
+
+.capa {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+
+.semImagem {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  display: grid;
+  place-items: center;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+}
+
+.infoLivro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.infoLivro h3 {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.infoLivro h2 {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.numero{
+  font-family: none;
+  color: #67170c;
+  font-size: 1.3rem;
+}
+
+
+.autor {
+  margin: 0 0 1rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.semImagem {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  display: grid;
+  place-items: center;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  border: 1px solid var(--cor-texto-muted);
+}
+
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 4rem;
+  margin-left: 12rem;
+}
+
+.paginacao button {
+  min-width: 6rem;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 1rem;
+  background: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.paginacao button:hover:not(:disabled) {
+  background: #ffbb33;
+  transition:0.3s;
+}
+
+.paginacao button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.paginacao span {
+  color: #67170c;
+  font-size: 1.1rem;
+  text-align: center;
+  font-family:none;
 }

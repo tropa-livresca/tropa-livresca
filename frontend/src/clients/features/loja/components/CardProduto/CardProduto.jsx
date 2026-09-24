@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { FiShoppingCart } from "react-icons/fi";
 import styles from "./CardProduto.module.css";
 
 export default function CardProduto({ livro, aoAdicionar }) {
@@ -13,50 +14,69 @@ export default function CardProduto({ livro, aoAdicionar }) {
   const urlCapa =
     livro.capa?.frente || (typeof livro.capa === "string" ? livro.capa : null);
 
+  const handleAdicionarCarrinho = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (aoAdicionar) {
+      aoAdicionar({
+        id: livroId,
+        titulo: livro.titulo,
+        autor: nomeAutor,
+        capa: urlCapa,
+        preco: precoDigital ?? precoFisico ?? 0,
+      });
+    }
+  };
+
   return (
-    <Link to={`/loja/livro/${livroId}`} className={styles.card}>
-      {urlCapa ? (
-        <img src={urlCapa} alt={`Capa de ${livro.titulo}`} />
-      ) : (
-        <div className={styles.semImagem}>Sem imagem</div>
-      )}
-      <div>
-        <span
-          className={livro.origem === "tropa" ? styles.tropa : styles.externo}
-        >
-          {livro.origem === "tropa" ? "Publicado na Tropa" : "Catálogo externo"}
-        </span>
-        <h2>{livro.titulo}</h2>
-        <p>{nomeAutor}</p>
+    <div className={styles.card}>
+      <Link to={`/loja/livro/${livroId}`} className={styles.linkCapa}>
+        {urlCapa ? (
+          <div className={styles.capaContainer}>
+            <img
+              src={urlCapa}
+              alt={`Capa de ${livro.titulo}`}
+              className={styles.capa}
+            />
+            <span className={styles.tipolivroCapa}>Digital</span>
+            <button
+              type="button"
+              className={styles.btnCarrinhoCapa}
+              onClick={handleAdicionarCarrinho}
+              title="Adicionar ao carrinho"
+            >
+              <FiShoppingCart />
+            </button>
+          </div>
+        ) : (
+          <div className={styles.semImagem}>
+            <span>Sem imagem</span>
+            <span className={styles.tipolivroCapa}>Digital</span>
+            <button
+              type="button"
+              className={styles.btnCarrinhoCapa}
+              onClick={handleAdicionarCarrinho}
+              title="Adicionar ao carrinho"
+            >
+              <FiShoppingCart />
+            </button>
+          </div>
+        )}
+      </Link>
 
-        <div className={styles.precos}>
-          {precoDigital != null && (
-            <span>
-              Digital: <strong>R\$ {Number(precoDigital).toFixed(2)}</strong>
-            </span>
-          )}
-          {precoFisico != null && (
-            <span>
-              Físico: <strong>R\$ {Number(precoFisico).toFixed(2)}</strong>
-            </span>
-          )}
-        </div>
-
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            aoAdicionar({
-              id: livroId,
-              titulo: livro.titulo,
-              autor: nomeAutor,
-              capa: urlCapa,
-              preco: precoFisico ?? precoDigital ?? 0,
-            });
-          }}
-        >
-          Adicionar ao Carrinho
-        </button>
+      <div className={styles.infoLivro}>
+        <Link to={`/loja/livro/${livroId}`} className={styles.linkLivro}>
+          <h3>{livro.titulo}</h3>
+          <p className={styles.autor}>{nomeAutor}</p>
+          <div className={styles.precos}>
+            {precoDigital != null && (
+              <span className={styles.numero2}>
+                R$ {Number(precoDigital).toFixed(2)}
+              </span>
+            )}
+          </div>
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 }
