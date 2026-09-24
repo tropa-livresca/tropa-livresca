@@ -1,28 +1,23 @@
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import Cabecalho from "../Cabecalho/Cabecalho";
 import NavBarLateral from "../NavBarLateral/NavBarLateral";
-
 import { useLoginAdmin } from "../../../common/features/autenticacao/hooks/useLoginAdmin";
 import styles from "./MainLayout.module.css";
 
 export default function MainLayout() {
-  const [menuAberto, setMenuAberto] = useState(false);
   const { signoutAdmin } = useLoginAdmin();
 
   return (
-    <>
-      <Cabecalho
-        aoAbrirMenu={() => setMenuAberto(!menuAberto)}
-        signoutAdmin={signoutAdmin}
-      />
+    <div className={styles.layout}>
+      <Cabecalho signoutAdmin={signoutAdmin} />
 
-      <NavBarLateral
-        aberto={menuAberto}
-        aoFechar={() => setMenuAberto(false)}
-      />
+      <div className={styles.areaPrincipal}>
+        <NavBarLateral />
 
-      <main><Outlet/></main>
-    </>
+        <main className={styles.conteudo}>
+          <Outlet />
+        </main>
+      </div>
+    </div>
   );
 }

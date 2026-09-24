@@ -78,6 +78,7 @@ export default function Loja() {
               <h1>Gênero</h1>
             </div>
             <ul>
+              <li onClick = {()=> handleCategoria("")}>Todos</li>
               {generos.map((gen) => (
                 <li
                   key={gen}

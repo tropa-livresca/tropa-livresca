@@ -167,7 +167,6 @@ export default function Livros() {
                       to={`/livros/${livro.id}`}
                       className={styles.linkLivro}
                     >
-                      {livro.id}
                       <h3>{livro.titulo || "Sem título"}</h3>
                       <p className={styles.autor}>
                         {livro.autor_nome || "Sem autor"}{" "}

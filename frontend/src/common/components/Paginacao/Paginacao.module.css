@@ -1,5 +1,5 @@
 .paginacao {
-  grid-column: 1 / -1;
+  grid-column: 2 / -1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,12 +14,10 @@
   border: none;
   padding: 0.8rem 1.5rem;
   border-radius: 999px;
-  background: var(--cor-primaria);
-  color: #fff;
+  background: #67170c;
+  color: #ede6b3;
   font-size: 0.9rem;
-  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: 0.3s;
 }
 
@@ -29,7 +27,8 @@
 }
 
 .btnpagina:hover:not(:disabled) {
-  background: var(--cor-primaria-hover);
+  background: #ffbb33;
+  transition:0.3s;
 }
 
 .btnpagina:disabled {
@@ -50,15 +49,19 @@
   display: block;
   color: var(--cor-texto);
   font-weight: 600;
+  font-size:1rem;
 }
 
 .total {
   display: block;
   margin-top: 0.25rem;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: var(--cor-texto-muted);
 }
 
+.numero{
+  font-family:none;
+}
 @media (max-width: 480px) {
   .paginacao {
     gap: 0.8rem;

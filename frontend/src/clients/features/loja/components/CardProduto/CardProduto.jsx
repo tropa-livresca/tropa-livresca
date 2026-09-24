@@ -38,15 +38,6 @@ export default function CardProduto({ livro, aoAdicionar }) {
               alt={`Capa de ${livro.titulo}`}
               className={styles.capa}
             />
-            <span className={styles.tipolivroCapa}>Digital</span>
-            <button
-              type="button"
-              className={styles.btnCarrinhoCapa}
-              onClick={handleAdicionarCarrinho}
-              title="Adicionar ao carrinho"
-            >
-              <FiShoppingCart />
-            </button>
           </div>
         ) : (
           <div className={styles.semImagem}>

@@ -22,10 +22,10 @@ export default function Paginacao({
 
       <div className={styles.info}>
         <span className={styles.pagina}>
-          Página {paginaAtual} de {totalPaginas}
+          Página <span className={styles.numero}>{paginaAtual}</span> de <span className={styles.numero}>{totalPaginas}</span>
         </span>
         {totalItems != null && (
-          <span className={styles.total}>(Total: {totalItems})</span>
+          <span className={styles.total}>(Total: <span className={styles.numero}>{totalItems}</span>)</span>
         )}
       </div>
 
