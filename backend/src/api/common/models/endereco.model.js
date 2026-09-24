@@ -16,21 +16,21 @@ export class EnderecoModel {
     return { data };
   }
 
-  static async BuscarEnderecoPrincipal(userId){
-    const {data, error} = await supabaseAdmin
-    .from("enderecos")
-    .select("*")
-    .eq("fk_user_profile_id", userId)
-    .eq("principal", true)
-    .eq("ativo", true)
-    .maybeSingle();
+  static async BuscarEnderecoPrincipal(userId) {
+    const { data, error } = await supabaseAdmin
+      .from("enderecos")
+      .select("*")
+      .eq("fk_user_profile_id", userId)
+      .eq("principal", true)
+      .eq("ativo", true)
+      .maybeSingle();
 
-    if(error){
+    if (error) {
       error.statusCode = 500;
       throw error;
     }
 
-    return {data};
+    return { data };
   }
 
   static async BuscarEnderecoById(id, userId) {

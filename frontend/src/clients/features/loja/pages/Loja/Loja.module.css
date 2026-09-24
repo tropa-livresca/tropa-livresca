@@ -5,36 +5,6 @@
   padding: 5rem 6%;
 }
 
-.topo {
-  width: 100%;
-  padding: 3rem 6%;
-  background: #f7f0cfb1;
-  border-bottom: 2px solid #d4b46a;
-}
-
-.titulo {
-  margin: 0;
-  color: #67170c;
-  font-size: clamp(2rem, 4vw, 4rem);
-  font-family: "Jacques Francois", serif;
-}
-
-.titulo::after {
-  content: "";
-  display: block;
-  width: 8rem;
-  height: 4px;
-  margin-top: 1rem;
-  background: #d4b46a;
-  border-radius: 999px;
-}
-
-.topo p {
-  color: var(--cor-texto-muted);
-  text-align: left;
-  font-size: 1.2rem;
-}
-
 .containerlivros {
   display: grid;
   grid-template-columns: 18rem auto 3rem;
@@ -178,7 +148,7 @@
   color: #67170c;
 }
 
-.carrinho svg:hover{
+.carrinho svg:hover {
   color: #ffbb33;
   transition: 0.25s;
 }
@@ -194,18 +164,19 @@
   width:90%;
 }
 
-.filtros h1{
-  color:#67170c;
-}
-
-.filtros li{
-  list-style: none;
-  cursor:pointer;
+.filtros h1 {
   color: #67170c;
-  font-size:1.2rem;
+  font-size:1.5rem;
 }
 
-.filtros ul{
+.filtros li {
+  list-style: none;
+  cursor: pointer;
+  color: #67170c;
+  font-size:1.1rem;
+}
+
+.filtros ul {
   line-height: 2.2;
 }
 
@@ -213,10 +184,10 @@
   text-decoration: underline;
 }
 
-.oi{
+.oi {
   display: flex;
   align-items: center;
-  height:3.5rem;
+  height: 3.5rem;
   margin-bottom: 1rem;
 }
 

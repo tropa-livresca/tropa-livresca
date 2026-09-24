@@ -3,6 +3,7 @@ import { AuthController } from "./auth.controller.js";
 import {
   checkAuth,
   verificarAutenticacaoAdm,
+  verificarAutenticacaoAdmMaster,
 } from "../../common/middlewares/auth.middleware.js";
 const router = express.Router();
 
@@ -18,6 +19,12 @@ router.patch(
 router.get(
   "/session-adm",
   verificarAutenticacaoAdm,
+  AuthController.getSessionAdm,
+);
+
+router.get(
+  "/session-adm-master",
+  verificarAutenticacaoAdmMaster,
   AuthController.getSessionAdm,
 );
 

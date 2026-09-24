@@ -9,13 +9,10 @@ Table users_profile {
   imagem text
   descricao text
   redes_sociais jsonb [default: '{}']
-}
-
-Table categorias {
-  id bigint [pk, increment]
-  nome text [not null]
-  tipo text [not null]
-  data_criacao timestamp [default: `now()`, not null]
+  is_admin boolean [default: false]
+  is_master boolean [default: false]
+  primeiro_acesso [default: true]
+  email text [not null]
 }
 
 Table livros {
@@ -24,7 +21,6 @@ Table livros {
   direitos_de_publicacao boolean [not null]
   conteudo_por_IA boolean [not null]
   imagens_explicitas boolean [not null]
-  publico_alvo text
   numero_edicao smallint
   data_de_publicacao date [not null]
   preco_digital numeric [not null]
@@ -41,7 +37,8 @@ Table livros {
   colaboradores jsonb [default: '[]']
   capa jsonb [default: '{}']
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id, not null]
+  total_paginas numeric [not null]
+  categoria text [not null]
 }
 
 Table comentarios {
@@ -50,14 +47,6 @@ Table comentarios {
   texto text [not null]
   fk_user_profile_id uuid [ref: > users_profile.id, not null]
   fk_livros_id bigint [ref: > livros.id, not null]
-}
-
-Table denuncias {
-  id bigint [pk, increment]
-  data timestamp [default: `now()`, not null]
-  descricao text [not null]
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_categorias_id bigint [ref: > categorias.id, not null]
 }
 
 Table enderecos {
@@ -101,27 +90,10 @@ Table vendas {
 Table itens_venda {
   id bigint [pk, increment]
   qtd bigint [not null]
+  formato text [not null]
   subtotal numeric [not null]
   fk_livros_itens_id bigint [ref: > livros.id, not null]
   fk_vendas_id bigint [ref: > vendas.id, not null]
-}
-
-Table cupons {
-  id bigint [pk, increment]
-  codigo text [unique, not null]
-  nome text [not null]
-  valor numeric [not null]
-  tipo_desconto text [not null]
-  universal boolean [default: false, not null]
-  ativo boolean [default: true, not null]
-  data_inicio timestamp [not null]
-  data_fim timestamp [not null]
-  limite_uso_total integer
-  limite_usuario integer [default: 1]
-  valor_minimo_compra numeric [default: 0]
-  data_criacao timestamp [default: `now()`]
-  data_atualizacao timestamp [default: `now()`]
-  fk_livros_id bigint [ref: > livros.id, not null]
 }
 
 Table revisoes {

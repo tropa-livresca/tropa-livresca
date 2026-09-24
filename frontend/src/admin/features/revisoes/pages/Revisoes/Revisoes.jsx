@@ -3,106 +3,159 @@ import { Link } from "react-router-dom";
 import { useRevisao } from "../../hooks/useRevisao.js";
 import { FaSearch } from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao.jsx";
+import styles from "./Revisoes.module.css"; // Importando o CSS
 
 export default function Revisoes() {
-    const { revisoes, count, carregando, BuscarRevisoes } = useRevisao();
+  const { revisoes, meta, carregando, buscarRevisoes } = useRevisao();
 
-    const [busca, setBusca] = useState("");
-    const [filtro, setFiltro] = useState("");
-    const [ordem, setOrdem] = useState("");
-    const [paginaAtual, setPaginaAtual] = useState(1);
+  const [termoBusca, setTermoBusca] = useState("");
+  const [busca, setBusca] = useState("");
+  const [filtro, setFiltro] = useState("");
+  const [ordem, setOrdem] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
 
-    const itensPorPagina = 12;
-    const totalPages = count ? Math.ceil(count / itensPorPagina) : 1;
+  useEffect(() => {
+    buscarRevisoes(paginaAtual, 12, busca, filtro, ordem);
+  }, [paginaAtual, busca, filtro, ordem, buscarRevisoes]);
 
-    useEffect(() => {
-        const carregarDados = async () => {
-            await BuscarRevisoes(paginaAtual, 12, busca, filtro, ordem);
-        }
-        carregarDados();
-    }, [paginaAtual, filtro, ordem, BuscarRevisoes]);
+  const handleBuscar = (e) => {
+    e.preventDefault();
+    setBusca(termoBusca);
+    setPaginaAtual(1);
+  };
 
-    const handleBuscar = (e) => {
-        e.preventDefault();
-        setPaginaAtual(1);
-        BuscarRevisoes(1, 12, busca, filtro, ordem);
-    }
+  return (
+    <main className={styles.container}>
+      <h1 className={styles.titulo}>Revisões de Livros</h1>
 
-    return (
-        <main>
-            <h1>Revisões</h1>
+      {/* Barra de Filtros e Busca */}
+      <form onSubmit={handleBuscar} className={styles.filtroContainer}>
+        <div className={styles.inputGrupo}>
+          <span className={styles.iconeBusca}>
+            <FaSearch />
+          </span>
+          <input
+            type="text"
+            placeholder="Buscar por título do livro..."
+            value={termoBusca}
+            onChange={(e) => setTermoBusca(e.target.value)}
+            className={styles.inputBusca}
+          />
+        </div>
 
-            <form onSubmit={handleBuscar}>
-                <span>
-                    <FaSearch />
-                </span>
+        <div className={styles.selectGrupo}>
+          <select
+            value={filtro}
+            onChange={(e) => {
+              setFiltro(e.target.value);
+              setPaginaAtual(1);
+            }}
+            className={styles.selectFiltro}
+          >
+            <option value="">Ordenar por</option>
+            <option value="alfabetico">Ordem Alfabética</option>
+            <option value="data">Data de Publicação</option>
+          </select>
 
-                <input
-                    type="text"
-                    placeholder="Buscar livro"
-                    value={busca}
-                    onChange={(e) => setBusca(e.target.value)}
-                />
+          <select
+            value={ordem}
+            onChange={(e) => {
+              setOrdem(e.target.value);
+              setPaginaAtual(1);
+            }}
+            className={styles.selectFiltro}
+          >
+            <option value="ascendente">Crescente / Antigos</option>
+            <option value="descendente">Decrescente / Recentes</option>
+          </select>
+        </div>
 
-                <select value={filtro} onChange={(e) => { setFiltro(e.target.value); setPaginaAtual(1); }}>
-                    <option value="">Ordenar por</option>
-                    <option value="alfabetico">Ordem Alfabética</option>
-                    <option value="data">Data de Publicação</option>
-                </select>
+        <button type="submit" className={styles.botaoBuscar}>
+          Buscar
+        </button>
+      </form>
 
-                <select value={ordem} onChange={(e) => { setOrdem(e.target.value); setPaginaAtual(1); }}>
-                    <option value="ascendente">Crescente / Antigos</option>
-                    <option value="descendente">Decrescente / Recentes</option>
-                </select>
+      {/* Área de Conteúdo / Grid */}
+      {carregando ? (
+        <div className={styles.feedback}>Carregando revisões...</div>
+      ) : !revisoes || revisoes.length === 0 ? (
+        <div className={styles.feedback}>
+          Nenhum rascunho ou revisão encontrado.
+        </div>
+      ) : (
+        <div className={styles.gridRevisoes}>
+          {revisoes.map((revisao) => {
+            const livro = revisao.livros;
+            return (
+              <div key={revisao.id} className={styles.cardRevisao}>
+                <div className={styles.cardHeader}>
+                  <div className={styles.capaContainer}>
+                    {livro?.capa?.frente ? (
+                      <img
+                        src={livro.capa.frente}
+                        alt={`Capa do livro ${livro?.titulo}`}
+                        className={styles.capaLivro}
+                      />
+                    ) : (
+                      <div className={styles.semCapa}>Sem Capa</div>
+                    )}
+                  </div>
+                  <div className={styles.infoLivro}>
+                    <span className={styles.livroId}>
+                      ID: #{livro?.id || "---"}
+                    </span>
+                    <h3 className={styles.livroTitulo}>
+                      {livro?.titulo || "Sem título"}
+                    </h3>
+                    {livro?.subtitulo && (
+                      <p className={styles.livroSubtitulo}>{livro.subtitulo}</p>
+                    )}
+                  </div>
+                </div>
 
-                <button type="submit">Buscar</button>
-            </form>
+                <div className={styles.cardBody}>
+                  <p>
+                    <strong>Revisor:</strong> {revisao.nome}
+                  </p>
+                  <p className={styles.apontamento}>
+                    <strong>Apontamento:</strong> {revisao.apontamento}
+                  </p>
+                  <span className={styles.dataRevisao}>{revisao.data}</span>
+                </div>
 
-            {
-                carregando ? (
-                    <p>Carregando...</p>
-                ) : !revisoes || revisoes.length === 0 ? (
-                    <p>Nenhum rascunho encontrado</p>
-                ) : (
-                    revisoes.map((revisao) => {
-                        const livro = revisao.livros;
-                        return (
-                            <div key={revisao.id}>
-                                <ul>
-                                    <li>Id do livro: {livro?.id || "Sem id"}</li>
-                                    <li>
-                                        {livro?.capa?.frente ? (
-                                            <img
-                                                src={livro.capa.frente}
-                                                alt={`Capa do livro ${livro?.titulo}`}
-                                                style={{ width: "100px", height: "auto" }}
-                                            />
-                                        ) : (
-                                            "Sem capa encontrada"
-                                        )}
-                                    </li>
-                                    <li>Título: {livro?.titulo || "Sem título"}</li>
-                                    <li>Subtítulo: {livro?.subtitulo || "Sem subtítulo"}</li>
-                                    <li>Nome: {revisao.nome}</li>
-                                    <li>Apontamento: {revisao.apontamento}</li>
-                                    <li>Data: {revisao.data}</li>
-                                </ul>
-                                <Link to={`/admin/livros/revisoes/visualizar/${revisao.id}`}>Ver Revisão</Link>
-                                {livro?.id && (
-                                    <Link to={`/admin/livros/visualizar/${livro.id}`}>Ver livro revisto</Link>
-                                )}
-                            </div>
-                        );
-                    })
-                )
-            }
+                <div className={styles.cardAcoes}>
+                  <Link
+                    to={`/admin/livros/revisoes/visualizar/${revisao.id}`}
+                    className={styles.linkPrimario}
+                  >
+                    Ver Revisão
+                  </Link>
+                  {livro?.id && (
+                    <Link
+                      to={`/admin/livros/visualizar/${livro.id}`}
+                      className={styles.linkSecundario}
+                    >
+                      Ver Livro
+                    </Link>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
 
-            {!carregando && totalPages > 1 && (
-                <Paginacao paginaAtual={paginaAtual}
-                    totalPaginas={totalPages}
-                    totalItems={itensPorPagina}
-                    onMudarPagina={setPaginaAtual}
-                />)}
-        </main>
-    )
-};
+      {/* Paginação */}
+      {!carregando && meta?.totalPages > 1 && (
+        <div className={styles.paginacaoContainer}>
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={meta.totalPages}
+            totalItems={meta.totalItems}
+            onMudarPagina={setPaginaAtual}
+          />
+        </div>
+      )}
+    </main>
+  );
+}

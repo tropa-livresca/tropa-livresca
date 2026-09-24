@@ -4,7 +4,7 @@ export class EnderecoController {
   static async BuscarEnderecos(req, res, next) {
     try {
       const userId = req.user?.id;
-      
+
       const enderecos = await EnderecoService.BuscarEnderecos(userId);
 
       return res.status(200).json(enderecos);
@@ -26,14 +26,16 @@ export class EnderecoController {
     }
   }
 
-  static async BuscarEnderecoPrincipal(req, res, next){
-    try{
+  static async BuscarEnderecoPrincipal(req, res, next) {
+    try {
       const userId = req.user?.id;
 
       const endereco = await EnderecoService.BuscarEnderecoPrincipal(userId);
 
       return res.status(200).json(endereco);
-    }catch(err){next(err);}
+    } catch (err) {
+      next(err);
+    }
   }
 
   static async InativarEndereco(req, res, next) {
@@ -87,7 +89,10 @@ export class EnderecoController {
       const userId = req.user?.id;
       const { id } = req.params;
 
-      const endereco = await EnderecoService.DefinirEnderecoPrincipal(id, userId);
+      const endereco = await EnderecoService.DefinirEnderecoPrincipal(
+        id,
+        userId,
+      );
 
       return res.status(200).json(endereco);
     } catch (err) {

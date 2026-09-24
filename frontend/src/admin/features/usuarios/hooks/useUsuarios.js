@@ -3,19 +3,61 @@ import { useState, useCallback } from "react";
 
 export const useUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [usuario, setUsuario] = useState(null);
+  const [nome, setNome] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [redesSociais, setRedesSociais] = useState({
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    email: "",
+  });
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
 
-  const BuscarUsuarios = useCallback(async (page = 1, limit = 12, busca = "", funcao = "", ordem = "") => {
-    setCarregando(true);
-    setMeta(null);
+  const buscarUsuarios = useCallback(
+    async (page = 1, limit = 12, busca = "", filtro = "", ordem = "") => {
+      setCarregando(true);
+      setMeta(null);
 
+      try {
+        const res = await apiFetch(
+          `/api/v1/admin/usuarios/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&ordem=${ordem}&filtro=${filtro}`,
+          { method: "GET", skipAuthRedirect: true },
+        );
+
+        const result = await res.json();
+
+        if (!res.ok) {
+          if (res.status === 404) {
+            setUsuarios([]);
+            setMeta(null);
+            setCarregando(false);
+            return;
+          }
+          throw new Error(result.error || `Erro ${res.status}`);
+        }
+
+        setUsuarios(result.data || []);
+        setMeta(result.meta);
+      } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        setUsuarios([]);
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [],
+  );
+
+  const buscarUsuarioById = useCallback(async (id) => {
+    setCarregando(true);
     try {
-      console.log(ordem);
-      const res = await apiFetch(
-        `/api/v1/admin/usuarios/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&funcao=${funcao}&ordem=${ordem}`,
-        { method: "GET", skipAuthRedirect: true },
-      );
+      const res = await apiFetch(`/api/v1/admin/usuarios/${id}`, {
+        method: "GET",
+        skipAuthRedirect: true,
+      });
 
       const result = await res.json();
 
@@ -29,59 +71,92 @@ export const useUsuarios = () => {
         throw new Error(result.error || `Erro ${res.status}`);
       }
 
-      setUsuarios(result.data || []);
-      console.log(result.meta);
-      setMeta(result.meta);
-      setCarregando(false);
+      setUsuario(result);
     } catch (error) {
-      console.error("Erro ao buscar livros:", error);
-      setUsuarios([]);
+      console.error("Erro ao buscar usuário por ID:", error);
+      setUsuario(null);
+    } finally {
       setCarregando(false);
     }
   }, []);
 
-  const alterarFuncao = async (usuarioId, funcao) => {
-    setCarregando(true);
+  const promoverUsuario = useCallback(async (id) => {
+    try {
+      const res = await apiFetch(`/api/v1/admin/usuarios/${id}/promover`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        skipAuthRedirect: true,
+      });
 
-    console.log(usuarioId, funcao);
-
-    
-    const res = await apiFetch(
-        `/api/v1/admin/funcionarios`,
-        { method: "PATCH",
-        body: JSON.stringify({
-          usuarioId: usuarioId, 
-          funcao: funcao
-        }), },
-      );
-
-      
       const result = await res.json();
 
-      console.log(result)
-
       if (!res.ok) {
-        if (res.status === 404) {
-          setCarregando(false);
-          return;
-        }
-        throw new Error(result.error || `Erro ${res.status}`);
+        throw new Error(result.error || "Erro ao promover usuário.");
       }
 
-      setCarregando(false);
-  }
+      return result;
+    } catch (error) {
+      console.error("Erro ao promover usuário:", error);
+      throw error;
+    }
+  }, []);
 
+  const alterarIsMasterFuncionario = useCallback(async (id, isMaster) => {
+    try {
+      const res = await apiFetch(`/api/v1/admin/usuarios/${id}/master`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isMaster }),
+        skipAuthRedirect: true,
+      });
 
+      const result = await res.json();
 
+      if (!res.ok) {
+        throw new Error(result.error || "Erro ao alterar nível Master.");
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Erro ao alterar nível Master do funcionário:", error);
+      throw error;
+    }
+  }, []);
+
+  const inativarFuncionario = useCallback(async (id) => {
+    try {
+      const res = await apiFetch(`/api/v1/admin/usuarios/${id}/inativar`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        skipAuthRedirect: true,
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || "Erro ao inativar funcionário.");
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Erro ao inativar funcionário:", error);
+      throw error;
+    }
+  }, []);
 
   return {
     meta,
     carregando,
     usuarios,
+    usuario,
     setUsuarios,
+    setUsuario,
+    promoverUsuario,
+    alterarIsMasterFuncionario,
+    inativarFuncionario,
     setMeta,
     setCarregando,
-    BuscarUsuarios,
-    alterarFuncao,
+    buscarUsuarios,
+    buscarUsuarioById,
   };
 };

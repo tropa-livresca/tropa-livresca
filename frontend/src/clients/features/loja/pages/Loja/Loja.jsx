@@ -1,31 +1,76 @@
 import styles from "./Loja.module.css";
+import Carregando from "../../../../components/Carregando/Carregando";
+import CardProduto from "../../components/CardProduto/CardProduto";
+import { useLivrosLoja } from "../../hooks/useLivrosLoja";
+import { useCarrinho } from "../../hooks/useCarrinho";
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import { FaSearch } from "react-icons/fa";
-import { FiChevronDown } from "react-icons/fi";
-import { useState } from "react";
-import { FiShoppingCart } from "react-icons/fi";
+import { FiChevronDown, FiShoppingCart } from "react-icons/fi";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function Loja() {
-  const [dropdownAberto, setDropdownAberto] = useState(null);
+  const { livros = [], meta, carregando, buscarLivros } = useLivrosLoja();
+  const { adicionarItem } = useCarrinho();
+  const [dropdownAberto, setDropdownAberto] = useState(false);
   const [filtro, setFiltro] = useState("");
+  const [ordem, setOrdem] = useState("");
+  const [busca, setBusca] = useState("");
+  const [buscaEnviada, setBuscaEnviada] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
+  const [categoria, setCategoria] = useState("");
+
+  const generos = [
+    "Romance",
+    "Fantasia",
+    "Ficção Científica",
+    "Mistério",
+    "Terror",
+    "Aventura",
+    "Drama",
+    "Suspense",
+    "História",
+    "Adulto",
+  ];
+
+  useEffect(() => {
+    buscarLivros(paginaAtual, 12, buscaEnviada, filtro, ordem, categoria);
+  }, [paginaAtual, buscaEnviada, filtro, ordem, categoria]);
+
+  const handleCategoria = (novaCategoria) => {
+    setCategoria(categoria === novaCategoria ? "" : novaCategoria);
+    setBusca("");
+    setBuscaEnviada("");
+    setPaginaAtual(1);
+  };
 
   const handleFiltro = (novoFiltro) => {
     setFiltro(novoFiltro);
+    setOrdem(novoFiltro === "data" ? "descendente" : "ascendente");
     setPaginaAtual(1);
-    setDropdownAberto(null);
+    setDropdownAberto(false);
+  };
+
+  const handleBusca = (e) => {
+    e.preventDefault();
+    setCategoria("");
+    setPaginaAtual(1);
+    setBuscaEnviada(busca.trim());
+  };
+
+  const handleOrdem = (novaOrdem) => {
+    setOrdem(novaOrdem);
+    setPaginaAtual(1);
+    setDropdownAberto(false);
   };
 
   return (
     <main>
-      <div className={styles.topo}>
-        <h1 className={styles.titulo}>Loja</h1>
-        <p>
-          Nosso site é feito por quem respira livros, pensando na melhor
-          experiência para você.
-        </p>
-      </div>
-
+      <DescricaoTela
+        titulo="Loja"
+        descricao="Nosso site é feito por quem respira livros, pensando na melhor experiência para você."
+      />
       <div className={styles.container}>
         <div className={styles.containerlivros}>
           <div className={styles.filtros}>
@@ -33,37 +78,37 @@ export default function Loja() {
               <h1>Gênero</h1>
             </div>
             <ul>
-              <li>Romance</li>
-              <li>Fantasia</li>
-              <li>Ficção Científica</li>
-              <li>Mistério</li>
-              <li>Terror</li>
-              <li>Aventura</li>
-              <li>Drama</li>
-              <li>Suspense</li>
-              <li>História</li>
+              {generos.map((gen) => (
+                <li
+                  key={gen}
+                  onClick={() => handleCategoria(gen)}
+                  className={categoria === gen ? styles.categoriaAtiva : ""}
+                  style={{
+                    cursor: "pointer",
+                    fontWeight: categoria === gen ? "bold" : "normal",
+                  }}
+                >
+                  {gen}
+                </li>
+              ))}
             </ul>
           </div>
           <div className={styles.form}>
-            <form onSubmit className={styles.busca}>
+            <form onSubmit={handleBusca} className={styles.busca}>
               <span className={styles.iconebusca}>
                 <FaSearch />
               </span>
-
               <input
                 className={styles.inputBusca}
                 type="text"
                 placeholder="Buscar livro"
+                value={busca}
+                onChange={(e) => setBusca(e.target.value)}
               />
-
               <div className={styles.selectContainer}>
                 <div
                   className={styles.select}
-                  onClick={() =>
-                    setDropdownAberto(
-                      dropdownAberto === "filtro" ? null : "filtro",
-                    )
-                  }
+                  onClick={() => setDropdownAberto(!dropdownAberto)}
                 >
                   <span>
                     {filtro === "alfabetico"
@@ -72,31 +117,39 @@ export default function Loja() {
                         ? "Data de Publicação"
                         : "Ordenar por"}
                   </span>
-
                   <FiChevronDown
-                    className={
-                      dropdownAberto === "filtro" ? styles.setaAberta : ""
-                    }
+                    className={dropdownAberto ? styles.setaAberta : ""}
                   />
                 </div>
-
-                {dropdownAberto === "filtro" && (
+                {dropdownAberto && (
                   <div className={styles.options}>
-                    <div onClick={() => handleFiltro("")}>
+                    <div
+                      onClick={() => {
+                        handleFiltro("");
+                        setOrdem("");
+                      }}
+                    >
                       <span>Ordenar por</span>
                     </div>
-
                     <div onClick={() => handleFiltro("alfabetico")}>
                       <span>Ordem Alfabética</span>
                     </div>
-
                     <div onClick={() => handleFiltro("data")}>
                       <span>Data de Publicação</span>
                     </div>
+                    {filtro && (
+                      <>
+                        <div onClick={() => handleOrdem("ascendente")}>
+                          <span>Ascendente</span>
+                        </div>
+                        <div onClick={() => handleOrdem("descendente")}>
+                          <span>Descendente</span>
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
               </div>
-
               <button type="submit" className={styles.btnbuscar}>
                 Buscar
               </button>
@@ -108,240 +161,32 @@ export default function Loja() {
             </Link>
           </div>
 
+
           <div className={styles.livros}>
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780141441146-L.jpg" className={styles.capa}/>
-              {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>As Aventuras de David Balls</h3>
-              <p className={styles.autor}>DVD balls</p>
-              <h2><span className={styles.numero}>R$ 42,00</span></h2>
-              </Link>
-              </div>
-              
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            <div className={styles.cardLivro}>
-              <Link to="/" className={styles.linkCapa}>
-              <div className={styles.capaContainer}>
-              <img src="https://covers.openlibrary.org/b/isbn/9780142437247-L.jpg" className={styles.capa}/>
-                {/* else <div className={styles.semImagem}> Sem imagem </div>*/}
-              </div>
-              </Link>
-
-              <div className={styles.infoLivro}>
-                <Link>
-              <h3>A Volta Dos Que Não Foram</h3>
-              <p className={styles.autor}>Lukas Soldera</p>
-              <h2><span className={styles.numero}>R$ 67,00</span></h2>
-              </Link>
-              </div>   
-            </div>
-
-            
+            {carregando ? (
+              <Carregando mensagem="Carregando loja..." />
+            ) : livros.length === 0 ? (
+              <p>Nenhum livro encontrado.</p>
+            ) : (
+              livros.map((livro) => (
+                <CardProduto
+                  key={livro.id}
+                  livro={livro}
+                  aoAdicionar={adicionarItem}
+                />
+              ))
+            )}
           </div>
+
+          {!carregando && meta && meta.totalPages > 1 && (
+            <Paginacao
+              paginaAtual={paginaAtual}
+              totalPaginas={meta.totalPages}
+              totalItems={meta.totalItems}
+              onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+            />
+          )}
         </div>
-        <div className={styles.paginacao}>
-                  <button
-                    onClick={() =>
-                      setPaginaAtual((prev) => Math.max(prev - 1, 1))
-                    }
-                    disabled={paginaAtual === 1}
-                  >
-                    Anterior
-                  </button>
-      
-                  <span>
-                    Página {paginaAtual} 
-                  </span>
-      
-                  <button
-                    onClick={() =>
-                      setPaginaAtual((prev) =>
-                        Math.min(prev)
-                      )
-                    }
-                    disabled={paginaAtual}
-                  >
-                    Próximo
-                  </button>
-                </div>
       </div>
     </main>
   );

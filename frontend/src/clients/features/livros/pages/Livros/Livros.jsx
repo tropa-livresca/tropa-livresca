@@ -2,12 +2,14 @@ import { useLivros } from "../../../../hooks/useLivros";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import Carregando from "../../../../components/Carregando/Carregando";
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import styles from "./Livros.module.css";
 import { FiChevronDown } from "react-icons/fi";
 
 export default function Livros() {
-  const { Livros, BuscarLivros, carregando, meta } = useLivros();
+  const { Livros, meta, BuscarLivros, carregando } = useLivros();
 
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState("");
@@ -25,7 +27,6 @@ export default function Livros() {
 
   const handleBuscar = (e) => {
     e.preventDefault();
-
     setPaginaAtual(1);
     BuscarLivros(1, 12, busca, filtro, ordem);
   };
@@ -44,14 +45,10 @@ export default function Livros() {
 
   return (
     <main>
-      <div className={styles.topo}>
-        <h1 className={styles.titulo}>Livros publicados pela editora</h1>
-
-        <p>
-          Histórias que transformam, ideias que inspiram: explore nosso
-          catálogo.
-        </p>
-      </div>
+      <DescricaoTela
+        titulo="Livros publicados pela editora"
+        descricao="Histórias que transformam, ideias que inspiram: Explore nosso catálogo."
+      />
 
       <div className={styles.container}>
         <form onSubmit={handleBuscar} className={styles.busca}>
@@ -71,9 +68,7 @@ export default function Livros() {
             <div
               className={styles.select}
               onClick={() =>
-                setDropdownAberto(
-                  dropdownAberto === "filtro" ? null : "filtro"
-                )
+                setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
               }
             >
               <span>
@@ -83,11 +78,8 @@ export default function Livros() {
                     ? "Data de Publicação"
                     : "Ordenar por"}
               </span>
-
               <FiChevronDown
-                className={
-                  dropdownAberto === "filtro" ? styles.setaAberta : ""
-                }
+                className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
               />
             </div>
 
@@ -96,11 +88,9 @@ export default function Livros() {
                 <div onClick={() => handleFiltro("")}>
                   <span>Ordenar por</span>
                 </div>
-
                 <div onClick={() => handleFiltro("alfabetico")}>
                   <span>Ordem Alfabética</span>
                 </div>
-
                 <div onClick={() => handleFiltro("data")}>
                   <span>Data de Publicação</span>
                 </div>
@@ -112,9 +102,7 @@ export default function Livros() {
             <div
               className={styles.select1}
               onClick={() =>
-                setDropdownAberto(
-                  dropdownAberto === "ordem" ? null : "ordem"
-                )
+                setDropdownAberto(dropdownAberto === "ordem" ? null : "ordem")
               }
             >
               <span>
@@ -124,11 +112,8 @@ export default function Livros() {
                     ? "Mais Recentes"
                     : "Ordenar por"}
               </span>
-
               <FiChevronDown
-                className={
-                  dropdownAberto === "ordem" ? styles.setaAberta : ""
-                }
+                className={dropdownAberto === "ordem" ? styles.setaAberta : ""}
               />
             </div>
 
@@ -137,11 +122,9 @@ export default function Livros() {
                 <div onClick={() => handleOrdem("")}>
                   <span>Ordenar por</span>
                 </div>
-
                 <div onClick={() => handleOrdem("ascendente")}>
                   <span>Mais Antigos</span>
                 </div>
-
                 <div onClick={() => handleOrdem("descendente")}>
                   <span>Mais Recentes</span>
                 </div>
@@ -165,10 +148,7 @@ export default function Livros() {
             {Livros.map((livro) => {
               return (
                 <div key={livro.id} className={styles.cardLivro}>
-                  <Link
-                    to={`/livros/detalhes/${livro.id}`}
-                    className={styles.linkCapa}
-                  >
+                  <Link to={`/livros/${livro.id}`} className={styles.linkCapa}>
                     <div className={styles.capaContainer}>
                       {livro?.capa?.frente ? (
                         <img
@@ -184,11 +164,11 @@ export default function Livros() {
 
                   <div className={styles.infoLivro}>
                     <Link
-                      to={`/livros/detalhes/${livro.id}`}
+                      to={`/livros/${livro.id}`}
                       className={styles.linkLivro}
                     >
+                      {livro.id}
                       <h3>{livro.titulo || "Sem título"}</h3>
-
                       <p className={styles.autor}>
                         {livro.autor_nome || "Sem autor"}{" "}
                         {livro.autor_sobrenome || ""}
@@ -202,33 +182,13 @@ export default function Livros() {
         )}
 
         {!carregando && meta && meta.totalPages > 1 && (
-          <div className={styles.paginacao}>
-            <button
-              onClick={() =>
-                setPaginaAtual((prev) => Math.max(prev - 1, 1))
-              }
-              disabled={paginaAtual === 1}
-            >
-              Anterior
-            </button>
-
-            <span>
-              Página {paginaAtual} de {meta.totalPages}
-            </span>
-
-            <button
-              onClick={() =>
-                setPaginaAtual((prev) =>
-                  Math.min(prev + 1, meta.totalPages)
-                )
-              }
-              disabled={paginaAtual === meta.totalPages}
-            >
-              Próximo
-            </button>
-          </div>
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={meta.totalPages}
+            totalItems={meta.totalItems}
+            onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+          />
         )}
-
       </div>
     </main>
   );

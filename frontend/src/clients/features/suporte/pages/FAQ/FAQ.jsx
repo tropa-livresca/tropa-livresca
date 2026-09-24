@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./FAQ.module.css";
 import { FiChevronDown } from "react-icons/fi";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import { Link } from "react-router-dom";
 
 export default function FAQ() {
@@ -96,65 +97,65 @@ export default function FAQ() {
   };
 
   return (
-      <div>
-      <div className={styles.topo}>
-        <h1 className={styles.titulo}>Perguntas Frequentes</h1>
-        <p>
-          Encontre respostas para as dúvidas mais comuns.
-        </p>
-      </div>
-      <div  className={styles.container}>
-      {Object.entries(faqData).map(([categoria, itens]) => (
-        <div key={categoria} className={styles.categoriaCard}>
-          <h2 className={styles.categoriaTitulo}>{categoria}</h2>
+    <div>
+      <DescricaoTela
+        titulo="Perguntas Frequentes"
+        descricao="Encontre respostas para as dúvidas mais comuns."
+      />
 
-          {itens.map((item, index) => {
-            const idUnico = `${categoria}-${index}`;
-            const estaAberto = perguntaAberta === idUnico;
+      <div className={styles.container}>
+        {Object.entries(faqData).map(([categoria, itens]) => (
+          <div key={categoria} className={styles.categoriaCard}>
+            <h2 className={styles.categoriaTitulo}>{categoria}</h2>
 
-            return (
-              <div key={index} className={styles.faqBloco}>
-                <button
-                  type="button"
-                  onClick={() => alternarPergunta(idUnico)}
-                  className={`${styles.perguntaBotao} ${estaAberto ? styles.aberto : ""}`}
-                >
-                  <span>{item.q}</span>
-                  <span
-                    className={`${styles.seta} ${estaAberto ? styles.abertoIcone : ""}`}
+            {itens.map((item, index) => {
+              const idUnico = `${categoria}-${index}`;
+              const estaAberto = perguntaAberta === idUnico;
+
+              return (
+                <div key={index} className={styles.faqBloco}>
+                  <button
+                    type="button"
+                    onClick={() => alternarPergunta(idUnico)}
+                    className={`${styles.perguntaBotao} ${estaAberto ? styles.aberto : ""}`}
                   >
-                    <FiChevronDown />
-                  </span>
-                </button>
+                    <span>{item.q}</span>
+                    <span
+                      className={`${styles.seta} ${estaAberto ? styles.abertoIcone : ""}`}
+                    >
+                      <FiChevronDown />
+                    </span>
+                  </button>
 
-                {estaAberto && (
-                  <div className={styles.respostaCard}>
-                    <p className={styles.respostaTexto}>{item.a}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                  {estaAberto && (
+                    <div className={styles.respostaCard}>
+                      <p className={styles.respostaTexto}>{item.a}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <div class={styles.divisao}></div>
+      <div className={styles.container}>
+        <div className={styles.subcontainer}>
+          <div className={styles.contato}>
+            <h2 className={styles.contatoTitulo}>
+              Ainda ficou com alguma dúvida?
+            </h2>
+
+            <p className={styles.contatoTexto}>
+              Entre em contato com nossa equipe.
+            </p>
+
+            <Link to="/Suporte" className={styles.contatoBotao}>
+              Entrar em Contato
+            </Link>
+          </div>
         </div>
-      ))}
-
-           </div>
-           <div class={styles.divisao}></div>
-           <div className={styles.container}>
-            <div className={styles.subcontainer}>
-      <div className={styles.contato}>
-        <h2 className={styles.contatoTitulo}>Ainda ficou com alguma dúvida?</h2>
-
-        <p className={styles.contatoTexto}>
-          Entre em contato com nossa equipe.
-        </p>
-
-        <Link to="/Suporte" className={styles.contatoBotao}>
-          Entrar em Contato
-        </Link>
       </div>
-      </div>
-      </div>
-      </div>
+    </div>
   );
 }
