@@ -16,6 +16,22 @@ export class CartoesModel {
     return data;
   }
 
+  static async alterarCartao(cartaoId, dadosAtualizados) {
+    const { data, error } = await supabase
+      .from("usuarios_cartoes")
+      .update(dadosAtualizados)
+      .eq("id", cartaoId)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async deletarCartao(cartaoId, usuarioId) {
     const { data, error } = await supabase
       .from("usuarios_cartoes")

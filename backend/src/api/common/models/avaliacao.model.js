@@ -1,7 +1,9 @@
 import supabase from "../config/supabase.js";
 
 export class AvaliacaoModel {
-  static async criarAvaliacao(dadosAvaliacao) {
+  static async criarAvaliacao(usuarioId, livroId, dadosAvaliacao) {
+    this.verificarSeUsuarioPodeAvaliar(usuarioId, livroId);
+
     const { data, error } = await supabase
       .from("avaliacoes")
       .insert(dadosAvaliacao)
@@ -16,10 +18,10 @@ export class AvaliacaoModel {
     return data;
   }
 
-  static async alterarAvaliacao(idUsuario, idAvaliacao, dadosAtualizados) {
+  static async alterarAvaliacao(idUsuario, idAvaliacao, qtd_estrelas) {
     const { data, error } = await supabase
       .from("avaliacoes")
-      .update(dadosAtualizados)
+      .update({ qtd_estrelas: qtd_estrelas })
       .eq("id", idAvaliacao)
       .eq("fk_users_profile_id", idUsuario)
       .select()
