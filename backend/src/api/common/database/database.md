@@ -190,6 +190,7 @@ CREATE TABLE public.notificacoes (
     data timestamp with time zone DEFAULT now() NOT NULL,
     ADM boolean DEFAULT false NOT NULL,
     fk_user_profile_id uuid,
+    geral boolean DEFAULT true NOT NULL,
     metadados jsonb DEFAULT '{}'::jsonb,
     CONSTRAINT notificacoes_pkey PRIMARY KEY (id)
 );

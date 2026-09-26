@@ -16,6 +16,31 @@ export class NotificacaoModel {
     return data;
   }
 
+  static async alterarNotificacao(dadosAtualizados, usuarioId, notificacaoId) {
+    const { data, error } = await supabase
+      .from("notificacoes")
+      .update(dadosAtualizados)
+      .eq("fk_user_profile_id", usuarioId)
+      .eq("id", notificacaoId)
+      .select()
+      .maybeSingle();
+
+    if (!data || data.length === 0) {
+      const erro = new Error(
+        "Usuário que não é autor da notificação não pode alterá-la.",
+      );
+      erro.statusCode(403);
+      throw erro;
+    }
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async buscarNotificacao(notificacaoId) {
     const { data, error } = await supabase
       .from("notificacoes")
@@ -160,7 +185,7 @@ export class NotificacaoModel {
         notificacao.notificacoes_lidas &&
         notificacao.notificacoes_lidas.length > 0;
 
-      const { notificacoes_lidas, ...dadosNotificacao } = notificacao;
+      const { ...dadosNotificacao } = notificacao;
 
       return {
         ...dadosNotificacao,
