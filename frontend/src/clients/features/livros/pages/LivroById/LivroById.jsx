@@ -72,8 +72,7 @@ export default function LivroById() {
 
               <div className={styles.tags}>
                 {livro.idioma && <span>{livro.idioma}</span>}
-
-                {livro.publico_alvo && <span>{livro.publico_alvo}</span>}
+                {livro.categoria && <span>{livro.categoria}</span>}
               </div>
             </div>
 
@@ -121,7 +120,9 @@ export default function LivroById() {
               <div>
                 <strong>Data de publicação</strong>
 
-                <p className={styles.numero}>{livro.data_de_publicacao || "Não informado"}</p>
+                <p className={styles.numero}>
+                  {livro.data_de_publicacao || "Não informado"}
+                </p>
               </div>
             </div>
 
@@ -141,7 +142,9 @@ export default function LivroById() {
               <div>
                 <strong>Número da edição</strong>
 
-                <p className={styles.numero}>{livro.numero_edicao || "Não informado"}</p>
+                <p className={styles.numero}>
+                  {livro.numero_edicao || "Não informado"}
+                </p>
               </div>
             </div>
 
@@ -175,7 +178,9 @@ export default function LivroById() {
 
             <button>Sobre o autor</button>
 
-            <button>Avaliações <span className={styles.numero}>(124)</span></button>
+            <button>
+              Avaliações <span className={styles.numero}>(124)</span>
+            </button>
           </div>
 
           <div className={styles.sinopse}>
@@ -184,13 +189,14 @@ export default function LivroById() {
         </div>
 
         <aside className={styles.compra}>
-          <div className={styles.preco}><span className={styles.numero}>R$ {livro.preco || "59,90"}</span></div>
+          <div className={styles.preco}>
+            <span className={styles.numero}>R$ {livro.preco || "59,90"}</span>
+          </div>
 
           <button className={styles.btnCarrinho}>
             <FaShoppingCart />
             Adicionar ao carrinho
           </button>
-
 
           <div className={styles.divisor}></div>
 
@@ -203,13 +209,18 @@ export default function LivroById() {
           <div className={styles.beneficio}>
             <FaShieldAlt />
 
-            <span>Compra <span className={styles.numero}>100%</span> segura</span>
+            <span>
+              Compra <span className={styles.numero}>100%</span> segura
+            </span>
           </div>
 
           <div className={styles.beneficio}>
             <FaUndo />
 
-            <span>Troca e devolução em até <span className={styles.numero}>7</span> dias</span>
+            <span>
+              Troca e devolução em até <span className={styles.numero}>7</span>{" "}
+              dias
+            </span>
           </div>
         </aside>
       </section>

@@ -1,9 +1,5 @@
-import { useLivrosLoja } from "../../hooks/useLivrosLoja";
-import { useCarrinho } from "../../hooks/useCarrinho";
-import styles from "./ProdutoById.module.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Carregando from "../../../../components/Carregando/Carregando";
 import {
   FaBookOpen,
   FaCalendarAlt,
@@ -16,6 +12,11 @@ import {
   FaFileAlt,
   FaRobot,
 } from "react-icons/fa";
+
+import { useLivrosLoja } from "../../hooks/useLivrosLoja";
+import { useCarrinho } from "../../hooks/useCarrinho";
+import Carregando from "../../../../components/Carregando/Carregando";
+import styles from "./ProdutoById.module.css";
 
 export default function ProdutoById() {
   const { id } = useParams();
@@ -31,6 +32,11 @@ export default function ProdutoById() {
     }
   }, [id, buscarLivroById]);
 
+  const [tipoSelecionado, setTipoSelecionado] = useState("Físico");
+
+  const precoExibido =
+    tipoSelecionado === "Físico" ? livro.preco_fisico : livro.preco_digital;
+
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
   }
@@ -39,29 +45,37 @@ export default function ProdutoById() {
     return <p className={styles.naoEncontrado}>Livro não encontrado.</p>;
   }
 
-  let capaObjeto = null;
-  try {
-    if (typeof livro.capa === "string") {
-      capaObjeto = JSON.parse(livro.capa);
-    } else {
-      capaObjeto = livro.capa;
-    }
-  } catch (error) {
-    console.error("Erro ao converter o JSON da capa:", error);
-  }
+  const capaFrente = livro.capa?.frente;
 
-  const capaFrente = capaObjeto?.frente;
+  const tipoProduto = livro.preco_fisico != null ? "Físico" : "Digital";
 
-  const precoFisico = livro.preco_fisico ?? livro.precoFisico;
-  const precoDigital = livro.preco_digital ?? livro.precoDigital;
-  const precoExibido = precoFisico ?? precoDigital ?? livro.preco ?? 59.9;
+  const formatarPreco = (valor) => {
+    return Number(valor || 0)
+      .toFixed(2)
+      .replace(".", ",");
+  };
+
+  const handleAdicionarCarrinho = () => {
+    adicionarItem({
+      id,
+      titulo: livro.titulo,
+      autor: autor?.nome || "Autor desconhecido",
+      capa: capaFrente,
+      preco: Number(precoExibido || 0),
+      tipo: tipoProduto,
+    });
+  };
 
   return (
     <main className={styles.container}>
       <section className={styles.hero}>
         <div className={styles.capaContainer}>
           {capaFrente ? (
-            <img className={styles.foto} src={capaFrente} alt={livro.titulo} />
+            <img
+              className={styles.foto}
+              src={capaFrente}
+              alt={`Capa do livro ${livro.titulo}`}
+            />
           ) : (
             <div className={styles.semfoto}>Sem foto</div>
           )}
@@ -90,8 +104,6 @@ export default function ProdutoById() {
 
               <div className={styles.tags}>
                 {livro.idioma && <span>{livro.idioma}</span>}
-
-                {livro.publico_alvo && <span>{livro.publico_alvo}</span>}
               </div>
             </div>
 
@@ -101,7 +113,7 @@ export default function ProdutoById() {
                   <img
                     className={styles.fotoAutor}
                     src={autor.imagem_perfil}
-                    alt={autor.nome}
+                    alt={`Foto de ${autor.nome}`}
                   />
                 ) : (
                   <div className={styles.semFotoAutor}>Sem foto</div>
@@ -193,11 +205,13 @@ export default function ProdutoById() {
       <section className={styles.conteudo}>
         <div className={styles.conteudoPrincipal}>
           <div className={styles.tabs}>
-            <button className={styles.tabAtiva}>Sinopse</button>
+            <button type="button" className={styles.tabAtiva}>
+              Sinopse
+            </button>
 
-            <button>Sobre o autor</button>
+            <button type="button">Sobre o autor</button>
 
-            <button>
+            <button type="button">
               Avaliações <span className={styles.numero}>(124)</span>
             </button>
           </div>
@@ -210,22 +224,14 @@ export default function ProdutoById() {
         <aside className={styles.compra}>
           <div className={styles.preco}>
             <span className={styles.numero}>
-              R\$ {Number(precoExibido).toFixed(2).replace(".", ",")}
+              R$ {formatarPreco(precoExibido)}
             </span>
           </div>
 
           <button
+            type="button"
             className={styles.btnCarrinho}
-            onClick={() => {
-              adicionarItem({
-                id: id,
-                titulo: livro.titulo,
-                autor: autor?.nome || "Autor desconhecido",
-                capa: capaFrente,
-                preco: Number(precoExibido),
-                tipo: precoFisico != null ? "Físico" : "Digital",
-              });
-            }}
+            onClick={handleAdicionarCarrinho}
           >
             <FaShoppingCart />
             Adicionar ao carrinho
@@ -236,7 +242,11 @@ export default function ProdutoById() {
           <div className={styles.beneficio}>
             <FaTruck />
 
-            <span>Entrega para todo o Brasil</span>
+            <span>
+              {tipoProduto === "Físico"
+                ? "Entrega para todo o Brasil"
+                : "Envio imediato via e-mail"}
+            </span>
           </div>
 
           <div className={styles.beneficio}>
@@ -258,7 +268,7 @@ export default function ProdutoById() {
         </aside>
       </section>
 
-      {colaboradores && colaboradores.length > 0 && (
+      {colaboradores?.length > 0 && (
         <section className={styles.secaoColaboradores}>
           <h2 className={styles.tituloSecao}>Relação dos colaboradores</h2>
 
