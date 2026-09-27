@@ -107,7 +107,6 @@ export class RevisaoModel {
         "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome,fk_user_profile_id, fk_user_profile_id)",
       )
       .eq("fk_livro_id", livroId)
-      .single();
 
     if (error) {
       error.statusCode = 500;
@@ -158,6 +157,28 @@ export class RevisaoModel {
     return true;
   }
 
+  static async VerificarRevisor(livroId, funcionarioId) {
+    console.log("c");
+    const { data, error } = await supabase
+      .from("revisoes")
+      .select()
+      .eq("completado", false)
+      .eq("fk_livro_id", livroId)
+      .eq("fk_user_profile_id", funcionarioId)
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (data) {
+      return data;
+    }
+
+    return true;
+  }
+
   static async CriarRevisao(dadosRevisao) {
     const { data, error } = await supabaseAdmin
       .from("revisoes")
@@ -189,6 +210,24 @@ export class RevisaoModel {
     return data;
   }
 
+  static async CompletarRevisao(id) {
+    const { data, error } = await supabase
+      .from("revisoes")
+      .update({ completado: true })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+    console.log("d");
+    console.log(data);
+
+    return data;
+  }
+
   static async ExcluirRevisao(id) {
     const { data, error } = await supabase
       .from("revisoes")
@@ -205,10 +244,27 @@ export class RevisaoModel {
     return data;
   }
 
+
+  static async completarRevisao(id) {
+    const { data, error } = await supabase
+      .from("revisoes")
+      .update({ completado: "true", })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async publicarLivro(idLivro) {
     const { data, error } = await supabase
       .from("livros")
-      .update({ estado: "publicado" })
+      .update({ estado: "publicado", })
       .eq("id", idLivro)
       .select()
       .single();

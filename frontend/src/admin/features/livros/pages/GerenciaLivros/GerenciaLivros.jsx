@@ -170,7 +170,7 @@ export default function GerenciaLivros() {
                     </td>
                     <td>{livro.data_de_publicacao}</td>
                     <td>
-                      {livro.estado === "em_revisao" ? (
+                      {livro.estado !== "publicado"  ? (
                         <span>Nâo publicado</span>
                       ) : (
                         <span>Publicado</span>

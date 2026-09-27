@@ -79,6 +79,7 @@ export class RevisaoService {
 
 
   static async BuscarRevisaoBylivroId(livroId) {
+
     if (!livroId) {
       const erroId = new Error("Id não especificado.");
       erroId.statusCode = 400;
@@ -94,11 +95,56 @@ export class RevisaoService {
     return revisao;
   }
 
-  static async AtualizarRevisao(id, nome, apontamento, idLivro) {
+  static async VerificarRevisor(livroId, funcionarioId) {
+    if (!livroId || !funcionarioId) {
+      const erroId = new Error("livroId ou funcionarioId não especificado.");
+      erroId.statusCode = 400;
+      throw erroId;
+    }
+
+    const revisao = await RevisaoModel.VerificarRevisor(livroId, funcionarioId);
+
+    console.log(revisao);
+
+    if (revisao.error) {
+      throw revisao.error;
+    }
+
+    return revisao;
+  }
+
+  static async AtualizarRevisao(id, nome, apontamento, idLivro, manuscritoRevisto = null,) {
+    
+    console.log("b");
     if (!id) {
       const erroId = new Error("Id da revisão é obrigatório.");
       erroId.statusCode = 400;
       throw erroId;
+    }
+
+    let manuscritoUrl = undefined;
+
+    if (manuscritoRevisto) {
+      const nomeArquivo = `${Date.now()}_${manuscritoRevisto.name || "arquivo.pdf"}`;
+
+      const { data: uploadData, error: uploadError } =
+        await supabaseAdmin.storage
+          .from("manuscrito-livro")
+          .upload(`revisoes/${nomeArquivo}`, manuscritoRevisto, {
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+      if (uploadError) {
+        uploadError.statusCode = 500;
+        throw uploadError;
+      }
+
+      const { data: urlData } = supabaseAdmin.storage
+        .from("manuscrito-livro")
+        .getPublicUrl(uploadData.path);
+
+      manuscritoUrl = urlData.publicUrl || undefined;
     }
 
     console.log(id);
@@ -106,7 +152,8 @@ export class RevisaoService {
     const dadosRevisao = {};
     if (nome !== undefined) dadosRevisao.nome = nome;
     if (apontamento !== undefined) dadosRevisao.apontamento = apontamento;
-    if (idLivro !== undefined) dadosRevisao.fk_livros_id = idLivro;
+    if (idLivro !== undefined) dadosRevisao.fk_livro_id = idLivro;
+    if (manuscritoUrl !== undefined) dadosRevisao.arquivo = manuscritoUrl;
 
     const revisaoAtualizada = await RevisaoModel.AtualizarRevisao(
       id,
@@ -191,6 +238,22 @@ export class RevisaoService {
     }
 
     return revisaoInativada;
+  }
+
+  static async CompletarRevisao(id) {
+    if (!id) {
+      const erroId = new Error("Id da revisão não informado.");
+      erroId.statusCode = 404;
+      throw erroId;
+    }
+
+    const revisaoCompletada = await RevisaoModel.CompletarRevisao(id);
+
+    if (revisaoCompletada.error) {
+      throw revisaoCompletada.error;
+    }
+
+    return revisaoCompletada;
   }
 
   static async publicarLivro(livroId, funcionarioId) {

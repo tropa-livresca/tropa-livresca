@@ -136,7 +136,7 @@ export const useRevisao = () => {
     setCarregando(true);
     setError(null);
     try {
-      const response = await apiFetch(`/api/v1/admin/revisao/livro/${id}`);
+      const response = await apiFetch(`/api/v1/admin/revisao/livro/${id}`); 
 
       if (!response.ok) {
         throw new Error(
@@ -148,6 +148,31 @@ export const useRevisao = () => {
 
       const data = result.data;
       setRevisaoAtual(data || null);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const verificarRevisor = useCallback(async (livroId) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/verificarRevisor/${livroId}`); 
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      const data = result;
+
+      setRevisaoAtual(data);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -188,10 +213,7 @@ export const useRevisao = () => {
 
         let responseEstado = null;
 
-        if (novoEstado) {
-
-          
-
+        if (novoEstado != "em_revisao") {
             responseEstado = await apiFetch(
             `/api/v1/admin/revisao/estado-${novoEstado}`,
             {
@@ -217,8 +239,10 @@ export const useRevisao = () => {
   );
 
   const atualizarRevisao = useCallback(
-    async (id, e, idLivro) => {
-      if (e && typeof e.preventDefault === "function") e.preventDefault();
+    async (id, idLivro, novoEstado) => {
+
+      console.log("a");
+      
 
       if (!id) return;
       if (!validarCamposTexto()) {
@@ -226,36 +250,68 @@ export const useRevisao = () => {
         return;
       }
 
+      console.log("b");
+
       setCarregando(true);
       setError(null);
       try {
-        const corpo = {};
-        if (nome) corpo.nome = nome;
-        if (apontamento) corpo.apontamento = apontamento;
+        const formData = new FormData();
+        formData.append("nome", nome);
+        formData.append("apontamento", apontamento);
+        formData.append("idLivro", idLivro);
 
-        const libroIdAtual = idLivro || livroRevisado?.id;
-        if (libroIdAtual) corpo.idLivro = libroIdAtual;
-
-        const response = await apiFetch(`/api/v1/admin/revisao/${id}`, {
+        if (manuscrito) {
+          formData.append("manuscritoRevisto", manuscrito);
+        }
+        const response = await apiFetch(`/api/v1/admin/revisao/${id}`,{ 
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(corpo),
+          body: formData,
+          isFormData: true,
         });
 
         if (!response.ok) {
           throw new Error(`Erro retornado do servidor: ${response.status}`);
         }
 
-        const json = response.data || response;
-        setRevisaoAtual(json.data || json);
 
-        alert("Informações atualizadas com sucesso!");
+        if (novoEstado != "em_revisao") {
+            responseEstado = await apiFetch(
+            `/api/v1/admin/revisao/estado-${novoEstado}`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({ idLivro, novoEstado }),
+            },
+          );
+
+          if (!responseEstado.ok) {
+            throw new Error(`Erro encontrado ao atualizar o estado do livro`);
+          }
+
+          responseCompletado = await apiFetch(
+            `/api/v1/admin/revisao/${id}/completado`,
+            {
+              method: "PATCH",
+            },
+          );
+
+          if (!responseCompletado.ok) {
+            throw new Error(`Erro encontrado ao atualizar o estado do livro`);
+          }
+        }
+        
+
+        if(novoEstado != "em_revisao"){
+         const res = responseEstado.json();
+        setRevisaoAtual(res.data);
+
+        }else{
+          const res = response.json();
+        setRevisaoAtual(res.data);
+        }
+        
       } catch (err) {
         console.error("Erro ao atualizar revisão: ", err);
         setError(err.message);
-        alert("Ocorreu um erro ao atualizar a revisão.");
       } finally {
         setCarregando(false);
       }
@@ -392,6 +448,7 @@ export const useRevisao = () => {
     buscarRevisoes,
     buscarRevisaoById,
     buscarRevisaoByLivroId,
+    verificarRevisor,
     criarRevisao,
     atualizarRevisao,
     inativarRevisao,

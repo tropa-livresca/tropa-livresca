@@ -73,6 +73,20 @@ export class RevisaoController {
     }
   }
 
+  static async VerificarRevisor(req, res, next) {
+
+    try {
+      const { livroId  } = req.params;
+      const funcionarioId = req.user.id;
+
+      const revisao = await RevisaoService.VerificarRevisor(livroId, funcionarioId);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async AtualizarRevisao(req, res, next) {
     try {
       const { id } = req.params;
@@ -81,12 +95,14 @@ export class RevisaoController {
         req.body.apontamento !== undefined ? req.body.apontamento : undefined;
       const idLivro =
         req.body.idLivro !== undefined ? req.body.idLivro : undefined;
+      const manuscritoRevisto = req.file || req.body.manuscritoRevisto || null;
 
       const revisaoAtualizada = await RevisaoService.AtualizarRevisao(
         id,
         nome,
         apontamento,
         idLivro,
+        manuscritoRevisto,
       );
 
       return res.status(200).json(revisaoAtualizada);
@@ -122,6 +138,18 @@ export class RevisaoController {
       const { id } = req.params;
 
       const revisaoInativada = await RevisaoService.InativarRevisao(id);
+
+      return res.status(200).json(revisaoInativada);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async CompletarRevisao(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const revisaoInativada = await RevisaoService.CompletarRevisao(id);
 
       return res.status(200).json(revisaoInativada);
     } catch (err) {
