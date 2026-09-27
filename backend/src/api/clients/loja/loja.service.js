@@ -73,4 +73,12 @@ export class LojaService {
 
     return this._parseCapaUrls(livro);
   }
+
+  static async realizarVenda() {}
+
+  static async buscarHistoricoVendasUsuario(usuarioId) {}
+
+  static async buscarNumeroVendasLivro(livroId) {}
+
+  static async calcularFretePrazo(cepDestino, produtos) {}
 }

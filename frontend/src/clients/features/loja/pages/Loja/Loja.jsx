@@ -93,7 +93,7 @@ export default function Loja() {
               ))}
             </ul>
           </div>
-          <div>
+          <div className={styles.form}>
             <form onSubmit={handleBusca} className={styles.busca}>
               <span className={styles.iconebusca}>
                 <FaSearch />
@@ -160,7 +160,9 @@ export default function Loja() {
               <FiShoppingCart />
             </Link>
           </div>
-          <div className={styles.cards}>
+
+
+          <div className={styles.livros}>
             {carregando ? (
               <Carregando mensagem="Carregando loja..." />
             ) : livros.length === 0 ? (
