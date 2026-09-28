@@ -13,7 +13,8 @@ export default function NovaRevisao() {
     apontamento,
     setApontamento,
     criarRevisao,
-    buscarRevisaoByLivroId,
+    atualizarRevisao,
+    verificarRevisor,
     carregando,
   } = useRevisao();
   const { buscarLivroById, livro } = useLivros();
@@ -25,22 +26,38 @@ export default function NovaRevisao() {
   }, [buscarLivroById, id]);
 
   useEffect(() => {
-    if (livro) {
-      buscarRevisaoByLivroId(livro.id);
-    }
-  }, [buscarRevisaoByLivroId, livro]);
+      verificarRevisor(id);
+  }, [verificarRevisor, id]);
 
   console.log(revisaoAtual);
 
+
   const salvarRevisao = async (e, status) => {
+
     e.preventDefault();
     try {
       await criarRevisao(id, status);
+      console.log("a");
       alert(`Revisão salva com sucesso como ${status}!`);
     } catch (err) {
       alert(err.message || "Erro ao criar revisão.");
     }
   };
+
+  const alterarRevisao = async (e, status) => {
+    console.log(e);
+    console.log(status);
+
+    e.preventDefault();
+
+    try {
+      await atualizarRevisao(revisaoAtual.id, id, status);
+    } catch (err) {
+      console.log(err.message)
+      alert(err.message || "Erro ao criar revisão.");
+    }
+  };
+
 
   return (
     <main>
@@ -103,8 +120,9 @@ export default function NovaRevisao() {
             onChange={(e) => setManuscrito(e.target.files[0])}
           />
         </div>
-
-        <button type="button" onClick={(e) => salvarRevisao(e, "")}>
+ 
+        {revisaoAtual == null ? <>
+        <button type="button" onClick={(e) => salvarRevisao(e, "em_revisao")}>
           Salvar Nova Revisão
         </button>
         <button type="button" onClick={(e) => salvarRevisao(e, "publicado")}>
@@ -116,6 +134,23 @@ export default function NovaRevisao() {
         <button type="button" onClick={(e) => salvarRevisao(e, "negado")}>
           Enviar Revisão e negar livro
         </button>
+        </> :
+        
+        <><button type="button" onClick={(e) => alterarRevisao(e, "em_revisao")}>
+          alterar Revisão
+        </button>
+        <button type="button" onClick={(e) => alterarRevisao(e, "publicado")}>
+          Enviar Revisão e Publicar
+        </button>
+        <button type="button" onClick={(e) => alterarRevisao(e, "recall")}>
+          Enviar Revisão e pedir corrção
+        </button>
+        <button type="button" onClick={(e) => alterarRevisao(e, "negado")}>
+          Enviar Revisão e negar livro
+        </button></>
+        }
+
+        
       </form>
     </main>
   );
