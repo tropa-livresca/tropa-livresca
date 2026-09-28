@@ -32,10 +32,7 @@ export default function ProdutoById() {
     }
   }, [id, buscarLivroById]);
 
-  const [tipoSelecionado, setTipoSelecionado] = useState("Físico");
-
-  const precoExibido =
-    tipoSelecionado === "Físico" ? livro.preco_fisico : livro.preco_digital;
+  const [tipoSelecionado] = useState("Físico");
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -44,6 +41,9 @@ export default function ProdutoById() {
   if (!livro) {
     return <p className={styles.naoEncontrado}>Livro não encontrado.</p>;
   }
+
+  const precoExibido =
+    tipoSelecionado === "Físico" ? livro.preco_fisico : livro.preco_digital;
 
   const capaFrente = livro.capa?.frente;
 
@@ -109,10 +109,10 @@ export default function ProdutoById() {
 
             {autor && (
               <div className={styles.autorCard}>
-                {autor.imagem_perfil ? (
+                {autor.imagem ? (
                   <img
                     className={styles.fotoAutor}
-                    src={autor.imagem_perfil}
+                    src={autor.imagem}
                     alt={`Foto de ${autor.nome}`}
                   />
                 ) : (

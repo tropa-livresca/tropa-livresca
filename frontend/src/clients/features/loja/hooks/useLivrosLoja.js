@@ -5,7 +5,7 @@ export const useLivrosLoja = () => {
   const [livro, setLivro] = useState(null);
   const [autor, setAutor] = useState(null);
   const [colaboradores, setColaboradores] = useState([]);
-  const [carregando, setCarregando] = useState(false);
+  const [carregando, setCarregando] = useState(true);
   const [livros, setLivros] = useState([]);
   const [meta, setMeta] = useState(null);
 
@@ -19,10 +19,10 @@ export const useLivrosLoja = () => {
         return;
       }
 
-      setLivro(data);
-
-      setAutor(data.users_profile);
-      setColaboradores(data.colaboradores || []);
+      const livroEncontrado = data.livro;
+      setLivro(livroEncontrado);
+      setAutor(livroEncontrado?.users_profile || null);
+      setColaboradores(livroEncontrado?.colaboradores || []);
     } catch (err) {
       console.error("Erro ao buscar livro by id", err);
       throw err;
