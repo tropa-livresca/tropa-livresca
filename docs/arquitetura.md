@@ -63,7 +63,7 @@ Enquanto que em Common, ficam:
 
 ## Estratégia de Testes
 
-A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes no backend automatizados construída com uso de Jest e Supertest. Todos eles se encontram isolados na pasta tests [backend/tests].
+A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes no backend automatizados construída com uso de Jest e Supertest. Todos eles se encontram isolados na pasta tests [../backend/tests].
 
 ### 1. Testes de Integração (Routes)
 

@@ -6,8 +6,9 @@ O projeto utiliza o Supabase como camada principal para armazenamento de dados, 
 
 A configuração de conexão e os arquivos relacionados ao banco estão localizados em:
 
-- [backend/src/common/config/supabase.js](../backend/src/api/common/config/supabase.js)
-- [backend/src/common/database](../backend/src/api/common/database)
+- [backend/src/common/config/supabase.js](../../backend/src/api/common/config/supabase.js)
+- [docs/database/database.md](./database.md)
+- [docs/database/funcoes.md](./funcoes.md)
 
 ## Variáveis de ambiente relacionadas
 
