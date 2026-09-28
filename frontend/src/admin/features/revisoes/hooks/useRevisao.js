@@ -270,8 +270,11 @@ export const useRevisao = () => {
         }
 
         if(novoEstado != "em_revisao"){
-        setRevisaoAtual(responseCompletado.json());
-        setRevisor(false);
+          const res = await responseCompletado.json();
+        setRevisaoAtual( res );
+        if(novoEstado == "publicado"){
+           setRevisor(false);
+        }
         }else{
         setRevisaoAtual(revisaoCriada);
         }
@@ -350,8 +353,11 @@ export const useRevisao = () => {
         
 
         if(novoEstado != "em_revisao"){
-        setRevisaoAtual(responseCompletado.json());
-        setRevisor(false);
+          const res = await response.json();
+        setRevisaoAtual(res);
+        if(novoEstado == "publicado"){
+           setRevisor(false);
+        }
         }else{
           const res = await response.json();
         setRevisaoAtual(res);
