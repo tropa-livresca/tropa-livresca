@@ -43,12 +43,7 @@ tropa-livresca/
 │       ├── integration/
 │       │   └── routes/
 │       ├── mocks/
-│       ├── setup/
-│       └── unit/
-│           ├── controllers/
-│           ├── middlewares/
-│           ├── models/
-│           └── services/
+│       └── setup/
 ├── frontend/
 │   ├── public/
 │   └── src/
