@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { apiFetch } from "../../../../common/services/api.js";
+import { Await } from "react-router-dom";
 
 export const useRevisao = () => {
   const [revisoes, setRevisoes] = useState([]);
@@ -7,6 +8,7 @@ export const useRevisao = () => {
   const [livroRevisado, setLivroRevisado] = useState(null);
   const [meta, setMeta] = useState(null);
   const [revisaoAtual, setRevisaoAtual] = useState(null);
+  const [revisor, setRevisor] = useState(false);
   const [nome, setNome] = useState("");
   const [manuscrito, setManuscrito] = useState(null);
   const [apontamento, setApontamento] = useState("");
@@ -172,7 +174,24 @@ export const useRevisao = () => {
 
       const data = result;
 
-      setRevisaoAtual(data);
+      if(data != null){
+          if(data.revisor){
+            
+            setRevisor(true);
+          }else{
+            setRevisor(false);
+          }
+
+        setRevisaoAtual(data);
+        setApontamento(data.apontamento);
+        setNome(data.nome);
+          
+      }else{
+        setRevisor(true);
+      }
+
+      
+
     } catch (err) {
       setError(err.message);
       throw err;
@@ -213,9 +232,16 @@ export const useRevisao = () => {
           
         }
 
+        let revisaoCriada = await response.json();
+        
+        console.log(revisaoCriada);
+        let id = revisaoCriada.id;
+        console.log(id);
+
+
+
         let responseEstado = null;
         let responseCompletado = null;
-        let id = null;
 
         if (novoEstado != "em_revisao") {
             responseEstado = await apiFetch(
@@ -230,10 +256,6 @@ export const useRevisao = () => {
             throw new Error(`Erro encontrado ao atualizar o estado do livro`);
           }
 
-          id = await responseEstado.json();
-
-          console.log(id);
-
           responseCompletado = await apiFetch(
             `/api/v1/admin/revisao/${id}/completado`,
             {
@@ -242,20 +264,19 @@ export const useRevisao = () => {
           );
 
           if (!responseCompletado.ok) {
+            console.log(id)
             throw new Error(`Erro encontrado ao atualizar o estado do livro ${id}`);
           }
         }
 
         if(novoEstado != "em_revisao"){
-         const res = responseCompletado.json();
-        setRevisaoAtual(res.data);
+        setRevisaoAtual(null);
 
         }else{
-          const res = response.json();
-        setRevisaoAtual(res.data);
+        setRevisaoAtual(revisaoCriada);
         }
       } catch (err) {
-        setError(id);
+        setError("erro");
         throw err;
       } finally {
         setCarregando(false);
@@ -329,12 +350,11 @@ export const useRevisao = () => {
         
 
         if(novoEstado != "em_revisao"){
-         const res = responseCompletado.json();
-        setRevisaoAtual(res.data);
+        setRevisaoAtual(null);
 
         }else{
-          const res = response.json();
-        setRevisaoAtual(res.data);
+          const res = await response.json();
+        setRevisaoAtual(res);
         }
         
       } catch (err) {
@@ -485,5 +505,6 @@ export const useRevisao = () => {
     solicitarCorrecaoLivro,
     buscarRevisaoByUserId,
     limparCampos,
+    revisor,
   };
 };

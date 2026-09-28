@@ -9,6 +9,7 @@ export default function NovaRevisao() {
     revisaoAtual,
     nome,
     setNome,
+    manuscrito,
     setManuscrito,
     apontamento,
     setApontamento,
@@ -16,6 +17,7 @@ export default function NovaRevisao() {
     atualizarRevisao,
     verificarRevisor,
     carregando,
+    revisor,
   } = useRevisao();
   const { buscarLivroById, livro } = useLivros();
 
@@ -99,6 +101,7 @@ export default function NovaRevisao() {
             name="nome"
             value={nome || ""}
             onChange={(e) => setNome(e.target.value)}
+            disabled={revisor == false}
           />
         </div>
         <div>
@@ -111,17 +114,19 @@ export default function NovaRevisao() {
             placeholder="Digite o apontamento"
             value={apontamento || ""}
             onChange={(e) => setApontamento(e.target.value)}
+            disabled={revisor == false}
           />
         </div>
-        <div>
+        {revisor == true ? <div>
           <label>Manuscrito:</label>
           <input
             type="file"
             onChange={(e) => setManuscrito(e.target.files[0])}
           />
-        </div>
+        </div> : <></>}
+        
  
-        {revisaoAtual == null ? <>
+        {revisor == true ? revisaoAtual == null ? <>
         <button type="button" onClick={(e) => salvarRevisao(e, "em_revisao")}>
           Salvar Nova Revisão
         </button>
@@ -148,7 +153,10 @@ export default function NovaRevisao() {
         <button type="button" onClick={(e) => alterarRevisao(e, "negado")}>
           Enviar Revisão e negar livro
         </button></>
-        }
+        
+        :  <></>}
+        
+        
 
         
       </form>
