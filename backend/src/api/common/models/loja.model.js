@@ -90,10 +90,37 @@ export class LojaModel {
     return data;
   }
 
-  static async realizarVenda(dadosVenda) {
+  static async consultarVenda(vendaId) {
     const { data, error } = await supabase
       .from("vendas")
-      .insert(dadosVenda)
+      .select("*")
+      .eq("id", vendaId);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    const { data: itensVenda, error: erroItensVenda } = await supabase
+      .from("itens_venda")
+      .select("*")
+      .eq("fk_venda_id", vendaId);
+
+    if (erroItensVenda) {
+      erroItensVenda.statusCode = 500;
+      throw erroItensVenda;
+    }
+
+    return {
+      ...data,
+      itensVenda,
+    };
+  }
+
+  static async cadastrarItemVenda(itemVenda) {
+    const { data, error } = await supabase
+      .from("itens_venda")
+      .insert(itemVenda)
       .select()
       .maybeSingle();
 
@@ -101,6 +128,26 @@ export class LojaModel {
       error.statusCode = 500;
       throw error;
     }
+
+    return data;
+  }
+
+  static async realizarVenda(dadosVenda, itensVenda) {
+    const { data, error } = await supabase
+      .from("vendas")
+      .insert(dadosVenda)
+      .select("id")
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    itensVenda.map(async (itemVenda) => {
+      itemVenda = { ...itemVenda, fk_venda_id: data.id };
+      await this.cadastrarItemVenda(itemVenda);
+    });
 
     return data;
   }

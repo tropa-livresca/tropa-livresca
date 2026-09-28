@@ -1,5 +1,5 @@
-import { ComentarioModel } from "../../common/models/comentario.model";
-import { error, erroUsuarioId } from "../../common/utils/error.js";
+import { ComentarioModel } from "../../common/models/comentario.model.js";
+import { error, errorUsuarioId } from "../../common/utils/error.js";
 
 export class ComentarioService {
   static async buscarComentarios(idLivro, limit = 5, secao = 1) {
@@ -17,7 +17,7 @@ export class ComentarioService {
   }
 
   static async deletarComentario(idUsuario, idComentario) {
-    if (!idUsuario) erroUsuarioId();
+    if (!idUsuario) errorUsuarioId();
 
     if (!idComentario) error(400, "Id do comentário a deletar não informado.");
 
@@ -30,7 +30,7 @@ export class ComentarioService {
   }
 
   static async criarComentario(usuarioId, livroId, texto) {
-    if (!usuarioId) erroUsuarioId();
+    if (!usuarioId) errorUsuarioId();
 
     if (!livroId || !texto) error(400, "Dados do comentário não informados.");
 
@@ -49,7 +49,7 @@ export class ComentarioService {
   }
 
   static async atualizarComentario(idComentario, idUsuario, texto) {
-    if (!idUsuario) erroUsuarioId();
+    if (!idUsuario) errorUsuarioId();
 
     if (!idComentario) error(400, "Id do comentário não informado.");
 
