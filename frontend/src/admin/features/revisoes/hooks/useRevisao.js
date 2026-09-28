@@ -209,9 +209,13 @@ export const useRevisao = () => {
           throw new Error(
             `Erro encontrado ao criar revisão: ${response.status}`,
           );
+
+          
         }
 
         let responseEstado = null;
+        let responseCompletado = null;
+        let id = null;
 
         if (novoEstado != "em_revisao") {
             responseEstado = await apiFetch(
@@ -225,11 +229,33 @@ export const useRevisao = () => {
           if (!responseEstado.ok) {
             throw new Error(`Erro encontrado ao atualizar o estado do livro`);
           }
+
+          id = await responseEstado.json();
+
+          console.log(id);
+
+          responseCompletado = await apiFetch(
+            `/api/v1/admin/revisao/${id}/completado`,
+            {
+              method: "PATCH",
+            },
+          );
+
+          if (!responseCompletado.ok) {
+            throw new Error(`Erro encontrado ao atualizar o estado do livro ${id}`);
+          }
         }
 
-        return response.data;
+        if(novoEstado != "em_revisao"){
+         const res = responseCompletado.json();
+        setRevisaoAtual(res.data);
+
+        }else{
+          const res = response.json();
+        setRevisaoAtual(res.data);
+        }
       } catch (err) {
-        setError(err.message);
+        setError(id);
         throw err;
       } finally {
         setCarregando(false);
@@ -250,7 +276,7 @@ export const useRevisao = () => {
         return;
       }
 
-      console.log("b");
+      console.log(novoEstado);
 
       setCarregando(true);
       setError(null);
@@ -273,6 +299,8 @@ export const useRevisao = () => {
           throw new Error(`Erro retornado do servidor: ${response.status}`);
         }
 
+        let responseEstado = null;
+        let responseCompletado = null;
 
         if (novoEstado != "em_revisao") {
             responseEstado = await apiFetch(
@@ -301,7 +329,7 @@ export const useRevisao = () => {
         
 
         if(novoEstado != "em_revisao"){
-         const res = responseEstado.json();
+         const res = responseCompletado.json();
         setRevisaoAtual(res.data);
 
         }else{

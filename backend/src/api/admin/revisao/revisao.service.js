@@ -106,7 +106,7 @@ export class RevisaoService {
 
     console.log(revisao);
 
-    if (revisao.error) {
+    if (revisao?.error) {
       throw revisao.error;
     }
 

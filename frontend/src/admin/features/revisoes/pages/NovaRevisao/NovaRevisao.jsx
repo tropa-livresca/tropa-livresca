@@ -29,12 +29,15 @@ export default function NovaRevisao() {
       verificarRevisor(id);
   }, [verificarRevisor, id]);
 
+  console.log(revisaoAtual);
+
 
   const salvarRevisao = async (e, status) => {
 
     e.preventDefault();
     try {
       await criarRevisao(id, status);
+      console.log("a");
       alert(`Revisão salva com sucesso como ${status}!`);
     } catch (err) {
       alert(err.message || "Erro ao criar revisão.");
@@ -131,7 +134,7 @@ export default function NovaRevisao() {
         <button type="button" onClick={(e) => salvarRevisao(e, "negado")}>
           Enviar Revisão e negar livro
         </button>
-        </> : 
+        </> :
         
         <><button type="button" onClick={(e) => alterarRevisao(e, "em_revisao")}>
           alterar Revisão

@@ -176,7 +176,7 @@ export class RevisaoModel {
       return data;
     }
 
-    return true;
+    return null;
   }
 
   static async CriarRevisao(dadosRevisao) {
