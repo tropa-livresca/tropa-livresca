@@ -5,7 +5,20 @@ import { useLivros } from "../../../livros/hooks/useLivros.js";
 
 export default function NovaRevisao() {
   const { id } = useParams();
-  const { nome, setNome, setManuscrito, apontamento, setApontamento, CriarRevisao } = useRevisao();
+  const {
+    revisaoAtual,
+    nome,
+    setNome,
+    manuscrito,
+    setManuscrito,
+    apontamento,
+    setApontamento,
+    criarRevisao,
+    atualizarRevisao,
+    verificarRevisor,
+    carregando,
+    revisor,
+  } = useRevisao();
   const { buscarLivroById, livro } = useLivros();
 
   useEffect(() => {
@@ -14,15 +27,39 @@ export default function NovaRevisao() {
     }
   }, [buscarLivroById, id]);
 
+  useEffect(() => {
+      verificarRevisor(id);
+  }, [verificarRevisor, id]);
+
+  console.log(revisaoAtual);
+
+
   const salvarRevisao = async (e, status) => {
+
     e.preventDefault();
     try {
-      await CriarRevisao(id, status);
+      await criarRevisao(id, status);
+      console.log("a");
       alert(`Revisão salva com sucesso como ${status}!`);
     } catch (err) {
       alert(err.message || "Erro ao criar revisão.");
     }
   };
+
+  const alterarRevisao = async (e, status) => {
+    console.log(e);
+    console.log(status);
+
+    e.preventDefault();
+
+    try {
+      await atualizarRevisao(revisaoAtual.id, id, status);
+    } catch (err) {
+      console.log(err.message)
+      alert(err.message || "Erro ao criar revisão.");
+    }
+  };
+
 
   return (
     <main>
@@ -30,41 +67,98 @@ export default function NovaRevisao() {
         <div>
           <h2>Criando revisão para: {livro.titulo}</h2>
           {livro.subtitulo && <p>{livro.subtitulo}</p>}
-          <object data={livro.manuscrito} type="application/pdf" width="100%" height="650px">
+          <object
+            data={livro.manuscrito}
+            type="application/pdf"
+            width="100%"
+            height="650px"
+          >
             <p>
               Seu navegador não suporta a exibição de PDFs.{" "}
-              <a href={livro.manuscrito} download target="_blank" rel="noreferrer">
+              <a
+                href={livro.manuscrito}
+                download
+                target="_blank"
+                rel="noreferrer"
+              >
                 Clique aqui para baixar o arquivo.
               </a>
             </p>
           </object>
-          <Link to={`/admin/livros/visualizar/${livro.id}`}>Ver dados completos do livro</Link>
+          <Link to={`/admin/livros/visualizar/${livro.id}`}>
+            Ver dados completos do livro
+          </Link>
         </div>
       )}
+
+      {carregando == true && <p>carregando</p>}
 
       <form onSubmit={(e) => e.preventDefault()}>
         <div>
           <label>Nome da revisão:</label>
-          <input type="text" name="nome" value={nome || ""} onChange={(e) => setNome(e.target.value)} />
+          <input
+            type="text"
+            name="nome"
+            value={nome || ""}
+            onChange={(e) => setNome(e.target.value)}
+            disabled={revisor == false}
+          />
         </div>
         <div>
           <label>Apontamento:</label>
-          <textarea id="apontamento" name="apontamento" rows="10" cols="50" placeholder="Digite o apontamento" value={apontamento || ""} onChange={(e) => setApontamento(e.target.value)} />
+          <textarea
+            id="apontamento"
+            name="apontamento"
+            rows="10"
+            cols="50"
+            placeholder="Digite o apontamento"
+            value={apontamento || ""}
+            onChange={(e) => setApontamento(e.target.value)}
+            disabled={revisor == false}
+          />
         </div>
-        <div>
+        {revisor == true ? <div>
           <label>Manuscrito:</label>
-          <input type="file" onChange={(e) => setManuscrito(e.target.files[0])} />
-        </div>
-
-        <button type="button" onClick={(e) => salvarRevisao(e, "salvo")}>
+          <input
+            type="file"
+            onChange={(e) => setManuscrito(e.target.files[0])}
+          />
+        </div> : <></>}
+        
+ 
+        {revisor == true ? revisaoAtual == null ? <>
+        <button type="button" onClick={(e) => salvarRevisao(e, "em_revisao")}>
           Salvar Nova Revisão
         </button>
         <button type="button" onClick={(e) => salvarRevisao(e, "publicado")}>
           Enviar Revisão e Publicar
         </button>
-        <button type="button" onClick={(e) => salvarRevisao(e, "rascunho")}>
-          Enviar Revisão e Voltar a Rascunho
+        <button type="button" onClick={(e) => salvarRevisao(e, "recall")}>
+          Enviar Revisão e pedir corrção
         </button>
+        <button type="button" onClick={(e) => salvarRevisao(e, "negado")}>
+          Enviar Revisão e negar livro
+        </button>
+        </> :
+        
+        <><button type="button" onClick={(e) => alterarRevisao(e, "em_revisao")}>
+          alterar Revisão
+        </button>
+        <button type="button" onClick={(e) => alterarRevisao(e, "publicado")}>
+          Enviar Revisão e Publicar
+        </button>
+        <button type="button" onClick={(e) => alterarRevisao(e, "recall")}>
+          Enviar Revisão e pedir corrção
+        </button>
+        <button type="button" onClick={(e) => alterarRevisao(e, "negado")}>
+          Enviar Revisão e negar livro
+        </button></>
+        
+        :  <></>}
+        
+        
+
+        
       </form>
     </main>
   );

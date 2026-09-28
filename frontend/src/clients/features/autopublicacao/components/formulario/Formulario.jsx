@@ -17,7 +17,6 @@ export default function Formulario({ idLivroEdicao }) {
     etapa,
     isEdicao,
     estadoAtualLivro,
-    isBloqueadoParaEdicao,
     carregarDadosParaEdicao,
     atualizarEtapa,
     irParaProximaEtapa,
@@ -62,15 +61,13 @@ export default function Formulario({ idLivroEdicao }) {
   }, [idLivroEdicao, carregarDadosParaEdicao, buscarLivroById]);
 
   if (carregandoLivro) {
-    return <Carregando mensagem="Carregando dados do livro para edição..."/>;
+    return <Carregando mensagem="Carregando dados do livro para edição..." />;
   }
 
   if (idLivroEdicao && !carregandoLivro && erroCarregar) {
     return (
       <main>
-        <div className={styles.erro}>
-          {erroCarregar}
-        </div>
+        <div className={styles.erro}>{erroCarregar}</div>
         <Link to="/meuslivros" className={styles.btn}>
           Voltar a Meus Livros
         </Link>
@@ -78,28 +75,13 @@ export default function Formulario({ idLivroEdicao }) {
     );
   }
 
-  const tituloFormulario = isEdicao
-    ? isBloqueadoParaEdicao
-      ? "Visualizar Livro"
-      : "Editar Livro"
-    : "Novo Livro";
+  const tituloFormulario = isEdicao ? "Editar Livro" : "Novo Livro";
 
   return (
     <main>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>{tituloFormulario}</h1>
-        {isBloqueadoParaEdicao && (
-          <div
-            style={{
-              color: "orange",
-              fontWeight: "bold",
-              marginBottom: "1rem",
-            }}
-          >
-            Este livro está em modo de leitura (revisado ou publicado) e não
-            pode ser alterado.
-          </div>
-        )}
+
         <span className={styles.descricao}>
           Etapa <span className={styles.numero}>{etapa}</span> de{" "}
           <span className={styles.numero}>4</span>
@@ -107,46 +89,41 @@ export default function Formulario({ idLivroEdicao }) {
       </div>
 
       <div className={styles.container}>
+        {etapa === 1 && (
+          <Detalhes
+            dados={dadosLivro.detalhes}
+            onChange={atualizarEtapa("detalhes")}
+            estadoAtualLivro={estadoAtualLivro}
+            {...navegar}
+          />
+        )}
 
-      {etapa === 1 && (
-        <Detalhes
-          dados={dadosLivro.detalhes}
-          onChange={atualizarEtapa("detalhes")}
-          estadoAtualLivro={estadoAtualLivro}
-          isBloqueadoParaEdicao={isBloqueadoParaEdicao}
-          {...navegar}
-        />
-      )}
+        {etapa === 2 && (
+          <Conteudo
+            dados={dadosLivro.conteudo}
+            onChange={atualizarEtapa("conteudo")}
+            isEdicao={isEdicao}
+            {...navegar}
+          />
+        )}
 
-      {etapa === 2 && (
-        <Conteudo
-          dados={dadosLivro.conteudo}
-          onChange={atualizarEtapa("conteudo")}
-          isEdicao={isEdicao}
-          isBloqueadoParaEdicao={isBloqueadoParaEdicao}
-          {...navegar}
-        />
-      )}
+        {etapa === 3 && (
+          <Orcamento
+            dados={dadosLivro.orcamento}
+            onChange={atualizarEtapa("orcamento")}
+            {...navegar}
+          />
+        )}
 
-      {etapa === 3 && (
-        <Orcamento
-          dados={dadosLivro.orcamento}
-          onChange={atualizarEtapa("orcamento")}
-          isBloqueadoParaEdicao={isBloqueadoParaEdicao}
-          {...navegar}
-        />
-      )}
-
-      {etapa === 4 && (
-        <Confirmacao
-          dados={dadosLivro}
-          isEdicao={isEdicao}
-          estadoAtualLivro={estadoAtualLivro}
-          isBloqueadoParaEdicao={isBloqueadoParaEdicao}
-          irParaEtapaEspecifica={irParaEtapaEspecifica}
-          publicarLivro={publicarLivro}
-        />
-      )}
+        {etapa === 4 && (
+          <Confirmacao
+            dados={dadosLivro}
+            isEdicao={isEdicao}
+            estadoAtualLivro={estadoAtualLivro}
+            irParaEtapaEspecifica={irParaEtapaEspecifica}
+            publicarLivro={publicarLivro}
+          />
+        )}
       </div>
     </main>
   );

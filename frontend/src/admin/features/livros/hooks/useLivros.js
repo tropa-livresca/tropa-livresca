@@ -43,8 +43,10 @@ export const useLivros = () => {
           throw new Error(`Erro encontrado ao buscar livros: ${res.status}`);
         }
 
+        console.log(result);
+
         setLivros(result.data || []);
-        setCount(result.count);
+        setCount(result.meta.totalPages);
         setCarregando(false);
       } catch (error) {
         console.error("Erro detectado ao buscar os livros", error);
@@ -75,9 +77,41 @@ export const useLivros = () => {
         throw new Error(json.error || `Erro ${res.status}`);
       }
       setLivro(json);
-      setCarregando(false);
     } catch (error) {
       console.error(`Erro detectado ao buscar livro por id`, error);
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const buscarLivrosByUserId = useCallback(async (id) => {
+    if (!id) return;
+
+    setCarregando(true);
+    try {
+      const res = await apiFetch(`/api/v1/admin/livros/user/${id}`, {
+        method: "GET",
+      });
+
+      const result = await res.json();
+
+      console.log(result);
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          setLivros([]);
+          setCount(null);
+          setCarregando(false);
+          return;
+        }
+
+        throw new Error(`Erro encontrado ao buscar livros: ${res.status}`);
+      }
+
+      setLivros(result || []);
+      setCount(result.count);
+    } catch (error) {
+      console.error("Erro detectado ao buscar os livros", error);
     } finally {
       setCarregando(false);
     }
@@ -94,5 +128,6 @@ export const useLivros = () => {
     setCount,
     buscarLivros,
     buscarLivroById,
+    buscarLivrosByUserId,
   };
 };

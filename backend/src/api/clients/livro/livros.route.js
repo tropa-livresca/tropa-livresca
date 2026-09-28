@@ -3,7 +3,7 @@ import { LivrosController } from "./livros.controller.js";
 
 const router = express.Router();
 
-router.get("/", LivrosController.GetLivros);
-router.get("/detalhes/:id", LivrosController.GetLivrosById);
+router.get("/", LivrosController.buscarLivros);
+router.get("/:id", LivrosController.buscarLivroById);
 
 export default router;

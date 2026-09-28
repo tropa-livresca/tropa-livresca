@@ -206,20 +206,27 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 2rem;
+  gap: 1rem;
   margin-top: 5rem;
 }
 
 .cardLivro {
+  width: 75%;
+  margin:0 auto;
   min-width: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  margin-bottom: 2rem;
   /*
   background-color: #fffcf4;
   border-radius: 1rem;
    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   transition: 0.3s;*/
+}
+
+.cardLivro:last-child{
+ margin-bottom: 0;
 }
 
 /*
@@ -326,8 +333,9 @@
 
 .paginacao span {
   color: #67170c;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   text-align: center;
+  font-family:none;
 }
 
 

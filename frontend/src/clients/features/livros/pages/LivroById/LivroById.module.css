@@ -1,0 +1,566 @@
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 380px minmax(0, 1fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+.oi{
+  width:7rem;
+}
+
+.capaContainer {
+  width: 320px;
+  aspect-ratio: 3 / 4.3;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: #e8dfbb;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.semfoto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #67170c;
+}
+
+.heroinfo {
+  width: 100%;
+  min-width: 0;
+  margin-top: 1rem;
+}
+
+.titulo {
+  margin: 0;
+  font-family: "Jacques Francois", serif;
+  font-size: 2.7rem;
+  line-height: 1.15;
+  color: #67170c;
+}
+
+.subtitulo {
+  margin: 0.6rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--cor-texto-muted);
+}
+
+.infoTopo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+   gap: 1rem;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.numero{
+  font-family:none;
+  color:#67170c;
+}
+
+.infoEsquerda {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.genero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.9rem;
+  margin-bottom: 1rem;
+  border-radius: 20px;
+  background: #e9dfb9;
+  color: #392c27;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.avaliacao {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #51433e;
+  font-size: 0.9rem;
+}
+
+.estrelas {
+  color: #b67b1d;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tags span {
+  padding: 0.4rem 0.85rem;
+  border-radius: 20px;
+  background: #fffdf79f;
+  color: #67170c;
+  font-size: 0.8rem;
+    border: 1px solid #e3d5ad;
+}
+
+.autorCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 1.5rem;
+}
+
+.fotoAutor,
+.semFotoAutor {
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.semFotoAutor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff8c9;
+  color: #67170c;
+  border:1px solid #67170c;
+  font-size: 0.65rem;
+}
+
+.autorDados {
+  min-width: 0;
+}
+
+.autorDados span {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.8rem;
+}
+
+.autorDados h3 {
+  margin: 0 0 0.4rem;
+  color: #67170c;
+  font-size: 1.05rem;
+}
+
+.btnAutor {
+  color: #ede6b3;
+  font-size: 0.85rem;
+  background-color: #67170c;
+  padding:0.3rem;
+  border-radius: 0.3rem;
+  text-decoration: none;
+}
+
+.btnAutor:hover {
+  background-color:#ffbb33;
+  transition:0.3s;
+}
+
+.linha {
+  display: block;
+  width: 100%;
+  height: 1px;
+  margin: 2rem 0;
+  background: #e3d5ad;
+}
+
+.informacoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+}
+
+.informacao {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-width: 0;
+}
+
+.informacao > svg {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  color: #67170c;
+}
+
+.informacao strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: #67170c;
+  font-size: 0.85rem;
+}
+
+.informacao p {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.conteudo {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+  align-items: start;
+}
+
+.conteudoPrincipal {
+  min-width: 0;
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  min-height:19.8rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.tabs {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.tabs button {
+  position: relative;
+  padding: 0 0 0.9rem;
+  border: none;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.tabs .tabAtiva {
+  color: #67170c;
+  font-weight: bold;
+}
+
+.tabs .tabAtiva::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: #67170c;
+}
+
+.sinopse {
+  padding-top: 1.5rem;
+}
+
+.sinopse p {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.compra {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.preco {
+  margin-bottom: 1.5rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.btnCarrinho,
+.btnFavorito {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border:none;
+  gap: 0.7rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.btnCarrinho {
+  background: #67170c;
+  color: #ede6b3;
+}
+
+.btnCarrinho:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.divisor {
+  width: 100%;
+  height: 1px;
+  margin: 1.5rem 0;
+  background: #e4d9b9;
+}
+
+.beneficio {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 1.1rem;
+  color: #51433e;
+  font-size: 0.9rem;
+}
+
+.beneficio:last-child {
+  margin-bottom: 0;
+}
+
+.beneficio svg {
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  color: #67170c;
+}
+
+/* COLABORADORES */
+
+.secaoColaboradores {
+  margin-top: 2rem;
+  padding: 2rem;
+  border-radius: 14px;
+  background: #fffdf7;
+  border: 1px solid #eee4c9;
+}
+
+.tituloSecao {
+  margin: 0 0 1.3rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+}
+
+.listaColaboradores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.colaborador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 9px;
+  background: #f5eed7;
+}
+
+.nomeColaborador {
+  font-weight: 600;
+  color: #30231f;
+}
+
+.funcaoColaborador {
+  color: #75635b;
+  text-align: right;
+}
+
+.naoEncontrado {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #67170c;
+}
+
+@media (max-width: 1100px) {
+  .container {
+    padding: 3.5rem 4%;
+  }
+
+  .hero {
+    grid-template-columns: 330px minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .capaContainer {
+    width: 290px;
+  }
+
+  .infoTopo {
+    gap: 1.5rem;
+  }
+
+  .informacoes {
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 3rem 4%;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .capaContainer {
+    width: 300px;
+  }
+
+  .heroinfo {
+    width: 100%;
+  }
+
+  .infoTopo {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .conteudo {
+    grid-template-columns: 1fr;
+  }
+
+  .compra {
+    order: 2;
+  }
+}
+
+@media (max-width: 650px) {
+  .container {
+    padding: 2.5rem 4%;
+  }
+
+  .capaContainer {
+    width: 270px;
+  }
+
+  .titulo {
+    font-size: 2rem;
+  }
+
+  .subtitulo {
+    font-size: 1rem;
+  }
+
+  .infoTopo {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .autorCard {
+    padding: 1rem;
+  }
+
+  .informacoes {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .conteudoPrincipal,
+  .compra,
+  .secaoColaboradores {
+    padding: 1.3rem;
+  }
+
+  .tabs {
+    gap: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .tabs button {
+    white-space: nowrap;
+  }
+
+  .listaColaboradores {
+    grid-template-columns: 1fr;
+  }
+
+  .colaborador {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .funcaoColaborador {
+    text-align: left;
+  }
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 2rem 4%;
+  }
+
+  .capaContainer {
+    width: 240px;
+  }
+
+  .titulo {
+    font-size: 1.7rem;
+  }
+
+  .genero,
+  .tags span {
+    font-size: 0.75rem;
+  }
+
+  .estrelas {
+    font-size: 1rem;
+  }
+
+  .fotoAutor,
+  .semFotoAutor {
+    width: 58px;
+    height: 58px;
+  }
+
+  .preco {
+    font-size: 1.7rem;
+  }
+}

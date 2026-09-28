@@ -22,7 +22,7 @@ export default function MainLayout() {
         aoFechar={() => setMenuAberto(false)}
       />
 
-      <main className={styles.conteudo}><Outlet/></main>
+      <main><Outlet/></main>
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useAutores } from "../../../../hooks/useAutores";
 import { FaSearch } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 
@@ -27,15 +28,13 @@ export default function Autores() {
   return (
     <div>
       <main>
-        <div className={styles.topo}>
-          <h1 className={styles.titulo}>Autores</h1>
+        <DescricaoTela
+          titulo="Autores"
+          descricao="A editora Tropa Livresca reúne autores independentes de todo o
+          Brasil. Descubra escritores que compartilham histórias únicas,
+          cheias de emoção e originalidade em suas obras."
+        />
 
-          <p className={styles.descricao}>
-            A editora Tropa Livresca reúne autores independentes de todo o
-            Brasil. Descubra escritores que compartilham histórias únicas,
-            cheias de emoção e originalidade em suas obras.
-          </p>
-        </div>
         <div className={styles.container}>
           <form className={styles.busca} onSubmit={handleBuscar}>
             <span className={styles.iconebusca}>

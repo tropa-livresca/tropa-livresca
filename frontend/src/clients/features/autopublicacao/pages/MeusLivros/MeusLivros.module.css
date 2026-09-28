@@ -418,11 +418,19 @@
 }
 
 .textoPublicado {
-  font-size: 0.9rem;
-  color: #22543d;
-  font-weight: 600;
-  font-family: "Jacques Francois", serif;
-  padding: 0 0.5rem;
+   border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.textoPublicado:hover{
+    background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 /* Botões menores específicos para as ações da linha */

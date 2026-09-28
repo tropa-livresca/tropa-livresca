@@ -12,7 +12,7 @@ export class LivroController {
 
       if (req.query.ativo === "true") ativo = true;
       if (req.query.ativo === "false") ativo = false;
-      
+
       const estado = req.query.estado || "";
 
       const resultado = await LivrosService.BuscarLivros(
@@ -22,7 +22,7 @@ export class LivroController {
         filtro,
         ordem,
         ativo,
-        estado
+        estado,
       );
 
       return res.status(200).json(resultado);
@@ -33,9 +33,20 @@ export class LivroController {
 
   static async BuscarLivroById(req, res, next) {
     try {
-      const { id} = req.params;
+      const { id } = req.params;
 
       const livro = await LivrosService.BuscarLivroById(id);
+      return res.status(200).json(livro);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async BuscarLivroByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const livro = await LivrosService.BuscarLivroByUserId(id);
       return res.status(200).json(livro);
     } catch (err) {
       next(err);

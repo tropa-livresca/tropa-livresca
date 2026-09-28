@@ -44,7 +44,7 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
 
     const { data: adm, error } = await supabase
       .from("users_profile")
-      .select("is_admin, funcao, senha_adm, primeiro_acesso")
+      .select("is_admin, is_master, senha_adm, primeiro_acesso")
       .eq("id", decoded.id)
       .single();
 
@@ -68,6 +68,7 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
         error: "Usuário não possui privilégios de administrador.",
       });
     }
+
     req.user = {
       id: decoded.id,
       email: decoded.email,
@@ -105,7 +106,7 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
 
     const { data: adm, error } = await supabase
       .from("users_profile")
-      .select("is_admin, funcao, senha_adm, primeiro_acesso")
+      .select("is_admin, is_master, senha_adm, primeiro_acesso")
       .eq("id", decoded.id)
       .single();
 
@@ -130,7 +131,7 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
       });
     }
 
-    if (adm.funcao !== "Master") {
+    if (!adm.is_master) {
       return res.status(403).json({
         error: "Usuário não possui privil[efio de administrador master.",
       });

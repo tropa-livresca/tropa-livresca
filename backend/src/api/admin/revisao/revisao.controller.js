@@ -1,15 +1,15 @@
 import { RevisaoService } from "./revisao.service.js";
 
 export class RevisaoController {
-  static async BuscarLivroRevisao(req, res, next){
-    try{
+  static async BuscarLivroRevisao(req, res, next) {
+    try {
       const busca = req.query.busca || "";
       const livros = await RevisaoService.BuscarLivroRevisao(busca);
 
       return res.status(200).json(livros);
-    }catch(err){
-      next(err)
-    };
+    } catch (err) {
+      next(err);
+    }
   }
 
   static async BuscarRevisoes(req, res, next) {
@@ -49,18 +49,60 @@ export class RevisaoController {
     }
   }
 
+  static async BuscarRevisaoByUserId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const revisao = await RevisaoService.BuscarRevisaoByUserId(id);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async BuscarRevisaoByLivroId(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const revisao = await RevisaoService.BuscarRevisaoBylivroId(id);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async VerificarRevisor(req, res, next) {
+
+    try {
+      const { livroId  } = req.params;
+      const funcionarioId = req.user.id;
+
+      const revisao = await RevisaoService.VerificarRevisor(livroId, funcionarioId);
+
+      return res.status(200).json(revisao);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async AtualizarRevisao(req, res, next) {
     try {
       const { id } = req.params;
       const nome = req.body.nome !== undefined ? req.body.nome : undefined;
-      const apontamento = req.body.apontamento !== undefined ? req.body.apontamento : undefined;
-      const idLivro = req.body.idLivro !== undefined ? req.body.idLivro : undefined;
+      const apontamento =
+        req.body.apontamento !== undefined ? req.body.apontamento : undefined;
+      const idLivro =
+        req.body.idLivro !== undefined ? req.body.idLivro : undefined;
+      const manuscritoRevisto = req.file || req.body.manuscritoRevisto || null;
 
       const revisaoAtualizada = await RevisaoService.AtualizarRevisao(
         id,
         nome,
         apontamento,
         idLivro,
+        manuscritoRevisto,
       );
 
       return res.status(200).json(revisaoAtualizada);
@@ -103,17 +145,63 @@ export class RevisaoController {
     }
   }
 
-  static async AlterarEstadoLivro(req, res, next) {
+  static async CompletarRevisao(req, res, next) {
     try {
-      const idLivro = req.body.idLivro;
-      const novoEstado = req.body.novoEstado;
+      const { id } = req.params;
 
-      const livroRevisado = await RevisaoService.AlterarEstadoLivro(idLivro, novoEstado);
+      const revisaoInativada = await RevisaoService.CompletarRevisao(id);
 
-      return res.status(200).json(livroRevisado);
+      return res.status(200).json(revisaoInativada);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async PublicarLivro(req, res, next) {
+    try {
+      const { idLivro } = req.body;
+      const userId = req.user.id;
+
+      const livroPublicado = await RevisaoService.publicarLivro(
+        idLivro,
+        userId,
+      );
+
+      return res.status(200).json(livroPublicado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async SolicitarRecallLivro(req, res, next) {
+    try {
+      const { idLivro } = req.body;
+      const userId = req.user.id;
+
+      const livroPublicado = await RevisaoService.SolicitarRecallLivro(
+        idLivro,
+        userId,
+      );
+
+      return res.status(200).json(livroPublicado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async NegarPublicacaoLivro(req, res, next) {
+    try {
+      const { idLivro } = req.body;
+      const userId = req.user.id;
+
+      const livroPublicado = await RevisaoService.negarPublicacaoLivro(
+        idLivro,
+        userId,
+      );
+
+      return res.status(200).json(livroPublicado);
     } catch (err) {
       next(err);
     }
   }
 }
- 

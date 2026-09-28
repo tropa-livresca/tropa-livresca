@@ -1,4 +1,4 @@
-﻿﻿import { useState, useEffect } from "react";
+﻿﻿import { useEffect, useMemo } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
@@ -8,76 +8,43 @@ export default function Confirmacao({
   dados,
   irParaEtapaEspecifica,
   publicarLivro,
-  isBloqueadoParaEdicao,
 }) {
-  const [urlPreviewManga, setUrlPreviewManga] = useState(null);
-  const [urlPreviewFrente, setUrlPreviewFrente] = useState(null);
-  const [urlPreviewVerso, setUrlPreviewVerso] = useState(null);
-  const [urlPreviewOrelhas, setUrlPreviewOrelhas] = useState(null);
+  const extrairArquivo = (dado) => {
+    if (!dado) return null;
+    if (dado instanceof File) return dado;
+    if (dado instanceof FileList && dado.length > 0) return dado[0];
+    if (Array.isArray(dado) && dado.length > 0) return dado[0];
+    return null;
+  };
 
-  useEffect(() => {
-    let urlManga = null;
-    let urlFrente = null;
-    let urlVerso = null;
-    let urlOrelhas = null;
+  const previews = useMemo(() => {
+    const urlsCriadas = [];
 
-    const extrairArquivo = (dado) => {
-      if (!dado) return null;
-      if (dado instanceof File) return dado;
-      if (dado instanceof FileList && dado.length > 0) return dado[0];
-      if (Array.isArray(dado) && dado.length > 0) return dado[0];
-      if (dado[0] instanceof File) return dado[0];
+    const obterUrl = (campo) => {
+      const arquivo = extrairArquivo(campo);
+      if (arquivo) {
+        const url = URL.createObjectURL(arquivo);
+        urlsCriadas.push(url);
+        return url;
+      }
+      if (typeof campo === "string") return campo;
       return null;
     };
 
-    const arquivoManuscrito = extrairArquivo(dados.conteudo?.manuscrito);
-    const arquivoFrente = extrairArquivo(dados.conteudo?.capa?.frente);
-    const arquivoVerso = extrairArquivo(dados.conteudo?.capa?.verso);
-    const arquivoOrelhas = extrairArquivo(dados.conteudo?.capa?.orelhas);
-
-    if (arquivoManuscrito) {
-      urlManga = URL.createObjectURL(arquivoManuscrito);
-      setUrlPreviewManga(urlManga);
-    } else if (typeof dados.conteudo?.manuscrito === "string") {
-      setUrlPreviewManga(dados.conteudo.manuscrito);
-    } else {
-      setUrlPreviewManga(null);
-    }
-
-    if (arquivoFrente) {
-      urlFrente = URL.createObjectURL(arquivoFrente);
-      setUrlPreviewFrente(urlFrente);
-    } else if (typeof dados.conteudo?.capa?.frente === "string") {
-      setUrlPreviewFrente(dados.conteudo.capa.frente);
-    } else {
-      setUrlPreviewFrente(null);
-    }
-
-    if (arquivoVerso) {
-      urlVerso = URL.createObjectURL(arquivoVerso);
-      setUrlPreviewVerso(urlVerso);
-    } else if (typeof dados.conteudo?.capa?.verso === "string") {
-      setUrlPreviewVerso(dados.conteudo.capa.verso);
-    } else {
-      setUrlPreviewVerso(null);
-    }
-
-    if (arquivoOrelhas) {
-      urlOrelhas = URL.createObjectURL(arquivoOrelhas);
-      setUrlPreviewOrelhas(urlOrelhas);
-    } else if (typeof dados.conteudo?.capa?.orelhas === "string") {
-      setUrlPreviewOrelhas(dados.conteudo.capa.orelhas);
-    } else {
-      setUrlPreviewOrelhas(null);
-    }
-
-    return () => {
-      if (urlManga) URL.revokeObjectURL(urlManga);
-      if (urlFrente) URL.revokeObjectURL(urlFrente);
-      if (urlVerso) URL.revokeObjectURL(urlVerso);
-      if (urlOrelhas) URL.revokeObjectURL(urlOrelhas);
+    return {
+      manga: obterUrl(dados?.conteudo?.manuscrito),
+      frente: obterUrl(dados?.conteudo?.capa?.frente),
+      verso: obterUrl(dados?.conteudo?.capa?.verso),
+      orelhas: obterUrl(dados?.conteudo?.capa?.orelhas),
+      _urlsCriadas: urlsCriadas,
     };
-  }, [dados.conteudo]);
+  }, [dados?.conteudo]);
+
+  useEffect(() => {
+    return () => {
+      previews._urlsCriadas.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [previews]);
 
   return (
     <main>
@@ -85,18 +52,16 @@ export default function Confirmacao({
         <div className={styles.tituloContainer}>
           <h1 className={styles.titulo}>Confirmação</h1>
 
-          {!isBloqueadoParaEdicao && (
-            <button
-              type="button"
-              onClick={() => irParaEtapaEspecifica(1)}
-              className={styles.btnEditarDescricao}
-              title="Editar"
-              aria-label="Editar"
-            >
-              <FaPen />
-              <span>Editar</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => irParaEtapaEspecifica(1)}
+            className={styles.btnEditarDescricao}
+            title="Editar"
+            aria-label="Editar"
+          >
+            <FaPen />
+            <span>Editar</span>
+          </button>
         </div>
 
         {dados.detalhes && (
@@ -125,12 +90,14 @@ export default function Confirmacao({
               <div className={styles.containergrid}>
                 <div>
                   <label>ISBN do livro:</label>
-                  <div className={styles.liinput}>{dados.detalhes.Isbn}</div>
+                  <div className={styles.liinput}>{dados.detalhes.ISBN}</div>
                 </div>
 
                 <div>
                   <label>Número da edição:</label>
-                  <div className={styles.liinput}>{dados.detalhes.edicao}</div>
+                  <div className={styles.liinput}>
+                    {dados.detalhes.numeroEdicao}
+                  </div>
                 </div>
               </div>
             </div>
@@ -145,7 +112,7 @@ export default function Confirmacao({
                 </div>
 
                 <div>
-                  <label>Direito de Publicação e Uso de IA:</label>
+                  <label>Direitos de Publicação e Uso de IA:</label>
                   <div className={styles.liinput}>
                     {dados.detalhes.direitoPublicacao}
                   </div>
@@ -160,16 +127,16 @@ export default function Confirmacao({
                 </div>
 
                 <div>
-                  <label>Restrição de Conteúdo:</label>
+                  <label>Imagem explícitas?</label>
                   <div className={styles.liinput}>
-                    {dados.detalhes.restricaoConteudo}
+                    {dados.detalhes.imagensExplicitas ? <>Sim</> : <>Não</>}
                   </div>
                 </div>
 
                 <div>
                   <label>Categoria:</label>
                   <div className={styles.liinput}>
-                    {dados.detalhes.categorias?.join(", ")}
+                    {dados.detalhes.categoria}
                   </div>
                 </div>
 
@@ -242,14 +209,14 @@ export default function Confirmacao({
                   </div>
                 </div>
 
-                {urlPreviewManga ? (
+                {previews.manga ? (
                   <div className={styles.previewContainer}>
                     <div className={styles.previewspan}>
                       <span>Documento PDF</span>
                     </div>
 
                     <iframe
-                      src={urlPreviewManga}
+                      src={previews.manga}
                       title="Pré-visualização do Manuscrito"
                       type="application/pdf"
                       className={styles.iframe}
@@ -272,25 +239,23 @@ export default function Confirmacao({
           <div className={styles.form}>
             <div className={styles.tituloContainer}>
               <h1 className={styles.titulo}>Imagens da Capa</h1>
-              {!isBloqueadoParaEdicao && (
-                <button
-                  onClick={() => irParaEtapaEspecifica(2)}
-                  className={styles.btnEditarDescricao}
-                >
-                  <FaPen />
-                  <span>Editar</span>
-                </button>
-              )}
+              <button
+                onClick={() => irParaEtapaEspecifica(2)}
+                className={styles.btnEditarDescricao}
+              >
+                <FaPen />
+                <span>Editar</span>
+              </button>
             </div>
             <div className={styles.capa}>
-              {urlPreviewFrente ? (
+              {previews.frente ? (
                 <div className={`${styles.capas} ${styles.card2}`}>
                   <p className={styles.fvo}>
                     <small>Frente:</small>
                   </p>
                   <div className={styles.imagemContainer}>
                     <img
-                      src={urlPreviewFrente}
+                      src={previews.frente}
                       alt="Frente da Capa"
                       className={styles.fvoimg}
                     />
@@ -309,14 +274,14 @@ export default function Confirmacao({
                 </div>
               )}
 
-              {urlPreviewVerso ? (
+              {previews.verso ? (
                 <div className={`${styles.capas} ${styles.card2}`}>
                   <p className={styles.fvo}>
                     <small>Verso:</small>
                   </p>
                   <div className={styles.imagemContainer}>
                     <img
-                      src={urlPreviewVerso}
+                      src={previews.verso}
                       alt="Verso da Capa"
                       className={styles.fvoimg}
                     />
@@ -335,14 +300,14 @@ export default function Confirmacao({
                 </div>
               )}
 
-              {urlPreviewOrelhas ? (
+              {previews.orelhas ? (
                 <div className={`${styles.capas} ${styles.card2}`}>
                   <p className={styles.fvo}>
                     <small>Orelhas:</small>
                   </p>
                   <div className={styles.imagemContainer}>
                     <img
-                      src={urlPreviewOrelhas}
+                      src={previews.orelhas}
                       alt="Orelhas da Capa"
                       className={styles.fvoimg}
                     />
@@ -368,23 +333,20 @@ export default function Confirmacao({
         <div className={styles.tituloContainer}>
           <h1 className={styles.titulo}>Orçamento</h1>
 
-          {!isBloqueadoParaEdicao && (
-            <button
-              type="button"
-              onClick={() => irParaEtapaEspecifica(3)}
-              className={styles.btnEditarDescricao}
-              title="Editar"
-              aria-label="Editar"
-            >
-              <FaPen />
-              <span>Editar</span>
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => irParaEtapaEspecifica(3)}
+            className={styles.btnEditarDescricao}
+            title="Editar"
+            aria-label="Editar"
+          >
+            <FaPen />
+            <span>Editar</span>
+          </button>
         </div>
 
         {dados.orcamento && (
           <div className={styles.orcamentoCapa}>
-
             <div className={styles.orcamentoCard}>
               <p className={styles.orcamentoTitulo}>
                 <small>Valor do Livro Físico:</small>
@@ -408,39 +370,33 @@ export default function Confirmacao({
                 </span>
               </div>
             </div>
+
+            <div>Número de páginas: {dados.orcamento.numeroPaginas}</div>
           </div>
         )}
       </div>
       <div>
-        {!isBloqueadoParaEdicao ? (
-          <div className={styles.botoes}>
-            <Link to="/meuslivros" className={styles.btn}>
-              Voltar a Meus Livros
-            </Link>
+        <div className={styles.botoes}>
+          <Link to="/meuslivros" className={styles.btn}>
+            Voltar a Meus Livros
+          </Link>
 
-           
-              <button
-                type="button"
-                onClick={() => publicarLivro("em_revisao")}
-                className={styles.btnenviar}
-              >
-                Enviar para Revisão
-              </button>
+          <button
+            type="button"
+            onClick={() => publicarLivro("em_revisao")}
+            className={styles.btnenviar}
+          >
+            Enviar para Revisão
+          </button>
 
-              <button
-                type="button"
-                onClick={() => publicarLivro("rascunho")}
-                className={styles.btnsalvar}
-              >
-                Salvar como Rascunho
-              </button>
-            </div>
-        ) : (
-          <p style={{ color: "orange", fontWeight: "bold" }}>
-            Este livro está em modo de leitura e não pode receber ações de
-            envio.
-          </p>
-        )}
+          <button
+            type="button"
+            onClick={() => publicarLivro("rascunho")}
+            className={styles.btnsalvar}
+          >
+            Salvar como Rascunho
+          </button>
+        </div>
       </div>
     </main>
   );

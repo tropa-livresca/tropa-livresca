@@ -4,7 +4,6 @@ export const livroCompletoMock = {
   direitos_de_publicacao: true,
   conteudo_por_IA: false,
   imagens_explicitas: false,
-  publico_alvo: "Geral, entusiastas de literatura de ficção",
   numero_edicao: 2,
   data_de_publicacao: "2026-07-26",
   preco_digital: 29.9,

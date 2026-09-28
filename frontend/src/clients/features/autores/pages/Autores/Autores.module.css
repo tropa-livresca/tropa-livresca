@@ -11,31 +11,6 @@ main {
   padding: 5rem 6%;
 }
 
-.topo {
-  width: 100%;
-   padding: 3rem 6%;
-  background: #f7f0cfb1;
-  border-bottom: 2px solid #d4b46a;
-}
-
-
-.titulo {
-  margin: 0;
-  color: #67170c;
-  font-size: clamp(2rem, 4vw, 4rem);
-  font-family: "Jacques Francois", serif;
-}
-
-.titulo::after {
-  content: "";
-  display: block;
-  width: 7rem;
-  height: 3px;
-  margin-top: 1rem;
-  background-color: #d4b46a;
-  border-radius: 999px;
-}
-
 .descricao {
   text-align: left;
   font-size: 1.2rem;
@@ -52,7 +27,7 @@ main {
   padding: 0.4rem;
   background-color: #fffdf7;
   border-radius: 1.5rem;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   margin-bottom: 5rem;
@@ -105,7 +80,7 @@ main {
   background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   transition: 0.3s;
@@ -122,7 +97,8 @@ main {
   transform: translateY(-8px);
 }
 
-.autorinf img, .semfoto {
+.autorinf img,
+.semfoto {
   width: 8.75rem;
   height: 8.75rem;
   object-fit: cover;
@@ -174,7 +150,7 @@ main {
   transition: 0.3s;
 }
 
-.btndetalhes:hover{
+.btndetalhes:hover {
   background-color: #ffbb33;
 }
 
@@ -232,7 +208,8 @@ main {
     padding: 1.5rem;
   }
 
-  .autorinf img, .semfoto{
+  .autorinf img,
+  .semfoto {
     width: 7rem;
     height: 7rem;
   }
@@ -307,7 +284,8 @@ main {
     padding: 1.2rem;
   }
 
-  .autorinf img, .semfoto {
+  .autorinf img,
+  .semfoto {
     width: 6rem;
     height: 6rem;
   }

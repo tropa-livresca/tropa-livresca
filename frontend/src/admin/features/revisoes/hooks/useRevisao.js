@@ -1,31 +1,60 @@
 import { useCallback, useState } from "react";
 import { apiFetch } from "../../../../common/services/api.js";
+import { Await } from "react-router-dom";
 
 export const useRevisao = () => {
   const [revisoes, setRevisoes] = useState([]);
-  const [livros, setLivros] = useState([]);
-  const [livro, setLivro] = useState(null);
-  const [count, setCount] = useState(0);
+  const [livrosRevisados, setLivrosRevisados] = useState([]);
+  const [livroRevisado, setLivroRevisado] = useState(null);
+  const [meta, setMeta] = useState(null);
   const [revisaoAtual, setRevisaoAtual] = useState(null);
+  const [revisor, setRevisor] = useState(false);
   const [nome, setNome] = useState("");
   const [manuscrito, setManuscrito] = useState(null);
   const [apontamento, setApontamento] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [error, setError] = useState(null);
 
-  const ValidarCamposTexto = useCallback(() => {
+  const validarCamposTexto = useCallback(() => {
     if (!nome || nome.trim().length === 0) return false;
     if (!apontamento || apontamento.trim().length === 0) return false;
     return true;
   }, [nome, apontamento]);
 
-  const LimparCampos = useCallback(() => {
+  const limparCampos = useCallback(() => {
     setNome("");
     setApontamento("");
     setManuscrito(null);
   }, []);
 
-  const BuscarRevisoes = useCallback(async (filtros = {}) => {
+  const buscarLivroRevisao = useCallback(async (id) => {
+    setCarregando(true);
+
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/livro`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao Buscar Revisões: ${response.status}`,
+        );
+      }
+
+      const data = response.data.json();
+      setLivroRevisado(data);
+    } catch (err) {
+      console.error("Erro ao buscar livro para revisão", err);
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const buscarRevisoes = useCallback(async (filtros = {}) => {
     setCarregando(true);
     setError(null);
     try {
@@ -38,11 +67,11 @@ export const useRevisao = () => {
         );
       }
 
-      const data = response.data;
-      const dadosLivro = response.livros;
-      setRevisoes(data.data || []);
-      setLivros(dadosLivro || []);
-      setCount(data.count || 0);
+      const result = await response.json();
+
+      setRevisoes(result.data || []);
+      setLivrosRevisados(result.livros || []);
+      setMeta(result.meta || null);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -51,7 +80,7 @@ export const useRevisao = () => {
     }
   }, []);
 
-  const BuscarRevisaoById = useCallback(async (id) => {
+  const buscarRevisaoById = useCallback(async (id) => {
     setCarregando(true);
     setError(null);
     try {
@@ -63,13 +92,13 @@ export const useRevisao = () => {
         );
       }
 
-      const data = response.data;
+      const result = await response.json();
 
-      setRevisaoAtual(data.data);
-      setLivro(data.livro);
-      setNome(data.data?.nome || "");
-      setApontamento(data.data?.apontamento || "");
-      setManuscrito(data.data?.manuscritoRevisto || null);
+      setRevisaoAtual(result.data);
+      setLivrosRevisados(result.livro);
+      setNome(result.data.nome || "");
+      setApontamento(result.data?.apontamento || "");
+      setManuscrito(result.data?.arquivo || null);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -78,9 +107,102 @@ export const useRevisao = () => {
     }
   }, []);
 
-  const CriarRevisao = useCallback(
+  const buscarRevisaoByUserId = useCallback(async (id) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/user/${id}`);
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      const data = result.data;
+      setRevisoes(data || []);
+      setMeta(data.meta || 0);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+  
+
+
+   const buscarRevisaoByLivroId = useCallback(async (id) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/livro/${id}`); 
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      const data = result.data;
+      setRevisaoAtual(data || null);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const verificarRevisor = useCallback(async (livroId) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/verificarRevisor/${livroId}`); 
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao buscar revisão por ID: ${response.status}`,
+        );
+      }
+
+      const result = await response.json();
+
+      const data = result;
+
+      if(data != null){
+          if(data.revisor && data.livro[0].estado != "publicado"){
+            
+            setRevisor(true);
+          }else{
+            setRevisor(false);
+          }
+
+        setRevisaoAtual(data);
+        setApontamento(data.apontamento);
+        setNome(data.nome);
+          
+      }else{
+        setRevisor(true);
+      }
+
+      
+
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const criarRevisao = useCallback(
     async (idLivro, novoEstado) => {
-      if (!ValidarCamposTexto() || !manuscrito) {
+      if (!validarCamposTexto() || !manuscrito) {
         throw new Error("Preencha todos os campos e anexe o manuscrito.");
       }
 
@@ -106,78 +228,152 @@ export const useRevisao = () => {
           throw new Error(
             `Erro encontrado ao criar revisão: ${response.status}`,
           );
+
+          
         }
 
-        if(novoEstado){
-          const responseEstado = await apiFetch(`/api/v1/admin/revisao/novoEstado`, {
-            method: "PATCH",
-            body: JSON.stringify({ idLivro, novoEstado }),
-          });
+        let revisaoCriada = await response.json();
+        
+        console.log(revisaoCriada);
+        let id = revisaoCriada.id;
+        console.log(id);
 
-          if (!responseEstado.ok){
+
+
+        let responseEstado = null;
+        let responseCompletado = null;
+
+        if (novoEstado != "em_revisao") {
+            responseEstado = await apiFetch(
+            `/api/v1/admin/revisao/estado-${novoEstado}`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({ idLivro, novoEstado }),
+            },
+          );
+
+          if (!responseEstado.ok) {
             throw new Error(`Erro encontrado ao atualizar o estado do livro`);
           }
+
+          responseCompletado = await apiFetch(
+            `/api/v1/admin/revisao/${id}/completado`,
+            {
+              method: "PATCH",
+            },
+          );
+
+          if (!responseCompletado.ok) {
+            console.log(id)
+            throw new Error(`Erro encontrado ao atualizar o estado do livro ${id}`);
+          }
         }
-        
-        return response.data;
+
+        if(novoEstado != "em_revisao"){
+          const res = await responseCompletado.json();
+        setRevisaoAtual( res );
+        if(novoEstado == "publicado"){
+           setRevisor(false);
+        }
+        }else{
+        setRevisaoAtual(revisaoCriada);
+        }
       } catch (err) {
-        setError(err.message);
+        setError("erro");
         throw err;
       } finally {
         setCarregando(false);
       }
     },
-    [nome, apontamento, manuscrito, ValidarCamposTexto],
+    [nome, apontamento, manuscrito, validarCamposTexto],
   );
 
-  const AtualizarRevisao = useCallback(
-    async (id, e, idLivro) => {
-      if (e && typeof e.preventDefault === "function") e.preventDefault();
+  const atualizarRevisao = useCallback(
+    async (id, idLivro, novoEstado) => {
+
+      console.log("a");
+      
 
       if (!id) return;
-      if (!ValidarCamposTexto()) {
+      if (!validarCamposTexto()) {
         alert("Preencha todos os campos obrigatórios (Nome e Apontamento).");
         return;
       }
 
+      console.log(novoEstado);
+
       setCarregando(true);
       setError(null);
       try {
-        const corpo = {};
-        if (nome) corpo.nome = nome;
-        if (apontamento) corpo.apontamento = apontamento;
+        const formData = new FormData();
+        formData.append("nome", nome);
+        formData.append("apontamento", apontamento);
+        formData.append("idLivro", idLivro);
 
-        const libroIdAtual = idLivro || livro?.id;
-        if (libroIdAtual) corpo.idLivro = libroIdAtual;
-
-        const response = await apiFetch(`/api/v1/admin/revisao/${id}`, {
+        if (manuscrito) {
+          formData.append("manuscritoRevisto", manuscrito);
+        }
+        const response = await apiFetch(`/api/v1/admin/revisao/${id}`,{ 
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(corpo),
+          body: formData,
+          isFormData: true,
         });
 
         if (!response.ok) {
           throw new Error(`Erro retornado do servidor: ${response.status}`);
         }
 
-        const json = response.data || response;
-        setRevisaoAtual(json.data || json);
+        let responseEstado = null;
+        let responseCompletado = null;
 
-        alert("Informações atualizadas com sucesso!");
+        if (novoEstado != "em_revisao") {
+            responseEstado = await apiFetch(
+            `/api/v1/admin/revisao/estado-${novoEstado}`,
+            {
+              method: "PATCH",
+              body: JSON.stringify({ idLivro, novoEstado }),
+            },
+          );
+
+          if (!responseEstado.ok) {
+            throw new Error(`Erro encontrado ao atualizar o estado do livro`);
+          }
+
+          responseCompletado = await apiFetch(
+            `/api/v1/admin/revisao/${id}/completado`,
+            {
+              method: "PATCH",
+            },
+          );
+
+          if (!responseCompletado.ok) {
+            throw new Error(`Erro encontrado ao atualizar o estado do livro`);
+          }
+        }
+        
+
+        if(novoEstado != "em_revisao"){
+          const res = await response.json();
+        setRevisaoAtual(res);
+        if(novoEstado == "publicado"){
+           setRevisor(false);
+        }
+        }else{
+          const res = await response.json();
+        setRevisaoAtual(res);
+        }
+        
       } catch (err) {
         console.error("Erro ao atualizar revisão: ", err);
         setError(err.message);
-        alert("Ocorreu um erro ao atualizar a revisão.");
       } finally {
         setCarregando(false);
       }
     },
-    [nome, apontamento, livro, ValidarCamposTexto],
+    [nome, apontamento, livroRevisado, validarCamposTexto],
   );
 
-  const InativarRevisao = useCallback(async (id) => {
+  const inativarRevisao = useCallback(async (id) => {
     setCarregando(true);
     setError(null);
     try {
@@ -200,17 +396,74 @@ export const useRevisao = () => {
     }
   }, []);
 
-  const AlterarEstadoLivro = useCallback(async (idLivro, novoEstado) => {
+  const negarPublicacaoLivro = useCallback(async (idLivro) => {
     setCarregando(true);
     setError(null);
     try {
-      const response = await apiFetch(`/api/v1/admin/revisao/alterar-estado`, {
+      const response = await apiFetch(`/api/v1/admin/revisao/estado-negado`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ idLivro, novoEstado }),
+        body: JSON.stringify({ idLivro }),
       });
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao alterar estado do livro: ${response.status}`,
+        );
+      }
+
+      return response.data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const solicitarCorrecaoLivro = useCallback(async (idLivro) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(`/api/v1/admin/revisao/estado-correcao`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ idLivro }),
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `Erro encontrado ao alterar estado do livro: ${response.status}`,
+        );
+      }
+
+      return response.data;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
+  const publicarLivro = useCallback(async (idLivro) => {
+    setCarregando(true);
+    setError(null);
+    try {
+      const response = await apiFetch(
+        `/api/v1/admin/revisao/estado-publicado`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ idLivro }),
+        },
+      );
 
       if (!response.ok) {
         throw new Error(
@@ -230,13 +483,13 @@ export const useRevisao = () => {
   return {
     revisoes,
     setRevisoes,
-    count,
+    meta,
     revisaoAtual,
     setRevisaoAtual,
-    livro,
-    setLivro,
-    livros,
-    setLivros,
+    livroRevisado,
+    setLivroRevisado,
+    livrosRevisados,
+    setLivrosRevisados,
     nome,
     setNome,
     manuscrito,
@@ -245,12 +498,19 @@ export const useRevisao = () => {
     setApontamento,
     carregando,
     error,
-    BuscarRevisoes,
-    BuscarRevisaoById,
-    CriarRevisao,
-    AtualizarRevisao,
-    InativarRevisao,
-    AlterarEstadoLivro,
-    LimparCampos,
+    buscarLivroRevisao,
+    buscarRevisoes,
+    buscarRevisaoById,
+    buscarRevisaoByLivroId,
+    verificarRevisor,
+    criarRevisao,
+    atualizarRevisao,
+    inativarRevisao,
+    negarPublicacaoLivro,
+    publicarLivro,
+    solicitarCorrecaoLivro,
+    buscarRevisaoByUserId,
+    limparCampos,
+    revisor,
   };
 };

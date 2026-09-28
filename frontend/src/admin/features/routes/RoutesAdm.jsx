@@ -9,13 +9,8 @@ import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
 import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
-import Categoria from "../categorias/pages/Categoria/Categoria";
-import AlterarCategoria from "../categorias/pages/AlterarCategoria/AlterarCategoria";
-import NovaCategoria from "../categorias/pages/NovaCategoria/NovaCategoria";
-import PainelCategoria from "../categorias/pages/PainelCategoria/PainelCategoria";
-import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios";
-import PromoverUsuario from "../usuarios/pages/PromoverUsuario/PromoverUsuario";
-import InativarFuncionario from "../usuarios/pages/InativarFuncionario/InativarFuncionario";
+import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
+import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
@@ -30,6 +25,20 @@ const PrivateRoute = ({ children, redirectTo = "/auth/admin" }) => {
 
   if (!signed) {
     return <Navigate to={redirectTo} state={{ from: location }} replace />;
+  }
+
+  return children;
+};
+
+const MasterRoute = ({ children, redirectTo = "/admin" }) => {
+  const { signed, loading, user } = useAdmin();
+
+  if (loading) {
+    return null;
+  }
+
+  if (!signed || !user?.is_master) {
+    return <Navigate to={redirectTo} replace />;
   }
 
   return children;
@@ -94,65 +103,20 @@ const RoutesAdm = () => {
         />
 
         <Route
-          path="categorias"
+          path="usuarios"
           element={
-            <PrivateRoute>
-              <PainelCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/:id"
-          element={
-            <PrivateRoute>
-              <Categoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/nova"
-          element={
-            <PrivateRoute>
-              <NovaCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="categoria/alterar/:id"
-          element={
-            <PrivateRoute>
-              <AlterarCategoria />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="funcionarios"
-          element={
-            <PrivateRoute>
+            <MasterRoute>
               <GerenciaUsuarios />
-            </PrivateRoute>
+            </MasterRoute>
           }
         />
 
         <Route
-          path="funcionarios/promover"
+          path="usuarios/:id"
           element={
-            <PrivateRoute>
-              <PromoverUsuario />
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="funcionarios/inativar"
-          element={
-            <PrivateRoute>
-              <InativarFuncionario />
-            </PrivateRoute>
+            <MasterRoute>
+              <VisualizarUsuario />
+            </MasterRoute>
           }
         />
 

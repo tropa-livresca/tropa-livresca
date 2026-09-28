@@ -1,0 +1,259 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  color: #333333;
+}
+
+.titulo {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #1a1a1a;
+}
+
+/* Barra de Filtros e Busca */
+.filtroContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  align-items: center;
+}
+
+.inputGrupo {
+  position: relative;
+  flex: 1;
+  min-width: 250px;
+}
+
+.iconeBusca {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+}
+
+.inputBusca {
+  width: 100%;
+  padding: 0.6rem 0.6rem 0.6rem 2.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.inputBusca:focus,
+.selectFiltro:focus {
+  border-color: #3182ce;
+}
+
+.selectGrupo {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.selectFiltro {
+  padding: 0.6rem 2rem 0.6rem 0.8rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.botaoBuscar {
+  background-color: #3182ce;
+  color: #ffffff;
+  padding: 0.6rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.botaoBuscar:hover {
+  background-color: #2b6cb0;
+}
+
+/* Grid e Layout dos Cards */
+.gridRevisoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.cardRevisao {
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+.cardRevisao:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Topo do Card (Capa e Info do Livro) */
+.cardHeader {
+  display: flex;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-bottom: 1px solid #edf2f7;
+  background-color: #f7fafc;
+}
+
+.capaContainer {
+  flex-shrink: 0;
+}
+
+.capaLivro {
+  width: 70px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.semCapa {
+  width: 70px;
+  height: 100px;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #718096;
+  border-radius: 4px;
+}
+
+.infoLivro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.livroId {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  font-weight: 600;
+}
+
+.livroTitulo {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0.2rem 0;
+  color: #2d3748;
+  line-height: 1.3;
+}
+
+.livroSubtitulo {
+  font-size: 0.8rem;
+  color: #718096;
+  margin: 0;
+}
+
+/* Corpo do Card (Dados da Revisão) */
+.cardBody {
+  padding: 1.25rem;
+  flex-grow: 1;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cardBody p {
+  margin: 0;
+  color: #4a5568;
+}
+
+.apontamento {
+  background-color: #f7fafc;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-style: italic;
+  border-left: 3px solid #cbd5e0;
+  margin-top: 0.25rem;
+}
+
+.dataRevisao {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  margin-top: auto;
+  display: block;
+}
+
+/* Botões/Links de Ações */
+.cardAcoes {
+  display: flex;
+  border-top: 1px solid #edf2f7;
+  background-color: #f8fafc;
+}
+
+.linkPrimario,
+.linkSecundario {
+  flex: 1;
+  text-align: center;
+  padding: 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.linkPrimario {
+  color: #3182ce;
+  border-right: 1px solid #edf2f7;
+}
+
+.linkPrimario:hover {
+  background-color: #ebf8ff;
+}
+
+.linkSecundario {
+  color: #4a5568;
+}
+
+.linkSecundario:hover {
+  background-color: #f7fafc;
+}
+
+/* Feedbacks de status e Paginação */
+.feedback {
+  text-align: center;
+  padding: 3rem;
+  color: #718096;
+  font-size: 1.1rem;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px dashed #e2e8f0;
+}
+
+.paginacaoContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}

@@ -4,18 +4,17 @@ import his1 from "../../images/historia1.png";
 import his2 from "../../images/historia2.png";
 import his3 from "../../images/historia3.png";
 import his4 from "../../images/historia4.png";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 
 export default function Historia() {
   return (
     <main>
-      <section className={styles.topo}>
-        <h1 className={styles.titulo}>Sobre Nós</h1>
-
-        <p>
+      <DescricaoTela
+        titulo="Nossa História"
+        descricao="
           Conheça a nossa história, nossos valores e o que nos move todos os
-          dias.
-        </p>
-      </section>
+          dias."
+      />
 
       <div className={styles.container}>
         <section className={styles.historiaSecao}>

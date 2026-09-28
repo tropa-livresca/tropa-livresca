@@ -1,14 +1,33 @@
 import { LojaModel } from "../../common/models/loja.model.js";
-
-import { GoogleBooksService } from "../../common/services/google.service.js";
+import { error, errorUsuarioId } from "../../common/utils/error.js";
 
 export class LojaService {
+  static _parseCapaUrls(livro) {
+    if (!livro) return livro;
+
+    const livroClonado = { ...livro };
+
+    try {
+      if (typeof livroClonado.capa === "string") {
+        livroClonado.capa = JSON.parse(livroClonado.capa);
+      }
+    } catch (e) {
+      console.warn("Erro ao parsear capa JSON", e);
+    }
+    return livroClonado;
+  }
+
+  static _parseCapasArray(livros) {
+    return livros.map((livro) => this._parseCapaUrls(livro));
+  }
+
   static async buscarLivros({
     page = 1,
     limit = 12,
     busca = "",
     filtro = "",
     ordem = "",
+    categoria = "",
   }) {
     const livrosTropa = await LojaModel.buscarComFiltros({
       page,
@@ -16,111 +35,131 @@ export class LojaService {
       busca,
       filtro,
       ordem,
+      categoria,
     });
 
-    let livrosExternos = {
-      data: [],
-      count: 0,
-    };
-
-    try {
-      livrosExternos = await GoogleBooksService.buscarLivros({
-        busca,
-        page,
-        limit: 6,
-      });
-    } catch (error) {
-      if (error.statusCode === 429) {
-        console.warn(
-          "Google Books indisponível: limite de requisições atingido.",
-        );
-      } else {
-        console.error("Erro ao consultar Google Books:", error);
-      }
+    if (livrosTropa.error) {
+      throw livrosTropa.error;
     }
 
-    const livrosTropaNormalizados = livrosTropa.data.map((livro) =>
-      this.normalizarLivroTropa(livro),
-    );
+    const livrosComCapas = this._parseCapasArray(livrosTropa.data);
+
+    const totalItems = livrosTropa.count;
+
+    const totalPagesTropa = Math.ceil(livrosTropa.count / limit);
 
     return {
-      data: [...livrosTropaNormalizados, ...livrosExternos.data],
-
+      data: livrosComCapas,
       meta: {
-        pagina: page,
-        limite: limit,
-
-        totalTropa: livrosTropa.count,
-
-        totalExterno: livrosExternos.count,
-
-        googleBooksDisponivel: livrosExternos.data.lenght > 0,
+        page,
+        limit,
+        totalItems,
+        totalPages: totalPagesTropa,
       },
-    };
-  }
-
-  static normalizarLivroTropa(livro) {
-    return {
-      id: `tropa-${livro.id}`,
-
-      titulo: livro.titulo,
-
-      subtitulo: livro.subtitulo,
-
-      autor: [livro.autor_nome, livro.autor_sobrenome]
-        .filter(Boolean)
-        .join(" "),
-
-      ISBN: livro.ISBN,
-
-      descricao: livro.descricao,
-
-      capa: {
-        frente: livro.capa?.frente || null,
-        verso: livro.capa?.verso || null,
-        orelhas: livro.capa?.orelhas || null,
-      },
-
-      idioma: livro.idioma,
-
-      data_de_publicacao: livro.data_de_publicacao,
-
-      precoDigital: livro.preco_digital,
-
-      precoFisico: livro.preco_fisico,
-
-      numero_edicao: livro.numero_edicao,
-
-      precoFicticio: false,
-      vendaSimulada: false,
-
-      origem: "tropa",
-      fonte: "tropa_livresca",
-      vendaInterna: true,
-
-      urlExterna: null,
     };
   }
 
   static async buscarLivroById(id) {
-    if (id.startsWith("tropa-")) {
-      const livroId = id.replace("tropa-", "");
-
-      const livro = await LojaModel.buscarLivroLojaById(livroId);
-
-      return this.normalizarLivroTropa(livro);
+    if (!id) {
+      const erroId = new Error("Id não informadao.");
+      erroId.statusCode = 400;
+      throw erroId;
     }
 
-    if (id.startsWith("google-")) {
-      const googleId = id.replace("google-", "");
+    const livro = await LojaModel.buscarLivroById(id);
 
-      return await GoogleBooksService.buscarLivroById(googleId);
+    if (livro.error) {
+      throw livro.error;
     }
 
-    const error = new Error("Livro não encontrado.");
+    return this._parseCapaUrls(livro);
+  }
 
-    error.statusCode = 404;
+  static async consultarVenda(vendaId) {
+    if (!vendaId) error(400, "Id da venda não informado.");
 
-    throw error;
+    const venda = await LojaModel.consultarVenda(vendaId);
+
+    if (venda.error) throw venda.error;
+
+    return venda;
+  }
+
+  static async realizarVenda(
+    usuarioId,
+    metodo_pagamento,
+    endereco_entrega,
+    total,
+    itensVenda,
+  ) {
+    if (!usuarioId) errorUsuarioId();
+
+    if (!metodo_pagamento || !endereco_entrega || !total)
+      error(400, "Dados da venda não informados.");
+
+    if (!itensVenda)
+      error(400, "Não há como realizar compra sem itens da venda.");
+
+    const dadosVenda = {
+      fk_user_profile_id: usuarioId,
+      metodo_pagamento,
+      endereco_entrega,
+      total,
+    };
+
+    const venda = await LojaModel.realizarVenda(dadosVenda, itensVenda);
+
+    if (venda.error) throw venda.error;
+
+    return venda;
+  }
+
+  static async buscarHistoricoVendasUsuario(usuarioId) {
+    if (!usuarioId) errorUsuarioId();
+
+    const buscaVendas = await LojaModel.buscarHistoricoVendasUsuario(usuarioId);
+
+    if (buscaVendas.error) throw buscaVendas.error;
+
+    return buscaVendas;
+  }
+
+  static async buscarNumeroVendasLivro(livroId) {
+    if (!livroId) error(400, "Id do livro não informado.");
+
+    const numeroVendas = await LojaModel.buscarNumeroVendasLivro(livroId);
+
+    if (numeroVendas.error) throw numeroVendas.error;
+
+    return numeroVendas;
+  }
+
+  static async calcularFretePrazo(cepDestino, itensVenda) {
+    if (!cepDestino) error(400, "Cep de envio não informado.");
+
+    if (!itensVenda)
+      error(400, "Itens da Venda não informados para o cálculo do frete.");
+
+    const frete = await LojaModel.calcularFretePrazo(cepDestino, itensVenda);
+
+    if (frete.error) throw frete.error;
+
+    return frete;
+  }
+
+  static async mudarStatusPagamento(vendaId, usuarioEmail) {
+    if (!vendaId) error(400, "Id da venda não informado.");
+
+    if (!usuarioEmail)
+      error(
+        400,
+        "E-mail do usuário a que enviar o pdf do livro não informado.",
+      );
+
+    const email = await LojaModel.mudarStatusPagamento(vendaId, usuarioEmail);
+
+    if (email.error) throw email.error;
+
+    return email;
   }
 }
