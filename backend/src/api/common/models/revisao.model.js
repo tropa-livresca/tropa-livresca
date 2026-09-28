@@ -160,11 +160,13 @@ export class RevisaoModel {
   static async VerificarRevisor(livroId, funcionarioId) {
     console.log("c");
     const { data, error } = await supabase
-      .from("revisoes")
-      .select()
+      .from("revisoes, livros!inner(estado)")
+      .select("*, ")
       .eq("completado", false)
       .eq("fk_livro_id", livroId)
       .maybeSingle();
+
+      console.log(data);
 
 
 
