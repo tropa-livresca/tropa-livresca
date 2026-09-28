@@ -1,82 +1,54 @@
-# Arquitetura do Sistema e Estratégia de Testes
+# Arquitetura do Sistema
 
-Este documento detalha a organização estrutural, o fluxo de dados e a estratégia de testes da aplicação Tropa Livresca, cobrindo o ecossistema completo do Frontend ao Backend.
+Este documento descreve a estrutura atual da aplicação Tropa Livresca e o fluxo entre o frontend, a API e os serviços externos.
 
----
+## Tecnologias
 
-## Visão Geral da Tecnologia
+- Frontend: React 19, Vite 8 e React Router 7.
+- Backend: Node.js e Express 5, organizados em workspaces npm.
+- Persistência, autenticação e armazenamento: Supabase (PostgreSQL, Auth e Storage).
+- E-mail: Nodemailer.
+- Testes de integração da API: Jest, SWC e Supertest.
 
-- Frontend: React + Vite (Roteamento via React Router v6)
-- Backend: Node.js + Express (API REST)
-- Serviços (Services): Camada dedicada a regras de negócio e integrações
-- Modelos (Models): Abstração de acesso estruturado aos dados
-- Banco de Dados: Supabase (PostgreSQL)
-- Autenticação: Supabase Authentication gerenciada por cookies HttpOnly no backend
-- Envio de E-mail: Nodemailer
-- Suíte de Testes: Jest
-
----
-
-## Fluxo de Funcionamento
-
-O sistema adota uma arquitetura em camadas bem definida. O fluxo de uma requisição segue estritamente o caminho abaixo:
+## Visão do sistema
 
 ```mermaid
 flowchart LR
-    A[Usuário] --> B[Frontend React/Vite]
-    B --> C[API Express]
-    C --> D[Controllers]
-    D --> E[Services]
-    E --> F[Models]
-    F --> G[Supabase]
-    E --> H[Nodemailer]
+    U[Pessoa usuária] --> F[Frontend React]
+    F --> AF[apiFetch]
+    AF -->|HTTP e cookies| API[API Express]
+    API --> R[Rotas e middlewares]
+    R --> C[Controllers]
+    C --> S[Services]
+    S --> M[Models]
+    M --> DB[Supabase]
+    S --> E[Nodemailer]
 ```
 
----
+Os módulos funcionais do backend seguem esse fluxo em camadas quando aplicável: as rotas conectam endpoints a middlewares e controllers; controllers tratam o ciclo HTTP; services coordenam regras de negócio; e models concentram operações de dados. A infraestrutura compartilhada fica em `backend/src/api/common`.
 
-## Estrutura Conceitual
+## Backend
 
-- Consumo de API: O frontend consome a API REST por meio de um utilitário centralizado chamado apiFetch. Este interceptador injeta as credenciais em todas as chamadas e gerencia de forma transparente a renovação de tokens (refresh token) e o redirecionamento de tela de acordo com o ator logado (/auth/login para Clients ou /auth/admin para Administradores).
-- Roteamento e Infraestrutura: As rotas do backend direcionam as requisições HTTP e aplicam middlewares de interceptação global, tais como checkAuth (validação de sessão) e upload.single('imagem') (processamento de mídia via Multer).
-- Intermediação HTTP: Os controllers recebem os dados vindos das requisições (req.body, req.params, req.query), delegam o processamento pesado para a camada de serviços e devolvem a resposta HTTP configurando cabeçalhos, status codes e cookies criptografados.
-- Regras de Negócio (Services): Esta camada concentra as inteligências do sistema. Ela resolve cálculos de paginação, formatação de metadados, processamento de strings (como parsing de JSON em URLs de capas de livros) e trata erros específicos jogando exceções com códigos HTTP mapeados (ex: 404 para registros não encontrados).
-- Abstração de Dados (Models): Concentra todas as operações e consultas brutas de banco de dados. Os models interagem diretamente com o cliente do Supabase, isolando o restante da aplicação da sintaxe específica do banco.
-- Serviços Externos: O banco de dados Supabase gerencia a persistência de tabelas, autenticação nativa e armazenamento de mídias (Storage). Em paralelo, o backend consome o Nodemailer para disparar e-mails de chamados para o suporte.
+O ponto de entrada `backend/src/api.js` configura CORS com credenciais, parsers JSON e URL-encoded, leitura de cookies e o tratamento global de erros. Ele monta os grupos de rotas versionados:
 
----
+| Prefixo           | Responsabilidade                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| `/api/v1/clients` | Funcionalidades da área de clientes, como livros, perfil, endereços e loja.          |
+| `/api/v1/admin`   | Funcionalidades administrativas, incluindo livros, revisão, usuários e notificações. |
+| `/api/v1/auth`    | Autenticação e gerenciamento de sessão.                                              |
 
-## Organização do Backend
+Os diretórios `backend/src/api/admin` e `backend/src/api/clients` agrupam os módulos de rotas por funcionalidade. Cada módulo pode conter arquivos `.route.js`, `.controller.js` e `.service.js`. Recursos compartilhados ficam em `backend/src/api/common`, dividido em `auth`, `config`, `middlewares`, `models` e `utils`.
 
-A estrutura de diretórios do servidor separa, a princípio, a pasta src de tests. Dentro de src, encontram-se as pastas Admin, Clients e Common, cada uma reunindo funcionalidades. Assim, arquivos próximos de mesma funcionalidade tendem a estarem juntos. Nas duas primeiras, há três arquivos:
+## Frontend
 
-- \*.route.js: Mapeia e define os endpoints expostos da API pública e privada.
-- \*.controller/: Gerencia exclusivamente o ciclo de vida HTTP (req, res, next).
-- services/: Centraliza o núcleo das lógicas de negócio e as orquestrações de regras.
+O ponto de entrada `frontend/src/main.jsx` renderiza a aplicação, e `App.jsx` fornece os contextos de autenticação e administração. O roteador em `frontend/src/common/routes/RoutesApp.jsx` encaminha as páginas para as áreas administrativa, de autenticação e de clientes.
 
-Enquanto que em Common, ficam:
+As funcionalidades são organizadas em `frontend/src/admin` e `frontend/src/clients`; elementos compartilhados, configuração e serviços ficam em `frontend/src/common`. O serviço `frontend/src/common/services/api.js` exporta `apiFetch`, usado para chamar a API com `credentials: "include"`. Em respostas 401, ele pode tentar renovar a sessão e redirecionar para a tela de login correspondente.
 
-- \*.middleware.js: Interceptores de segurança, uploads e o manipulador global de erros (errorHandler).
-- \*.model.js: Centraliza as queries, views e mutations de dados.
-- config/: Arquivos de inicialização de infraestrutura (como conexões com o Supabase).
+## Integração com serviços
 
----
+O backend utiliza os clientes do Supabase configurados em `backend/src/api/common/config` para acessar os serviços de dados. Middlewares compartilhados tratam autenticação e erros; módulos que recebem arquivos podem usar Multer e o armazenamento do Supabase. O Nodemailer é usado nos fluxos que precisam enviar e-mails.
 
-## Estratégia de Testes
+## Testes de integração
 
-A estabilidade e a integridade da aplicação são asseguradas por uma suíte de testes no backend automatizados construída com uso de Jest e Supertest. Todos eles se encontram isolados na pasta tests [../backend/tests].
-
-### 1. Testes de Integração (Routes)
-
-Focados em testar o comportamento dos endpoints de ponta a ponta a partir da camada HTTP.
-
-- Ferramentas: supertest para simulação de requisições de rede.
-- O que validam: Garantem que os status codes (200, 201, 400, 404, 500) retornem conforme o cenário. Validam se os cookies de sessão (auth-token e refresh-token) são injetados ou limpos corretamente e se os parâmetros de query e rota são devidamente higienizados e convertidos.
-- Isolamento: Os middlewares originais e serviços são substituídos por dublês (mocks) em tempo de execução usando o recurso nativo mock.module do Node.js, isolando completamente o controlador de efeitos colaterais de rede ou upload de arquivos em disco.
-
-### 2. Testes Unitários (Services, Controllers e Models)
-
-Focados em garantir que as funções lógicas funcionem perfeitamente diante de qualquer variação de dados.
-
-- Ferramentas: Jest.
-- O que validam: Testam o processamento interno de métodos (como conversão de formatos de texto ou objetos). Garantem que os cálculos matemáticos de paginação de dados (cálculo de totalPages e totalItems) devolvam números exatos para o cliente. Asseguram os retornos de erro e sucesso esperados.
-- Isolamento: As chamadas para os modelos de dados (AuthModel, LivroModel, AutorModel) são interceptadas e mockadas com retornos falsos estruturados, permitindo testar caminhos de falhas no banco sem precisar se conectar a um banco real durante os testes.
+Os testes HTTP ficam em `backend/tests/integration/routes`, organizados por área (`admin` e `clients`). Jest executa os testes no ambiente Node.js com transformação via SWC, e Supertest faz requisições às aplicações Express montadas para cada teste. Helpers, fixtures e mocks de serviços externos ficam nas pastas correspondentes de `backend/tests`.
