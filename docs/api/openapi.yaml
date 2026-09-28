@@ -1,0 +1,1251 @@
+openapi: 3.0.3
+info:
+  title: API Tropa Livresca
+  version: 1.0.0
+  description: API do site Tropa Livresca, organizada por autenticação, clientes e administração.
+servers:
+  - url: /api/v1
+    description: API versionada
+tags:
+  - name: Autenticação
+  - name: Autopublicação
+  - name: Endereços
+  - name: Livros
+  - name: Autores
+  - name: Suporte
+  - name: Perfil
+  - name: Loja
+  - name: Notificações
+  - name: Avaliações
+  - name: Comentários
+  - name: Cartões
+  - name: Revisões
+  - name: Usuários
+paths:
+  /auth/signin-adm:
+    post:
+      tags: [Autenticação]
+      summary: Iniciar sessão administrativa
+      operationId: signinAdm
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/signout-adm:
+    post:
+      tags: [Autenticação]
+      summary: Encerrar sessão administrativa
+      operationId: signoutAdm
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/senhaadm:
+    patch:
+      tags: [Autenticação]
+      summary: Alterar senha administrativa
+      operationId: alterarSenhaAdm
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/session-adm:
+    get:
+      tags: [Autenticação]
+      summary: Consultar sessão administrativa
+      operationId: getSessionAdm
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/session-adm-master:
+    get:
+      tags: [Autenticação]
+      summary: Consultar sessão de administrador master
+      operationId: getSessionAdmMaster
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/senhaantiga:
+    patch:
+      tags: [Autenticação]
+      summary: Alterar senha administrativa antiga
+      operationId: alterarSenhaAntigaAdm
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/signup:
+    post:
+      tags: [Autenticação]
+      summary: Criar conta
+      operationId: signup
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/signin:
+    post:
+      tags: [Autenticação]
+      summary: Iniciar sessão
+      operationId: signin
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/signin/google:
+    get:
+      tags: [Autenticação]
+      summary: Iniciar autenticação Google por redirecionamento
+      operationId: signinGoogleRedirect
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Autenticação]
+      summary: Iniciar sessão com Google
+      operationId: signinGoogle
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/signout:
+    post:
+      tags: [Autenticação]
+      summary: Encerrar sessão
+      operationId: signout
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/refresh:
+    post:
+      tags: [Autenticação]
+      summary: Atualizar sessão
+      operationId: refreshSession
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/session:
+    post:
+      tags: [Autenticação]
+      summary: Definir sessão
+      operationId: setSession
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    get:
+      tags: [Autenticação]
+      summary: Consultar sessão atual
+      operationId: getSession
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/redefinir-senha:
+    post:
+      tags: [Autenticação]
+      summary: Redefinir senha
+      operationId: redefinirSenha
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/esquecer-senha:
+    post:
+      tags: [Autenticação]
+      summary: Solicitar recuperação de senha
+      operationId: esquecerSenha
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/callback-redefinir-senha/:
+    get:
+      tags: [Autenticação]
+      summary: Processar callback de redefinição de senha
+      operationId: callbackRedefinirSenha
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/senha:
+    patch:
+      tags: [Autenticação]
+      summary: Atualizar senha da conta
+      operationId: atualizarSenha
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /auth/perfil:
+    get:
+      tags: [Autenticação]
+      summary: Consultar usuário autenticado
+      operationId: getAuthProfile
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/autopublicacao:
+    get:
+      tags: [Autopublicação]
+      summary: Listar livros de autopublicação com filtros
+      operationId: listarAutopublicacoes
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Autopublicação]
+      summary: Criar livro para autopublicação
+      operationId: criarAutopublicacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/autopublicacao/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Autopublicação]
+      summary: Consultar livro de autopublicação
+      operationId: buscarAutopublicacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      tags: [Autopublicação]
+      summary: Atualizar livro de autopublicação
+      operationId: atualizarAutopublicacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Autopublicação]
+      summary: Excluir rascunho de autopublicação
+      operationId: excluirAutopublicacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/autopublicacao/upload-url:
+    post:
+      tags: [Autopublicação]
+      summary: Criar URL de upload de livro
+      operationId: criarUploadLivro
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/autopublicacao/estado/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Autopublicação]
+      summary: Atualizar estado da autopublicação
+      operationId: atualizarEstadoAutopublicacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/enderecos:
+    get:
+      tags: [Endereços]
+      summary: Listar endereços do usuário
+      operationId: listarEnderecos
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Endereços]
+      summary: Criar endereço
+      operationId: criarEndereco
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/enderecos/principal:
+    get:
+      tags: [Endereços]
+      summary: Consultar endereço principal
+      operationId: buscarEnderecoPrincipal
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/enderecos/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Endereços]
+      summary: Consultar endereço
+      operationId: buscarEndereco
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Endereços]
+      summary: Atualizar endereço
+      operationId: atualizarEndereco
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/enderecos/{id}/ativo:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Endereços]
+      summary: Inativar endereço
+      operationId: inativarEndereco
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/enderecos/{id}/principal:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Endereços]
+      summary: Definir endereço principal
+      operationId: definirEnderecoPrincipal
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/livros:
+    get:
+      tags: [Livros]
+      summary: Listar livros
+      operationId: listarLivros
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/livros/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Livros]
+      summary: Consultar livro
+      operationId: buscarLivro
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/autores:
+    get:
+      tags: [Autores]
+      summary: Listar autores
+      operationId: listarAutores
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/autores/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Autores]
+      summary: Consultar autor
+      operationId: buscarAutor
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/suporte/enviarEmail:
+    post:
+      tags: [Suporte]
+      summary: Enviar mensagem ao suporte
+      operationId: enviarEmailSuporte
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/perfil/imagem:
+    patch:
+      tags: [Perfil]
+      summary: Atualizar imagem do perfil
+      operationId: atualizarImagemPerfil
+      security:
+        - clientCookieAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                imagem:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Perfil]
+      summary: Remover imagem do perfil
+      operationId: removerImagemPerfil
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/perfil:
+    get:
+      tags: [Perfil]
+      summary: Consultar perfil
+      operationId: buscarPerfil
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Perfil]
+      summary: Atualizar perfil
+      operationId: atualizarPerfil
+      security:
+        - clientCookieAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja:
+    get:
+      tags: [Loja]
+      summary: Listar livros disponíveis na loja
+      operationId: listarLivrosLoja
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Loja]
+      summary: Consultar livro na loja
+      operationId: buscarLivroLoja
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/venda/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Loja]
+      summary: Consultar venda
+      operationId: consultarVenda
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/historico-vendas:
+    get:
+      tags: [Loja]
+      summary: Consultar histórico de vendas do usuário
+      operationId: historicoVendasUsuario
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/numero-vendas:
+    get:
+      tags: [Loja]
+      summary: Consultar número de vendas de um livro
+      operationId: numeroVendasLivro
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/frete:
+    get:
+      tags: [Loja]
+      summary: Calcular frete e prazo
+      operationId: calcularFretePrazo
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/status:
+    patch:
+      tags: [Loja]
+      summary: Alterar status de pagamento
+      operationId: alterarStatusPagamento
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/loja/venda:
+    post:
+      tags: [Loja]
+      summary: Realizar venda
+      operationId: realizarVenda
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/notificacoes:
+    get:
+      tags: [Notificações]
+      summary: Consultar feed de notificações
+      operationId: feedNotificacoesCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Notificações]
+      summary: Enviar notificação
+      operationId: enviarNotificacaoCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Notificações]
+      summary: Limpar notificações antigas
+      operationId: limparNotificacoesCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/notificacoes/geral:
+    get:
+      tags: [Notificações]
+      summary: Consultar notificações gerais
+      operationId: notificacoesGeraisCliente
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/notificacoes/particular:
+    get:
+      tags: [Notificações]
+      summary: Consultar notificações particulares
+      operationId: notificacoesParticularesCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/notificacoes/status:
+    patch:
+      tags: [Notificações]
+      summary: Alterar status de leitura das notificações
+      operationId: alterarStatusNotificacoesCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/notificacoes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Notificações]
+      summary: Alterar notificação
+      operationId: alterarNotificacaoCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Notificações]
+      summary: Excluir notificação
+      operationId: excluirNotificacaoCliente
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/avaliacoes:
+    get:
+      tags: [Avaliações]
+      summary: Consultar avaliações de livro
+      operationId: listarAvaliacoes
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Avaliações]
+      summary: Criar avaliação
+      operationId: criarAvaliacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/avaliacoes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Avaliações]
+      summary: Alterar avaliação
+      operationId: alterarAvaliacao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/comentarios:
+    get:
+      tags: [Comentários]
+      summary: Consultar comentários
+      operationId: listarComentarios
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Comentários]
+      summary: Criar comentário
+      operationId: criarComentario
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/comentarios/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Comentários]
+      summary: Atualizar comentário
+      operationId: atualizarComentario
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Comentários]
+      summary: Excluir comentário
+      operationId: excluirComentario
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/cartoes:
+    get:
+      tags: [Cartões]
+      summary: Listar cartões
+      operationId: listarCartoes
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Cartões]
+      summary: Adicionar cartão
+      operationId: adicionarCartao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      tags: [Cartões]
+      summary: Alterar cartão
+      operationId: alterarCartao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/cartoes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Cartões]
+      summary: Consultar cartão
+      operationId: buscarCartao
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Cartões]
+      summary: Excluir cartão
+      operationId: excluirCartao
+      security:
+        - clientCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/livros:
+    get:
+      tags: [Livros]
+      summary: Listar livros para administração
+      operationId: listarLivrosAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/livros/user/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Livros]
+      summary: Listar livros de um usuário
+      operationId: listarLivrosPorUsuarioAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/livros/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Livros]
+      summary: Consultar livro para administração
+      operationId: buscarLivroAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao:
+    get:
+      tags: [Revisões]
+      summary: Listar revisões
+      operationId: listarRevisoes
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Revisões]
+      summary: Criar revisão
+      operationId: criarRevisao
+      security:
+        - adminCookieAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                manuscritoRevisto:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Revisões]
+      summary: Consultar revisão
+      operationId: buscarRevisao
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Revisões]
+      summary: Atualizar revisão
+      operationId: atualizarRevisao
+      security:
+        - adminCookieAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                manuscritoRevisto:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/user/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Revisões]
+      summary: Listar revisões de um usuário
+      operationId: listarRevisoesPorUsuario
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/verificarRevisor/{livroId}:
+    parameters:
+      - name: livroId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Revisões]
+      summary: Verificar revisor atribuído ao livro
+      operationId: verificarRevisor
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/livro:
+    get:
+      tags: [Revisões]
+      summary: Consultar livro em revisão
+      operationId: buscarLivroRevisao
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/{id}/ativo:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Revisões]
+      summary: Inativar revisão
+      operationId: inativarRevisao
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/{id}/completado:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Revisões]
+      summary: Marcar revisão como concluída
+      operationId: completarRevisao
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/estado-publicado:
+    patch:
+      tags: [Revisões]
+      summary: Publicar livro revisado
+      operationId: publicarLivroRevisado
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/estado-recall:
+    patch:
+      tags: [Revisões]
+      summary: Solicitar recall de livro
+      operationId: solicitarRecallLivro
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/revisao/estado-negado:
+    patch:
+      tags: [Revisões]
+      summary: Negar publicação de livro
+      operationId: negarPublicacaoLivro
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/usuarios:
+    get:
+      tags: [Usuários]
+      summary: Listar usuários e funcionários
+      operationId: listarUsuariosAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/usuarios/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Usuários]
+      summary: Consultar usuário
+      operationId: buscarUsuarioAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/usuarios/{id}/inativar:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Usuários]
+      summary: Inativar funcionário
+      operationId: inativarFuncionario
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/usuarios/{id}/master:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Usuários]
+      summary: Alterar privilégio de administrador master
+      operationId: alterarIsMasterFuncionario
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/usuarios/{id}/promover:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Usuários]
+      summary: Promover usuário a funcionário
+      operationId: promoverUsuario
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/notificacoes:
+    get:
+      tags: [Notificações]
+      summary: Consultar feed de notificações administrativas
+      operationId: feedNotificacoesAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Notificações]
+      summary: Enviar notificação administrativa
+      operationId: enviarNotificacaoAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Notificações]
+      summary: Limpar notificações administrativas antigas
+      operationId: limparNotificacoesAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/notificacoes/geral:
+    get:
+      tags: [Notificações]
+      summary: Consultar notificações gerais administrativas
+      operationId: notificacoesGeraisAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/notificacoes/particular:
+    get:
+      tags: [Notificações]
+      summary: Consultar notificações particulares administrativas
+      operationId: notificacoesParticularesAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/notificacoes/status:
+    patch:
+      tags: [Notificações]
+      summary: Alterar status de leitura das notificações administrativas
+      operationId: alterarStatusNotificacoesAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/notificacoes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Notificações]
+      summary: Alterar notificação administrativa
+      operationId: alterarNotificacaoAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Notificações]
+      summary: Excluir notificação administrativa
+      operationId: excluirNotificacaoAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "200":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+components:
+  securitySchemes:
+    clientCookieAuth:
+      type: apiKey
+      in: cookie
+      name: auth-token
+      description: Cookie de sessão do usuário.
+    adminCookieAuth:
+      type: apiKey
+      in: cookie
+      name: admin-token
+      description: Cookie de sessão administrativa.
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Identificador do recurso.
+  responses:
+    Success:
+      description: Requisição processada com sucesso.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true
+    Error:
+      description: A requisição não pôde ser processada.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: true

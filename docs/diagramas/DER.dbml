@@ -1,23 +1,55 @@
-// =============================================
-// Schema Completo Atualizado - dbdiagram.io
-// =============================================
+// Documentação do Modelo de Dados (Supabase/PostgreSQL)
 
-Table users_profile {
-  id uuid [pk, default: `gen_random_uuid()`]
-  nome text
+Table public.users_profile {
+  id uuid [pk, note: 'UUID integrado ao Supabase Auth']
+  nome text [not null]
   telefone varchar [not null]
   imagem text
   descricao text
-  redes_sociais jsonb [default: '{}']
-  is_admin boolean [default: false]
-  is_master boolean [default: false]
-  primeiro_acesso [default: true]
-  email text [not null]
+  redes_sociais jsonb
+  is_admin boolean [not null]
+  senha_adm text
+  primeiro_acesso boolean [not null]
+  email text
+  is_master boolean
+  dados_bancarios jsonb
 }
 
-Table livros {
+Table public.notificacoes_lidas {
   id bigint [pk, increment]
-  ISBN text [not null]
+  fk_notificacao_id bigint [not null]
+  fk_user_profile_id uuid [not null]
+  data_leitura "timestamp with time zone" [not null]
+}
+
+Table public.usuarios_cartoes {
+  id bigint [pk, increment]
+  token_pagamento text
+  final_cartao varchar [not null]
+  bandeira_varchar varchar [not null]
+  nome_no_cartao text [not null]
+  data_expiracao varchar [not null]
+  fk_user_profile_id uuid [not null]
+}
+
+Table public.itens_venda {
+  id bigint [pk, increment]
+  qtd bigint [not null]
+  subtotal numeric [not null]
+  fk_livros_itens_id bigint [not null]
+  fk_vendas_id bigint [not null]
+}
+
+Table public.comentarios {
+  id bigint [pk, increment]
+  data "timestamp with time zone" [not null]
+  texto text [not null]
+  fk_user_profile_id uuid [not null]
+  fk_livros_id bigint
+}
+
+Table public.livros {
+  id bigint [pk, increment]
   direitos_de_publicacao boolean [not null]
   conteudo_por_IA boolean [not null]
   imagens_explicitas boolean [not null]
@@ -30,95 +62,115 @@ Table livros {
   descricao text [not null]
   autor_nome text [not null]
   autor_sobrenome text [not null]
-  ativo boolean [default: true, not null]
-  estado varchar [default: 'rascunho', not null]
+  fk_user_profile_id uuid [not null]
+  ativo boolean [not null]
+  estado varchar [not null]
   idioma text [not null]
   manuscrito text
-  colaboradores jsonb [default: '[]']
-  capa jsonb [default: '{}']
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  total_paginas numeric [not null]
-  categoria text [not null]
+  colaboradores jsonb
+  capa jsonb
+  categoria text
+  ISBN text
+  palavras_chave text
+  numero_paginas smallint
 }
 
-Table comentarios {
+Table public.avaliacoes {
   id bigint [pk, increment]
-  data timestamp [default: `now()`, not null]
-  texto text [not null]
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_livros_id bigint [ref: > livros.id, not null]
+  data_criacao "timestamp with time zone" [not null]
+  fk_livros_id bigint [not null]
+  fk_users_profile_id uuid [not null]
 }
 
-Table enderecos {
+Table public.vendas {
+  id bigint [pk, increment]
+  data "timestamp with time zone" [not null]
+  total numeric [not null]
+  fk_met_pagamentos_id bigint [not null]
+  transacao_id text [not null]
+  status_pagamento text [not null]
+  fk_user_profile_id uuid [not null]
+  endereco_entrega jsonb
+  status_entrega text [not null]
+}
+
+Table public.movimentacoes_financeiras {
+  id bigint [pk, increment]
+  data "timestamp with time zone" [not null]
+  fk_user_profile_id uuid [not null]
+  fk_vendas_id bigint [not null]
+  tipo text [not null]
+  valor numeric [not null]
+  descricao text [not null]
+  status text [not null]
+}
+
+Table public.enderecos {
   id bigint [pk, increment]
   estado varchar [not null]
   bairro text [not null]
   rua text [not null]
   num integer [not null]
   cep varchar [not null]
+  fk_user_profile_id uuid [not null]
   cidade text [not null]
   complemento text
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+  pais text
+  ativo boolean
+  principal boolean
 }
 
-Table met_pagamentos {
-  id bigint [pk, increment]
+Table public.met_pagamentos {
+  id bigint [pk, note: 'Tabela de domínio para tipos de pagamento']
   nome text [not null]
 }
 
-Table usuarios_cartoes {
-  id bigint [pk, increment]
-  token_pagamento text
-  final_cartao varchar [not null]
-  bandeira_varchar varchar [not null]
-  nome_no_cartao text [not null]
-  data_expiracao varchar [not null]
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-}
-
-Table vendas {
-  id bigint [pk, increment]
-  data timestamp [default: `now()`, not null]
-  total numeric [not null]
-  transacao_id text [not null]
-  status_pagamento text [not null]
-  endereco_entrega jsonb [not null]
-  fk_met_pagamentos_id bigint [ref: > met_pagamentos.id, not null]
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-}
-
-Table itens_venda {
-  id bigint [pk, increment]
-  qtd bigint [not null]
-  formato text [not null]
-  subtotal numeric [not null]
-  fk_livros_itens_id bigint [ref: > livros.id, not null]
-  fk_vendas_id bigint [ref: > vendas.id, not null]
-}
-
-Table revisoes {
+Table public.revisoes {
   id bigint [pk, increment]
   arquivo text [not null]
-  data timestamp [default: `now()`, not null]
+  data_criacao "timestamp with time zone" [not null]
   apontamento text
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-  fk_livro_id bigint [ref: > livros.id, not null]
+  fk_user_profile_id uuid [not null]
+  fk_livro_id bigint [not null]
+  nome text
+  completado boolean [not null]
 }
 
-Table notificacoes {
+Table public.notificacoes {
   id bigint [pk, increment]
-  titulo text [not null]
   texto text [not null]
   tipo text [not null]
-  data timestamp [default: `now()`, not null]
-  ADM boolean [default: false, not null]
-  metadados jsonb [default: '{}']
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
+  data "timestamp without time zone" [not null]
+  ADM boolean [not null]
+  fk_user_profile_id uuid [not null]
+  titulo text
+  metadados jsonb
+  geral boolean [not null]
 }
 
-Table notificacoes_lidas {
-  id bigint [pk, increment]
-  data_leitura timestamp [default: `now()`, not null]
-  fk_notificacao_id bigint [ref: > notificacoes.id, not null]
-  fk_user_profile_id uuid [ref: > users_profile.id, not null]
-}
+// Relacionamentos e Chaves Estrangeiras (Limpos e Sem Duplicidade)
+
+Ref: public.movimentacoes_financeiras.fk_vendas_id > public.vendas.id
+Ref: public.movimentacoes_financeiras.fk_user_profile_id > public.users_profile.id
+
+Ref: public.comentarios.fk_user_profile_id > public.users_profile.id
+
+Ref: public.itens_venda.fk_livros_itens_id > public.livros.id
+Ref: public.itens_venda.fk_vendas_id > public.vendas.id
+
+Ref: public.vendas.fk_met_pagamentos_id > public.met_pagamentos.id
+Ref: public.vendas.fk_user_profile_id > public.users_profile.id
+
+Ref: public.revisoes.fk_livro_id > public.livros.id
+Ref: public.revisoes.fk_user_profile_id > public.users_profile.id
+
+Ref: public.notificacoes.fk_user_profile_id > public.users_profile.id
+Ref: public.enderecos.fk_user_profile_id > public.users_profile.id
+Ref: public.usuarios_cartoes.fk_user_profile_id > public.users_profile.id
+Ref: public.livros.fk_user_profile_id > public.users_profile.id
+
+Ref: public.avaliacoes.fk_livros_id > public.livros.id
+Ref: public.avaliacoes.fk_users_profile_id > public.users_profile.id
+
+Ref: public.notificacoes_lidas.fk_notificacao_id > public.notificacoes.id
+Ref: public.notificacoes_lidas.fk_user_profile_id > public.users_profile.id
