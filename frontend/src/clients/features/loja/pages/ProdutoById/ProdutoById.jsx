@@ -26,6 +26,9 @@ export default function ProdutoById() {
 
   const { adicionarItem } = useCarrinho();
 
+  const [pedidoFisico, setPedidoFisico] = useState(false);
+  const [pedidoDigital, setPedidoDigital] = useState(false);
+
   useEffect(() => {
     if (id) {
       buscarLivroById(id);
@@ -55,15 +58,31 @@ export default function ProdutoById() {
       .replace(".", ",");
   };
 
+  console.log(pedidoFisico);
+  console.log(pedidoDigital);
+
   const handleAdicionarCarrinho = () => {
-    adicionarItem({
+    if(pedidoFisico){
+      adicionarItem({
       id,
       titulo: livro.titulo,
       autor: autor?.nome || "Autor desconhecido",
       capa: capaFrente,
       preco: Number(precoExibido || 0),
-      tipo: tipoProduto,
+      tipo: "fisico",
     });
+    }
+    if(pedidoDigital){
+      adicionarItem({
+      id,
+      titulo: livro.titulo,
+      autor: autor?.nome || "Autor desconhecido",
+      capa: capaFrente,
+      preco: Number(precoExibido || 0),
+      tipo: "digital",
+    });
+    }
+    
   };
 
   return (
@@ -228,7 +247,12 @@ export default function ProdutoById() {
             </span>
           </div>
 
-          <button
+          <form>
+
+            <input type="checkbox" value={"fisico"} onClick={() => {setPedidoFisico(!pedidoFisico)}}></input>fisico<br></br>
+            <input type="checkbox" value={"digital"} onClick={() => {setPedidoDigital(!pedidoDigital)}}></input>digital
+
+            <button
             type="button"
             className={styles.btnCarrinho}
             onClick={handleAdicionarCarrinho}
@@ -237,15 +261,20 @@ export default function ProdutoById() {
             Adicionar ao carrinho
           </button>
 
+
+          </form>
+
+          
           <div className={styles.divisor}></div>
 
           <div className={styles.beneficio}>
             <FaTruck />
 
             <span>
-              {tipoProduto === "Físico"
-                ? "Entrega para todo o Brasil"
-                : "Envio imediato via e-mail"}
+              Envio imediato via e-mail
+            </span>
+            <span>
+              Entrega para todo o Brasil
             </span>
           </div>
 
