@@ -270,7 +270,7 @@ export class LojaModel {
     let possuiProdutoFisico = false;
 
     produtos.forEach((produto) => {
-      if (produto.formato?.toLowerCase() === "fisico") {
+      if (produto.tipo?.toLowerCase() === "fisico") {
         possuiProdutoFisico = true;
         const qtd = produto.qtd || 1;
         pesoTotalKg += qtd * 0.4;

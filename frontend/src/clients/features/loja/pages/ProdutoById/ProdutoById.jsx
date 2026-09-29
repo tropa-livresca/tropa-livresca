@@ -15,6 +15,7 @@ import {
 
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
 import { useCarrinho } from "../../hooks/useCarrinho";
+import { useEndereco } from "../../../perfil/hooks/useEndereco";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./ProdutoById.module.css";
 
@@ -24,10 +25,15 @@ export default function ProdutoById() {
   const { autor, colaboradores, livro, buscarLivroById, carregando } =
     useLivrosLoja();
 
-  const { adicionarItem } = useCarrinho();
+  const {BuscarEnderecoPrincipal, CEP} = useEndereco();
+
+  const { adicionarItem, calcularFrete, frete } = useCarrinho();
 
   const [pedidoFisico, setPedidoFisico] = useState(false);
   const [pedidoDigital, setPedidoDigital] = useState(false);
+  const [qtd, setQtd] = useState(1);
+
+  console.log("qtd "+qtd)
 
   useEffect(() => {
     if (id) {
@@ -35,7 +41,21 @@ export default function ProdutoById() {
     }
   }, [id, buscarLivroById]);
 
+  useEffect(() => {
+    BuscarEnderecoPrincipal()
+  }, [BuscarEnderecoPrincipal]);
+
+  /*
+
+  useEffect(() => {
+    calcularFrete(CEP, [{tipo:"fisico", qtd:qtd}]);
+  }, [CEP, qtd, calcularFrete]);
+
+  */
+
   const [tipoSelecionado] = useState("Físico");
+
+  console.log(frete);
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -45,8 +65,6 @@ export default function ProdutoById() {
     return <p className={styles.naoEncontrado}>Livro não encontrado.</p>;
   }
 
-  const precoExibido =
-    tipoSelecionado === "Físico" ? livro.preco_fisico : livro.preco_digital;
 
   const capaFrente = livro.capa?.frente;
 
@@ -68,8 +86,9 @@ export default function ProdutoById() {
       titulo: livro.titulo,
       autor: autor?.nome || "Autor desconhecido",
       capa: capaFrente,
-      preco: Number(precoExibido || 0),
+      preco: Number(livro.preco_fisico || 0),
       tipo: "fisico",
+      quantidade: qtd,
     });
     }
     if(pedidoDigital){
@@ -78,8 +97,9 @@ export default function ProdutoById() {
       titulo: livro.titulo,
       autor: autor?.nome || "Autor desconhecido",
       capa: capaFrente,
-      preco: Number(precoExibido || 0),
+      preco: Number(livro.preco_digital || 0),
       tipo: "digital",
+      quantidade: 1,
     });
     }
     
@@ -241,15 +261,24 @@ export default function ProdutoById() {
         </div>
 
         <aside className={styles.compra}>
-          <div className={styles.preco}>
+          {pedidoFisico || pedidoFisico == false && pedidoDigital == false ? <div className={styles.preco}>
+            <h2>Fisico</h2>
             <span className={styles.numero}>
-              R$ {formatarPreco(precoExibido)}
+              R$ {formatarPreco(livro.preco_fisico)}
             </span>
-          </div>
+          </div> : <></>}
+
+          {pedidoDigital ? <div className={styles.preco}>
+            <h2>Digital</h2>
+            <span className={styles.numero}>
+              R$ {formatarPreco(livro.preco_digital)}
+            </span>
+          </div> : <></>}
 
           <form>
 
-            <input type="checkbox" value={"fisico"} onClick={() => {setPedidoFisico(!pedidoFisico)}}></input>fisico<br></br>
+            <input type="checkbox" value={"fisico"} onClick={() => {setPedidoFisico(!pedidoFisico)}}></input>fisico{""}
+            <input type="number" value={qtd} onChange={(e) => {setQtd(e.target.value)}}></input><br></br>
             <input type="checkbox" value={"digital"} onClick={() => {setPedidoDigital(!pedidoDigital)}}></input>digital
 
             <button
