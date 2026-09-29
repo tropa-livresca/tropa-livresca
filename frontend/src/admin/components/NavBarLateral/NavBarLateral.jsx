@@ -5,7 +5,6 @@ import styles from "./NavBarLateral.module.css";
 
 export default function NavBarLateral() {
   const [usuariosAberto, setUsuariosAberto] = useState(false);
-  const [funcionariosAberto, setFuncionariosAberto] = useState(false);
   const [livrosAberto, setLivrosAberto] = useState(false);
   const [ecommerceAberto, setEcommerceAberto] = useState(false);
   const [comunidadeAberto, setComunidadeAberto] = useState(false);
@@ -14,54 +13,17 @@ export default function NavBarLateral() {
   return (
     <div className={styles.menu}>
       <div className={styles.titulo}>Geral</div>
-
+      
+      <Link to="/admin/usuarios/novo"> 
       <div
         className={styles.itemMenu}
         onClick={() => setUsuariosAberto(!usuariosAberto)}
       >
+       
         Usuários
-        <FaChevronDown
-          className={`${styles.seta} ${
-            usuariosAberto ? styles.setaAberta : ""
-          }`}
-        />
+      
       </div>
-
-      {usuariosAberto && (
-        <div className={styles.subMenu}>
-          <Link to="/admin/usuarios/novo" className={styles.subItem}>
-            Novo Usuário
-          </Link>
-
-          <Link to="/admin/usuarios" className={styles.subItem}>
-            Gerenciar Usuários
-          </Link>
-        </div>
-      )}
-
-      <div
-        className={styles.itemMenu}
-        onClick={() => setFuncionariosAberto(!funcionariosAberto)}
-      >
-        Funcionários
-        <FaChevronDown
-          className={`${styles.seta} ${
-            funcionariosAberto ? styles.setaAberta : ""
-          }`}
-        />
-      </div>
-
-      {funcionariosAberto && (
-        <div className={styles.subMenu}>
-          <Link to="/admin/funcionarios/novo" className={styles.subItem}>
-            Novo Funcionário
-          </Link>
-
-          <Link to="/admin/funcionarios" className={styles.subItem}>
-            Gerenciar Funcionários
-          </Link>
-        </div>
-      )}
+        </Link>
 
       <div
         className={styles.itemMenu}
@@ -75,9 +37,7 @@ export default function NavBarLateral() {
 
       {livrosAberto && (
         <div className={styles.subMenu}>
-          <Link to="/admin/categorias" className={styles.subItem}>
-            Categorias
-          </Link>
+
 
           <Link to="/admin/livros/painel" className={styles.subItem}>
             Painel Livros

@@ -13,6 +13,5 @@
 .conteudo {
   min-height: calc(100vh - 5rem);
   margin-left: 15.6rem;
-  padding: 2rem;
   box-sizing: border-box;
 }
