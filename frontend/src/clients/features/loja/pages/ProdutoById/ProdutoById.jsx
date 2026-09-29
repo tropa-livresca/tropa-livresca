@@ -33,7 +33,7 @@ export default function ProdutoById() {
   const [pedidoDigital, setPedidoDigital] = useState(false);
   const [qtd, setQtd] = useState(1);
 
-  console.log("qtd "+qtd)
+  console.log(CEP);
 
   useEffect(() => {
     if (id) {
@@ -45,13 +45,12 @@ export default function ProdutoById() {
     BuscarEnderecoPrincipal()
   }, [BuscarEnderecoPrincipal]);
 
-  /*
-
   useEffect(() => {
-    calcularFrete(CEP, [{tipo:"fisico", qtd:qtd}]);
-  }, [CEP, qtd, calcularFrete]);
+    if(CEP != null){
+      calcularFrete(CEP, [{tipo:"fisico", qtd:qtd}]);
+    }
+  }, [CEP, qtd]);
 
-  */
 
   const [tipoSelecionado] = useState("Físico");
 

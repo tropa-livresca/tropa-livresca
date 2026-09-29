@@ -72,15 +72,15 @@ export const CarrinhoProvider = ({ children }) => {
     );
   };
 
-  const calcularFrete = (cep , produtos) => {
+  const calcularFrete = async (cep , produtos) => {
     setCarregando(true);
     try{
-      const params = new URLSearchParams({
-          cepDestino: cep,
-          itensVenda: produtos
-        });
 
-      const response = apiFetch(`/api/v1/clients/loja/frete?${params.toString()}`)
+      const inicio = "";
+      const queryProdutos = produtos.reduce((inicio, produto) => {"{"+"tipo:"+produto.tipo+","+"quantidade:"+produto.quantidade+"},"})
+
+
+      const response = await apiFetch(`/api/v1/clients/loja/frete?cepDestino=${cep}&itensVenda=[${queryProdutos}]`)
 
       if(!response.ok){
         console.error("Erro ao calcular frete:", response.error);
