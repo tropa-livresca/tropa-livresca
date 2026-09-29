@@ -5,6 +5,12 @@ export class ComentarioModel {
     const start = (secao - 1) * limit;
     const end = start + limit - 1;
 
+
+    console.log(start);
+    console.log(end);
+    console.log(limit);
+    console.log(secao);
+
     const { data, error, count } = await supabase
       .from("comentarios")
       .select(
@@ -26,7 +32,7 @@ export class ComentarioModel {
       throw error;
     }
 
-    const comentariosFormatados = (data || []).map((comentario) => {
+      const comentariosFormatados = (data || []).map((comentario) => {
       const { autor, ...dadosComentario } = comentario;
       return {
         ...dadosComentario,

@@ -1,71 +1,39 @@
 import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback } from "react";
 
-export const useLivrosLoja = () => {
-  const [livro, setLivro] = useState(null);
-  const [autor, setAutor] = useState(null);
-  const [colaboradores, setColaboradores] = useState([]);
+export const useComentario = () => {
+
   const [carregando, setCarregando] = useState(false);
-  const [livros, setLivros] = useState([]);
+  const [comentarios, setComentarios] = useState([]);
   const [meta, setMeta] = useState(null);
 
-  const buscarLivroById = useCallback(async (id) => {
-    setCarregando(true);
-    try {
-      const response = await apiFetch(`/api/v1/clients/loja/${id}`);
-      const data = await response.json();
-      if (!response.ok) {
-        console.error("Erro ao buscar livros:", data.error);
-        return;
-      }
-
-      setLivro(data);
-
-      setAutor(data.users_profile);
-      setColaboradores(data.colaboradores || []);
-    } catch (err) {
-      console.error("Erro ao buscar livro by id", err);
-      throw err;
-    } finally {
-      setCarregando(false);
-    }
-  }, []);
-
-  const buscarLivros = useCallback(
+  const buscarComentarios = useCallback(
     async (
-      page = 1,
+      idLivro,
+      secao = 1,
       limit = 12,
-      busca = "",
-      filtro = "",
-      ordem = "",
-      categoria = "",
     ) => {
       setCarregando(true);
       try {
         const params = new URLSearchParams({
-          page: String(page),
+          secao: String(secao),
           limit: String(limit),
-          busca,
-          filtro,
-          ordem,
-          categoria,
+          idLivro: String(idLivro),
         });
 
         const response = await apiFetch(
-          `/api/v1/clients/loja/?${params.toString()}`,
+          `/api/v1/clients/comentarios/?${params.toString()}`,
         );
-        const data = await response.json();
+        const res = await response.json();
         if (!response.ok) {
-          console.error("Erro ao buscar livros:", data.error);
+          console.error("Erro ao buscar livros:", res.error);
           return;
         }
-        const livros = Array.isArray(data.data)
-          ? data.data
-          : Array.isArray(data.data?.data)
-            ? data.data.data
-            : [];
-        setLivros(livros);
-        setMeta(data.meta || null);
+
+        console.log(res);
+
+        setComentarios(res.data);
+        setMeta(res.meta || null);
       } catch (err) {
         console.error("Erro ao buscar livros da loja:", err);
         throw err;
@@ -77,15 +45,10 @@ export const useLivrosLoja = () => {
   );
 
   return {
-    livro,
-    setLivro,
-    autor,
-    colaboradores,
-    livros,
-    setLivros,
+    comentarios,
+    setComentarios,
     meta,
     carregando,
-    buscarLivros,
-    buscarLivroById,
+    buscarComentarios,
   };
 };

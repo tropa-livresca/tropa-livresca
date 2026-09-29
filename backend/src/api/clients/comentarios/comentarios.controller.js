@@ -3,8 +3,7 @@ import { ComentarioService } from "./comentarios.service.js";
 export class ComentarioController {
   static async buscarComentarios(req, res, next) {
     try {
-      const idLivro = req.param?.id;
-      const { limit, secao } = req.body;
+      const { limit, secao, idLivro } = req.query;
 
       const comentarios = await ComentarioService.buscarComentarios(
         idLivro,
@@ -12,7 +11,7 @@ export class ComentarioController {
         secao,
       );
 
-      return res.status(201).json({ comentarios });
+      return res.status(201).json(comentarios);
     } catch (err) {
       next(err);
     }
