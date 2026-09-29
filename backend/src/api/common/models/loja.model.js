@@ -90,6 +90,32 @@ export class LojaModel {
     return data;
   }
 
+  static async consultarVendas({ page = 1, limit = 12, ordem = "" }) {
+    const start = (page - 1) * limit;
+    const end = start + limit - 1;
+
+    let query = supabase
+      .from("vendas")
+      .select("*, users_profile(*)", { count: "exact" });
+
+    query =
+      ordem === "ascendente" || !ordem
+        ? query.order("data_venda", { ascending: true })
+        : query.order("data_venda", { ascending: false });
+
+    const { data, error, count } = await query.range(start, end);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      data: data || [],
+      count: count || 0,
+    };
+  }
+
   static async consultarVenda(vendaId) {
     const { data, error } = await supabase
       .from("vendas")

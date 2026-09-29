@@ -21,6 +21,7 @@ tags:
   - name: Cartões
   - name: Revisões
   - name: Usuários
+  - name: Movimentações Financeiras
 paths:
   /auth/signin-adm:
     post:
