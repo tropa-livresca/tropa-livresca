@@ -15,6 +15,7 @@ import {
 
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
 import { useCarrinho } from "../../hooks/useCarrinho";
+import { useEndereco } from "../../../perfil/hooks/useEndereco";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./ProdutoById.module.css";
 
@@ -24,7 +25,15 @@ export default function ProdutoById() {
   const { autor, colaboradores, livro, buscarLivroById, carregando } =
     useLivrosLoja();
 
-  const { adicionarItem } = useCarrinho();
+  const {BuscarEnderecoPrincipal, CEP} = useEndereco();
+
+  const { adicionarItem, calcularFrete, frete } = useCarrinho();
+
+  const [pedidoFisico, setPedidoFisico] = useState(false);
+  const [pedidoDigital, setPedidoDigital] = useState(false);
+  const [qtd, setQtd] = useState(1);
+
+  console.log(CEP);
 
   useEffect(() => {
     if (id) {
@@ -32,7 +41,20 @@ export default function ProdutoById() {
     }
   }, [id, buscarLivroById]);
 
+  useEffect(() => {
+    BuscarEnderecoPrincipal()
+  }, [BuscarEnderecoPrincipal]);
+
+  useEffect(() => {
+    if(CEP != null){
+      calcularFrete(CEP, [{tipo:"fisico", qtd:qtd}]);
+    }
+  }, [CEP, qtd]);
+
+
   const [tipoSelecionado] = useState("Físico");
+
+  console.log(frete);
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -42,8 +64,6 @@ export default function ProdutoById() {
     return <p className={styles.naoEncontrado}>Livro não encontrado.</p>;
   }
 
-  const precoExibido =
-    tipoSelecionado === "Físico" ? livro.preco_fisico : livro.preco_digital;
 
   const capaFrente = livro.capa?.frente;
 
@@ -55,15 +75,33 @@ export default function ProdutoById() {
       .replace(".", ",");
   };
 
+  console.log(pedidoFisico);
+  console.log(pedidoDigital);
+
   const handleAdicionarCarrinho = () => {
-    adicionarItem({
+    if(pedidoFisico){
+      adicionarItem({
       id,
       titulo: livro.titulo,
       autor: autor?.nome || "Autor desconhecido",
       capa: capaFrente,
-      preco: Number(precoExibido || 0),
-      tipo: tipoProduto,
+      preco: Number(livro.preco_fisico || 0),
+      tipo: "fisico",
+      quantidade: qtd,
     });
+    }
+    if(pedidoDigital){
+      adicionarItem({
+      id,
+      titulo: livro.titulo,
+      autor: autor?.nome || "Autor desconhecido",
+      capa: capaFrente,
+      preco: Number(livro.preco_digital || 0),
+      tipo: "digital",
+      quantidade: 1,
+    });
+    }
+    
   };
 
   return (
@@ -222,13 +260,27 @@ export default function ProdutoById() {
         </div>
 
         <aside className={styles.compra}>
-          <div className={styles.preco}>
+          {pedidoFisico || pedidoFisico == false && pedidoDigital == false ? <div className={styles.preco}>
+            <h2>Fisico</h2>
             <span className={styles.numero}>
-              R$ {formatarPreco(precoExibido)}
+              R$ {formatarPreco(livro.preco_fisico)}
             </span>
-          </div>
+          </div> : <></>}
 
-          <button
+          {pedidoDigital ? <div className={styles.preco}>
+            <h2>Digital</h2>
+            <span className={styles.numero}>
+              R$ {formatarPreco(livro.preco_digital)}
+            </span>
+          </div> : <></>}
+
+          <form>
+
+            <input type="checkbox" value={"fisico"} onClick={() => {setPedidoFisico(!pedidoFisico)}}></input>fisico{""}
+            <input type="number" value={qtd} onChange={(e) => {setQtd(e.target.value)}}></input><br></br>
+            <input type="checkbox" value={"digital"} onClick={() => {setPedidoDigital(!pedidoDigital)}}></input>digital
+
+            <button
             type="button"
             className={styles.btnCarrinho}
             onClick={handleAdicionarCarrinho}
@@ -237,15 +289,20 @@ export default function ProdutoById() {
             Adicionar ao carrinho
           </button>
 
+
+          </form>
+
+          
           <div className={styles.divisor}></div>
 
           <div className={styles.beneficio}>
             <FaTruck />
 
             <span>
-              {tipoProduto === "Físico"
-                ? "Entrega para todo o Brasil"
-                : "Envio imediato via e-mail"}
+              Envio imediato via e-mail
+            </span>
+            <span>
+              Entrega para todo o Brasil
             </span>
           </div>
 

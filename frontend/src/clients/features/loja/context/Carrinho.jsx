@@ -1,7 +1,12 @@
 import { useState, useEffect } from "react";
 import { CarrinhoContext } from "./CarrinhoContext";
+import { apiFetch } from "../../../../common/services/api";
+import { error } from "../../../../../../backend/src/api/common/utils/error";
 
 export const CarrinhoProvider = ({ children }) => {
+  const [carregando, setCarregando] = useState(false);
+  const [frete, setFrete] = useState(0);
+
   const [itens, setItens] = useState(() => {
     try {
       const salvo = localStorage.getItem("@loja-livros:carrinho");
@@ -23,10 +28,10 @@ export const CarrinhoProvider = ({ children }) => {
 
       if (itemExistente) {
         return itensAtuais.map((item) =>
-          item.id === produto.id && item.tipo === produto.tipo
+          item.id === produto.id && item.tipo === produto.tipo && item.tipo == "fisico"
             ? {
                 ...item,
-                quantidade: item.quantidade + (produto.quantidade || 1),
+                quantidade: Number(item.quantidade) + (Number(produto.quantidade) || 1),
               }
             : item,
         );
@@ -67,6 +72,32 @@ export const CarrinhoProvider = ({ children }) => {
     );
   };
 
+  const calcularFrete = async (cep , produtos) => {
+    setCarregando(true);
+    try{
+
+      const inicio = "";
+      const queryProdutos = produtos.reduce((inicio, produto) => {"{"+"tipo:"+produto.tipo+","+"quantidade:"+produto.quantidade+"},"})
+
+
+      const response = await apiFetch(`/api/v1/clients/loja/frete?cepDestino=${cep}&itensVenda=[${queryProdutos}]`)
+
+      if(!response.ok){
+        console.error("Erro ao calcular frete:", response.error);
+        return;
+      }
+
+      const res = response.json();
+
+      setFrete(res.preco);
+
+    }catch(err){
+       console.error("Erro ao calcular frete:", err);
+    }finally{
+      setCarregando(false)
+    }
+  };
+
   const limparCarrinho = () => setItens([]);
 
   const quantidadeTotal = itens.reduce((acc, item) => acc + item.quantidade, 0);
@@ -87,10 +118,12 @@ export const CarrinhoProvider = ({ children }) => {
         removerQuantidade,
         excluirItem,
         limparCarrinho,
+        calcularFrete,
         quantidadeTotal,
         valorSubtotal,
         valorFrete,
         valorTotal,
+        frete,
       }}
     >
       {children}
