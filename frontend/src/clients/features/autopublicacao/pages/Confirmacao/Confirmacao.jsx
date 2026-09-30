@@ -3,6 +3,7 @@ import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados";
 
 export default function Confirmacao({
   dados,
@@ -383,7 +384,7 @@ export default function Confirmacao({
 
           <button
             type="button"
-            onClick={() => publicarLivro("em_revisao")}
+            onClick={() => publicarLivro(LIVRO_ESTADO.EM_REVISAO)}
             className={styles.btnenviar}
           >
             Enviar para Revisão
@@ -391,7 +392,7 @@ export default function Confirmacao({
 
           <button
             type="button"
-            onClick={() => publicarLivro("rascunho")}
+            onClick={() => publicarLivro(LIVRO_ESTADO.RASCUNHO)}
             className={styles.btnsalvar}
           >
             Salvar como Rascunho

@@ -1,13 +1,96 @@
 import { supabaseAdmin } from "../../common/config/supabase.js";
 import { RevisaoModel } from "../../common/models/revisao.model.js";
+import { LIVRO_ESTADO } from "../../common/config/livro-estados.js";
+import {
+  STORAGE_BUCKET,
+  criarUrlAssinada,
+  normalizarCaminhoPersistido,
+  removerArquivos,
+  validarArquivoArmazenado,
+  validarMetadadosUpload,
+} from "../../common/config/storage.js";
 
 export class RevisaoService {
+  static async _formatarRevisao(revisao) {
+    if (!revisao) return revisao;
+
+    const arquivoPath = normalizarCaminhoPersistido(
+      revisao.arquivo,
+      STORAGE_BUCKET.MANUSCRITOS,
+    );
+
+    return {
+      ...revisao,
+      arquivo: arquivoPath
+        ? await criarUrlAssinada(STORAGE_BUCKET.MANUSCRITOS, arquivoPath)
+        : null,
+      arquivoPath,
+    };
+  }
+
+  static async _formatarRevisoes(revisoes) {
+    return Promise.all(
+      (revisoes || []).map((revisao) => this._formatarRevisao(revisao)),
+    );
+  }
+
+  static _novoPathRevisao(userId) {
+    return `${userId}/revisoes/${globalThis.crypto.randomUUID()}.pdf`;
+  }
+
+  static async _uploadRevisao(arquivo, userId) {
+    const extensao = arquivo.originalname?.split(".").pop();
+    const tamanho = arquivo.size ?? arquivo.buffer?.length;
+
+    validarMetadadosUpload({
+      tipo: "manuscrito",
+      extensao,
+      mimeType: arquivo.mimetype,
+      tamanho,
+    });
+
+    const path = this._novoPathRevisao(userId);
+    const { error: uploadError } = await supabaseAdmin.storage
+      .from(STORAGE_BUCKET.MANUSCRITOS)
+      .upload(path, arquivo.buffer, {
+        cacheControl: "3600",
+        upsert: false,
+        contentType: arquivo.mimetype,
+      });
+
+    if (uploadError) {
+      uploadError.statusCode = 500;
+      throw uploadError;
+    }
+
+    try {
+      await validarArquivoArmazenado(
+        STORAGE_BUCKET.MANUSCRITOS,
+        path,
+        "manuscrito",
+      );
+    } catch (error) {
+      await this._removerRevisaoUpload(path);
+      throw error;
+    }
+
+    return path;
+  }
+
+  static async _removerRevisaoUpload(path) {
+    if (!path) return;
+
+    try {
+      await removerArquivos(STORAGE_BUCKET.MANUSCRITOS, [path]);
+    } catch (error) {
+      console.error("Não foi possível remover manuscrito de revisão:", error);
+    }
+  }
+
   static async BuscarLivroRevisao(busca) {
     const livros = await RevisaoModel.BuscarLivraoRevisao(busca);
 
-    if (livros.error) {
-      throw livros.error;
-    }
+    if (livros.error) throw livros.error;
 
     return livros;
   }
@@ -29,12 +112,10 @@ export class RevisaoService {
       livro,
     );
 
-    if (revisoes.error) {
-      throw revisoes.error;
-    }
+    if (revisoes.error) throw revisoes.error;
 
     return {
-      data: revisoes.data,
+      data: await this._formatarRevisoes(revisoes.data),
       livros: revisoes.livros,
       meta: {
         page,
@@ -52,13 +133,14 @@ export class RevisaoService {
       throw erroId;
     }
 
-    const revisoes = await RevisaoModel.BuscarRevisaoById(id);
+    const revisao = await RevisaoModel.BuscarRevisaoById(id);
 
-    if (revisoes.error) {
-      throw revisoes.error;
-    }
+    if (revisao.error) throw revisao.error;
 
-    return revisoes;
+    return {
+      ...revisao,
+      data: await this._formatarRevisao(revisao.data),
+    };
   }
 
   static async BuscarRevisaoByUserId(userId) {
@@ -70,16 +152,15 @@ export class RevisaoService {
 
     const revisao = await RevisaoModel.BuscarRevisaoByUserId(userId);
 
-    if (revisao.error) {
-      throw revisao.error;
-    }
+    if (revisao.error) throw revisao.error;
 
-    return revisao;
+    return {
+      ...revisao,
+      data: await this._formatarRevisoes(revisao.data),
+    };
   }
 
-
   static async BuscarRevisaoBylivroId(livroId) {
-
     if (!livroId) {
       const erroId = new Error("Id não especificado.");
       erroId.statusCode = 400;
@@ -88,11 +169,12 @@ export class RevisaoService {
 
     const revisao = await RevisaoModel.BuscarRevisaoByLivroId(livroId);
 
-    if (revisao.error) {
-      throw revisao.error;
-    }
+    if (revisao.error) throw revisao.error;
 
-    return revisao;
+    return {
+      ...revisao,
+      data: await this._formatarRevisoes(revisao.data),
+    };
   }
 
   static async VerificarRevisor(livroId, funcionarioId) {
@@ -104,67 +186,102 @@ export class RevisaoService {
 
     const revisao = await RevisaoModel.VerificarRevisor(livroId, funcionarioId);
 
-    console.log(revisao);
+    if (revisao?.error) throw revisao.error;
 
-    if (revisao?.error) {
-      throw revisao.error;
-    }
-
-    return revisao;
+    return this._formatarRevisao(revisao);
   }
 
-  static async AtualizarRevisao(id, nome, apontamento, idLivro, manuscritoRevisto = null,) {
-    
-    console.log("b");
+  static async AtualizarRevisao(
+    id,
+    nome,
+    apontamento,
+    idLivro,
+    manuscritoRevisto = null,
+    funcionarioId,
+  ) {
     if (!id) {
       const erroId = new Error("Id da revisão é obrigatório.");
       erroId.statusCode = 400;
       throw erroId;
     }
 
-    let manuscritoUrl = undefined;
-
-    if (manuscritoRevisto) {
-      const nomeArquivo = `${Date.now()}_${manuscritoRevisto.name || "arquivo.pdf"}`;
-
-      const { data: uploadData, error: uploadError } =
-        await supabaseAdmin.storage
-          .from("manuscrito-livro")
-          .upload(`revisoes/${nomeArquivo}`, manuscritoRevisto, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-      if (uploadError) {
-        uploadError.statusCode = 500;
-        throw uploadError;
-      }
-
-      const { data: urlData } = supabaseAdmin.storage
-        .from("manuscrito-livro")
-        .getPublicUrl(uploadData.path);
-
-      manuscritoUrl = urlData.publicUrl || undefined;
+    if (!funcionarioId) {
+      const erroUsuario = new Error("Administrador não autenticado.");
+      erroUsuario.statusCode = 401;
+      throw erroUsuario;
     }
 
-    console.log(id);
+    const revisaoAtual = await RevisaoModel.buscarRevisaoParaAtualizacao(
+      id,
+      funcionarioId,
+    );
+
+    if (!revisaoAtual) {
+      const erroRevisao = new Error(
+        "Revisão não encontrada ou não pertence ao administrador.",
+      );
+      erroRevisao.statusCode = 403;
+      throw erroRevisao;
+    }
+
+    if (revisaoAtual.completado) {
+      const erroRevisao = new Error(
+        "Revisões concluídas não podem ser alteradas.",
+      );
+      erroRevisao.statusCode = 409;
+      throw erroRevisao;
+    }
+
+    if (
+      idLivro !== undefined &&
+      String(idLivro) !== String(revisaoAtual.fk_livro_id)
+    ) {
+      const erroLivro = new Error(
+        "A revisão não pode ser vinculada a outro livro.",
+      );
+      erroLivro.statusCode = 409;
+      throw erroLivro;
+    }
+
+    let manuscritoPath;
+    if (manuscritoRevisto) {
+      manuscritoPath = await this._uploadRevisao(
+        manuscritoRevisto,
+        funcionarioId,
+      );
+    }
 
     const dadosRevisao = {};
     if (nome !== undefined) dadosRevisao.nome = nome;
     if (apontamento !== undefined) dadosRevisao.apontamento = apontamento;
     if (idLivro !== undefined) dadosRevisao.fk_livro_id = idLivro;
-    if (manuscritoUrl !== undefined) dadosRevisao.arquivo = manuscritoUrl;
+    if (manuscritoPath !== undefined) dadosRevisao.arquivo = manuscritoPath;
 
-    const revisaoAtualizada = await RevisaoModel.AtualizarRevisao(
-      id,
-      dadosRevisao,
-    );
-
-    if (revisaoAtualizada.error) {
-      throw revisaoAtualizada.error;
+    let revisaoAtualizada;
+    try {
+      revisaoAtualizada = await RevisaoModel.AtualizarRevisao(
+        id,
+        funcionarioId,
+        dadosRevisao,
+      );
+    } catch (error) {
+      await this._removerRevisaoUpload(manuscritoPath);
+      throw error;
     }
 
-    return revisaoAtualizada;
+    const arquivoAnterior = normalizarCaminhoPersistido(
+      revisaoAtual.arquivo,
+      STORAGE_BUCKET.MANUSCRITOS,
+    );
+    if (
+      manuscritoPath &&
+      arquivoAnterior &&
+      manuscritoPath !== arquivoAnterior
+    ) {
+      await this._removerRevisaoUpload(arquivoAnterior);
+    }
+
+    return this._formatarRevisao(revisaoAtualizada);
   }
 
   static async CriarRevisao(
@@ -174,7 +291,7 @@ export class RevisaoService {
     manuscritoRevisto = null,
     userId,
   ) {
-    if (!nome || !apontamento || !idLivro || !userId) {
+    if (!nome || !apontamento || !idLivro || !userId || !manuscritoRevisto) {
       const erroDados = new Error(
         "Dados de criação de revisão não informados.",
       );
@@ -182,78 +299,67 @@ export class RevisaoService {
       throw erroDados;
     }
 
-    let manuscritoUrl = null;
+    const livro = await RevisaoModel.buscarLivroParaRevisao(idLivro);
+    if (!livro) {
+      const erroLivro = new Error("Livro não encontrado.");
+      erroLivro.statusCode = 404;
+      throw erroLivro;
+    }
 
+    if (livro.ativo !== true || livro.estado !== LIVRO_ESTADO.EM_REVISAO) {
+      const erroEstado = new Error(
+        "Só é possível criar revisão para livro em revisão ativo.",
+      );
+      erroEstado.statusCode = 409;
+      throw erroEstado;
+    }
+
+    const revisaoPendente =
+      await RevisaoModel.buscarRevisaoPendentePorLivro(idLivro);
+    if (revisaoPendente) {
+      const erroRevisao = new Error("O livro já possui uma revisão pendente.");
+      erroRevisao.statusCode = 409;
+      throw erroRevisao;
+    }
+
+    let manuscritoPath = null;
     if (manuscritoRevisto) {
-      const nomeArquivo = `${Date.now()}_${manuscritoRevisto.name || "arquivo.pdf"}`;
-
-      const { data: uploadData, error: uploadError } =
-        await supabaseAdmin.storage
-          .from("manuscrito-livro")
-          .upload(`revisoes/${nomeArquivo}`, manuscritoRevisto, {
-            cacheControl: "3600",
-            upsert: false,
-          });
-
-      if (uploadError) {
-        uploadError.statusCode = 500;
-        throw uploadError;
-      }
-
-      const { data: urlData } = supabaseAdmin.storage
-        .from("manuscrito-livro")
-        .getPublicUrl(uploadData.path);
-
-      manuscritoUrl = urlData.publicUrl;
+      manuscritoPath = await this._uploadRevisao(manuscritoRevisto, userId);
     }
 
     const dadosRevisao = {
-      nome: nome,
-      apontamento: apontamento,
+      nome,
+      apontamento,
       fk_livro_id: idLivro,
-      arquivo: manuscritoUrl,
+      arquivo: manuscritoPath,
       fk_user_profile_id: userId,
     };
 
-    const revisaoCriada = await RevisaoModel.CriarRevisao(dadosRevisao);
-
-    if (revisaoCriada.error) {
-      throw revisaoCriada.error;
+    let revisaoCriada;
+    try {
+      revisaoCriada = await RevisaoModel.CriarRevisao(dadosRevisao);
+    } catch (error) {
+      await this._removerRevisaoUpload(manuscritoPath);
+      throw error;
     }
 
-    return revisaoCriada;
+    return this._formatarRevisao(revisaoCriada);
   }
 
-  static async InativarRevisao(id) {
+  static async CompletarRevisao(id, funcionarioId) {
     if (!id) {
       const erroId = new Error("Id da revisão não informado.");
       erroId.statusCode = 404;
       throw erroId;
     }
 
-    const revisaoInativada = await RevisaoModel.InativarRevisao(id);
-
-    if (revisaoInativada.error) {
-      throw revisaoInativada.error;
+    if (!funcionarioId) {
+      const erroUsuario = new Error("Administrador não autenticado.");
+      erroUsuario.statusCode = 401;
+      throw erroUsuario;
     }
 
-    return revisaoInativada;
-  }
-
-  static async CompletarRevisao(id) {
-    if (!id) {
-      const erroId = new Error("Id da revisão não informado.");
-      erroId.statusCode = 404;
-      throw erroId;
-    }
-
-    const revisaoCompletada = await RevisaoModel.CompletarRevisao(id);
-
-    if (revisaoCompletada.error) {
-      throw revisaoCompletada.error;
-    }
-
-    return revisaoCompletada;
+    return RevisaoModel.CompletarRevisao(id, funcionarioId);
   }
 
   static async publicarLivro(livroId, funcionarioId) {
@@ -265,13 +371,7 @@ export class RevisaoService {
       throw erroDados;
     }
 
-    const livroPublicado = await RevisaoModel.publicarLivro(livroId);
-
-    if (livroPublicado.error) {
-      throw livroPublicado.error;
-    }
-
-    return livroPublicado;
+    return RevisaoModel.publicarLivro(livroId, funcionarioId);
   }
 
   static async negarPublicacaoLivro(idLivro, funcionarioId) {
@@ -283,11 +383,7 @@ export class RevisaoService {
       throw erroDados;
     }
 
-    const livroNegado = await RevisaoModel.negarPublicacaoLivro(idLivro);
-
-    if (livroNegado.error) throw livroNegado.error;
-
-    return livroNegado;
+    return RevisaoModel.negarPublicacaoLivro(idLivro, funcionarioId);
   }
 
   static async SolicitarRecallLivro(idLivro, funcionarioId) {
@@ -299,11 +395,6 @@ export class RevisaoService {
       throw erroDados;
     }
 
-    
-    const livroCorrecao = await RevisaoModel.SolicitarRecallLivro(idLivro);
-
-    if (livroCorrecao.error) throw livroCorrecao.error;
-
-    return livroCorrecao;
+    return RevisaoModel.SolicitarRecallLivro(idLivro, funcionarioId);
   }
 }

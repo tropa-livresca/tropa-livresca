@@ -9,12 +9,12 @@ jest.mock("../../../../src/api/admin/revisao/revisao.controller.js", () => {
     RevisaoController: {
       BuscarRevisoes: handler("BuscarRevisoes"),
       BuscarRevisaoById: handler("BuscarRevisaoById"),
+      BuscarRevisaoByLivroId: handler("BuscarRevisaoByLivroId"),
       BuscarRevisaoByUserId: handler("BuscarRevisaoByUserId"),
       VerificarRevisor: handler("VerificarRevisor"),
       CriarRevisao: handler("CriarRevisao"),
       AtualizarRevisao: handler("AtualizarRevisao"),
       BuscarLivroRevisao: handler("BuscarLivroRevisao"),
-      InativarRevisao: handler("InativarRevisao"),
       CompletarRevisao: handler("CompletarRevisao"),
       PublicarLivro: handler("PublicarLivro"),
       SolicitarRecallLivro: handler("SolicitarRecallLivro"),
@@ -56,6 +56,12 @@ describe("Rotas administrativas de revisão", () => {
     expect(response.body).toEqual({ handler: "BuscarRevisaoByUserId" });
   });
 
+  it("encaminha GET /livro/:id para BuscarRevisaoByLivroId", async () => {
+    const response = await request(app).get("/livro/42").expect(200);
+
+    expect(response.body).toEqual({ handler: "BuscarRevisaoByLivroId" });
+  });
+
   it("encaminha GET /verificarRevisor/:livroId para VerificarRevisor", async () => {
     const response = await request(app).get("/verificarRevisor/42").expect(200);
 
@@ -72,12 +78,6 @@ describe("Rotas administrativas de revisão", () => {
     const response = await request(app).put("/42").send({}).expect(200);
 
     expect(response.body).toEqual({ handler: "AtualizarRevisao" });
-  });
-
-  it("encaminha PATCH /:id/ativo para InativarRevisao", async () => {
-    const response = await request(app).patch("/42/ativo").expect(200);
-
-    expect(response.body).toEqual({ handler: "InativarRevisao" });
   });
 
   it("encaminha PATCH /:id/completado para CompletarRevisao", async () => {

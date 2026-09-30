@@ -15,7 +15,13 @@ export default function Revisoes() {
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   useEffect(() => {
-    buscarRevisoes(paginaAtual, 12, busca, filtro, ordem);
+    buscarRevisoes({
+      page: paginaAtual,
+      limit: 12,
+      busca,
+      filtro,
+      ordem,
+    });
   }, [paginaAtual, busca, filtro, ordem, buscarRevisoes]);
 
   const handleBuscar = (e) => {

@@ -1,4 +1,5 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
+import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 const COLUNAS_LIVRO =
   "id, ISBN, imagens_explicitas, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, conteudo_por_IA, direitos_de_publicacao";
@@ -20,7 +21,7 @@ export class LivroModel {
     let query = supabaseAdmin
       .from("livros")
       .select("*", { count: "exact" })
-      .neq("estado", "rascunho")
+      .neq("estado", LIVRO_ESTADO.RASCUNHO)
       .eq("ativo", true);
 
     if (busca) {
@@ -35,10 +36,10 @@ export class LivroModel {
       query = query.order("titulo", { ascending: isAsc });
     }
 
-    if (estado === "publicado") {
-      query = query.eq("estado", "publicado");
-    } else if (estado === "em_revisao") {
-      query = query.eq("estado", "em_revisao");
+    if (estado === LIVRO_ESTADO.PUBLICADO) {
+      query = query.eq("estado", LIVRO_ESTADO.PUBLICADO);
+    } else if (estado === LIVRO_ESTADO.EM_REVISAO) {
+      query = query.eq("estado", LIVRO_ESTADO.EM_REVISAO);
     }
 
     const { data, error, count } = await query.range(start, end);
@@ -102,7 +103,7 @@ export class LivroModel {
       .from("livros")
       .select(COLUNAS_LIVRO, { count: "exact" })
       .eq("ativo", true)
-      .eq("estado", "publicado");
+      .eq("estado", LIVRO_ESTADO.PUBLICADO);
 
     if (busca) {
       query = query.or(`titulo.ilike.%${busca}%,subtitulo.ilike.%${busca}%`);

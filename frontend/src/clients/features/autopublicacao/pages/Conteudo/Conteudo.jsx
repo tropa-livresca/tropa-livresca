@@ -92,7 +92,7 @@ export default function Conteudo({
     return () => {
       previews._urlsCriadas.forEach((url) => URL.revokeObjectURL(url));
     };
-  }, []);
+  }, [previews._urlsCriadas]);
 
   return (
     <main>

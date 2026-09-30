@@ -1,5 +1,6 @@
 import supabase from "../config/supabase.js";
 import nodemailer from "nodemailer";
+import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 const COLUNAS_LIVRO = `
   id,
@@ -36,7 +37,7 @@ export class LojaModel {
       .from("livros")
       .select(COLUNAS_LIVRO, { count: "exact" })
       .eq("ativo", true)
-      .eq("estado", "publicado");
+      .eq("estado", LIVRO_ESTADO.PUBLICADO);
 
     if (busca) {
       query = query.ilike("titulo", `%${busca}%`);
@@ -79,7 +80,7 @@ export class LojaModel {
       .select("*, users_profile(*)")
       .eq("id", id)
       .eq("ativo", true)
-      .eq("estado", "publicado")
+      .eq("estado", LIVRO_ESTADO.PUBLICADO)
       .single();
 
     if (error) {

@@ -2,7 +2,13 @@ openapi: 3.0.3
 info:
   title: API Tropa Livresca
   version: 1.0.0
-  description: API do site Tropa Livresca, organizada por autenticação, clientes e administração.
+  description: >-
+    API do site Tropa Livresca. Rotas de cliente usam o cookie auth-token;
+    rotas administrativas usam admin-token e também verificam is_admin. As
+    rotas de usuários e movimentações administrativas exigem is_master.
+    Erros usam {status, statusCode, error}; statusCode é o código HTTP enviado
+    pelo middleware. Listas paginadas usam page (padrão 1), limit (padrão 12)
+    e meta.totalItems/totalPages quando indicado.
 servers:
   - url: /api/v1
     description: API versionada
@@ -28,6 +34,12 @@ paths:
       tags: [Autenticação]
       summary: Iniciar sessão administrativa
       operationId: signinAdm
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminSigninRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -50,6 +62,12 @@ paths:
       operationId: alterarSenhaAdm
       security:
         - adminCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SenhaAdminRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -86,6 +104,12 @@ paths:
       operationId: alterarSenhaAntigaAdm
       security:
         - adminCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SenhaAdminAntigaRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -96,8 +120,14 @@ paths:
       tags: [Autenticação]
       summary: Criar conta
       operationId: signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignupRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -106,6 +136,12 @@ paths:
       tags: [Autenticação]
       summary: Iniciar sessão
       operationId: signin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SigninRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -116,6 +152,12 @@ paths:
       tags: [Autenticação]
       summary: Iniciar autenticação Google por redirecionamento
       operationId: signinGoogleRedirect
+      parameters:
+        - name: redirectTo
+          in: query
+          schema:
+            type: string
+            format: uri
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -125,6 +167,16 @@ paths:
       tags: [Autenticação]
       summary: Iniciar sessão com Google
       operationId: signinGoogle
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                redirectTo:
+                  type: string
+                  format: uri
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -155,6 +207,12 @@ paths:
       tags: [Autenticação]
       summary: Definir sessão
       operationId: setSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetSessionRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -176,6 +234,12 @@ paths:
       tags: [Autenticação]
       summary: Redefinir senha
       operationId: redefinirSenha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RedefinirSenhaRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -186,6 +250,12 @@ paths:
       tags: [Autenticação]
       summary: Solicitar recuperação de senha
       operationId: esquecerSenha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EmailRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -197,8 +267,13 @@ paths:
       summary: Processar callback de redefinição de senha
       operationId: callbackRedefinirSenha
       responses:
-        "200":
-          $ref: "#/components/responses/Success"
+        "302":
+          description: Redireciona para a URL de redefinição de senha configurada no servidor.
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
         default:
           $ref: "#/components/responses/Error"
   /auth/senha:
@@ -208,6 +283,20 @@ paths:
       operationId: atualizarSenha
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [senhaAntiga, senhaNova]
+              properties:
+                senhaAntiga:
+                  type: string
+                  format: password
+                senhaNova:
+                  type: string
+                  format: password
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -232,9 +321,37 @@ paths:
       operationId: listarAutopublicacoes
       security:
         - clientCookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: busca
+          in: query
+          schema:
+            type: string
+        - name: filtro
+          in: query
+          description: '"alfabetico" ou "data".'
+          schema:
+            type: string
+            enum: [alfabetico, data, ""]
+        - name: ordem
+          in: query
+          description: '"ascendente" ou "descendente".'
+          schema:
+            type: string
+            enum: [ascendente, descendente, ""]
+        - name: estado
+          in: query
+          description: Filtra por estado canônico; vazio lista todos.
+          schema:
+            $ref: "#/components/schemas/LivroEstadoFiltro"
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: Lista paginada de livros do usuário autenticado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginaLivros"
         default:
           $ref: "#/components/responses/Error"
     post:
@@ -243,9 +360,19 @@ paths:
       operationId: criarAutopublicacao
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriarAutopublicacaoRequest"
       responses:
-        "200":
-          $ref: "#/components/responses/Success"
+        "201":
+          description: Livro criado inicialmente como rascunho.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutopublicacaoSalva"
         default:
           $ref: "#/components/responses/Error"
   /clients/autopublicacao/{id}:
@@ -259,7 +386,11 @@ paths:
         - clientCookieAuth: []
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: Livro do usuário, com URLs assinadas para capa e manuscrito.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LivroAutopublicacao"
         default:
           $ref: "#/components/responses/Error"
     patch:
@@ -268,9 +399,19 @@ paths:
       operationId: atualizarAutopublicacao
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarAutopublicacaoRequest"
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: Livro atualizado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AutopublicacaoSalva"
         default:
           $ref: "#/components/responses/Error"
     delete:
@@ -281,7 +422,7 @@ paths:
         - clientCookieAuth: []
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: Rascunho removido sem corpo de resposta.
         default:
           $ref: "#/components/responses/Error"
   /clients/autopublicacao/upload-url:
@@ -291,9 +432,36 @@ paths:
       operationId: criarUploadLivro
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadLivroRequest"
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: URL assinada para upload direto no bucket retornado.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        default:
+          $ref: "#/components/responses/Error"
+    delete:
+      tags: [Autopublicação]
+      summary: Remover uploads temporários de livro
+      operationId: limparUploadsLivro
+      security:
+        - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LimparUploadsRequest"
+      responses:
+        "204":
+          description: Uploads temporários removidos; resposta sem corpo.
         default:
           $ref: "#/components/responses/Error"
   /clients/autopublicacao/estado/{id}:
@@ -305,6 +473,16 @@ paths:
       operationId: atualizarEstadoAutopublicacao
       security:
         - clientCookieAuth: []
+      description: >-
+        O cliente só pode transicionar rascunho, negado ou recall para
+        em_revisao. Estados aceitos: rascunho, em_revisao, publicado, negado,
+        recall; a transição depende do estado atual do livro.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizarEstadoLivroRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -328,8 +506,14 @@ paths:
       operationId: criarEndereco
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnderecoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -365,6 +549,12 @@ paths:
       operationId: atualizarEndereco
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/EnderecoRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -403,6 +593,23 @@ paths:
       tags: [Livros]
       summary: Listar livros
       operationId: listarLivros
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: busca
+          in: query
+          schema:
+            type: string
+        - name: filtro
+          in: query
+          schema:
+            type: string
+            enum: [alfabetico, data, ""]
+        - name: ordem
+          in: query
+          schema:
+            type: string
+            enum: [ascendente, descendente, ""]
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -425,6 +632,13 @@ paths:
       tags: [Autores]
       summary: Listar autores
       operationId: listarAutores
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: busca
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -437,6 +651,9 @@ paths:
       tags: [Autores]
       summary: Consultar autor
       operationId: buscarAutor
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -460,10 +677,12 @@ paths:
       security:
         - clientCookieAuth: []
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
               type: object
+              required: [imagem]
               properties:
                 imagem:
                   type: string
@@ -503,11 +722,11 @@ paths:
       security:
         - clientCookieAuth: []
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
-              type: object
-              additionalProperties: true
+              $ref: "#/components/schemas/PerfilRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -518,6 +737,27 @@ paths:
       tags: [Loja]
       summary: Listar livros disponíveis na loja
       operationId: listarLivrosLoja
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: busca
+          in: query
+          schema:
+            type: string
+        - name: filtro
+          in: query
+          schema:
+            type: string
+            enum: [alfabetico, data, ""]
+        - name: ordem
+          in: query
+          schema:
+            type: string
+            enum: [ascendente, descendente, ""]
+        - name: categoria
+          in: query
+          schema:
+            type: string
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -545,7 +785,7 @@ paths:
       security:
         - clientCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -556,8 +796,11 @@ paths:
       operationId: historicoVendasUsuario
       security:
         - clientCookieAuth: []
+      description: >-
+        O router registra GET /:id antes deste caminho, portanto a rota de
+        histórico é interceptada pelo handler de livro no estado atual.
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -566,6 +809,10 @@ paths:
       tags: [Loja]
       summary: Consultar número de vendas de um livro
       operationId: numeroVendasLivro
+      description: >-
+        O controller registrado lê req.params.id, mas a rota atual não declara
+        parâmetro de caminho. O handler recebe id indefinido; este contrato é
+        mantido explícito para não afirmar que a consulta funciona.
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -576,8 +823,22 @@ paths:
       tags: [Loja]
       summary: Calcular frete e prazo
       operationId: calcularFretePrazo
+      description: >-
+        O controller lê cepDestino e itensVenda da query e atualmente devolve
+        somente {teste: 1}; além disso, GET /:id é registrado antes e intercepta
+        este caminho no Express. A rota de cálculo não é alcançável no estado
+        atual do router.
+      parameters:
+        - name: cepDestino
+          in: query
+          schema:
+            type: string
+        - name: itensVenda
+          in: query
+          schema:
+            type: string
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -588,8 +849,22 @@ paths:
       operationId: alterarStatusPagamento
       security:
         - clientCookieAuth: []
+      description: >-
+        O controller lê email do JSON e req.params.id, mas a rota atual não
+        declara id; o handler não recebe identificador de venda pela rota.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -600,8 +875,119 @@ paths:
       operationId: realizarVenda
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [metodo_pagamento, endereco_entrega, total, itensVenda]
+              properties:
+                metodo_pagamento:
+                  type: string
+                endereco_entrega:
+                  type: object
+                  additionalProperties: true
+                total:
+                  type: number
+                itensVenda:
+                  type: array
+                  items:
+                    type: object
+                    additionalProperties: true
       responses:
-        "200":
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /clients/movimentacoes:
+    get:
+      tags: [Movimentações Financeiras]
+      summary: Consultar movimentações financeiras do autor
+      operationId: consultarMovimentacoesAutor
+      security:
+        - clientCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    post:
+      tags: [Movimentações Financeiras]
+      summary: Criar conta bancária
+      operationId: criarContaBancaria
+      security:
+        - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                [CPF, nomeCompleto, numeroBanco, numeroAgencia, tipoConta]
+              properties:
+                CPF:
+                  type: string
+                nomeCompleto:
+                  type: string
+                numeroBanco:
+                  type: string
+                numeroAgencia:
+                  type: string
+                tipoConta:
+                  type: string
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    put:
+      tags: [Movimentações Financeiras]
+      summary: Alterar dados da conta bancária
+      operationId: alterarContaBancaria
+      security:
+        - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                CPF:
+                  type: string
+                nomeCompleto:
+                  type: string
+                numeroBanco:
+                  type: string
+                numeroAgencia:
+                  type: string
+                tipoConta:
+                  type: string
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      tags: [Movimentações Financeiras]
+      summary: Solicitar saque
+      operationId: solicitarSaque
+      security:
+        - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [valorSaque]
+              properties:
+                valorSaque:
+                  type: number
+      responses:
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -613,7 +999,7 @@ paths:
       security:
         - clientCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -623,8 +1009,14 @@ paths:
       operationId: enviarNotificacaoCliente
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificacaoClienteRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -634,8 +1026,16 @@ paths:
       operationId: limparNotificacoesCliente
       security:
         - clientCookieAuth: []
+      description: O controller recebe o corpo JSON inteiro como quantidade de dias.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              minimum: 1
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -645,7 +1045,7 @@ paths:
       summary: Consultar notificações gerais
       operationId: notificacoesGeraisCliente
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -657,7 +1057,7 @@ paths:
       security:
         - clientCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -668,8 +1068,9 @@ paths:
       operationId: alterarStatusNotificacoesCliente
       security:
         - clientCookieAuth: []
+      description: O controller lê req.params.id, mas esta rota não declara id.
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -682,8 +1083,15 @@ paths:
       operationId: alterarNotificacaoCliente
       security:
         - clientCookieAuth: []
+      description: O controller consome os campos do corpo; não usa o id do path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificacaoClienteRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -694,7 +1102,7 @@ paths:
       security:
         - clientCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -705,8 +1113,9 @@ paths:
       operationId: listarAvaliacoes
       security:
         - clientCookieAuth: []
+      description: O controller lê o id do livro em req.params.id, ausente nesta rota.
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -716,8 +1125,15 @@ paths:
       operationId: criarAvaliacao
       security:
         - clientCookieAuth: []
+      description: O controller lê o id do livro em req.params.id, ausente nesta rota.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AvaliacaoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -730,8 +1146,15 @@ paths:
       operationId: alterarAvaliacao
       security:
         - clientCookieAuth: []
+      description: O controller lê o identificador da avaliação do corpo, não do path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AvaliacaoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -740,8 +1163,23 @@ paths:
       tags: [Comentários]
       summary: Consultar comentários
       operationId: listarComentarios
+      description: >-
+        O controller espera limit e secao no corpo GET e lê o livro por
+        req.param.id, propriedade não fornecida pela rota; bodies GET não são
+        interoperáveis entre clientes HTTP.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                limit:
+                  type: integer
+                secao:
+                  type: integer
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -751,8 +1189,15 @@ paths:
       operationId: criarComentario
       security:
         - clientCookieAuth: []
+      description: O controller lê o livro em req.params.id, ausente nesta rota.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComentarioRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -765,8 +1210,14 @@ paths:
       operationId: atualizarComentario
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ComentarioRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -776,8 +1227,16 @@ paths:
       operationId: excluirComentario
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              format: int64
+              description: O controller passa o corpo inteiro como id do comentário.
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -789,7 +1248,7 @@ paths:
       security:
         - clientCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -799,8 +1258,14 @@ paths:
       operationId: adicionarCartao
       security:
         - clientCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartaoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -810,8 +1275,15 @@ paths:
       operationId: alterarCartao
       security:
         - clientCookieAuth: []
+      description: O controller lê req.params.id, embora esta rota não declare parâmetro de caminho.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartaoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -823,7 +1295,7 @@ paths:
       summary: Consultar cartão
       operationId: buscarCartao
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -834,7 +1306,7 @@ paths:
       security:
         - clientCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -845,6 +1317,29 @@ paths:
       operationId: listarLivrosAdmin
       security:
         - adminCookieAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: busca
+          in: query
+          schema:
+            type: string
+        - name: filtro
+          in: query
+          schema:
+            type: string
+        - name: ordem
+          in: query
+          schema:
+            type: string
+        - name: ativo
+          in: query
+          schema:
+            type: boolean
+        - name: estado
+          in: query
+          schema:
+            $ref: "#/components/schemas/LivroEstadoFiltro"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -878,6 +1373,124 @@ paths:
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
+  /admin/loja:
+    get:
+      tags: [Loja]
+      summary: Listar vendas para administração
+      operationId: listarVendasAdmin
+      security:
+        - adminCookieAuth: []
+      description: >-
+        O controller tenta obter page, limit e ordem de req.params, mas a rota
+        raiz não declara parâmetros de caminho. A listagem usa os defaults do
+        service no estado atual.
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/loja/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Loja]
+      summary: Consultar venda
+      operationId: consultarDadosLojaAdmin
+      security:
+        - adminCookieAuth: []
+      description: >-
+        A primeira rota GET /:id captura segmentos únicos antes de outras
+        declarações com o mesmo padrão. Apenas o handler consultarVenda é
+        representável neste path; as consultas por usuário/livro conflitam no
+        router atual.
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/loja/autorizacao/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    patch:
+      tags: [Loja]
+      summary: Autorizar entrega de venda
+      operationId: autorizarEntregaAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/loja/entregue/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    post:
+      tags: [Loja]
+      summary: Alterar status de entrega
+      operationId: alterarStatusEntregaAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/loja/relatorio/{usuarioid}:
+    parameters:
+      - name: usuarioid
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [Loja]
+      summary: Consultar relatório financeiro de autor
+      operationId: consultarRelatorioFinanceiroAutor
+      security:
+        - adminCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/movimentacoes:
+    get:
+      tags: [Movimentações Financeiras]
+      summary: Listar movimentações financeiras da editora
+      operationId: listarMovimentacoesEditora
+      security:
+        - adminCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+  /admin/movimentacoes/{id}:
+    parameters:
+      - $ref: "#/components/parameters/Id"
+    get:
+      tags: [Movimentações Financeiras]
+      summary: Consultar movimentações financeiras de autor
+      operationId: consultarMovimentacoesAutorAdmin
+      security:
+        - adminCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
+    patch:
+      tags: [Movimentações Financeiras]
+      summary: Autorizar depósito na conta do autor
+      operationId: autorizarDepositoAutor
+      security:
+        - adminCookieAuth: []
+      responses:
+        "201":
+          $ref: "#/components/responses/Success"
+        default:
+          $ref: "#/components/responses/Error"
   /admin/revisao:
     get:
       tags: [Revisões]
@@ -885,9 +1498,37 @@ paths:
       operationId: listarRevisoes
       security:
         - adminCookieAuth: []
+      description: Requer sessão administrativa. A listagem não usa campo ativo em revisoes.
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Limit"
+        - name: busca
+          in: query
+          schema:
+            type: string
+        - name: filtro
+          in: query
+          description: '"data" ordena por data; outros valores ordenam por nome.'
+          schema:
+            type: string
+            enum: [data, alfabetico, ""]
+        - name: ordem
+          in: query
+          schema:
+            type: string
+            enum: [ascendente, descendente, ""]
+        - name: livro
+          in: query
+          description: ID bigint do livro relacionado.
+          schema:
+            type: integer
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: Revisões com livros relacionados e metadados de paginação.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaginaRevisoes"
         default:
           $ref: "#/components/responses/Error"
     post:
@@ -897,17 +1538,18 @@ paths:
       security:
         - adminCookieAuth: []
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
-              type: object
-              properties:
-                manuscritoRevisto:
-                  type: string
-                  format: binary
+              $ref: "#/components/schemas/CriarRevisaoRequest"
       responses:
-        "200":
-          $ref: "#/components/responses/Success"
+        "201":
+          description: Revisão criada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Revisao"
         default:
           $ref: "#/components/responses/Error"
   /admin/revisao/{id}:
@@ -931,14 +1573,11 @@ paths:
       security:
         - adminCookieAuth: []
       requestBody:
+        required: true
         content:
           multipart/form-data:
             schema:
-              type: object
-              properties:
-                manuscritoRevisto:
-                  type: string
-                  format: binary
+              $ref: "#/components/schemas/AtualizarRevisaoRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -983,23 +1622,39 @@ paths:
       operationId: buscarLivroRevisao
       security:
         - adminCookieAuth: []
+      parameters:
+        - name: busca
+          in: query
+          schema:
+            type: string
+          description: Texto pesquisado no título do livro.
       responses:
         "200":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
-  /admin/revisao/{id}/ativo:
+  /admin/revisao/livro/{id}:
     parameters:
       - $ref: "#/components/parameters/Id"
-    patch:
+    get:
       tags: [Revisões]
-      summary: Inativar revisão
-      operationId: inativarRevisao
+      summary: Listar revisões vinculadas a um livro
+      operationId: listarRevisoesPorLivro
       security:
         - adminCookieAuth: []
       responses:
         "200":
-          $ref: "#/components/responses/Success"
+          description: Revisões vinculadas ao livro.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Revisao"
         default:
           $ref: "#/components/responses/Error"
   /admin/revisao/{id}/completado:
@@ -1011,6 +1666,7 @@ paths:
       operationId: completarRevisao
       security:
         - adminCookieAuth: []
+      description: Conclui a revisão pendente depois de uma decisão administrativa do livro.
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -1023,6 +1679,12 @@ paths:
       operationId: publicarLivroRevisado
       security:
         - adminCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DecisaoRevisaoRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -1035,6 +1697,12 @@ paths:
       operationId: solicitarRecallLivro
       security:
         - adminCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DecisaoRevisaoRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -1047,6 +1715,12 @@ paths:
       operationId: negarPublicacaoLivro
       security:
         - adminCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DecisaoRevisaoRequest"
       responses:
         "200":
           $ref: "#/components/responses/Success"
@@ -1128,7 +1802,7 @@ paths:
       security:
         - adminCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1138,8 +1812,14 @@ paths:
       operationId: enviarNotificacaoAdmin
       security:
         - adminCookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificacaoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1149,8 +1829,16 @@ paths:
       operationId: limparNotificacoesAdmin
       security:
         - adminCookieAuth: []
+      description: O controller recebe o corpo JSON inteiro como quantidade de dias.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: integer
+              minimum: 1
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1162,7 +1850,7 @@ paths:
       security:
         - adminCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1174,7 +1862,7 @@ paths:
       security:
         - adminCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1186,7 +1874,7 @@ paths:
       security:
         - adminCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1199,8 +1887,15 @@ paths:
       operationId: alterarNotificacaoAdmin
       security:
         - adminCookieAuth: []
+      description: O controller lê os dados do corpo e não consome o id do path.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificacaoRequest"
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1211,7 +1906,7 @@ paths:
       security:
         - adminCookieAuth: []
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Success"
         default:
           $ref: "#/components/responses/Error"
@@ -1234,7 +1929,549 @@ components:
       required: true
       schema:
         type: string
-      description: Identificador do recurso.
+      description: Identificador no formato aceito pela rota (bigint ou UUID conforme o recurso).
+    Page:
+      name: page
+      in: query
+      description: Página, começando em 1.
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    Limit:
+      name: limit
+      in: query
+      description: Quantidade de itens por página.
+      schema:
+        type: integer
+        minimum: 1
+        default: 12
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [status, statusCode, error]
+      properties:
+        status:
+          type: string
+          example: error
+        statusCode:
+          type: integer
+          description: Repete o código HTTP da resposta.
+        error:
+          type: string
+    LivroEstado:
+      type: string
+      enum: [rascunho, em_revisao, publicado, negado, recall]
+    LivroEstadoFiltro:
+      type: string
+      enum: [rascunho, em_revisao, publicado, negado, recall, ""]
+    MetaPaginacao:
+      type: object
+      properties:
+        totalItems:
+          type: integer
+        totalPages:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+    CapaLivro:
+      type: object
+      nullable: true
+      description: JSONB armazenado como paths; em respostas, os valores de capa são URLs assinadas.
+      properties:
+        frente:
+          type: string
+          nullable: true
+        verso:
+          type: string
+          nullable: true
+        orelhas:
+          type: string
+          nullable: true
+    LivroAutopublicacao:
+      type: object
+      required: [id, estado, titulo, capa, manuscrito, palavras_chave]
+      properties:
+        id:
+          type: integer
+          format: int64
+        estado:
+          $ref: "#/components/schemas/LivroEstado"
+        titulo:
+          type: string
+        subtitulo:
+          type: string
+        capa:
+          $ref: "#/components/schemas/CapaLivro"
+        capaPaths:
+          $ref: "#/components/schemas/CapaLivro"
+        manuscrito:
+          type: string
+          nullable: true
+          description: URL assinada para leitura do PDF.
+        manuscritoPath:
+          type: string
+          nullable: true
+        palavras_chave:
+          type: string
+          nullable: true
+          description: Tipo PostgreSQL text; listas recebidas pela API são serializadas como palavras separadas por ponto e vírgula.
+    PaginaLivros:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LivroAutopublicacao"
+        meta:
+          allOf:
+            - $ref: "#/components/schemas/MetaPaginacao"
+    DetalhesAutopublicacao:
+      type: object
+      properties:
+        ISBN:
+          type: string
+          nullable: true
+        titulo:
+          type: string
+        subtitulo:
+          type: string
+        descricao:
+          type: string
+        numeroEdicao:
+          oneOf:
+            - type: string
+            - type: integer
+        idioma:
+          type: string
+        categoria:
+          type: string
+        palavrasChave:
+          type: array
+          items:
+            type: string
+        autor:
+          type: object
+          properties:
+            nome:
+              type: string
+            sobrenome:
+              type: string
+        colaboradores:
+          type: array
+          items:
+            type: object
+            properties:
+              funcao:
+                type: string
+              nome:
+                type: string
+              sobrenome:
+                type: string
+        direitoPublicacao:
+          oneOf:
+            - type: string
+              enum: [sim, nao]
+            - type: boolean
+        conteudoPorIA:
+          type: boolean
+        imagensExplicitas:
+          type: boolean
+    OrcamentoAutopublicacao:
+      type: object
+      properties:
+        numeroPaginas:
+          oneOf:
+            - type: string
+            - type: integer
+        valorLivroDigital:
+          oneOf:
+            - type: string
+            - type: number
+        valorLivroFisico:
+          oneOf:
+            - type: string
+            - type: number
+    AutopublicacaoPayload:
+      type: object
+      required: [dadosLivro]
+      properties:
+        dadosLivro:
+          type: object
+          required: [detalhes, orcamento]
+          properties:
+            detalhes:
+              $ref: "#/components/schemas/DetalhesAutopublicacao"
+            orcamento:
+              $ref: "#/components/schemas/OrcamentoAutopublicacao"
+        capa:
+          $ref: "#/components/schemas/CapaLivro"
+        capaPaths:
+          $ref: "#/components/schemas/CapaLivro"
+        manuscritoPath:
+          type: string
+          nullable: true
+    CriarAutopublicacaoRequest:
+      allOf:
+        - $ref: "#/components/schemas/AutopublicacaoPayload"
+        - type: object
+          properties:
+            estadoInicial:
+              type: string
+              enum: [rascunho]
+              default: rascunho
+    AtualizarAutopublicacaoRequest:
+      allOf:
+        - $ref: "#/components/schemas/AutopublicacaoPayload"
+    AutopublicacaoSalva:
+      type: object
+      properties:
+        data:
+          $ref: "#/components/schemas/LivroAutopublicacao"
+        manuscritoUrl:
+          type: string
+          nullable: true
+    AtualizarEstadoLivroRequest:
+      type: object
+      required: [novoEstado]
+      properties:
+        novoEstado:
+          $ref: "#/components/schemas/LivroEstado"
+    UploadLivroRequest:
+      type: object
+      required: [tipo, extensao, mimeType, tamanho]
+      properties:
+        tipo:
+          type: string
+          enum: [capa_frente, capa_verso, capa_orelhas, manuscrito]
+        extensao:
+          type: string
+          description: jpg/jpeg/png para capas; pdf para manuscrito.
+        mimeType:
+          type: string
+        tamanho:
+          type: integer
+          minimum: 1
+          description: Tamanho do arquivo em bytes; limite de 10 MiB para capas e 50 MiB para manuscrito.
+    UploadUrlResponse:
+      type: object
+      required: [bucket, path, token]
+      properties:
+        bucket:
+          type: string
+          enum: [capa-livros, manuscrito-livro]
+        path:
+          type: string
+        token:
+          type: string
+    LimparUploadsRequest:
+      type: object
+      required: [arquivos]
+      properties:
+        arquivos:
+          type: array
+          items:
+            type: object
+            required: [tipo, path]
+            properties:
+              tipo:
+                type: string
+                enum: [capa_frente, capa_verso, capa_orelhas, manuscrito]
+              path:
+                type: string
+    Revisao:
+      type: object
+      required:
+        [id, arquivo, data_criacao, fk_user_profile_id, fk_livro_id, completado]
+      properties:
+        id:
+          type: integer
+          format: int64
+        arquivo:
+          type: string
+          description: URL assinada do PDF da revisão; a coluna persistida é text NOT NULL.
+        arquivoPath:
+          type: string
+        data_criacao:
+          type: string
+          format: date-time
+        apontamento:
+          type: string
+          nullable: true
+        fk_user_profile_id:
+          type: string
+          format: uuid
+        fk_livro_id:
+          type: integer
+          format: int64
+        nome:
+          type: string
+          nullable: true
+        completado:
+          type: boolean
+        livros:
+          type: object
+          additionalProperties: true
+    PaginaRevisoes:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Revisao"
+        livros:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        meta:
+          $ref: "#/components/schemas/MetaPaginacao"
+    CriarRevisaoRequest:
+      type: object
+      required: [nome, apontamento, idLivro, manuscritoRevisto]
+      properties:
+        nome:
+          type: string
+        apontamento:
+          type: string
+        idLivro:
+          type: integer
+          format: int64
+        manuscritoRevisto:
+          type: string
+          format: binary
+          description: PDF obrigatório, máximo de 50 MiB.
+    AtualizarRevisaoRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        apontamento:
+          type: string
+        idLivro:
+          type: integer
+          format: int64
+          description: Se enviado, deve ser o mesmo livro já associado à revisão.
+        manuscritoRevisto:
+          type: string
+          format: binary
+          description: PDF opcional; quando omitido, mantém o arquivo atual.
+    DecisaoRevisaoRequest:
+      type: object
+      required: [idLivro]
+      properties:
+        idLivro:
+          type: integer
+          format: int64
+    AdminSigninRequest:
+      type: object
+      required: [email, senha]
+      properties:
+        email:
+          type: string
+          format: email
+        senha:
+          type: string
+          format: password
+    SignupRequest:
+      type: object
+      required: [email, password, telefone, nome]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        telefone:
+          type: string
+        nome:
+          type: string
+    SigninRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+    SetSessionRequest:
+      type: object
+      properties:
+        code:
+          type: string
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+      anyOf:
+        - required: [code]
+        - required: [accessToken, refreshToken]
+        - required: [access_token, refresh_token]
+    SenhaAdminRequest:
+      type: object
+      required: [novaSenha]
+      properties:
+        novaSenha:
+          type: string
+          format: password
+    SenhaAdminAntigaRequest:
+      type: object
+      required: [email, senhaAntiga, novaSenha]
+      properties:
+        email:
+          type: string
+          format: email
+        senhaAntiga:
+          type: string
+          format: password
+        novaSenha:
+          type: string
+          format: password
+    RedefinirSenhaRequest:
+      type: object
+      required: [novaSenha, accessToken, refreshToken]
+      properties:
+        novaSenha:
+          type: string
+          format: password
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    EmailRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+    EnderecoRequest:
+      type: object
+      required: [estado, bairro, rua, cidade]
+      properties:
+        estado:
+          type: string
+        bairro:
+          type: string
+        rua:
+          type: string
+        num:
+          type: integer
+        numero:
+          type: integer
+        cep:
+          type: string
+        CEP:
+          type: string
+        cidade:
+          type: string
+        complemento:
+          type: string
+        pais:
+          type: string
+    ContaBancariaRequest:
+      type: object
+      required: [CPF, nomeCompleto, numeroBanco, numeroAgencia, tipoConta]
+      properties:
+        CPF:
+          type: string
+        nomeCompleto:
+          type: string
+        numeroBanco:
+          type: string
+        numeroAgencia:
+          type: string
+        tipoConta:
+          type: string
+    NotificacaoRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+        texto:
+          type: string
+        ADM:
+          type: boolean
+        geral:
+          type: boolean
+        tipo:
+          type: string
+        metadados:
+          type: object
+          additionalProperties: true
+    NotificacaoClienteRequest:
+      type: object
+      properties:
+        titulo:
+          type: string
+        texto:
+          type: string
+        tipo:
+          type: string
+        metadados:
+          type: object
+          additionalProperties: true
+    CartaoRequest:
+      type: object
+      properties:
+        token_pagamento:
+          type: string
+        final_cartao:
+          type: string
+        bandeira_varchar:
+          type: string
+        nome_no_cartao:
+          type: string
+        data_expiracao:
+          type: string
+    PerfilRequest:
+      type: object
+      properties:
+        nome:
+          type: string
+        telefone:
+          type: string
+        descricao:
+          type: string
+        redes_sociais:
+          type: object
+          additionalProperties: true
+    AvaliacaoRequest:
+      type: object
+      required: [qtd_estrelas]
+      properties:
+        id:
+          type: integer
+          format: int64
+        qtd_estrelas:
+          type: integer
+          minimum: 1
+          maximum: 5
+    ComentarioRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        texto:
+          type: string
+    FreteQuery:
+      type: object
+      properties:
+        cepDestino:
+          type: string
+        itensVenda:
+          type: string
   responses:
     Success:
       description: Requisição processada com sucesso.
