@@ -86,7 +86,7 @@ export class NotificacoesService {
 
   static async deletarNotificacao(notificacaoId) {
     if (!notificacaoId)
-      errorUsuarioId(500, "Id da notificação para deletar não informado.");
+      error(500, "Id da notificação para deletar não informado.");
 
     const notificacaoDeletado =
       await NotificacaoModel.deletarNotificacao(notificacaoId);

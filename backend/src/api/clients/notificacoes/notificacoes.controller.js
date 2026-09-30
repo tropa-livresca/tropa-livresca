@@ -79,7 +79,8 @@ export class NotificacoesController {
     try {
       const notificacaoId = req.params.id;
 
-      const notificacaoDeletada = await NotificacoesController(notificacaoId);
+      const notificacaoDeletada =
+        await NotificacoesService.deletarNotificacao(notificacaoId);
 
       return res.status(201).json({ notificacaoDeletada });
     } catch (err) {
@@ -92,8 +93,10 @@ export class NotificacoesController {
       const usuarioId = req.user?.id;
       const dias = req.body;
 
-      const notificacoes =
-        await NotificacoesController.limparNotificacoesAntigas(usuarioId, dias);
+      const notificacoes = await NotificacoesService.limparNotificacoesAntigas(
+        usuarioId,
+        dias,
+      );
 
       return res.status(201).json({ notificacoes });
     } catch (err) {
@@ -106,7 +109,7 @@ export class NotificacoesController {
       const notificacaoId = req.params.id;
       const usuarioId = req.user?.id;
 
-      const status = await NotificacoesController.alterarStatusLido(
+      const status = await NotificacoesService.alterarStatusLido(
         notificacaoId,
         usuarioId,
       );
@@ -121,7 +124,7 @@ export class NotificacoesController {
     try {
       const usuarioId = req.user?.id;
 
-      const feed = await NotificacoesController.buscarFeedUsuario(usuarioId);
+      const feed = await NotificacoesService.buscarFeedUsuario(usuarioId);
 
       return res.status(201).json({ feed });
     } catch (err) {
