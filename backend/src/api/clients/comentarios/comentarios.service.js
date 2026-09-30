@@ -5,15 +5,17 @@ export class ComentarioService {
   static async buscarComentarios(idLivro, limit = 5, secao = 1) {
     if (!idLivro) error(500, "Id do livro não informado.");
 
-    const comentarios = await ComentarioModel.buscarComentarios(
+    const {data,error,count} = await ComentarioModel.buscarComentarios(
       idLivro,
       limit,
       secao,
     );
 
-    if (comentarios.error) throw comentarios.error;
+    console.log(idLivro);
 
-    return comentarios;
+    if (error) throw error;
+
+    return {data, meta: {secao, limit, totalItens: count, totalSecoes: count/limit}};
   }
 
   static async deletarComentario(idUsuario, idComentario) {
