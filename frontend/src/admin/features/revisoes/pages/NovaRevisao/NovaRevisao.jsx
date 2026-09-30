@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useRevisao } from "../../hooks/useRevisao.js";
 import { useLivros } from "../../../livros/hooks/useLivros.js";
+import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados.js";
 
 export default function NovaRevisao() {
   const { id } = useParams();
@@ -9,7 +10,6 @@ export default function NovaRevisao() {
     revisaoAtual,
     nome,
     setNome,
-    manuscrito,
     setManuscrito,
     apontamento,
     setApontamento,
@@ -28,14 +28,12 @@ export default function NovaRevisao() {
   }, [buscarLivroById, id]);
 
   useEffect(() => {
-      verificarRevisor(id);
+    verificarRevisor(id);
   }, [verificarRevisor, id]);
 
   console.log(revisaoAtual);
 
-
   const salvarRevisao = async (e, status) => {
-
     e.preventDefault();
     try {
       await criarRevisao(id, status);
@@ -55,11 +53,10 @@ export default function NovaRevisao() {
     try {
       await atualizarRevisao(revisaoAtual.id, id, status);
     } catch (err) {
-      console.log(err.message)
+      console.log(err.message);
       alert(err.message || "Erro ao criar revisão.");
     }
   };
-
 
   return (
     <main>
@@ -117,48 +114,77 @@ export default function NovaRevisao() {
             disabled={revisor == false}
           />
         </div>
-        {revisor == true ? <div>
-          <label>Manuscrito:</label>
-          <input
-            type="file"
-            onChange={(e) => setManuscrito(e.target.files[0])}
-          />
-        </div> : <></>}
-        
- 
-        {revisor == true ? revisaoAtual == null ? <>
-        <button type="button" onClick={(e) => salvarRevisao(e, "em_revisao")}>
-          Salvar Nova Revisão
-        </button>
-        <button type="button" onClick={(e) => salvarRevisao(e, "publicado")}>
-          Enviar Revisão e Publicar
-        </button>
-        <button type="button" onClick={(e) => salvarRevisao(e, "recall")}>
-          Enviar Revisão e pedir corrção
-        </button>
-        <button type="button" onClick={(e) => salvarRevisao(e, "negado")}>
-          Enviar Revisão e negar livro
-        </button>
-        </> :
-        
-        <><button type="button" onClick={(e) => alterarRevisao(e, "em_revisao")}>
-          alterar Revisão
-        </button>
-        <button type="button" onClick={(e) => alterarRevisao(e, "publicado")}>
-          Enviar Revisão e Publicar
-        </button>
-        <button type="button" onClick={(e) => alterarRevisao(e, "recall")}>
-          Enviar Revisão e pedir corrção
-        </button>
-        <button type="button" onClick={(e) => alterarRevisao(e, "negado")}>
-          Enviar Revisão e negar livro
-        </button></>
-        
-        :  <></>}
-        
-        
+        {revisor == true ? (
+          <div>
+            <label>Manuscrito:</label>
+            <input
+              type="file"
+              onChange={(e) => setManuscrito(e.target.files[0])}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
 
-        
+        {revisor == true ? (
+          revisaoAtual == null ? (
+            <>
+              <button
+                type="button"
+                onClick={(e) => salvarRevisao(e, LIVRO_ESTADO.EM_REVISAO)}
+              >
+                Salvar Nova Revisão
+              </button>
+              <button
+                type="button"
+                onClick={(e) => salvarRevisao(e, LIVRO_ESTADO.PUBLICADO)}
+              >
+                Enviar Revisão e Publicar
+              </button>
+              <button
+                type="button"
+                onClick={(e) => salvarRevisao(e, LIVRO_ESTADO.RECALL)}
+              >
+                Enviar Revisão e pedir corrção
+              </button>
+              <button
+                type="button"
+                onClick={(e) => salvarRevisao(e, LIVRO_ESTADO.NEGADO)}
+              >
+                Enviar Revisão e negar livro
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={(e) => alterarRevisao(e, LIVRO_ESTADO.EM_REVISAO)}
+              >
+                alterar Revisão
+              </button>
+              <button
+                type="button"
+                onClick={(e) => alterarRevisao(e, LIVRO_ESTADO.PUBLICADO)}
+              >
+                Enviar Revisão e Publicar
+              </button>
+              <button
+                type="button"
+                onClick={(e) => alterarRevisao(e, LIVRO_ESTADO.RECALL)}
+              >
+                Enviar Revisão e pedir corrção
+              </button>
+              <button
+                type="button"
+                onClick={(e) => alterarRevisao(e, LIVRO_ESTADO.NEGADO)}
+              >
+                Enviar Revisão e negar livro
+              </button>
+            </>
+          )
+        ) : (
+          <></>
+        )}
       </form>
     </main>
   );

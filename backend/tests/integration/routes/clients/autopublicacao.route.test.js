@@ -12,6 +12,7 @@ jest.mock(
         buscarComFiltros: handler("buscarComFiltros"),
         buscarLivroById: handler("buscarLivroById"),
         criarUploadLivro: handler("criarUploadLivro"),
+        limparUploads: handler("limparUploads"),
         criarLivro: handler("criarLivro"),
         atualizarEstado: handler("atualizarEstado"),
         atualizarLivro: handler("atualizarLivro"),
@@ -57,6 +58,15 @@ describe("Rotas de autopublicação", () => {
     const response = await request(app).post("/").send({}).expect(200);
 
     expect(response.body).toEqual({ handler: "criarLivro" });
+  });
+
+  it("encaminha DELETE /upload-url para limparUploads", async () => {
+    const response = await request(app)
+      .delete("/upload-url")
+      .send({ arquivos: [] })
+      .expect(200);
+
+    expect(response.body).toEqual({ handler: "limparUploads" });
   });
 
   it("encaminha PATCH /estado/:id para atualizarEstado", async () => {

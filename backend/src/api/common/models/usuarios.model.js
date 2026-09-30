@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "../config/supabase.js";
+import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 export class UsuariosModel {
   static async buscarUsuarios({
@@ -40,7 +41,8 @@ export class UsuariosModel {
         const temLivroPublicado =
           Array.isArray(usuario.livros) &&
           usuario.livros.some(
-            (livro) => livro.estado === "publicado" && livro.ativo === true,
+            (livro) =>
+              livro.estado === LIVRO_ESTADO.PUBLICADO && livro.ativo === true,
           );
 
         return {

@@ -93,7 +93,7 @@ export default function Carrinho() {
                       R\$ {Number(item.preco).toFixed(2).replace(".", ",")}
                     </strong>
 
-                    <div className={styles.quantidade}>
+                    {item.tipo == "fisico" ? <div className={styles.quantidade}>
                       <div className={styles.redondo}>
                         <button
                           type="button"
@@ -113,7 +113,8 @@ export default function Carrinho() {
                           <FiPlus />
                         </button>
                       </div>
-                    </div>
+                    </div> : <></>}
+                    
 
                     <strong className={styles.totalProduto}>
                       R\$ {totalItem.toFixed(2).replace(".", ",")}

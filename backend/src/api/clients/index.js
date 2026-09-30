@@ -12,6 +12,7 @@ import notificacoesRoutes from "./notificacoes/notificacoes.route.js";
 import avaliacoesRoutes from "./avaliacoes/avaliacao.route.js";
 import comentariosRoutes from "./comentarios/comentarios.route.js";
 import cartoesRoutes from "./cartoes/cartoes.route.js";
+import movimentacoesRoutes from "./movimentacoes/movimentacoes.route.js";
 
 router.use("/autopublicacao", autopublicacaoRoutes);
 router.use("/enderecos", enderecoRoutes);
@@ -24,5 +25,6 @@ router.use("/notificacoes", notificacoesRoutes);
 router.use("/avaliacoes", avaliacoesRoutes);
 router.use("/comentarios", comentariosRoutes);
 router.use("/cartoes", cartoesRoutes);
+router.use("/movimentacoes", movimentacoesRoutes);
 
 export default router;

@@ -48,13 +48,15 @@ export class AutopublicacaoController {
   static async criarLivro(req, res, next) {
     try {
       const userId = req.user?.id;
-      const { dadosLivro, estadoInicial, capa, manuscritoPath } = req.body;
+      const { dadosLivro, estadoInicial, capa, capaPaths, manuscritoPath } =
+        req.body;
 
       const resultado = await AutopublicacaoService.criarLivro({
         userId,
         dadosLivro,
         estadoInicial,
         capa,
+        capaPaths,
         manuscritoPath,
       });
 
@@ -67,12 +69,14 @@ export class AutopublicacaoController {
   static async criarUploadLivro(req, res, next) {
     try {
       const userId = req.user?.id;
-      const { tipo, extensao } = req.body;
+      const { tipo, extensao, mimeType, tamanho } = req.body;
 
       const resultado = await AutopublicacaoService.criarUploadLivro({
         userId,
         tipo,
         extensao,
+        mimeType,
+        tamanho,
       });
 
       return res.status(200).json(resultado);
@@ -111,17 +115,30 @@ export class AutopublicacaoController {
     try {
       const userId = req.user?.id;
       const { id } = req.params;
-      const { dadosLivro, capa, manuscritoPath } = req.body;
+      const { dadosLivro, capa, capaPaths, manuscritoPath } = req.body;
 
       const resultado = await AutopublicacaoService.atualizarLivro({
         userId,
         livroId: id,
         dadosLivro,
         capa,
+        capaPaths,
         manuscritoPath,
       });
 
       return res.status(200).json(resultado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async limparUploads(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { arquivos } = req.body;
+
+      await AutopublicacaoService.limparUploads({ userId, arquivos });
+      return res.status(204).end();
     } catch (err) {
       next(err);
     }

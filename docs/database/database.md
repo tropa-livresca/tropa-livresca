@@ -199,6 +199,16 @@ CREATE TABLE public.notificacoes (
 );
 ```
 
+## Contratos de Dados Confirmados
+
+- `livros.capa` é `jsonb`; o código persiste um objeto com os paths `frente`, `verso` e `orelhas`. URLs assinadas são apenas representação de resposta e não são persistidas.
+- `livros.palavras_chave` é `text`, não array nem `jsonb`. A API de autopublicação recebe a lista do formulário e o backend a serializa como texto separado por `; ` antes de gravar; a leitura do frontend converte esse texto em lista para edição.
+- `revisoes.fk_livro_id` é a chave para `livros.id`. O schema não tem `revisoes.ativo`; o ciclo de vida da revisão é representado por `completado` e pelo estado do livro.
+- `revisoes.arquivo` é `text NOT NULL`; criar revisão exige um manuscrito PDF. A ausência de arquivo não é permitida pelo service.
+- `livros.publico_alvo` não está definido neste schema e não é uma coluna persistida pelo backend atual. Nenhuma coluna foi adicionada à DDL ou ao DER. Persistir esse dado no futuro exige uma migração aprovada e documentada antes de alterar o código.
+
+Essas decisões descrevem o schema documentado neste repositório. Não executam nem propõem uma alteração automática no banco real.
+
 ## Relacionamentos e Restrições (Chaves Estrangeiras)
 
 As diretivas abaixo realizam as amarrações lógicas entre as entidades do ecossistema. Certifique-se de executar este bloco **apenas após** a criação de todas as tabelas listadas anteriormente.

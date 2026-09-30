@@ -45,11 +45,12 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
 
   const [categoriaAberta, setCategoriaAberta] = useState(false);
 
-  const [imagemExplicita, setImagemExplicita] = useState(() => {
-    if (dados.imagensExplicitas === true) return "sim";
-    if (dados.imagensExplicitas === false) return "nao";
-    return "";
-  });
+  const imagemExplicita =
+    dados.imagensExplicitas === true
+      ? "sim"
+      : dados.imagensExplicitas === false
+        ? "nao"
+        : "";
 
   const listaColaboradores = dados.colaboradores || [];
 
@@ -354,15 +355,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
               name="imagemExplicita"
               checked={imagemExplicita === "sim"}
               onChange={() => {
-                setImagemExplicita("sim");
-                onChange({
-                  ...dados,
-                  imagensExplicitas: true,
-                  categoria: "",
-                });
-              }}
-              handleOnChange={() => {
-                setImagemExplicita("sim");
                 onChange({
                   ...dados,
                   imagensExplicitas: true,
@@ -379,15 +371,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
               name="imagemExplicita"
               checked={imagemExplicita === "nao"}
               onChange={() => {
-                setImagemExplicita("nao");
-                onChange({
-                  ...dados,
-                  imagensExplicitas: false,
-                  categoria: "",
-                });
-              }}
-              handleOnChange={() => {
-                setImagemExplicita("nao");
                 onChange({
                   ...dados,
                   imagensExplicitas: false,

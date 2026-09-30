@@ -1,4 +1,5 @@
 import supabase from "../config/supabase.js";
+import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 export class AutorModel {
   static async buscarComFiltros({ page = 1, limit = 12, busca = "" }) {
@@ -11,7 +12,7 @@ export class AutorModel {
         count: "exact",
       })
       .eq("livros.ativo", true)
-      .eq("livros.estado", "publicado");
+      .eq("livros.estado", LIVRO_ESTADO.PUBLICADO);
 
     if (busca) {
       queryId = queryId.ilike("nome", `%${busca}%`);
@@ -41,7 +42,7 @@ export class AutorModel {
       )
       .in("id", idsParaBuscar)
       .eq("livros.ativo", true)
-      .eq("livros.estado", "publicado")
+      .eq("livros.estado", LIVRO_ESTADO.PUBLICADO)
       .order("nome", { ascending: true });
 
     if (error) {
@@ -62,7 +63,7 @@ export class AutorModel {
       )
       .eq("id", id)
       .eq("livros.ativo", true)
-      .eq("livros.estado", "publicado")
+      .eq("livros.estado", LIVRO_ESTADO.PUBLICADO)
       .maybeSingle();
 
     if (error) {

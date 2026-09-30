@@ -7,6 +7,11 @@ import { FaSearch } from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 import { FiChevronDown } from "react-icons/fi";
+import {
+  ESTADOS_EDITAVEIS,
+  ESTADOS_ENVIAVEIS_REVISAO,
+  LIVRO_ESTADO,
+} from "../../../../../common/config/livroEstados";
 
 export default function MeusLivros() {
   const {
@@ -27,7 +32,20 @@ export default function MeusLivros() {
 
   useEffect(() => {
     buscarLivros(paginaAtual, 12, busca, filtro, ordem, estado);
-  }, [paginaAtual, filtro, ordem, estado, buscarLivros]);
+  }, [paginaAtual, busca, filtro, ordem, estado, buscarLivros]);
+
+  const recarregarLivros = () =>
+    buscarLivros(paginaAtual, 12, busca, filtro, ordem, estado);
+
+  const enviarParaRevisao = async (id) => {
+    await atualizarEstado(id, LIVRO_ESTADO.EM_REVISAO);
+    await recarregarLivros();
+  };
+
+  const excluirLivro = async (id) => {
+    await deletarLivro(id);
+    await recarregarLivros();
+  };
 
   const handleBuscar = (e) => {
     e.preventDefault();
@@ -75,6 +93,7 @@ export default function MeusLivros() {
 
           <div>
             <button
+              type="button"
               onClick={() => {
                 setEstado("");
               }}
@@ -83,29 +102,33 @@ export default function MeusLivros() {
             </button>
 
             <button
+              type="button"
               onClick={() => {
-                setEstado("rascunho");
+                setEstado(LIVRO_ESTADO.RASCUNHO);
               }}
             >
               Rascunhos
             </button>
             <button
+              type="button"
               onClick={() => {
-                setEstado("publicado");
+                setEstado(LIVRO_ESTADO.PUBLICADO);
               }}
             >
               Livros Publicados
             </button>
             <button
+              type="button"
               onClick={() => {
-                setEstado("em_revisao");
+                setEstado(LIVRO_ESTADO.EM_REVISAO);
               }}
             >
               Livros em Revisão
             </button>
             <button
+              type="button"
               onClick={() => {
-                setEstado("negados");
+                setEstado(LIVRO_ESTADO.NEGADO);
               }}
             >
               Livros Negados
@@ -240,7 +263,7 @@ export default function MeusLivros() {
                     Visualizar
                   </Link>
 
-                  {livro.estado === "rascunho" && (
+                  {ESTADOS_EDITAVEIS.includes(livro.estado) && (
                     <>
                       <Link
                         to={`/editar-livro/${livro.id}`}
@@ -249,40 +272,35 @@ export default function MeusLivros() {
                         Editar
                       </Link>
 
-                      <button
-                        onClick={() => atualizarEstado(livro.id, "em_revisao")}
-                        className={`${styles.btnAcao} ${styles.btnPublicar}`}
-                      >
-                        Enviar para Revisão
-                      </button>
+                      {ESTADOS_ENVIAVEIS_REVISAO.includes(livro.estado) && (
+                        <button
+                          type="button"
+                          onClick={() => enviarParaRevisao(livro.id)}
+                          className={`${styles.btnAcao} ${styles.btnPublicar}`}
+                        >
+                          Enviar para Revisão
+                        </button>
+                      )}
                     </>
                   )}
 
-                  {livro.estado === "em_revisao" && (
-                    <button
-                      className={`${styles.btnAcao} ${styles.btnPublicar}`}
-                    >
-                      Solicitar Cancelamento de Revisão
-                    </button>
-                  )}
-
-                  {livro.estado === "publicado" && (
+                  {livro.estado === LIVRO_ESTADO.PUBLICADO && (
                     <span className={styles.textoPublicado}>Publicado</span>
                   )}
 
-                  {livro.estado !== "publicado" &&
-                    livro.estado !== "em_revisao" && (
-                      <button
-                        onClick={() => {
-                          if (confirm("Deseja excluir este livro?")) {
-                            deletarLivro(livro.id);
-                          }
-                        }}
-                        className={`${styles.btnAcao} ${styles.btnInativar}`}
-                      >
-                        Excluir
-                      </button>
-                    )}
+                  {livro.estado === LIVRO_ESTADO.RASCUNHO && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (confirm("Deseja excluir este livro?")) {
+                          excluirLivro(livro.id);
+                        }
+                      }}
+                      className={`${styles.btnAcao} ${styles.btnInativar}`}
+                    >
+                      Excluir
+                    </button>
+                  )}
                 </div>
               </div>
             ))}

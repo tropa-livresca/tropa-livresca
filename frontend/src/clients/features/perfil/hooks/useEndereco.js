@@ -284,6 +284,14 @@ export const useEndereco = () => {
 
       const json = await response.json();
       const data = json.data || json;
+      console.log(data);
+
+      const valorCep = data.cep || "";
+      if (valorCep.replace(/\D/g, "").length === 8) {
+        setCEP(`${valorCep.slice(0, 5)}-${valorCep.slice(5, 8)}`);
+      } else {
+        setCEP(valorCep);
+      }
 
       setEndereco(data);
     }catch(error){

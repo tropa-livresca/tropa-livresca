@@ -78,8 +78,9 @@ Table public.livros {
 Table public.avaliacoes {
   id bigint [pk, increment]
   data_criacao "timestamp with time zone" [not null]
-  fk_livros_id bigint [not null]
-  fk_users_profile_id uuid [not null]
+  fk_livros_id bigint
+  fk_users_profile_id uuid
+  qtd_estrelas smallint
 }
 
 Table public.vendas {
@@ -97,8 +98,8 @@ Table public.vendas {
 Table public.movimentacoes_financeiras {
   id bigint [pk, increment]
   data "timestamp with time zone" [not null]
-  fk_user_profile_id uuid [not null]
-  fk_vendas_id bigint [not null]
+  fk_user_profile_id uuid
+  fk_vendas_id bigint
   tipo text [not null]
   valor numeric [not null]
   descricao text [not null]
@@ -121,7 +122,7 @@ Table public.enderecos {
 }
 
 Table public.met_pagamentos {
-  id bigint [pk, note: 'Tabela de domínio para tipos de pagamento']
+  id bigint [pk, increment, note: 'Tabela de domínio para tipos de pagamento']
   nome text [not null]
 }
 
@@ -142,7 +143,7 @@ Table public.notificacoes {
   tipo text [not null]
   data "timestamp without time zone" [not null]
   ADM boolean [not null]
-  fk_user_profile_id uuid [not null]
+  fk_user_profile_id uuid
   titulo text
   metadados jsonb
   geral boolean [not null]

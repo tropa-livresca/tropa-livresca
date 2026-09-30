@@ -1,11 +1,86 @@
 import { MovimentacoesModel } from "../../common/models/movimentacoes.model.js";
-
+import { error, errorUsuarioId } from "../../common/utils/error.js";
 export class MovimentacoesService {
-  static async criarConta(usuarioId, dadosBancarios) {}
+  static async criarConta(
+    usuarioId,
+    CPF,
+    nomeCompleto,
+    numeroBanco,
+    numeroAgencia,
+    tipoConta,
+  ) {
+    if (!usuarioId) errorUsuarioId();
 
-  static async alterarDadosConta(usuarioId, novosDadosBancarios) {}
+    if (!CPF || !nomeCompleto || !numeroBanco || !numeroAgencia || !tipoConta)
+      error(400, "Dados para cdriação da conta não informados.");
 
-  static async solicitarSaque(usuarioId, valorSaque) {}
+    const dadosBancarios = {
+      CPF,
+      nome_completo: nomeCompleto,
+      numero_banco: numeroBanco,
+      numero_agencia: numeroAgencia,
+      tipo_conta: tipoConta,
+    };
 
-  static async buscarDadosMovimentacoesAutor(usuarioId) {}
+    const conta = await MovimentacoesModel.criarConta(
+      usuarioId,
+      dadosBancarios,
+    );
+
+    if (conta.error) throw conta.error;
+
+    return conta;
+  }
+
+  static async alterarDadosConta(
+    usuarioId,
+    CPF,
+    nomeCompleto,
+    numeroBanco,
+    numeroAgencia,
+    tipoConta,
+  ) {
+    if (!usuarioId) errorUsuarioId();
+
+    const dadosBancarios = {
+      CPF,
+      nome_completo: nomeCompleto,
+      numero_banco: numeroBanco,
+      numero_agencia: numeroAgencia,
+      tipo_conta: tipoConta,
+    };
+
+    const contaAlterada = await MovimentacoesModel.alterarDadosConta(
+      usuarioId,
+      dadosBancarios,
+    );
+
+    return contaAlterada;
+  }
+
+  static async solicitarSaque(usuarioId, valorSaque) {
+    if (!usuarioId) errorUsuarioId();
+
+    if (!valorSaque) error(400, "Valor do saque não informado.");
+
+    const saque = await MovimentacoesModel.solicitarSaque(
+      usuarioId,
+      valorSaque,
+    );
+
+    if (saque.error) throw saque.error;
+
+    return saque;
+  }
+
+  static async buscarDadosMovimentacoesAutor(usuarioId) {
+    if (!usuarioId) errorUsuarioId();
+
+    const dados =
+      await MovimentacoesModel.buscarDadosMovimentacoesAutor(usuarioId);
+
+    if (dados.error) throw dados.error;
+
+    return dados;
+  }
 }

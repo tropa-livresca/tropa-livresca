@@ -1,4 +1,5 @@
 import supabase, { supabaseAdmin } from "../config/supabase.js";
+import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 export class AutopublicacaoModel {
   static async buscarComFiltros({
@@ -33,16 +34,8 @@ export class AutopublicacaoModel {
       query = query.order("titulo", { ascending: true });
     }
 
-    if (estado === "publicado") {
-      query = query.eq("estado", "publicado");
-    }
-
-    if (estado === "em_revisao") {
-      query = query.eq("estado", "em_revisao");
-    }
-
-    if (estado === "rascunho") {
-      query = query.eq("estado", "rascunho");
+    if (Object.values(LIVRO_ESTADO).includes(estado)) {
+      query = query.eq("estado", estado);
     }
 
     const { data, error, count } = await query.range(start, end);
@@ -75,38 +68,29 @@ export class AutopublicacaoModel {
     return data;
   }
 
-  static async atualizarEstado(id, novoEstado, userId) {
-    const { data: livroAtual, error: fetchError } = await supabaseAdmin
-      .from("livros")
-      .select("estado")
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true)
-      .maybeSingle();
-
-    if (fetchError) {
-      fetchError.statusCode = 500;
-      throw fetchError;
-    }
-
-    if (!livroAtual) {
-      const error = new Error("Livro não encontrado.");
-      error.statusCode = 404;
-      throw error;
-    }
-
-    const { data, error: updateError } = await supabaseAdmin
+  static async atualizarEstado(id, novoEstado, userId, estadoAtual) {
+    let query = supabaseAdmin
       .from("livros")
       .update({ estado: novoEstado })
       .eq("id", id)
       .eq("fk_user_profile_id", userId)
-      .eq("ativo", true)
-      .select()
-      .single();
+      .eq("ativo", true);
+
+    if (estadoAtual) {
+      query = query.eq("estado", estadoAtual);
+    }
+
+    const { data, error: updateError } = await query.select().maybeSingle();
 
     if (updateError) {
       updateError.statusCode = 500;
       throw updateError;
+    }
+
+    if (!data) {
+      const error = new Error("Livro não encontrado ou estado desatualizado.");
+      error.statusCode = 409;
+      throw error;
     }
 
     return data;
@@ -126,17 +110,28 @@ export class AutopublicacaoModel {
     return data;
   }
 
-  static async atualizarLivro(id, dadosAtualizados) {
+  static async atualizarLivro(id, userId, estadoAtual, dadosAtualizados) {
     const { data, error } = await supabaseAdmin
       .from("livros")
       .update(dadosAtualizados)
       .eq("id", id)
+      .eq("fk_user_profile_id", userId)
+      .eq("ativo", true)
+      .eq("estado", estadoAtual)
       .select()
-      .single();
+      .maybeSingle();
 
     if (error) {
       error.statusCode = 500;
       throw error;
+    }
+
+    if (!data) {
+      const updateError = new Error(
+        "Livro não encontrado ou estado desatualizado.",
+      );
+      updateError.statusCode = 409;
+      throw updateError;
     }
 
     return data;
@@ -161,7 +156,7 @@ export class AutopublicacaoModel {
       throw error;
     }
 
-    if (livroAtual.estado !== "rascunho") {
+    if (livroAtual.estado !== LIVRO_ESTADO.RASCUNHO) {
       const erroEstado = new Error(
         "Livros em rascunho podem ser deletados. Livros em revisão ou publicados não podem ser deletados.",
       );
@@ -173,11 +168,21 @@ export class AutopublicacaoModel {
       .from("livros")
       .delete()
       .eq("id", idLivro)
-      .select();
+      .eq("fk_user_profile_id", userId)
+      .eq("ativo", true)
+      .eq("estado", LIVRO_ESTADO.RASCUNHO)
+      .select()
+      .maybeSingle();
 
     if (error) {
       error.statusCode = 500;
       throw error;
+    }
+
+    if (!data) {
+      const deleteError = new Error("Livro não encontrado ou já foi removido.");
+      deleteError.statusCode = 409;
+      throw deleteError;
     }
 
     return data;

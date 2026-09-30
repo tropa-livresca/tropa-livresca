@@ -25,7 +25,7 @@ export default function RevisaoById() {
     apontamento,
     setApontamento,
     atualizarRevisao,
-    LimparCampos,
+    limparCampos,
   } = useRevisao();
 
   const [isEdicao, setIsEdicao] = useState(false);
@@ -43,7 +43,7 @@ export default function RevisaoById() {
   const executarSalvar = async (e) => {
     e.preventDefault();
     if (id) {
-      await atualizarRevisao(id, e);
+      await atualizarRevisao(id, livroRevisado?.id);
       setIsEdicao(false);
     }
   };
@@ -52,7 +52,7 @@ export default function RevisaoById() {
     <main className={styles.container}>
       {/* Barra de Ações Superior */}
       <div className={styles.topBar}>
-        <Link to="/admin/revisoes" className={styles.linkVoltar}>
+        <Link to="/admin/livros/revisoes" className={styles.linkVoltar}>
           <FaArrowLeft /> Voltar às Revisões
         </Link>
 
@@ -149,7 +149,7 @@ export default function RevisaoById() {
               <div className={styles.acoesFormulario}>
                 <button
                   type="button"
-                  onClick={LimparCampos}
+                  onClick={limparCampos}
                   className={styles.botaoLimpar}
                 >
                   <FaTrash /> Limpar Formulário

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros.js";
+import { ESTADOS_EDITAVEIS } from "../../../../../common/config/livroEstados";
 import styles from "./Visualizar.module.css";
 import Carregando from "../../../../components/Carregando/Carregando";
 
@@ -33,7 +34,6 @@ export default function Visualizar() {
     descricao,
     idioma,
     imagens_explicitas,
-    publico_alvo,
     numero_edicao,
     preco_digital,
     preco_fisico,
@@ -61,7 +61,7 @@ export default function Visualizar() {
         </div>
 
         <div className={styles.headerActions}>
-          {estado === "rascunho" && (
+          {ESTADOS_EDITAVEIS.includes(estado) && (
             <Link
               to={`/editar-livro/${id}`}
               className={`${styles.btn} ${styles.btnPrimary}`}
@@ -155,7 +155,7 @@ export default function Visualizar() {
               </li>
 
               <li>
-                <span>Público-alvo:</span> <strong>{publico_alvo}</strong>
+                <span>Público-alvo:</span> <strong>Não informado</strong>
               </li>
 
               <li>

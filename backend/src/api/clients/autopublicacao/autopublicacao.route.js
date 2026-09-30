@@ -15,6 +15,8 @@ router.post(
   AutopublicacaoController.criarUploadLivro,
 );
 
+router.delete("/upload-url", checkAuth, AutopublicacaoController.limparUploads);
+
 router.post("/", checkAuth, AutopublicacaoController.criarLivro);
 
 router.patch(

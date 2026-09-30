@@ -1,5 +1,6 @@
 import supabase from "../config/supabase.js";
 import nodemailer from "nodemailer";
+import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 const COLUNAS_LIVRO = `
   id,
@@ -36,7 +37,7 @@ export class LojaModel {
       .from("livros")
       .select(COLUNAS_LIVRO, { count: "exact" })
       .eq("ativo", true)
-      .eq("estado", "publicado");
+      .eq("estado", LIVRO_ESTADO.PUBLICADO);
 
     if (busca) {
       query = query.ilike("titulo", `%${busca}%`);
@@ -79,7 +80,7 @@ export class LojaModel {
       .select("*, users_profile(*)")
       .eq("id", id)
       .eq("ativo", true)
-      .eq("estado", "publicado")
+      .eq("estado", LIVRO_ESTADO.PUBLICADO)
       .single();
 
     if (error) {
@@ -88,6 +89,32 @@ export class LojaModel {
     }
 
     return data;
+  }
+
+  static async consultarVendas({ page = 1, limit = 12, ordem = "" }) {
+    const start = (page - 1) * limit;
+    const end = start + limit - 1;
+
+    let query = supabase
+      .from("vendas")
+      .select("*, users_profile(*)", { count: "exact" });
+
+    query =
+      ordem === "ascendente" || !ordem
+        ? query.order("data_venda", { ascending: true })
+        : query.order("data_venda", { ascending: false });
+
+    const { data, error, count } = await query.range(start, end);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      data: data || [],
+      count: count || 0,
+    };
   }
 
   static async consultarVenda(vendaId) {
@@ -270,9 +297,9 @@ export class LojaModel {
     let possuiProdutoFisico = false;
 
     produtos.forEach((produto) => {
-      if (produto.formato?.toLowerCase() === "fisico") {
+      if (produto.tipo?.toLowerCase() === "fisico") {
         possuiProdutoFisico = true;
-        const qtd = produto.qtd || 1;
+        const qtd = produto.quantidade || 1;
         pesoTotalKg += qtd * 0.4;
       }
     });
