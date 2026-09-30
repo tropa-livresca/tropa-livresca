@@ -3,9 +3,9 @@ import { error, errorUsuarioId } from "../../common/utils/error.js";
 
 export class ComentarioService {
   static async buscarComentarios(idLivro, limit = 5, secao = 1) {
-    if (!idLivro) error(500, "Id do livro não informado.");
+    if (!idLivro) error(400, "Id do livro não informado.");
 
-    const {data,error,count} = await ComentarioModel.buscarComentarios(
+    const { data, error, count } = await ComentarioModel.buscarComentarios(
       idLivro,
       limit,
       secao,
@@ -15,7 +15,10 @@ export class ComentarioService {
 
     if (error) throw error;
 
-    return {data, meta: {secao, limit, totalItens: count, totalSecoes: count/limit}};
+    return {
+      data,
+      meta: { secao, limit, totalItens: count, totalSecoes: count / limit },
+    };
   }
 
   static async deletarComentario(idUsuario, idComentario) {
