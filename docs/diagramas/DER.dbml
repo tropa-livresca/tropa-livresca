@@ -1,7 +1,5 @@
-// Documentação do Modelo de Dados (Supabase/PostgreSQL)
-
-Table public.users_profile {
-  id uuid [pk, note: 'UUID integrado ao Supabase Auth']
+Table users_profile {
+  id uuid [pk, not null]
   nome text [not null]
   telefone varchar [not null]
   imagem text
@@ -15,41 +13,26 @@ Table public.users_profile {
   dados_bancarios jsonb
 }
 
-Table public.notificacoes_lidas {
-  id bigint [pk, increment]
-  fk_notificacao_id bigint [not null]
-  fk_user_profile_id uuid [not null]
-  data_leitura "timestamp with time zone" [not null]
-}
-
-Table public.usuarios_cartoes {
-  id bigint [pk, increment]
-  token_pagamento text
-  final_cartao varchar [not null]
-  bandeira_varchar varchar [not null]
-  nome_no_cartao text [not null]
-  data_expiracao varchar [not null]
-  fk_user_profile_id uuid [not null]
-}
-
-Table public.itens_venda {
-  id bigint [pk, increment]
+Table itens_venda {
+  id bigint [pk, increment, not null]
   qtd bigint [not null]
   subtotal numeric [not null]
   fk_livros_itens_id bigint [not null]
   fk_vendas_id bigint [not null]
+  fisico boolean [not null]
+  preco_unitario numeric [not null]
 }
 
-Table public.comentarios {
-  id bigint [pk, increment]
-  data "timestamp with time zone" [not null]
+Table comentarios {
+  id bigint [pk, increment, not null]
+  data timestamptz [not null]
   texto text [not null]
   fk_user_profile_id uuid [not null]
-  fk_livros_id bigint
+  fk_livros_id bigint [not null]
 }
 
-Table public.livros {
-  id bigint [pk, increment]
+Table livros {
+  id bigint [pk, increment, not null]
   direitos_de_publicacao boolean [not null]
   conteudo_por_IA boolean [not null]
   imagens_explicitas boolean [not null]
@@ -75,19 +58,19 @@ Table public.livros {
   numero_paginas smallint
 }
 
-Table public.avaliacoes {
-  id bigint [pk, increment]
-  data_criacao "timestamp with time zone" [not null]
+Table avaliacoes {
+  id bigint [pk, increment, not null]
+  data_criacao timestamptz [not null]
   fk_livros_id bigint
   fk_users_profile_id uuid
   qtd_estrelas smallint
 }
 
-Table public.vendas {
-  id bigint [pk, increment]
-  data "timestamp with time zone" [not null]
+Table vendas {
+  id bigint [pk, increment, not null]
+  data timestamptz [not null]
   total numeric [not null]
-  fk_met_pagamentos_id bigint [not null]
+  metodo_pagamento bigint [not null]
   transacao_id text [not null]
   status_pagamento text [not null]
   fk_user_profile_id uuid [not null]
@@ -95,9 +78,9 @@ Table public.vendas {
   status_entrega text [not null]
 }
 
-Table public.movimentacoes_financeiras {
-  id bigint [pk, increment]
-  data "timestamp with time zone" [not null]
+Table movimentacoes_financeiras {
+  id bigint [pk, increment, not null]
+  data timestamptz [not null]
   fk_user_profile_id uuid
   fk_vendas_id bigint
   tipo text [not null]
@@ -106,8 +89,8 @@ Table public.movimentacoes_financeiras {
   status text [not null]
 }
 
-Table public.enderecos {
-  id bigint [pk, increment]
+Table enderecos {
+  id bigint [pk, increment, not null]
   estado varchar [not null]
   bairro text [not null]
   rua text [not null]
@@ -121,15 +104,10 @@ Table public.enderecos {
   principal boolean
 }
 
-Table public.met_pagamentos {
-  id bigint [pk, increment, note: 'Tabela de domínio para tipos de pagamento']
-  nome text [not null]
-}
-
-Table public.revisoes {
-  id bigint [pk, increment]
+Table revisoes {
+  id bigint [pk, increment, not null]
   arquivo text [not null]
-  data_criacao "timestamp with time zone" [not null]
+  data_criacao timestamptz [not null]
   apontamento text
   fk_user_profile_id uuid [not null]
   fk_livro_id bigint [not null]
@@ -137,41 +115,24 @@ Table public.revisoes {
   completado boolean [not null]
 }
 
-Table public.notificacoes {
-  id bigint [pk, increment]
-  texto text [not null]
-  tipo text [not null]
-  data "timestamp without time zone" [not null]
-  ADM boolean [not null]
-  fk_user_profile_id uuid
-  titulo text
-  metadados jsonb
-  geral boolean [not null]
-}
+// Relacionamentos / Chaves estrangeiras
 
-// Relacionamentos e Chaves Estrangeiras (Limpos e Sem Duplicidade)
+Ref: movimentacoes_financeiras.fk_vendas_id > vendas.id
+Ref: movimentacoes_financeiras.fk_user_profile_id > users_profile.id
 
-Ref: public.movimentacoes_financeiras.fk_vendas_id > public.vendas.id
-Ref: public.movimentacoes_financeiras.fk_user_profile_id > public.users_profile.id
+Ref: comentarios.fk_user_profile_id > users_profile.id
 
-Ref: public.comentarios.fk_user_profile_id > public.users_profile.id
+Ref: itens_venda.fk_livros_itens_id > livros.id
+Ref: itens_venda.fk_vendas_id > vendas.id
 
-Ref: public.itens_venda.fk_livros_itens_id > public.livros.id
-Ref: public.itens_venda.fk_vendas_id > public.vendas.id
+Ref: vendas.fk_user_profile_id > users_profile.id
 
-Ref: public.vendas.fk_met_pagamentos_id > public.met_pagamentos.id
-Ref: public.vendas.fk_user_profile_id > public.users_profile.id
+Ref: revisoes.fk_livro_id > livros.id
+Ref: revisoes.fk_user_profile_id > users_profile.id
 
-Ref: public.revisoes.fk_livro_id > public.livros.id
-Ref: public.revisoes.fk_user_profile_id > public.users_profile.id
+Ref: enderecos.fk_user_profile_id > users_profile.id
 
-Ref: public.notificacoes.fk_user_profile_id > public.users_profile.id
-Ref: public.enderecos.fk_user_profile_id > public.users_profile.id
-Ref: public.usuarios_cartoes.fk_user_profile_id > public.users_profile.id
-Ref: public.livros.fk_user_profile_id > public.users_profile.id
+Ref: livros.fk_user_profile_id > users_profile.id
 
-Ref: public.avaliacoes.fk_livros_id > public.livros.id
-Ref: public.avaliacoes.fk_users_profile_id > public.users_profile.id
-
-Ref: public.notificacoes_lidas.fk_notificacao_id > public.notificacoes.id
-Ref: public.notificacoes_lidas.fk_user_profile_id > public.users_profile.id
+Ref: avaliacoes.fk_livros_id > livros.id
+Ref: avaliacoes.fk_users_profile_id > users_profile.id
