@@ -14,6 +14,7 @@ export default function Pagamento() {
       />
 
       <div className={styles.container}>
+        
         <section className={styles.produtos}>
           <div className={styles.tituloSecao}>
             <span>Produtos da compra</span>
@@ -63,6 +64,19 @@ export default function Pagamento() {
 
         <div className={styles.checkout}>
           <div className={styles.colunaEsquerda}>
+            <section className={styles.card}>
+              <div className={styles.tituloCard}>
+                <div>
+                  <strong>E-mail para livro digital</strong>
+                  <span>Insira o E-mail receptor do livro digital</span>
+                </div>
+              </div>
+
+              <label><strong className={styles.email}>E-mail:</strong>
+<input type="text" name="username" className={styles.inputemail} placeholder="Insira seu E-mail" /></label>
+
+            </section>
+            
             <section className={styles.card}>
               <div className={styles.tituloCard}>
                 <div>
@@ -159,20 +173,7 @@ export default function Pagamento() {
               </div>
             </section>
 
-            <section className={styles.card}>
-              <div className={styles.tituloCard}>
-                <div>
-                  <strong>Observação para o vendedor</strong>
-                  <span>Alguma informação especial sobre seu pedido?</span>
-                </div>
-              </div>
-
-              <textarea
-                className={styles.textarea}
-                placeholder="Escreva uma mensagem para o vendedor..."
-                maxLength={500}
-              />
-            </section>
+            
           </div>
 
           <div className={styles.colunaDireita}>
