@@ -281,17 +281,17 @@
   flex-direction: column;
   gap: 0.3rem;
   padding: 0.8rem;
-  border: 2px solid #e4d9b9;
+  border: 1px solid var(--cor-texto-muted);
+  background: #fffdf7;
+  color: #4f4638;
   border-radius: 10px;
-  background: #fff;
-  color: #67170c;
   cursor: pointer;
   text-align: left;
 }
 
 .formatoAtivo {
   border-color: #67170c;
-  background: #f7f0cf;
+  background: #fff8c9;
 }
 
 .quantidade {
@@ -302,6 +302,23 @@
   margin-bottom: 1.2rem;
   color: #67170c;
   font-weight: 600;
+  
+}
+
+.numero{
+font-family: none;
+text-align: center;
+}
+
+.numero::-webkit-inner-spin-button,
+.numero::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.numero:focus {
+  border: 1px solid #67170c; 
+  outline: none;        
 }
 
 .quantidade input {
@@ -313,14 +330,18 @@
 
 .adicionado {
   margin: 1rem 0 0;
-  color: #3c8d4f;
+  color: var(--cor-texto-muted);
   font-weight: 600;
 }
 
 .adicionado a {
   color: #67170c;
+ 
 }
 
+.adicionado a:hover{
+ text-decoration: underline;
+}
 .indisponivel {
   margin: 0;
   color: #777;

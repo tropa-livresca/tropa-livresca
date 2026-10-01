@@ -53,6 +53,26 @@
   border-bottom-right-radius: 1.5rem;
 }
 
+
+.listaProdutos2 {
+  background-color: #fffdf7;
+  width: 100%;
+    box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+    border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+}
+
+
+.listaProdutos2 p{
+  margin-top: 0;
+  font-size: 1.1rem;
+  color:#67170c;
+}
+
 .cabecalhoProdutos {
   display: grid;
   grid-template-columns: minmax(18rem, 1fr) 7rem 9rem 7rem 2rem;
@@ -78,6 +98,7 @@
   padding-bottom: 0;
   padding-top: 0;
   background-color: #fffdf7;
+    border-bottom: 1px solid #e3d5ad;
 }
 
 .capa {
@@ -279,6 +300,33 @@
   font-family: none;
 }
 
+.lim {
+  border-bottom-left-radius: 1.5rem;
+  border-bottom-right-radius: 1.5rem;
+  background-color: #fffdf7;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center; 
+}
+
+.limpar {
+  padding: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.limpar:hover{
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
 .cep {
   display: flex;
   align-items: center;
@@ -379,14 +427,44 @@
   gap: 0.6rem;
   margin-top: 1.3rem;
   margin-bottom: 0.1rem;
+  margin-left: auto;
+  margin-right: auto;
   border: none;
   border-radius: 0.7rem;
-   border: 1px solid #e2c77c;
+  border: 1px solid #e2c77c;
   color: #67170c;
   background: rgb(255, 248, 215);
   text-decoration: none;
   font-size: 0.85rem;
   cursor: pointer;
+  width: 100%;
+}
+
+.continuar2 {
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 1.3rem;
+  margin-bottom: 0.1rem;
+  margin-left: auto;
+  margin-right: auto;
+  border: none;
+  border-radius: 0.7rem;
+  border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  text-decoration: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  width: 50%;
+}
+
+.continuar2:hover {
+   background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
 }
 
 .continuar svg {

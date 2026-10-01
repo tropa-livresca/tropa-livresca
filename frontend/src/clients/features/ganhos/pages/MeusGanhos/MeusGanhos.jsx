@@ -5,6 +5,7 @@ import base from "../../../loja/pages/Compra/Compra.module.css";
 import styles from "./MeusGanhos.module.css";
 import { useGanhos } from "../../hooks/useGanhos";
 import Carregando from "../../../../components/Carregando/Carregando";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 
 const formatarPreco = (valor) =>
   `R$ ${Number(valor || 0)
@@ -28,13 +29,9 @@ export default function MeusGanhos() {
 
   return (
     <main>
-      <div className={base.topo}>
-        <h1 className={base.titulo}>Meus ganhos</h1>
-        <p>
-          A cada livro seu vendido na loja, você recebe 30% do valor como
-          direitos autorais.
-        </p>
-      </div>
+
+       <DescricaoTela titulo = "Meus ganhos" descricao = "A cada livro seu vendido na loja, você recebe 30% do valor como
+          direitos autorais."/>
 
       <div className={base.container}>
         {carregando && !ganhos ? (
@@ -55,7 +52,7 @@ export default function MeusGanhos() {
             </div>
 
             <section className={base.cartao}>
-              <h2>Extrato</h2>
+              <strong className={styles.ex}>Extrato</strong>
 
               {extrato.length === 0 ? (
                 <p className={base.aviso}>
@@ -75,7 +72,7 @@ export default function MeusGanhos() {
                           {entrada ? <FiArrowDownLeft /> : <FiArrowUpRight />}
                         </span>
                         <div className={styles.descricao}>
-                          <strong>
+                          <strong className={styles.numero}>
                             {entrada
                               ? `Direitos autorais${mov.fk_vendas_id ? ` · Pedido #${mov.fk_vendas_id}` : ""}`
                               : "Saque"}

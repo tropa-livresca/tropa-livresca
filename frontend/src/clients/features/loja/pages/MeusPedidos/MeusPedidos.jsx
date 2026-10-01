@@ -5,6 +5,7 @@ import base from "../Compra/Compra.module.css";
 import styles from "./MeusPedidos.module.css";
 import { useCompra } from "../../hooks/useCompra";
 import Carregando from "../../../../components/Carregando/Carregando";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 
 const formatarPreco = (valor) =>
   `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
@@ -27,11 +28,9 @@ export default function MeusPedidos() {
 
   return (
     <main>
-      <div className={base.topo}>
-        <h1 className={base.titulo}>Meus pedidos</h1>
-        <p>Acompanhe suas compras na Tropa Livresca.</p>
-      </div>
 
+    <DescricaoTela titulo = "Meus pedidos" descricao = "Acompanhe suas compras na Tropa Livresca."/>
+     
       <div className={base.container}>
         {carregando ? (
           <Carregando mensagem="Carregando pedidos..." />
@@ -53,7 +52,7 @@ export default function MeusPedidos() {
                 <li key={pedido.id}>
                   <Link to={`/pedido/${pedido.id}`} className={styles.pedido}>
                     <div className={styles.info}>
-                      <strong>Pedido #{pedido.id}</strong>
+                      <strong>Pedido <span className={styles.numero}>#{pedido.id}</span></strong>
                       <small>{formatarData(pedido.data)}</small>
                       <span className={styles.livros}>
                         {resumoItens(pedido.itens_venda)}

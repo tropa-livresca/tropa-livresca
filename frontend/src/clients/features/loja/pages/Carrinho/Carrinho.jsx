@@ -26,13 +26,13 @@ export default function Carrinho() {
         <div className={styles.conteudo}>
           {itens.length === 0 ? (
             <section
-              className={styles.listaProdutos}
+              className={styles.listaProdutos2}
               style={{ textAlign: "center", padding: "40px 0" }}
             >
               <p>Seu carrinho está vazio no momento.</p>
               <Link
                 to="/loja"
-                className={styles.continuar}
+                className={styles.continuar2}
                 style={{ justifyContent: "center", marginTop: "20px" }}
               >
                 <FiArrowLeft /> Voltar para a Loja
@@ -135,17 +135,11 @@ export default function Carrinho() {
                 );
               })}
 
-              <div style={{ textAlign: "right", marginTop: "15px" }}>
+              <div className={styles.lim}>
                 <button
                   type="button"
                   onClick={limparCarrinho}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#ff4d4d",
-                    cursor: "pointer",
-                    fontWeight: "600",
-                  }}
+                  className={styles.limpar}
                 >
                   Limpar todo o carrinho
                 </button>

@@ -289,6 +289,7 @@ export default function ProdutoById() {
                   Quantidade
                   <input
                     type="number"
+                    className={styles.numero}
                     min="1"
                     max="99"
                     value={qtd}

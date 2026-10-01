@@ -2,10 +2,12 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   margin-bottom: 1rem;
-  color: #51433e;
+  color: var(--cor-texto-muted);
   font-size: 0.9rem;
+  text-align: center;
 }
 
 .estrelasCheias,
@@ -19,7 +21,7 @@
 }
 
 .estrelasVazias {
-  color: #e4d9b9;
+ color: var(--cor-texto-muted);
 }
 
 .media {
@@ -29,25 +31,28 @@
 
 .total,
 .semAvaliacao {
-  color: #7a6a5b;
+ color: var(--cor-texto-muted);
 }
 
-/* Avaliar */
 .avaliar {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.6rem;
+  text-align: center;
 }
 
 .pergunta {
   margin: 0;
   color: #67170c;
   font-weight: 600;
+  text-align: center;
 }
 
 .seletor {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.2rem;
 }
 
@@ -55,7 +60,7 @@
   padding: 0 0.1rem;
   border: none;
   background: none;
-  color: #e4d9b9;
+ color: var(--cor-texto-muted);
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
@@ -78,13 +83,14 @@
 
 .rotulo {
   margin-left: 0.6rem;
-  color: #7a6a5b;
+  color: var(--cor-texto-muted);
   font-size: 0.95rem;
 }
 
 .aviso {
   margin: 0;
-  color: #7a6a5b;
+  color: var(--cor-texto-muted);
+  text-align: center;
 }
 
 .aviso a {
@@ -96,9 +102,11 @@
   margin: 0;
   color: #2f6f3e;
   font-weight: 600;
+  text-align: center;
 }
 
 .erro {
   margin: 0;
   color: #a1260f;
+  text-align: center;
 }

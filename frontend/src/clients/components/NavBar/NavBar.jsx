@@ -101,16 +101,7 @@ export default function NavBar() {
           </li>
         </ul>
 
-        <Link
-          to="/carrinho"
-          className={styles.carrinho}
-          aria-label={`Carrinho com ${quantidadeTotal} itens`}
-        >
-          <FiShoppingCart />
-          {quantidadeTotal > 0 && (
-            <span className={styles.contador}>{quantidadeTotal}</span>
-          )}
-        </Link>
+        
 
         {signed ? (
           <div className={styles.navbutton}>
