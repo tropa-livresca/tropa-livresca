@@ -17,7 +17,7 @@ import { useLivrosLoja } from "../../hooks/useLivrosLoja";
 import { useCarrinho } from "../../hooks/useCarrinho";
 import { useAvaliacoes } from "../../hooks/useAvaliacoes";
 import ResumoAvaliacao from "../../components/Avaliacao/ResumoAvaliacao";
-import AvaliarLivro from "../../components/Avaliacao/AvaliarLivro";
+import AbasLivro from "../../components/AbasLivro/AbasLivro";
 import { useEndereco } from "../../../perfil/hooks/useEndereco";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./ProdutoById.module.css";
@@ -35,7 +35,6 @@ export default function ProdutoById() {
   const [formatoEscolhido, setFormato] = useState(null);
   const [qtd, setQtd] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
-  const [aba, setAba] = useState("sinopse");
 
   const avaliacoes = useAvaliacoes();
   const { resumo, buscarResumo } = avaliacoes;
@@ -241,58 +240,12 @@ export default function ProdutoById() {
 
       <section className={styles.conteudo}>
         <div className={styles.conteudoPrincipal}>
-          <div className={styles.tabs} role="tablist">
-            {[
-              ["sinopse", "Sinopse"],
-              ["autor", "Sobre o autor"],
-              ["avaliacoes", "Avaliações"],
-            ].map(([chave, rotulo]) => (
-              <button
-                key={chave}
-                type="button"
-                role="tab"
-                aria-selected={aba === chave}
-                className={aba === chave ? styles.tabAtiva : ""}
-                onClick={() => setAba(chave)}
-              >
-                {rotulo}
-                {chave === "avaliacoes" && (
-                  <span className={styles.numero}> ({resumo.total})</span>
-                )}
-              </button>
-            ))}
-          </div>
-
-          <div className={styles.sinopse}>
-            {aba === "sinopse" && (
-              <p>{livro.descricao || "Sinopse não informada."}</p>
-            )}
-
-            {aba === "autor" && (
-              <>
-                <p>
-                  {autor?.descricao ||
-                    `${autor?.nome || "O autor"} ainda não escreveu uma apresentação.`}
-                </p>
-                {autor?.id && (
-                  <Link to={`/autores/${autor.id}`} className={styles.linkAutor}>
-                    Ver perfil completo do autor
-                  </Link>
-                )}
-              </>
-            )}
-
-            {aba === "avaliacoes" && (
-              <div className={styles.abaAvaliacoes}>
-                <ResumoAvaliacao media={resumo.media} total={resumo.total} />
-                <AvaliarLivro
-                  livroId={id}
-                  {...avaliacoes}
-                  onAvaliado={() => buscarResumo(id)}
-                />
-              </div>
-            )}
-          </div>
+          <AbasLivro
+            livroId={id}
+            descricao={livro.descricao}
+            autor={autor}
+            avaliacoes={avaliacoes}
+          />
         </div>
 
         <aside className={styles.compra}>

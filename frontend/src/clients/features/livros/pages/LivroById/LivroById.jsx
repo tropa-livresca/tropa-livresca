@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import Carregando from "../../../../components/Carregando/Carregando";
 import { useAvaliacoes } from "../../../loja/hooks/useAvaliacoes";
 import ResumoAvaliacao from "../../../loja/components/Avaliacao/ResumoAvaliacao";
+import AbasLivro from "../../../loja/components/AbasLivro/AbasLivro";
 import {
   FaBookOpen,
   FaCalendarAlt,
@@ -20,7 +21,8 @@ import {
 
 export default function LivroById() {
   const { id } = useParams();
-  const { resumo, buscarResumo } = useAvaliacoes();
+  const avaliacoes = useAvaliacoes();
+  const { resumo, buscarResumo } = avaliacoes;
 
   useEffect(() => {
     buscarResumo(id);
@@ -174,19 +176,12 @@ export default function LivroById() {
 
       <section className={styles.conteudo}>
         <div className={styles.conteudoPrincipal}>
-          <div className={styles.tabs}>
-            <button className={styles.tabAtiva}>Sinopse</button>
-
-            <button>Sobre o autor</button>
-
-            <button>
-              Avaliações <span className={styles.numero}>({resumo.total})</span>
-            </button>
-          </div>
-
-          <div className={styles.sinopse}>
-            <p>{livro.descricao || "Sinopse não informada."}</p>
-          </div>
+          <AbasLivro
+            livroId={id}
+            descricao={livro.descricao}
+            autor={autor}
+            avaliacoes={avaliacoes}
+          />
         </div>
 
         <aside className={styles.compra}>
