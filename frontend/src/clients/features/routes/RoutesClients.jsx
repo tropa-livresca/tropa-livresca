@@ -57,6 +57,7 @@ const RoutesClients = () => {
             />
             <Route path="/loja" element={<Loja />} />
             <Route path="/pagamento" element={<Pagamento />} />
+            <Route path="/confirmado" element={<Confirmado />} />
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/loja/livro/:id" element={<ProdutoById />} />
             <Route path="/checkout" element={<Private Item={Compra} />} />
