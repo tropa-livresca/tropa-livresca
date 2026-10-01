@@ -75,7 +75,7 @@ export class LojaController {
       const vendaUsuario =
         await LojaService.buscarHistoricoVendasUsuario(usuarioId);
 
-      return res.status(201).json({ vendaUsuario });
+      return res.status(200).json({ vendaUsuario });
     } catch (err) {
       next(err);
     }

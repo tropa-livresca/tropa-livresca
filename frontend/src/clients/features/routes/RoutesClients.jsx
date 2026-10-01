@@ -26,6 +26,7 @@ import Carrinho from "../loja/pages/Carrinho/Carrinho";
 import ProdutoById from "../loja/pages/ProdutoById/ProdutoById.jsx";
 import Compra from "../loja/pages/Compra/Compra.jsx";
 import ResumoCompra from "../loja/pages/ResumoCompra/ResumoCompra.jsx";
+import MeusPedidos from "../loja/pages/MeusPedidos/MeusPedidos.jsx";
 import Pagamento from "../loja/pages/Pagamento/Pagamento.jsx";
 
 const Private = ({ Item, redirectTo = "/auth/login" }) => {
@@ -62,6 +63,7 @@ const RoutesClients = () => {
               path="/pedido/:id"
               element={<Private Item={ResumoCompra} />}
             />
+            <Route path="/pedidos" element={<Private Item={MeusPedidos} />} />
             <Route path="/autores" element={<Autores />} />
             <Route path="/autores/:id" element={<AutorById />} />
             <Route path="/FAQ" element={<FAQ />} />

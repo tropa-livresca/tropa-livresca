@@ -95,14 +95,18 @@ export class LojaModel {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
-    let query = supabase
-      .from("vendas")
-      .select("*, users_profile(*)", { count: "exact" });
+    // movimentacoes_financeiras indica se o repasse ao autor já foi feito.
+    let query = supabaseAdmin.from("vendas").select(
+      `
+        id, data, total, status_pagamento, status_entrega, endereco_entrega,
+        users_profile(nome),
+        itens_venda(qtd, fisico, subtotal, livros(titulo)),
+        movimentacoes_financeiras(id)
+      `,
+      { count: "exact" },
+    );
 
-    query =
-      ordem === "ascendente" || !ordem
-        ? query.order("data", { ascending: true })
-        : query.order("data", { ascending: false });
+    query = query.order("data", { ascending: ordem === "ascendente" });
 
     const { data, error, count } = await query.range(start, end);
 
@@ -219,9 +223,9 @@ export class LojaModel {
   }
 
   static async buscarHistoricoVendasUsuario(usuarioId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("vendas")
-      .select("*, itens_venda(*)")
+      .select("*, itens_venda(*, livros(titulo))")
       .eq("fk_user_profile_id", usuarioId)
       .order("data", { ascending: false });
 
@@ -466,7 +470,7 @@ export class LojaModel {
   }
 
   static async autorizarEntrega(vendaId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("vendas")
       .update({ status_entrega: "A caminho" })
       .eq("id", vendaId)
@@ -482,7 +486,7 @@ export class LojaModel {
   }
 
   static async alterarStatusEntrega(vendaId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("vendas")
       .update({ status_entrega: "Entregue" })
       .eq("id", vendaId)

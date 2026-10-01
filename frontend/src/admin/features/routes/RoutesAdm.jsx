@@ -10,6 +10,7 @@ import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
 import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
+import Vendas from "../vendas/pages/Vendas/Vendas.jsx";
 import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
@@ -98,6 +99,15 @@ const RoutesAdm = () => {
           element={
             <PrivateRoute>
               <RevisaoById />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="ecommerce/pedidos"
+          element={
+            <PrivateRoute>
+              <Vendas />
             </PrivateRoute>
           }
         />

@@ -14,6 +14,7 @@ export const useCompra = () => {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
   const [pedido, setPedido] = useState(null);
+  const [pedidos, setPedidos] = useState([]);
 
   // Envia só o que o servidor precisa; preço e total são calculados lá.
   const criarPedido = useCallback(async (itensCarrinho, enderecoId) => {
@@ -93,12 +94,38 @@ export const useCompra = () => {
     }
   }, []);
 
+  const buscarPedidos = useCallback(async () => {
+    setCarregando(true);
+    setErro(null);
+    try {
+      const response = await apiFetch(
+        "/api/v1/clients/loja/historico-vendas",
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          await lerErro(response, "Não foi possível carregar seus pedidos."),
+        );
+      }
+
+      const { vendaUsuario } = await response.json();
+      setPedidos(vendaUsuario?.data || []);
+    } catch (err) {
+      setErro(err.message);
+      setPedidos([]);
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
   return {
     carregando,
     erro,
     pedido,
+    pedidos,
     criarPedido,
     pagarPedido,
     buscarPedido,
+    buscarPedidos,
   };
 };

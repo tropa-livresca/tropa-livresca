@@ -120,8 +120,8 @@ export default function ResumoCompra() {
               Pagamento: <strong>{pago ? "Pago" : "Pendente"}</strong>
             </p>
 
-            <Link to="/loja" className={base.voltar}>
-              <FiArrowLeft /> Continuar comprando
+            <Link to="/pedidos" className={base.voltar}>
+              <FiArrowLeft /> Ver meus pedidos
             </Link>
           </aside>
         </div>
