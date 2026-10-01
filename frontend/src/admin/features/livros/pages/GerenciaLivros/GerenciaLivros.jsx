@@ -33,7 +33,7 @@ export default function GerenciaLivros() {
     <main>
       <div className={styles.topo}>
               <h1 className={styles.titulo}>Livros publicados pela editora</h1>
-              <p>David Balls.</p>
+              <p>Acompanhe os livros da editora, seus autores e o estado de revisão.</p>
             </div>
 
       <div className={styles.container}>

@@ -94,7 +94,7 @@ export default function Pagamento() {
                   <div className={styles.dadosEndereco}>
                     <strong>Endereço Secundário</strong>
                     <span>Rua das Flores, <span className={styles.numero}>500</span></span>
-                    <span>DVD BALLS</span>
+                    <span>Jardim Paulista</span>
                     <span>São Paulo - SP</span>
                     <span>CEP: <span className={styles.numero}>01235-678</span></span>
                   </div>
@@ -105,7 +105,7 @@ export default function Pagamento() {
 
                   <div className={styles.dadosEndereco}>
                     <strong>Endereço de Trabalho</strong>
-                    <span>DAVID BALLS, <span className={styles.numero}>500</span></span>
+                    <span>Avenida Brasil, <span className={styles.numero}>500</span></span>
                     <span>Centro</span>
                     <span>São Paulo - SP</span>
                     <span>CEP: <span className={styles.numero}>18741-000</span></span>

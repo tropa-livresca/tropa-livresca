@@ -44,7 +44,7 @@ export default function GerenciarUsuarios() {
     <main className={styles.mainContainer}>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Gerenciar Usuários</h1>
-        <p>david balls</p>
+        <p>Consulte leitores, autores e funcionários e gerencie suas permissões.</p>
       </div>
 
       <div className={styles.container}>
