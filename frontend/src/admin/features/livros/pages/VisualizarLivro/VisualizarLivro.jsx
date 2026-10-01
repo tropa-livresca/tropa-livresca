@@ -2,6 +2,21 @@ import { useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useLivros } from "../../hooks/useLivros";
 import styles from "./VisualizarLivro.module.css";
+import { FiArrowLeft, FiExternalLink } from "react-icons/fi";
+import Carregando from "../../../../components/Carregando/Carregando";
+
+const ROTULO_ESTADO = {
+  rascunho: "Rascunho",
+  em_revisao: "Em revisão",
+  publicado: "Publicado",
+  negado: "Negado",
+  recall: "Recall",
+};
+
+const formatarPreco = (valor) =>
+  Number(valor) > 0
+    ? `R$ ${Number(valor).toFixed(2).replace(".", ",")}`
+    : "Não vendido";
 
 export default function VisualizarLivro() {
   const { id } = useParams();
@@ -14,11 +29,18 @@ export default function VisualizarLivro() {
   }, [id, buscarLivroById]);
 
   if (carregando) {
-    return <div className={styles.loading}>Carregando manuscrito...</div>;
+    return <Carregando mensagem="Carregando livro..." />;
   }
 
   if (!livro) {
-    return <div className={styles.error}>Livro não encontrado</div>;
+    return (
+      <main className={styles.container}>
+        <p className={styles.vazio}>Livro não encontrado.</p>
+        <Link to="/admin/livros/painel" className={styles.btnVoltar}>
+          <FiArrowLeft /> Voltar ao painel
+        </Link>
+      </main>
+    );
   }
 
   const {
@@ -51,7 +73,9 @@ export default function VisualizarLivro() {
     <main className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerInfo}>
-          <span className={`${styles.badge} ${styles[estado]}`}>{estado}</span>
+          <span className={`${styles.badge} ${styles[estado] || ""}`}>
+            {ROTULO_ESTADO[estado] || estado}
+          </span>
           <h1 className={styles.titulo}>{titulo}</h1>
           {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
           <p className={styles.autor}>
@@ -62,11 +86,8 @@ export default function VisualizarLivro() {
           </p>
         </div>
         <div className={styles.headerActions}>
-          <Link
-            to="/admin/livros/painel"
-            className={`${styles.btn} ${styles.btnSecondary}`}
-          >
-            Voltar ao Painel
+          <Link to="/admin/livros/painel" className={styles.btnVoltar}>
+            <FiArrowLeft /> Voltar ao painel
           </Link>
         </div>
       </header>
@@ -82,13 +103,23 @@ export default function VisualizarLivro() {
 
           {manuscrito && (
             <div className={styles.card}>
-              <h2>Visualização do Manuscrito</h2>
+              <div className={styles.cardTopo}>
+                <h2>Manuscrito</h2>
+                <a
+                  href={manuscrito}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={styles.linkExterno}
+                >
+                  Abrir em nova aba <FiExternalLink />
+                </a>
+              </div>
               <div className={styles.pdfWrapper}>
                 <object
                   data={manuscrito}
                   type="application/pdf"
                   width="100%"
-                  height="650px"
+                  height="100%"
                 >
                   <p className={styles.vazio}>
                     Seu navegador não suporta a exibição de PDFs.{" "}
@@ -110,45 +141,46 @@ export default function VisualizarLivro() {
 
         <aside className={styles.sidebar}>
           <div className={styles.card}>
-            <h2>Preços de Venda</h2>
+            <h2>Preços de venda</h2>
             <div className={styles.precosGrid}>
               <div className={styles.precoItem}>
                 <span>Físico</span>
-                <strong>R$ {preco_fisico || "0,00"}</strong>
+                <strong>{formatarPreco(preco_fisico)}</strong>
               </div>
               <div className={styles.precoItem}>
-                <span>Digital</span>
-                <strong>R$ {preco_digital || "0,00"}</strong>
+                <span>E-book</span>
+                <strong>{formatarPreco(preco_digital)}</strong>
               </div>
             </div>
           </div>
 
           <div className={styles.card}>
-            <h2>Metadados e Regras</h2>
+            <h2>Informações</h2>
             <ul className={styles.metaList}>
               <li>
-                <span>Idioma:</span> <strong>{idioma}</strong>
+                <span>Idioma</span> <strong>{idioma || "Não informado"}</strong>
               </li>
               <li>
-                <span>Edição:</span> <strong>{numero_edicao || "1"}</strong>
+                <span>Edição</span> <strong>{numero_edicao || "1"}</strong>
               </li>
               <li>
-                <span>Público-alvo:</span> <strong>{publico_alvo}</strong>
+                <span>Público-alvo</span>{" "}
+                <strong>{publico_alvo || "Não informado"}</strong>
               </li>
               <li>
-                <span>Imagens Explícitas:</span>{" "}
+                <span>Imagens explícitas</span>{" "}
                 <strong>{imagens_explicitas ? "Sim" : "Não"}</strong>
               </li>
               <li>
-                <span>Conteúdo por IA:</span>{" "}
+                <span>Conteúdo por IA</span>{" "}
                 <strong>{conteudo_por_IA ? "Sim" : "Não"}</strong>
               </li>
               <li>
-                <span>Direitos de Autopublicação:</span>{" "}
+                <span>Direitos de autopublicação</span>{" "}
                 <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong>
               </li>
-              <li>
-                <span>Colaboradores:</span>
+              <li className={styles.metaColaboradores}>
+                <span>Colaboradores</span>
                 <div>
                   {Array.isArray(colaboradores) && colaboradores.length > 0 ? (
                     colaboradores.map((colab, index) => (
@@ -166,7 +198,7 @@ export default function VisualizarLivro() {
 
           {capaObjeto && (
             <div className={styles.card}>
-              <h2>Capas do Livro</h2>
+              <h2>Capas</h2>
               <div className={styles.capasContainer}>
                 {capaObjeto.frente && (
                   <div className={styles.capaBox}>
