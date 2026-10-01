@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { CarrinhoContext } from "./CarrinhoContext";
 import { apiFetch } from "../../../../common/services/api";
-import { error } from "../../../../../../backend/src/api/common/utils/error";
 
 export const CarrinhoProvider = ({ children }) => {
   const [carregando, setCarregando] = useState(false);
@@ -60,7 +59,7 @@ export const CarrinhoProvider = ({ children }) => {
 
       return itensAtuais.map((item) =>
         item.id === id && item.tipo === tipo
-          ? { ...item, quantidade: item.quantity - 1 }
+          ? { ...item, quantidade: item.quantidade - 1 }
           : item,
       );
     });
@@ -100,9 +99,12 @@ export const CarrinhoProvider = ({ children }) => {
 
   const limparCarrinho = () => setItens([]);
 
-  const quantidadeTotal = itens.reduce((acc, item) => acc + item.quantidade, 0);
+  const quantidadeTotal = itens.reduce(
+    (acc, item) => acc + Number(item.quantidade),
+    0,
+  );
   const valorSubtotal = itens.reduce(
-    (acc, item) => acc + item.preco * item.quantidade,
+    (acc, item) => acc + item.preco * Number(item.quantidade),
     0,
   );
 
