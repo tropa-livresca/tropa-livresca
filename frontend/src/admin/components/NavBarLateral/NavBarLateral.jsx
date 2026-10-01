@@ -14,7 +14,7 @@ export default function NavBarLateral() {
     <div className={styles.menu}>
       <div className={styles.titulo}>Geral</div>
       
-      <Link to="/admin/usuarios/novo"> 
+      <Link to="/admin/usuarios">
       <div
         className={styles.itemMenu}
         onClick={() => setUsuariosAberto(!usuariosAberto)}
