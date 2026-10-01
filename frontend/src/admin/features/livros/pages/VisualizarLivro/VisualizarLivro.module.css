@@ -300,3 +300,75 @@
     min-height: 20rem;
   }
 }
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inativo {
+  background: #eee;
+  color: #555;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+
+.btnInativar,
+.btnAtivar {
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.btnInativar {
+  border: 2px solid #b3261e;
+  background: transparent;
+  color: #b3261e;
+}
+
+.btnInativar:hover:not(:disabled) {
+  background: #b3261e;
+  color: #fff;
+}
+
+.btnAtivar {
+  border: 2px solid #2f6f3e;
+  background: #2f6f3e;
+  color: #fff;
+}
+
+.btnAtivar:hover:not(:disabled) {
+  background: #245831;
+}
+
+.btnInativar:disabled,
+.btnAtivar:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.erroAtivo {
+  max-width: 18rem;
+  margin: 0;
+  color: #a1260f;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .headerActions {
+    align-items: flex-start;
+  }
+}

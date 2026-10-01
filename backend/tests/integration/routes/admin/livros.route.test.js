@@ -10,6 +10,7 @@ jest.mock("../../../../src/api/admin/livros/livros.controller.js", () => {
       BuscarLivros: handler("BuscarLivros"),
       BuscarLivroByUserId: handler("BuscarLivroByUserId"),
       BuscarLivroById: handler("BuscarLivroById"),
+      AlterarAtivoLivro: handler("AlterarAtivoLivro"),
     },
   };
 });
@@ -31,6 +32,12 @@ describe("Rotas administrativas de livros", () => {
     const response = await request(app).get("/user/42").expect(200);
 
     expect(response.body).toEqual({ handler: "BuscarLivroByUserId" });
+  });
+
+  it("encaminha PATCH /:id/ativo para AlterarAtivoLivro", async () => {
+    const response = await request(app).patch("/42/ativo").expect(200);
+
+    expect(response.body).toEqual({ handler: "AlterarAtivoLivro" });
   });
 
   it("encaminha GET /:id para BuscarLivroById", async () => {

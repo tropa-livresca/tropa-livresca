@@ -47,6 +47,31 @@ export class LivrosService {
     return livro;
   }
 
+  // Tira o livro da loja (ou o devolve) sem apagar vendas e revisões.
+  static async AlterarAtivoLivro(livroId, ativo) {
+    if (!livroId) {
+      const erroLivroId = new Error("Id do livro não informado.");
+      erroLivroId.statusCode = 400;
+      throw erroLivroId;
+    }
+
+    if (typeof ativo !== "boolean") {
+      const erroAtivo = new Error("Informe se o livro deve ficar ativo.");
+      erroAtivo.statusCode = 400;
+      throw erroAtivo;
+    }
+
+    const livro = await LivroModel.alterarAtivoLivro(livroId, ativo);
+
+    if (!livro) {
+      const erroLivro = new Error("Livro não encontrado.");
+      erroLivro.statusCode = 404;
+      throw erroLivro;
+    }
+
+    return livro;
+  }
+
   static async BuscarLivroByUserId(userId) {
     if (!userId) {
       const erroLivroId = new Error("Id do livro não informado.");

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useLivros } from "../../hooks/useLivros";
 import styles from "./VisualizarLivro.module.css";
@@ -20,7 +20,9 @@ const formatarPreco = (valor) =>
 
 export default function VisualizarLivro() {
   const { id } = useParams();
-  const { buscarLivroById, carregando, livro } = useLivros();
+  const { buscarLivroById, carregando, livro, alterarAtivo } = useLivros();
+  const [salvando, setSalvando] = useState(false);
+  const [erroAtivo, setErroAtivo] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -61,7 +63,19 @@ export default function VisualizarLivro() {
     colaboradores,
     direitos_de_publicacao,
     conteudo_por_IA,
+    ativo,
   } = livro;
+
+  const handleAlterarAtivo = async () => {
+    const mensagem = ativo
+      ? `Tirar "${titulo}" da loja? Ele deixa de aparecer para os leitores, mas vendas e revisões são mantidas.`
+      : `Colocar "${titulo}" de volta na loja?`;
+    if (!window.confirm(mensagem)) return;
+
+    setSalvando(true);
+    setErroAtivo(await alterarAtivo(id, !ativo));
+    setSalvando(false);
+  };
 
   let capaObjeto = null;
   try {
@@ -73,9 +87,16 @@ export default function VisualizarLivro() {
     <main className={styles.container}>
       <header className={styles.header}>
         <div className={styles.headerInfo}>
-          <span className={`${styles.badge} ${styles[estado] || ""}`}>
-            {ROTULO_ESTADO[estado] || estado}
-          </span>
+          <div className={styles.badges}>
+            <span className={`${styles.badge} ${styles[estado] || ""}`}>
+              {ROTULO_ESTADO[estado] || estado}
+            </span>
+            {!ativo && (
+              <span className={`${styles.badge} ${styles.inativo}`}>
+                Fora da loja
+              </span>
+            )}
+          </div>
           <h1 className={styles.titulo}>{titulo}</h1>
           {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
           <p className={styles.autor}>
@@ -89,6 +110,19 @@ export default function VisualizarLivro() {
           <Link to="/admin/livros/painel" className={styles.btnVoltar}>
             <FiArrowLeft /> Voltar ao painel
           </Link>
+          <button
+            type="button"
+            onClick={handleAlterarAtivo}
+            disabled={salvando}
+            className={ativo ? styles.btnInativar : styles.btnAtivar}
+          >
+            {salvando
+              ? "Salvando..."
+              : ativo
+                ? "Tirar da loja"
+                : "Colocar de volta na loja"}
+          </button>
+          {erroAtivo && <p className={styles.erroAtivo}>{erroAtivo}</p>}
         </div>
       </header>
 

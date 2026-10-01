@@ -42,6 +42,18 @@ export class LivroController {
     }
   }
 
+  static async AlterarAtivoLivro(req, res, next) {
+    try {
+      const livro = await LivrosService.AlterarAtivoLivro(
+        req.params.id,
+        req.body?.ativo,
+      );
+      return res.status(200).json({ livro });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async BuscarLivroByUserId(req, res, next) {
     try {
       const { id } = req.params;

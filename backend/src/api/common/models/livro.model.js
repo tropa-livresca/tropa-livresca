@@ -72,6 +72,22 @@ export class LivroModel {
     return data;
   }
 
+  static async alterarAtivoLivro(livroId, ativo) {
+    const { data, error } = await supabaseAdmin
+      .from("livros")
+      .update({ ativo })
+      .eq("id", livroId)
+      .select("id, titulo, ativo")
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data;
+  }
+
   static async buscarLivroByUserId(userId) {
     if (!userId) return null;
 

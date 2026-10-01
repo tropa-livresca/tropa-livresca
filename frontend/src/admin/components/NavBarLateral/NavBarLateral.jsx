@@ -2,28 +2,25 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa";
 import styles from "./NavBarLateral.module.css";
+import useAdmin from "../../../common/hooks/useAdmin";
 
 export default function NavBarLateral() {
-  const [usuariosAberto, setUsuariosAberto] = useState(false);
+  const { user } = useAdmin();
+  const isMaster = !!user?.is_master;
+
   const [livrosAberto, setLivrosAberto] = useState(false);
   const [ecommerceAberto, setEcommerceAberto] = useState(false);
-  const [comunidadeAberto, setComunidadeAberto] = useState(false);
   const [analisesAberto, setAnalisesAberto] = useState(false);
 
   return (
     <div className={styles.menu}>
       <div className={styles.titulo}>Geral</div>
-      
-      <Link to="/admin/usuarios">
-      <div
-        className={styles.itemMenu}
-        onClick={() => setUsuariosAberto(!usuariosAberto)}
-      >
-       
-        Usuários
-      
-      </div>
+
+      {isMaster && (
+        <Link to="/admin/usuarios">
+          <div className={styles.itemMenu}>Usuários</div>
         </Link>
+      )}
 
       <div
         className={styles.itemMenu}
@@ -37,14 +34,8 @@ export default function NavBarLateral() {
 
       {livrosAberto && (
         <div className={styles.subMenu}>
-
-
           <Link to="/admin/livros/painel" className={styles.subItem}>
             Painel Livros
-          </Link>
-
-          <Link to="/admin/livros/catalogo" className={styles.subItem}>
-            Gerenciar Catálogo
           </Link>
 
           <Link to="/admin/livros/revisoes" className={styles.subItem}>
@@ -72,68 +63,33 @@ export default function NavBarLateral() {
       {ecommerceAberto && (
         <div className={styles.subMenu}>
           <Link to="/admin/ecommerce/pedidos" className={styles.subItem}>
-            Gerenciar Pedidos
-          </Link>
-
-          <Link to="/admin/ecommerce/entregas" className={styles.subItem}>
-            Monitorar Entregas
-          </Link>
-
-          <Link to="/admin/ecommerce/cupons" className={styles.subItem}>
-            Gerenciar Cupons
+            Pedidos e Entregas
           </Link>
         </div>
       )}
 
-      <div
-        className={styles.itemMenu}
-        onClick={() => setComunidadeAberto(!comunidadeAberto)}
-      >
-        Comunidade e Suporte
-        <FaChevronDown
-          className={`${styles.seta} ${
-            comunidadeAberto ? styles.setaAberta : ""
-          }`}
-        />
-      </div>
-
-      {comunidadeAberto && (
-        <div className={styles.subMenu}>
-          <Link
-            to="/admin/comunidade/autores-leitores"
-            className={styles.subItem}
+      {isMaster && (
+        <>
+          <div
+            className={styles.itemMenu}
+            onClick={() => setAnalisesAberto(!analisesAberto)}
           >
-            Autores e Leitores
-          </Link>
+            Desempenho
+            <FaChevronDown
+              className={`${styles.seta} ${
+                analisesAberto ? styles.setaAberta : ""
+              }`}
+            />
+          </div>
 
-          <Link to="/admin/comunidade/notificacoes" className={styles.subItem}>
-            Enviar Notificações
-          </Link>
-
-          <Link to="/admin/comunidade/contato" className={styles.subItem}>
-            Formulários de Contato
-          </Link>
-        </div>
-      )}
-
-      <div
-        className={styles.itemMenu}
-        onClick={() => setAnalisesAberto(!analisesAberto)}
-      >
-        Desempenho
-        <FaChevronDown
-          className={`${styles.seta} ${
-            analisesAberto ? styles.setaAberta : ""
-          }`}
-        />
-      </div>
-
-      {analisesAberto && (
-        <div className={styles.subMenu}>
-          <Link to="/admin/analises/financeiro" className={styles.subItem}>
-            Financeiro
-          </Link>
-        </div>
+          {analisesAberto && (
+            <div className={styles.subMenu}>
+              <Link to="/admin/analises/financeiro" className={styles.subItem}>
+                Financeiro
+              </Link>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
