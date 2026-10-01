@@ -1,9 +1,10 @@
 import styles from "./Carrinho.module.css";
 import { FiTrash2, FiMinus, FiPlus, FiArrowLeft } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../../hooks/useCarrinho";
 
 export default function Carrinho() {
+  const navigate = useNavigate();
   const {
     itens = [],
     adicionarItem,
@@ -175,6 +176,7 @@ export default function Carrinho() {
               type="button"
               className={styles.finalizar}
               disabled={itens.length === 0}
+              onClick={() => navigate("/checkout")}
             >
               Concluir minha compra
             </button>

@@ -1,6 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { LojaModel } from "../../common/models/loja.model.js";
+import { EnderecoModel } from "../../common/models/endereco.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
+
+// Não há mais tabela de métodos; o pagamento da demo é sempre simulado.
+const METODO_PAGAMENTO_SIMULADO = 1;
+const MAX_QTD_POR_ITEM = 99;
+
+const arredondar = (valor) => Math.round(valor * 100) / 100;
 
 export class LojaService {
   static _parseCapaUrls(livro) {
@@ -76,50 +83,123 @@ export class LojaService {
     return this._parseCapaUrls(livro);
   }
 
-  static async consultarVenda(vendaId) {
+  static async consultarVenda(vendaId, usuarioId) {
+    if (!usuarioId) errorUsuarioId();
     if (!vendaId) error(400, "Id da venda não informado.");
 
     const venda = await LojaModel.consultarVenda(vendaId);
 
-    if (venda.error) throw venda.error;
+    // Cliente só enxerga as próprias vendas.
+    if (venda.fk_user_profile_id !== usuarioId)
+      error(404, "Venda não encontrada.");
 
     return venda;
   }
 
-  static async realizarVenda(
-    usuarioId,
-    metodo_pagamento,
-    endereco_entrega,
-    total,
-    itensVenda,
-  ) {
+  static async realizarVenda(usuarioId, { itens, enderecoId }) {
     if (!usuarioId) errorUsuarioId();
 
-    if (!metodo_pagamento || !endereco_entrega || !total)
-      error(400, "Dados da venda não informados.");
-
-    if (!Array.isArray(itensVenda) || itensVenda.length === 0)
+    if (!Array.isArray(itens) || itens.length === 0)
       error(400, "Não há como realizar compra sem itens da venda.");
 
-    const temFisico = itensVenda.some((item) => item.fisico);
+    const itensNormalizados = itens.map((item) => {
+      const livroId = Number(item.livroId);
+      const fisico = item.fisico === true;
+      // Livro digital é sempre uma unidade.
+      const qtd = fisico ? Number(item.qtd) : 1;
+
+      if (!Number.isInteger(livroId) || livroId <= 0)
+        error(400, "Livro inválido no carrinho.");
+      if (!Number.isInteger(qtd) || qtd < 1 || qtd > MAX_QTD_POR_ITEM)
+        error(400, "Quantidade inválida no carrinho.");
+
+      return { livroId, fisico, qtd };
+    });
+
+    const livroIds = [...new Set(itensNormalizados.map((i) => i.livroId))];
+    const livros = await LojaModel.buscarLivrosParaVenda(livroIds);
+    const livrosPorId = new Map(livros.map((livro) => [livro.id, livro]));
+
+    // O preço vem sempre do banco, nunca do navegador.
+    const itensVenda = itensNormalizados.map(({ livroId, fisico, qtd }) => {
+      const livro = livrosPorId.get(livroId);
+      if (!livro) error(400, "Um dos livros do carrinho não está disponível.");
+
+      const precoUnitario = Number(fisico ? livro.preco_fisico : livro.preco_digital);
+      if (!(precoUnitario > 0))
+        error(400, `"${livro.titulo}" não está à venda neste formato.`);
+
+      return {
+        fk_livros_itens_id: livroId,
+        fisico,
+        qtd,
+        preco_unitario: precoUnitario,
+        subtotal: arredondar(precoUnitario * qtd),
+      };
+    });
+
+    const itensFisicos = itensVenda.filter((item) => item.fisico);
+    let enderecoEntrega = null;
+    let frete = 0;
+
+    if (itensFisicos.length > 0) {
+      if (!enderecoId) error(400, "Informe o endereço de entrega.");
+
+      const endereco = await LojaService._buscarEnderecoDoUsuario(
+        enderecoId,
+        usuarioId,
+      );
+
+      enderecoEntrega = {
+        rua: endereco.rua,
+        num: endereco.num,
+        complemento: endereco.complemento,
+        bairro: endereco.bairro,
+        cidade: endereco.cidade,
+        estado: endereco.estado,
+        cep: endereco.cep,
+        pais: endereco.pais,
+      };
+
+      const opcoesFrete = await LojaModel.calcularFretePrazo(
+        endereco.cep,
+        itensFisicos.map((item) => ({ tipo: "fisico", quantidade: item.qtd })),
+      );
+      // Usa a opção mais barata (PAC).
+      frete = Math.min(...opcoesFrete.map((opcao) => opcao.preco));
+    }
+
+    const totalItens = itensVenda.reduce((acc, item) => acc + item.subtotal, 0);
+    const total = arredondar(totalItens + frete);
 
     const dadosVenda = {
       fk_user_profile_id: usuarioId,
-      metodo_pagamento,
-      endereco_entrega,
+      metodo_pagamento: METODO_PAGAMENTO_SIMULADO,
+      endereco_entrega: enderecoEntrega,
       total,
       data: new Date().toISOString(),
       // Pagamento é simulado, então o id da transação é gerado aqui.
       transacao_id: randomUUID(),
       status_pagamento: "pendente",
-      status_entrega: temFisico ? "Pendente" : "Não se aplica",
+      status_entrega: itensFisicos.length > 0 ? "Pendente" : "Não se aplica",
     };
 
     const venda = await LojaModel.realizarVenda(dadosVenda, itensVenda);
 
-    if (venda.error) throw venda.error;
+    return { id: venda.id, total, frete };
+  }
 
-    return venda;
+  static async _buscarEnderecoDoUsuario(enderecoId, usuarioId) {
+    try {
+      const { data } = await EnderecoModel.BuscarEnderecoById(
+        enderecoId,
+        usuarioId,
+      );
+      if (data) return data;
+    } catch {
+      // .single() falha quando o endereço não existe ou é de outro usuário.
+    }
+    error(400, "Endereço de entrega inválido.");
   }
 
   static async buscarHistoricoVendasUsuario(usuarioId) {
@@ -155,19 +235,14 @@ export class LojaService {
     return frete;
   }
 
-  static async mudarStatusPagamento(vendaId, usuarioEmail) {
+  static async mudarStatusPagamento(vendaId, usuario) {
     if (!vendaId) error(400, "Id da venda não informado.");
 
-    if (!usuarioEmail)
-      error(
-        400,
-        "E-mail do usuário a que enviar o pdf do livro não informado.",
-      );
+    const venda = await LojaService.consultarVenda(vendaId, usuario?.id);
 
-    const email = await LojaModel.mudarStatusPagamento(vendaId, usuarioEmail);
+    if (venda.status_pagamento === "pago")
+      error(409, "Esta venda já foi paga.");
 
-    if (email.error) throw email.error;
-
-    return email;
+    return LojaModel.mudarStatusPagamento(vendaId, usuario.email);
   }
 }

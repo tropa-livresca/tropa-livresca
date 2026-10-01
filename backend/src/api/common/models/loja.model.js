@@ -1,4 +1,4 @@
-import supabase from "../config/supabase.js";
+import supabase, { supabaseAdmin } from "../config/supabase.js";
 import nodemailer from "nodemailer";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
@@ -118,7 +118,7 @@ export class LojaModel {
   }
 
   static async consultarVenda(vendaId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("vendas")
       .select("*")
       .eq("id", vendaId)
@@ -135,9 +135,9 @@ export class LojaModel {
       throw erro;
     }
 
-    const { data: itensVenda, error: erroItensVenda } = await supabase
+    const { data: itensVenda, error: erroItensVenda } = await supabaseAdmin
       .from("itens_venda")
-      .select("*")
+      .select("*, livros(id, titulo, capa)")
       .eq("fk_vendas_id", vendaId);
 
     if (erroItensVenda) {
@@ -151,8 +151,24 @@ export class LojaModel {
     };
   }
 
-  static async realizarVenda(dadosVenda, itensVenda) {
+  static async buscarLivrosParaVenda(livroIds) {
     const { data, error } = await supabase
+      .from("livros")
+      .select("id, titulo, preco_fisico, preco_digital")
+      .in("id", livroIds)
+      .eq("ativo", true)
+      .eq("estado", LIVRO_ESTADO.PUBLICADO);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data || [];
+  }
+
+  static async realizarVenda(dadosVenda, itensVenda) {
+    const { data, error } = await supabaseAdmin
       .from("vendas")
       .insert(dadosVenda)
       .select("id")
@@ -168,13 +184,13 @@ export class LojaModel {
       fk_vendas_id: data.id,
     }));
 
-    const { error: erroItens } = await supabase
+    const { error: erroItens } = await supabaseAdmin
       .from("itens_venda")
       .insert(itens);
 
     if (erroItens) {
       // Sem itens a venda fica inconsistente, então ela é desfeita.
-      await supabase.from("vendas").delete().eq("id", data.id);
+      await supabaseAdmin.from("vendas").delete().eq("id", data.id);
       erroItens.statusCode = 500;
       throw erroItens;
     }
@@ -183,7 +199,7 @@ export class LojaModel {
   }
 
   static async mudarStatusPagamento(vendaId, usuarioEmail) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("vendas")
       .update({ status_pagamento: "pago" })
       .eq("id", vendaId)
@@ -406,7 +422,7 @@ export class LojaModel {
 
   static async enviarEbookAposPagamento(vendaId, usuarioEmail) {
     try {
-      const { data: itens, error } = await supabase
+      const { data: itens, error } = await supabaseAdmin
         .from("itens_venda")
         .select(
           `

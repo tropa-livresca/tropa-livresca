@@ -31,10 +31,10 @@ function criarQuery(tabela) {
   return query;
 }
 
-jest.mock("../../../src/api/common/config/supabase.js", () => ({
-  __esModule: true,
-  default: { from: jest.fn((tabela) => criarQuery(tabela)) },
-}));
+jest.mock("../../../src/api/common/config/supabase.js", () => {
+  const cliente = { from: jest.fn((tabela) => criarQuery(tabela)) };
+  return { __esModule: true, default: cliente, supabaseAdmin: cliente };
+});
 
 const { LojaModel } = require("../../../src/api/common/models/loja.model.js");
 
