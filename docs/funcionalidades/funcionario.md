@@ -7,4 +7,3 @@
 - Visualização de relatórios gerais
 - Gerenciamento de autores e leitores
 - Gerenciamento de livros do catálogo
-- Envio de notificações

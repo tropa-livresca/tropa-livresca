@@ -10,24 +10,19 @@ tropa-livresca/
 │   ├── src/
 │   │   ├── api/
 │   │   │   ├── admin/
-│   │   │   │   ├── enderecos/
 │   │   │   │   ├── livros/
 │   │   │   │   ├── loja/
 │   │   │   │   ├── movimentacoes/
-│   │   │   │   ├── notificacoes/
 │   │   │   │   ├── revisao/
 │   │   │   │   └── usuarios/
 │   │   │   ├── clients/
 │   │   │   │   ├── autopublicacao/
 │   │   │   │   ├── autores/
 │   │   │   │   ├── avaliacoes/
-│   │   │   │   ├── cartoes/
-│   │   │   │   ├── comentarios/
 │   │   │   │   ├── enderecos/
 │   │   │   │   ├── livro/
 │   │   │   │   ├── loja/
 │   │   │   │   ├── movimentacoes/
-│   │   │   │   ├── notificacoes/
 │   │   │   │   ├── perfil/
 │   │   │   │   └── suporte/
 │   │   │   └── common/
