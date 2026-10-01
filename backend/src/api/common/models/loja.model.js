@@ -101,8 +101,8 @@ export class LojaModel {
 
     query =
       ordem === "ascendente" || !ordem
-        ? query.order("data_venda", { ascending: true })
-        : query.order("data_venda", { ascending: false });
+        ? query.order("data", { ascending: true })
+        : query.order("data", { ascending: false });
 
     const { data, error, count } = await query.range(start, end);
 
@@ -121,17 +121,24 @@ export class LojaModel {
     const { data, error } = await supabase
       .from("vendas")
       .select("*")
-      .eq("id", vendaId);
+      .eq("id", vendaId)
+      .maybeSingle();
 
     if (error) {
       error.statusCode = 500;
       throw error;
     }
 
+    if (!data) {
+      const erro = new Error("Venda não encontrada.");
+      erro.statusCode = 404;
+      throw erro;
+    }
+
     const { data: itensVenda, error: erroItensVenda } = await supabase
       .from("itens_venda")
       .select("*")
-      .eq("fk_venda_id", vendaId);
+      .eq("fk_vendas_id", vendaId);
 
     if (erroItensVenda) {
       erroItensVenda.statusCode = 500;
@@ -142,21 +149,6 @@ export class LojaModel {
       ...data,
       itensVenda,
     };
-  }
-
-  static async cadastrarItemVenda(itemVenda) {
-    const { data, error } = await supabase
-      .from("itens_venda")
-      .insert(itemVenda)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
   }
 
   static async realizarVenda(dadosVenda, itensVenda) {
@@ -171,10 +163,21 @@ export class LojaModel {
       throw error;
     }
 
-    itensVenda.map(async (itemVenda) => {
-      itemVenda = { ...itemVenda, fk_venda_id: data.id };
-      await this.cadastrarItemVenda(itemVenda);
-    });
+    const itens = itensVenda.map((itemVenda) => ({
+      ...itemVenda,
+      fk_vendas_id: data.id,
+    }));
+
+    const { error: erroItens } = await supabase
+      .from("itens_venda")
+      .insert(itens);
+
+    if (erroItens) {
+      // Sem itens a venda fica inconsistente, então ela é desfeita.
+      await supabase.from("vendas").delete().eq("id", data.id);
+      erroItens.statusCode = 500;
+      throw erroItens;
+    }
 
     return data;
   }
@@ -249,7 +252,7 @@ export class LojaModel {
         id,
         qtd,
         subtotal,
-        formato,
+        fisico,
         vendas (
           id,
           data,
@@ -408,7 +411,7 @@ export class LojaModel {
         .select(
           `
           id,
-          formato,
+          fisico,
           livros (
             titulo,
             manuscrito

@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import { LojaModel } from "../../common/models/loja.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
@@ -97,14 +98,21 @@ export class LojaService {
     if (!metodo_pagamento || !endereco_entrega || !total)
       error(400, "Dados da venda não informados.");
 
-    if (!itensVenda)
+    if (!Array.isArray(itensVenda) || itensVenda.length === 0)
       error(400, "Não há como realizar compra sem itens da venda.");
+
+    const temFisico = itensVenda.some((item) => item.fisico);
 
     const dadosVenda = {
       fk_user_profile_id: usuarioId,
       metodo_pagamento,
       endereco_entrega,
       total,
+      data: new Date().toISOString(),
+      // Pagamento é simulado, então o id da transação é gerado aqui.
+      transacao_id: randomUUID(),
+      status_pagamento: "pendente",
+      status_entrega: temFisico ? "Pendente" : "Não se aplica",
     };
 
     const venda = await LojaModel.realizarVenda(dadosVenda, itensVenda);
