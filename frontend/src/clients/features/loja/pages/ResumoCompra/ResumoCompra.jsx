@@ -1,19 +1,27 @@
 import { useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
-import { FiArrowLeft, FiCheckCircle } from "react-icons/fi";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { FiArrowLeft } from "react-icons/fi";
+import { FaCheckCircle } from "react-icons/fa";
+
 import base from "../Compra/Compra.module.css";
 import styles from "./ResumoCompra.module.css";
+import confirmadoStyles from "../Confirmado/Confirmado.module.css";
+
 import { useCompra } from "../../hooks/useCompra";
 import Carregando from "../../../../components/Carregando/Carregando";
 
 const formatarPreco = (valor) =>
-  `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
+  `R$ ${Number(valor || 0)
+    .toFixed(2)
+    .replace(".", ",")}`;
 
 const formatarData = (data) =>
   data ? new Date(data).toLocaleDateString("pt-BR") : "";
 
 export default function ResumoCompra() {
   const { id } = useParams();
+  const navigate = useNavigate();
+
   const { pedido, buscarPedido, carregando, erro } = useCompra();
 
   useEffect(() => {
@@ -29,6 +37,7 @@ export default function ResumoCompra() {
       <main className={base.container}>
         <section className={base.vazio}>
           <p>{erro || "Pedido não encontrado."}</p>
+
           <Link to="/loja" className={base.voltar}>
             <FiArrowLeft /> Voltar para a Loja
           </Link>
@@ -38,8 +47,13 @@ export default function ResumoCompra() {
   }
 
   const itens = pedido.itensVenda || [];
-  const totalItens = itens.reduce((acc, item) => acc + Number(item.subtotal), 0);
-  const frete = Number(pedido.total) - totalItens;
+
+  const totalItens = itens.reduce(
+    (acc, item) => acc + Number(item.subtotal || 0),
+    0,
+  );
+
+  const frete = Number(pedido.total || 0) - totalItens;
   const temDigital = itens.some((item) => !item.fisico);
   const pago = pedido.status_pagamento === "pago";
   const endereco = pedido.endereco_entrega;
@@ -55,29 +69,56 @@ export default function ResumoCompra() {
         <div className={base.conteudo}>
           <div className={base.colunaPrincipal}>
             {pago && (
-              <section className={`${base.cartao} ${styles.sucesso}`}>
-                <FiCheckCircle className={styles.icone} />
-                <div>
-                  <strong>Pagamento confirmado!</strong>
-                  {temDigital && (
-                    <p>Seu e-book foi enviado para o e-mail da sua conta.</p>
-                  )}
+              <section className={confirmadoStyles.container}>
+                <div className={confirmadoStyles.popup}>
+                  <div className={confirmadoStyles.containerconf}>
+                    <div className={confirmadoStyles.icone}>
+                      <FaCheckCircle />
+                    </div>
+
+                    <h3>Pagamento confirmado!</h3>
+
+                    <p>
+                      Obrigado pela sua compra.
+                      <br />O pagamento do pedido
+                      <span className={confirmadoStyles.numero}>
+                        {" "}
+                        #{pedido.id}
+                      </span>{" "}
+                      foi aprovado com sucesso.
+                    </p>
+
+                    {temDigital && (
+                      <p>Seu e-book será enviado para o e-mail da sua conta.</p>
+                    )}
+
+                    <button
+                      className={confirmadoStyles.btn}
+                      type="button"
+                      onClick={() => navigate("/")}
+                    >
+                      Voltar à página inicial
+                    </button>
+                  </div>
                 </div>
               </section>
             )}
 
             <section className={base.cartao}>
               <h2>Itens</h2>
+
               <ul className={base.itens}>
                 {itens.map((item) => (
                   <li key={item.id} className={base.item}>
                     <div>
                       <strong>{item.livros?.titulo || "Livro"}</strong>
+
                       <small>
                         {item.fisico ? "Físico" : "Digital"} · {item.qtd}x{" "}
                         {formatarPreco(item.preco_unitario)}
                       </small>
                     </div>
+
                     <span>{formatarPreco(item.subtotal)}</span>
                   </li>
                 ))}
@@ -87,6 +128,7 @@ export default function ResumoCompra() {
             {endereco && (
               <section className={base.cartao}>
                 <h2>Entrega</h2>
+
                 <p className={base.aviso}>
                   {endereco.rua}, {endereco.num}
                   {endereco.complemento ? ` - ${endereco.complemento}` : ""}
@@ -94,6 +136,7 @@ export default function ResumoCompra() {
                   {endereco.bairro} · {endereco.cidade}/{endereco.estado} · CEP{" "}
                   {endereco.cep}
                 </p>
+
                 <p className={styles.status}>
                   Status da entrega: <strong>{pedido.status_entrega}</strong>
                 </p>
@@ -103,14 +146,17 @@ export default function ResumoCompra() {
 
           <aside className={base.resumo}>
             <h2>Resumo</h2>
+
             <div className={base.linha}>
               <span>Livros</span>
               <strong>{formatarPreco(totalItens)}</strong>
             </div>
+
             <div className={base.linha}>
               <span>Frete</span>
               <strong>{frete > 0 ? formatarPreco(frete) : "Grátis"}</strong>
             </div>
+
             <div className={`${base.linha} ${base.total}`}>
               <span>Total</span>
               <strong>{formatarPreco(pedido.total)}</strong>

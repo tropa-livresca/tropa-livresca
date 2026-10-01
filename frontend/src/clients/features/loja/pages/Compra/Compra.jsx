@@ -7,7 +7,9 @@ import { useCompra } from "../../hooks/useCompra";
 import { useEndereco } from "../../../perfil/hooks/useEndereco";
 
 const formatarPreco = (valor) =>
-  `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
+  `R$ ${Number(valor || 0)
+    .toFixed(2)
+    .replace(".", ",")}`;
 
 export default function Compra() {
   const navigate = useNavigate();
