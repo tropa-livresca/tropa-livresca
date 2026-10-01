@@ -1,11 +1,11 @@
-import supabase from "../config/supabase.js";
+import { supabaseAdmin } from "../config/supabase.js";
 
 // Parte do valor de cada venda repassada ao autor do livro.
 const PERCENTUAL_AUTOR = 0.3;
 
 export class MovimentacoesModel {
   static async criarConta(usuarioId, dadosBancarios) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("users_profile")
       .update({
         dados_bancarios: dadosBancarios,
@@ -23,7 +23,7 @@ export class MovimentacoesModel {
   }
 
   static async alterarDadosConta(usuarioId, novosDadosBancarios) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("users_profile")
       .update({
         dados_bancarios: novosDadosBancarios,
@@ -41,7 +41,7 @@ export class MovimentacoesModel {
   }
 
   static async buscarDadosMovimentacoesAutor(autorId) {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("movimentacoes_financeiras")
       .select("*")
       .eq("fk_user_profile_id", autorId)
@@ -65,7 +65,7 @@ export class MovimentacoesModel {
   }
 
   static async buscarDadosMovimentacoesEditora() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("movimentacoes_financeiras")
       .select("*")
       .is("fk_user_profile_id", null)
@@ -90,7 +90,7 @@ export class MovimentacoesModel {
 
   static async autorizarDepositoContaAutor(vendaId) {
     try {
-      const { data: venda, error: erroVenda } = await supabase
+      const { data: venda, error: erroVenda } = await supabaseAdmin
         .from("vendas")
         .select("id, status_pagamento")
         .eq("id", vendaId)
@@ -112,7 +112,7 @@ export class MovimentacoesModel {
         throw erro;
       }
 
-      const { data: repasseExistente, error: erroRepasse } = await supabase
+      const { data: repasseExistente, error: erroRepasse } = await supabaseAdmin
         .from("movimentacoes_financeiras")
         .select("id")
         .eq("fk_vendas_id", vendaId)
@@ -126,7 +126,7 @@ export class MovimentacoesModel {
         throw erro;
       }
 
-      const { data: itens, error: erroItens } = await supabase
+      const { data: itens, error: erroItens } = await supabaseAdmin
         .from("itens_venda")
         .select(
           `
@@ -188,7 +188,7 @@ export class MovimentacoesModel {
       }
 
       // Um único insert: ou grava o repasse inteiro, ou nada.
-      const { error: erroInsert } = await supabase
+      const { error: erroInsert } = await supabaseAdmin
         .from("movimentacoes_financeiras")
         .insert(movimentacoes);
 
@@ -221,7 +221,7 @@ export class MovimentacoesModel {
       throw erroSaldo;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from("movimentacoes_financeiras")
       .insert({
         data: new Date().toISOString(),

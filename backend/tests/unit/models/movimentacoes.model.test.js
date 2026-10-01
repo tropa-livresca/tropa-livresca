@@ -24,7 +24,7 @@ function criarQuery() {
 
 jest.mock("../../../src/api/common/config/supabase.js", () => ({
   __esModule: true,
-  default: { from: jest.fn(() => criarQuery()) },
+  supabaseAdmin: { from: jest.fn(() => criarQuery()) },
 }));
 
 const {
