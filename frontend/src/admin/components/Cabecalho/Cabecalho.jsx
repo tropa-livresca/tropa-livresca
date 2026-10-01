@@ -1,13 +1,8 @@
 import styles from "./Cabecalho.module.css";
-import { FaBars } from "react-icons/fa";
 
-export default function Cabecalho({ aoAbrirMenu, signoutAdmin }) {
+export default function Cabecalho({ signoutAdmin }) {
   return (
     <header className={styles.cabecalho}>
-      <button className={styles.btnmenu} onClick={aoAbrirMenu}>
-        <FaBars size={20}/>
-      </button>
-
       <h1 className={styles.titulo}>Painel do Administrador</h1>
 
       <button className={styles.btnsair} onClick={signoutAdmin}>

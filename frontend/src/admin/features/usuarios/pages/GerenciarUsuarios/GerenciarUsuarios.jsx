@@ -44,11 +44,11 @@ export default function GerenciarUsuarios() {
     <main className={styles.mainContainer}>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Gerenciar Usuários</h1>
+        <p>david balls</p>
       </div>
 
       <div className={styles.container}>
-        <form onSubmit={handleBuscar} className={styles.buscaForm}>
-          <div className={styles.inputGrupo}>
+        <form onSubmit={handleBuscar} className={styles.busca}>
             <span className={styles.iconebusca}>
               <FaSearch />
             </span>
@@ -59,9 +59,8 @@ export default function GerenciarUsuarios() {
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
             />
-          </div>
 
-          <div className={styles.filtrosGrupo}>
+          
             <div className={styles.selectContainer}>
               <div
                 className={styles.select}
@@ -78,7 +77,7 @@ export default function GerenciarUsuarios() {
                       ? "Autores"
                       : funcao === "funcionario"
                         ? "Funcionários"
-                        : "Filtrar por Função"}
+                        : "Todos"}
                 </span>
                 <FiChevronDown
                   className={`${styles.seta} ${dropdownAberto === "filtro" ? styles.setaAberta : ""}`}
@@ -123,7 +122,21 @@ export default function GerenciarUsuarios() {
                 }
               >
                 <span>
-                  {ordem === "ascendente" ? "Mais Antigos" : "Mais Recentes"}
+                  {/* 
+                  {ordem === "ascendente"
+                  ? "Mais Antigos"
+                  : ordem === "descendente"
+                    ? "Mais Recentes"
+                    : "Ordenar por"}*/}
+
+                    {ordem === "ascendente"
+                    ? "Mais Antigos"
+                    : ordem === "descendente"
+                      ? "Mais Recentes"
+                       : ordem === ""
+                        ? "Ordenar por"
+                        : "Ordenar por"}
+
                 </span>
                 <FiChevronDown
                   className={`${styles.seta} ${dropdownAberto === "ordem" ? styles.setaAberta : ""}`}
@@ -144,6 +157,12 @@ export default function GerenciarUsuarios() {
                   >
                     Mais Recentes
                   </div>
+                  <div
+                    onClick={() => handleFiltro("", false)}
+                    className={styles.optionItem}
+                  >
+                    Ordenar Por
+                  </div>
                 </div>
               )}
             </div>
@@ -151,7 +170,6 @@ export default function GerenciarUsuarios() {
             <button type="submit" className={styles.btnbuscar}>
               Buscar
             </button>
-          </div>
         </form>
 
         {carregando ? (

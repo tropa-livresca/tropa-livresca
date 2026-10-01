@@ -2,21 +2,25 @@
   width: 100%;
   max-width: 100%;
   margin: auto;
-  padding: 5rem 6%;
+  padding:3rem 6%;
+}
+
+.mainContainer{
+  margin-top: -5rem;
 }
 
 .topo {
   width: 100%;
-  padding: 3rem 6%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
   margin-top: 5rem;
+  padding: 3rem 6%;
 }
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(2rem, 4vw, 4rem);
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
   font-family: "Jacques Francois", serif;
 }
 
@@ -37,6 +41,26 @@
   font-size: 1.2rem;
 }
 
+.btnbuscar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.select:hover {
+  background-color: #ffecc9;
+}
+
+
+.tabelaWrapper{
+   background: #fffdf7 !important;
+ box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+    margin-bottom: 4rem;
+    border-radius: 1.5rem;
+}
+
+
 .busca {
   width: 100%;
   display: grid;
@@ -50,10 +74,19 @@
   padding: 0.4rem;
   background-color: #fffdf7;
   border-radius: 1.5rem;
-  box-shadow:
+ box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   box-sizing: border-box;
+  margin-bottom: 5rem;
+}
+
+.inputBusca {
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  font-size: 1rem;
 }
 
 .iconebusca {
@@ -63,14 +96,6 @@
   place-items: center;
   color: #67170c;
   font-size: 1.2rem;
-}
-
-.inputBusca {
-  border: none;
-  outline: none;
-  background: transparent;
-  width: 100%;
-  font-size: 1rem;
 }
 
 .selectContainer {
@@ -108,34 +133,6 @@
   font-size: 1.2rem;
 }
 
-.select1 {
-  width: 100%;
-  min-height: 3rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 0.7rem 0.8rem;
-  margin: 0px -20px;
-  box-sizing: border-box;
-  background-color: #fffdf7;
-  border: 1px solid #67170c;
-  border-radius: 1rem;
-  color: #333;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: 0.25s;
-}
-
-.select1 span {
-  color: #67170c;
-}
-
-.select1 svg {
-  flex-shrink: 0;
-  color: #67170c;
-  font-size: 1.2rem;
-}
 
 .options {
   position: absolute;
@@ -147,10 +144,31 @@
   padding: 0.2rem;
   background-color: #fffdf7;
   border-radius: 0.8rem;
-  box-shadow:
+   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
+
+.selectContainer:nth-of-type(1) .options {
+  left: -20px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(2) .options {
+  left: -20px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(1)  {
+  left: 0px;
+  width: calc(100% + 0px);
+}
+
+.selectContainer:nth-of-type(2){
+  left: 10px;
+  width: calc(100% + 0px);
+}
+
 
 .options div {
   padding: 0.8rem 1rem;
@@ -164,26 +182,6 @@
 .options div:hover {
   background-color: #ffecc9;
   color: #ffbb33;
-}
-
-.selectContainer:nth-of-type(1) .options {
-  left: -20px;
-  width: calc(100% + 0px);
-}
-
-.selectContainer:nth-of-type(2) .options {
-  left: -20px;
-  width: calc(100% + 0px);
-}
-
-.selectContainer:nth-of-type(1) {
-  left: 0px;
-  width: calc(100% + 0px);
-}
-
-.selectContainer:nth-of-type(2) {
-  left: 10px;
-  width: calc(100% + 0px);
 }
 
 .btnbuscar {
@@ -201,6 +199,141 @@
   transition: 0.3s;
 }
 
-.select:hover {
-  background-color: #ffecc9;
+.tabelaWrapper{
+  border-radius:1.5rem;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.tabela th {
+  padding: 1.5rem;
+  color: #67170c;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 2px solid #d4b46a;
+  background: #f7f0cf;
+}
+
+
+.tabela th:last-child{
+   border-top-right-radius:1.5rem;
+}
+
+.tabela th:first-child{
+border-top-left-radius:1.5rem;
+}
+
+
+
+.tabela td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee5c9;
+  vertical-align: middle;
+}
+
+.tabela tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 1.5rem;
+}
+
+.tabela tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 1.5rem;
+}
+
+.tabela tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.tabela tbody tr:hover {
+  background-color: #fff9e9;
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.colunaNome {
+  min-width: 200px;
+  color: #67170c;
+}
+
+.avatarInline {
+  width: 2.25rem;
+  height: 2.25rem;
+  display: inline-grid;
+  place-items: center;
+  margin-right: 0.75rem;
+  background: #f7f0cf;
+  color: #67170c;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.badgeAdmin {
+  background-color: #w;
+  color: #67170c;
+}
+
+.badgeCliente {
+  background-color: #eee9d1;
+  color: #665b29;
+}
+
+.badgeSim {
+  background-color: #dcefdc;
+  color: #286528;
+}
+
+.badgeNao {
+  background-color: #f2dddd;
+  color: #8a3030;
+}
+
+
+.colunaEmail {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.acoesHeader {
+  text-align: center;
+}
+
+.colunaAcoes {
+  text-align: center;
+  white-space: nowrap;
+}
+
+.colunaAcoes a {
+  display: inline-block;
+  padding: 0.55rem 0.9rem;
+  background-color: #67170c;
+  color: #ede6b3;
+  border-radius: 0.8rem;
+  font-size: 0.8rem;
+  text-decoration: none;
+  transition: 0.25s ease;
+}
+
+.colunaAcoes a:hover {
+  background-color: #ffbb33;
+  color: #67170c;
 }
