@@ -1,54 +1,41 @@
 import { AvaliacaoModel } from "../../common/models/avaliacao.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
+const validarLivroId = (livroId) => {
+  const id = Number(livroId);
+  if (!Number.isInteger(id) || id <= 0) error(400, "Livro inválido.");
+  return id;
+};
+
 export class AvaliacaoService {
-  static async criarAvaliacao(livroId, usuarioId, qtd_estrelas) {
+  static async buscarResumoLivro(livroId) {
+    return AvaliacaoModel.buscarResumoLivro(validarLivroId(livroId));
+  }
+
+  static async buscarAvaliacao(usuarioId, livroId) {
     if (!usuarioId) errorUsuarioId();
+    const id = validarLivroId(livroId);
 
-    if (!livroId || !qtd_estrelas)
-      error(400, "Dados da avaliação não informados.");
+    const [avaliacao, podeAvaliar] = await Promise.all([
+      AvaliacaoModel.buscarAvaliacaoUsuario(usuarioId, id),
+      AvaliacaoModel.usuarioComprouLivro(usuarioId, id),
+    ]);
 
-    const dadosAvaliacao = {
-      fk_livros_id: livroId,
-      fk_users_profile_id: usuarioId,
-      qtd_estrelas: qtd_estrelas,
-    };
-
-    const novaAvaliacao = await AvaliacaoModel.criarAvaliacao(
-      usuarioId,
-      livroId,
-      dadosAvaliacao,
-    );
-
-    if (novaAvaliacao.error) throw novaAvaliacao.error;
-
-    return novaAvaliacao;
+    return { avaliacao, podeAvaliar };
   }
 
-  static async alterarAvaliacao(idUsuario, idAvaliacao, qtd_estrelas) {
-    if (!idUsuario) errorUsuarioId();
+  static async salvarAvaliacao(usuarioId, livroId, qtdEstrelas) {
+    if (!usuarioId) errorUsuarioId();
+    const id = validarLivroId(livroId);
 
-    if (!idAvaliacao || !qtd_estrelas)
-      error(400, "Dados da avaliação não informados.");
+    const estrelas = Number(qtdEstrelas);
+    if (!Number.isInteger(estrelas) || estrelas < 1 || estrelas > 5)
+      error(400, "A avaliação deve ter de 1 a 5 estrelas.");
 
-    const avaliacaoAtualizada = AvaliacaoModel.alterarAvaliacao(
-      idUsuario,
-      idAvaliacao,
-      qtd_estrelas,
-    );
+    const comprou = await AvaliacaoModel.usuarioComprouLivro(usuarioId, id);
+    if (!comprou)
+      error(403, "Só quem comprou este livro pode avaliá-lo.");
 
-    if (avaliacaoAtualizada.error) throw avaliacaoAtualizada.error;
-
-    return avaliacaoAtualizada;
-  }
-
-  static async buscarAvaliacoesLivro(idLivro) {
-    if (!idLivro) error(500, "Id do Livro não informado.");
-
-    const avaliacoes = await AvaliacaoModel.buscarAvaliacoesLivro(idLivro);
-
-    if (avaliacoes.error) throw avaliacoes.error;
-
-    return avaliacoes;
+    return AvaliacaoModel.salvarAvaliacao(usuarioId, id, estrelas);
   }
 }

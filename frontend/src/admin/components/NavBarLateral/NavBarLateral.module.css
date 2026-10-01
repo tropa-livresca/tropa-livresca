@@ -1,74 +1,116 @@
-@import url("https://googleapis.com");
-
 .menu {
   position: fixed;
-  top: 0;
-  left: -15.6rem;
-  width: 15.6rem;
-  height: 100vh;
-  padding-top: 5.5rem;
-  background: #fffdf7;
-  z-index: 1150;
-  transition: 0.3s;
-  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.15);
-}
-
-.aberto {
+  top: 5rem;
   left: 0;
-}
-
-.overlay {
-  position: fixed;
-  inset: 0;
+  width: 15.6rem;
+  height: calc(100vh - 5rem);
+  padding: 0.8rem 0.6rem;
+  box-sizing: border-box;
+  background: #fffdf7;
+  border-right: 1px solid #d4b46a;
+  overflow-y: auto;
+  overflow-x: hidden;
   z-index: 1100;
 }
 
+.menu::-webkit-scrollbar {
+  width: 2px;
+}
+
+.menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu::-webkit-scrollbar-thumb {
+  background: #d4b46a;
+  border-radius: 10px;
+}
 .titulo {
-  padding: 1rem;
+  width: 100%;
+  padding: 0.65rem 0.7rem;
+  margin: 0;
+  box-sizing: border-box;
   color: #67170c;
   font-family: "Jacques Francois", serif;
-  font-size: 1.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-bottom: 1px solid #d4b46a;
+  letter-spacing: 0.02em;
+}
+
+.tituloAdministracao {
+  margin-top: 1rem;
 }
 
 .itemMenu {
   width: 100%;
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: 1fr auto;
+  height: 2.9rem;
+  padding: 0 0.8rem;
+  margin: 0.3rem 0;
+  box-sizing: border-box;
+  display: flex;
   align-items: center;
-  cursor: pointer;
+  justify-content: space-between;
   color: #67170c;
   font-family: "Jacques Francois", serif;
-  transition: 0.2s;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-radius: 0.45rem;
+  border: 1px solid transparent;
+  transition: background-color 0.3s, border-color 0.3s ;
 }
 
 .itemMenu:hover {
-  background: #f6f1dc;
+  background-color: #fff8c9;
+  border-color: #d4b46a;
 }
 
 .itemMenu svg {
+  flex-shrink: 0;
+  font-size: 0.6rem;
   color: #67170c;
 }
 
 .subMenu {
-  display: grid;
-  gap: 0.5rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-bottom: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  border-left: 2px solid #d4b46a;
+  border-radius: 0.5rem;
+  background: #fff8c968;
 }
 
 .subItem {
-  padding: 0.6rem;
-  cursor: pointer;
-  color: #8b6b5f;
-  font-family: "Jacques Francois", serif;
-  border-radius: 0.5rem;
+  width: 100%;
+  height: 2.5rem;
+  min-height: 2.5rem;
+  padding: 0 0.7rem;
+  margin: 0;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  color: #7b3a2e;
   text-decoration: none;
-  display: block;
+  font-family: "Jacques Francois", serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .subItem:hover {
-  background: #f6f1dc;
+  background-color: #fff8c9;
   color: #67170c;
+}
+
+.seta {
+  flex-shrink: 0;
+  font-size: 0.6rem;
+  transition: transform 0.25s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
 }

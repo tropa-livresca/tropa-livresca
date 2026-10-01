@@ -30,10 +30,13 @@ export default function GerenciaLivros() {
   console.log("q");
 
   return (
-    <main className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.tituloHeader}>Livros publicados pela editora</h1>
-      </div>
+    <main>
+      <div className={styles.topo}>
+              <h1 className={styles.titulo}>Livros publicados pela editora</h1>
+              <p>Acompanhe os livros da editora, seus autores e o estado de revisão.</p>
+            </div>
+
+      <div className={styles.container}>
 
       <form className={styles.filtroForm} onSubmit={handleBuscar}>
         <div className={styles.buscaWrapper}>
@@ -235,6 +238,7 @@ export default function GerenciaLivros() {
           </button>
         </div>
       )}
+      </div>
     </main>
   );
 }

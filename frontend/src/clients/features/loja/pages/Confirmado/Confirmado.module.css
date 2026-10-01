@@ -1,0 +1,66 @@
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+    padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.popup {
+  position: relative;
+  width: 50%;
+  padding: 2.5rem 2rem;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  text-align: center;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  animation: aparecer 0.25s ease;
+}
+
+.containerconf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icone {
+  font-size: 5rem;
+  color: green;
+}
+
+.popup h3 {
+  margin: 0 0 0.8rem;
+  color: #67170c;
+  font-size: 1.8rem;
+}
+
+.popup p {
+  margin: 0 0 1rem;
+  color: #67170c;
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+.numero {
+  font-family: none;
+}
+
+.btn{
+   border: none;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  background-color: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1rem;
+}
+
+.btn:hover{
+   background-color: #ffbb33;
+  transition: 0.3s;
+}

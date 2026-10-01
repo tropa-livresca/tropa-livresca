@@ -3,6 +3,18 @@ import { useUsuarios } from "../../hooks/useUsuarios";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./VisualizarUsuario.module.css";
 import { useParams, Link } from "react-router-dom";
+import { FiArrowLeft, FiChevronRight, FiMail, FiPhone } from "react-icons/fi";
+
+const LIMITE_LISTA = 5;
+
+const formatarTelefone = (telefone) => {
+  const digitos = String(telefone || "").replace(/\D/g, "");
+  if (digitos.length === 11)
+    return `(${digitos.slice(0, 2)}) ${digitos.slice(2, 7)}-${digitos.slice(7)}`;
+  if (digitos.length === 10)
+    return `(${digitos.slice(0, 2)}) ${digitos.slice(2, 6)}-${digitos.slice(6)}`;
+  return telefone || "Não informado";
+};
 
 export default function VisualizarUsuario() {
   const { id } = useParams();
@@ -17,8 +29,8 @@ export default function VisualizarUsuario() {
   } = useUsuarios();
 
   const [executandoAcao, setExecutandoAcao] = useState(false);
-  const [verMaisLivros, setVerMaisLivros] = useState(false);
-  const [verMaisRevisoes, setVerMaisRevisoes] = useState(false);
+  const [verTodosLivros, setVerTodosLivros] = useState(false);
+  const [verTodasRevisoes, setVerTodasRevisoes] = useState(false);
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -40,7 +52,7 @@ export default function VisualizarUsuario() {
   if (!usuario || (!usuario.id && !usuario.nome)) {
     return (
       <main className={styles.container}>
-        <p className={styles.erro}>
+        <p className={styles.semDados}>
           Usuário não encontrado ou dados inválidos.
         </p>
         <Link to="/admin/usuarios" className={styles.btnVoltar}>
@@ -105,60 +117,72 @@ export default function VisualizarUsuario() {
   };
 
 
+  const livros = usuario.livros || [];
+  const revisoes = usuario.revisoes || [];
+  const livrosVisiveis = verTodosLivros ? livros : livros.slice(0, LIMITE_LISTA);
+  const revisoesVisiveis = verTodasRevisoes
+    ? revisoes
+    : revisoes.slice(0, LIMITE_LISTA);
+  const email = usuario.redes_sociais?.email || usuario.email;
+  const tipoConta = isAdmin
+    ? isMaster
+      ? "Funcionário Master"
+      : "Funcionário"
+    : "Cliente";
+
   return (
     <main className={styles.mainContainer}>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Detalhes do Usuário</h1>
         <Link to="/admin/usuarios" className={styles.btnVoltar}>
-          Voltar
+          <FiArrowLeft /> Voltar para usuários
         </Link>
       </div>
 
-      <div className={styles.gridPerfil}>
-        <div className={styles.cartaoPerfil}>
-          <div className={styles.dadosUsuario}>
-            <h2 className={styles.nomeUsuario}>{usuario.nome}</h2>
-            <div className={styles.infoLinha}>
-              <strong>Tipo de Conta:</strong>{" "}
-              <span
-                className={`${styles.badge} ${isAdmin ? styles.badgeAdmin : styles.badgeCliente}`}
-              >
-                {isAdmin
-                  ? isMaster
-                    ? "Funcionário Master"
-                    : "Funcionário"
-                  : "Cliente"}
-              </span>
-            </div>
-            <div className={styles.infoLinha}>
-              <strong>E-mail:</strong>{" "}
-              <span className={styles.textEmail}>
-                {usuario.redes_sociais?.email ||
-                  usuario.email ||
-                  "Não informado"}
-              </span>
-            </div>
-            {usuario.telefone && (
-              <div className={styles.infoLinha}>
-                <strong>Telefone:</strong>{" "}
-                <span className={styles.textEmail}>{usuario.telefone}</span>
+      <div className={styles.container}>
+        <div className={styles.gridPerfil}>
+          <section className={styles.cartao}>
+            <div className={styles.cabecalhoPerfil}>
+              <div className={styles.avatar} aria-hidden="true">
+                {usuario.nome?.charAt(0).toUpperCase() || "?"}
               </div>
-            )}
-          </div>
-        </div>
+              <div>
+                <h2 className={styles.nomeUsuario}>{usuario.nome}</h2>
+                <span
+                  className={`${styles.badge} ${isAdmin ? styles.badgeAdmin : styles.badgeCliente}`}
+                >
+                  {tipoConta}
+                </span>
+              </div>
+            </div>
 
-        <div className={styles.cartaoAcoes}>
-          <h3 className={styles.subtituloAcoes}>Ações de Controle</h3>
-          <p className={styles.descricaoAcoes}>
-            Gerencie os níveis de permissão e acessos deste perfil no sistema.
-          </p>
+            <dl className={styles.dados}>
+              <div>
+                <dt>
+                  <FiMail /> E-mail
+                </dt>
+                <dd>{email || "Não informado"}</dd>
+              </div>
+              <div>
+                <dt>
+                  <FiPhone /> Telefone
+                </dt>
+                <dd>{formatarTelefone(usuario.telefone)}</dd>
+              </div>
+            </dl>
+          </section>
 
-          <div className={styles.containerBotoes}>
+          <section className={styles.cartao}>
+            <h3 className={styles.subtitulo}>Ações de controle</h3>
+            <p className={styles.descricao}>
+              Gerencie os níveis de permissão e acessos deste perfil no sistema.
+            </p>
+
             {!isAdmin ? (
               <button
                 onClick={handlePromover}
                 disabled={executandoAcao}
-                className={styles.btnPromover}
+                className={styles.btnPrincipal}
               >
                 {executandoAcao ? "Processando..." : "Promover a Funcionário"}
               </button>
@@ -167,123 +191,117 @@ export default function VisualizarUsuario() {
                 <button
                   onClick={handleMudarMaster}
                   disabled={executandoAcao}
-                  className={
-                    isMaster ? styles.btnRemoverMaster : styles.btnTornarMaster
-                  }
+                  className={isMaster ? styles.btnSecundario : styles.btnPrincipal}
                 >
-                  {isMaster ? "Remover Cargo Master" : "Tornar Master"}
+                  {isMaster ? "Remover cargo Master" : "Tornar Master"}
                 </button>
 
                 <button
                   onClick={handleInativar}
                   disabled={executandoAcao}
-                  className={styles.btnInativar}
+                  className={styles.btnPerigo}
                 >
-                  Inativar Funcionário
+                  Inativar funcionário
                 </button>
               </div>
             )}
-          </div>
+          </section>
         </div>
-      </div>
 
-      <div className={styles.secao}>
-        {!verMaisLivros ? (
-          <></>
-        ) : (
-          <div className={styles.listaWrapper}>
-            <ul className={styles.lista}>
-              {usuario.livros.map((livro) => (
-                <li key={livro.id} className={styles.item}>
-                  <span className={styles.livroTitulo}>{livro.titulo}</span>
-                  <span
-                    className={`${styles.tagEstado} ${styles[livro.estado] || styles.padrao}`}
-                  >
-                    {livro.estado}
-                  </span>
-                  <span
-                    
-                  >
-                    <Link to={"../livros/detalhes/"+livro.id}>ver detalhes</Link>
-                  </span>
-                </li>
-              ))}
-            </ul>
+        <section className={styles.cartao}>
+          <div className={styles.cabecalhoSecao}>
+            <h3 className={styles.subtitulo}>Livros do autor</h3>
+            <span className={styles.contador}>{livros.length}</span>
           </div>
-        )}
-      </div>
 
-
-      <div className={styles.secao}>
-          {!verMaisRevisoes ? (
-            <></>
+          {livros.length === 0 ? (
+            <p className={styles.semDados}>Nenhum livro criado por este usuário.</p>
           ) : (
-            <div className={styles.listaWrapper}>
+            <>
               <ul className={styles.lista}>
-                {usuario.revisoes.map((revisao) => (
-                  <li key={revisao.id} className={styles.item}>
-                    <span className={styles.revisaoId}>
-                      Revisão Código: {revisao.id}
-                    </span>
+                {livrosVisiveis.map((livro) => (
+                  <li key={livro.id} className={styles.item}>
+                    <span className={styles.itemTitulo}>{livro.titulo}</span>
                     <span
-                      className={`${styles.tagStatus} ${styles[revisao.status] || styles.finalizado}`}
+                      className={`${styles.tag} ${styles[livro.estado] || styles.padrao}`}
                     >
-                      {revisao.status || "Finalizada"}
+                      {livro.estado}
                     </span>
+                    <Link
+                      to={`/admin/livros/detalhes/${livro.id}`}
+                      className={styles.link}
+                    >
+                      Ver detalhes <FiChevronRight />
+                    </Link>
                   </li>
                 ))}
               </ul>
-            </div>
+
+              {livros.length > LIMITE_LISTA && (
+                <button
+                  type="button"
+                  className={styles.btnVerTodos}
+                  onClick={() => setVerTodosLivros(!verTodosLivros)}
+                >
+                  {verTodosLivros
+                    ? "Mostrar menos"
+                    : `Ver todos os ${livros.length} livros`}
+                </button>
+              )}
+            </>
           )}
-        </div>
-      
+        </section>
 
-      <div className={styles.secao}>
-        <h3 className={styles.secaoTitulo}>Livros do Autor</h3>
-        {!usuario.livros || usuario.livros.length === 0 ? (
-          <p className={styles.semDados}>
-            Nenhum livro criado por este usuário.
-          </p>
-        ) : (
-          
-          <div className={styles.listaWrapper}>
+        {isAdmin && (
+          <section className={styles.cartao}>
+            <div className={styles.cabecalhoSecao}>
+              <h3 className={styles.subtitulo}>Revisões realizadas</h3>
+              <span className={styles.contador}>{revisoes.length}</span>
+            </div>
 
-              
-            <span className={styles.livroTitulo}>{usuario.livros[0].titulo}</span>
-            <span
-             className={`${styles.tagEstado} ${styles[usuario.livros[0].estado] || styles.padrao}`}
-            >
-            {usuario.livros[0].estado}
-            </span>
+            {revisoes.length === 0 ? (
+              <p className={styles.semDados}>
+                Nenhuma revisão realizada por este funcionário.
+              </p>
+            ) : (
+              <>
+                <ul className={styles.lista}>
+                  {revisoesVisiveis.map((revisao) => (
+                    <li key={revisao.id} className={styles.item}>
+                      <span className={styles.itemTitulo}>
+                        Revisão #{revisao.id}
+                      </span>
+                      <span
+                        className={`${styles.tag} ${styles[revisao.status] || styles.finalizado}`}
+                      >
+                        {revisao.status || "Finalizada"}
+                      </span>
+                      <Link
+                        to={`/admin/livros/revisoes/visualizar/${revisao.id}`}
+                        className={styles.link}
+                      >
+                        Ver revisão <FiChevronRight />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
 
-            {usuario.livros.length > 1 ? (<button onClick={() => {setVerMaisLivros(!verMaisLivros)}}>ver mais livros</button>) : (<></>) }
-
-          </div>
+                {revisoes.length > LIMITE_LISTA && (
+                  <button
+                    type="button"
+                    className={styles.btnVerTodos}
+                    onClick={() => setVerTodasRevisoes(!verTodasRevisoes)}
+                  >
+                    {verTodasRevisoes
+                      ? "Mostrar menos"
+                      : `Ver todas as ${revisoes.length} revisões`}
+                  </button>
+                )}
+              </>
+            )}
+          </section>
         )}
       </div>
-
-      {isAdmin && (
-        <div className={styles.secao}>
-          {!usuario.revisoes || usuario.revisoes.length === 0 ? (
-            <p className={styles.semDados}>
-              Nenhuma revisão realizada por este funcionário.
-            </p>
-          ) : (
-            <div className={styles.listaWrapper}>
-                    <span className={styles.revisaoId}>
-                      Revisão Código: {usuario.revisoes[0].id}
-                    </span>
-                    <span
-                      className={`${styles.tagStatus} ${styles[usuario.revisoes[0].status] || styles.finalizado}`}
-                    >
-                      {usuario.revisoes[0].status || "Finalizada"}
-                    </span>
-
-                    {usuario.revisoes.length > 0 ? (<button onClick={() => {setVerMaisRevisoes(!verMaisRevisoes)}}>ver mais revisoes</button>) : (<></>) }
-            </div>
-          )}
-        </div>
-      )}
     </main>
   );
 }

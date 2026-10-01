@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
 import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound";
+import NaoAutorizado from "../../../common/features/paginasErro/pages/NaoAutorizado/NaoAutorizado";
 
 import BoasVindas from "../geral/pages/BoasVindas/BoasVindas.jsx";
 import NovaSenha from "../perfil/pages/NovaSenha/NovaSenha";
@@ -10,6 +11,8 @@ import RevisaoById from "../revisoes/pages/RevisaoById/RevisaoById";
 import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
 import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
+import Vendas from "../vendas/pages/Vendas/Vendas.jsx";
+import Financeiro from "../financeiro/pages/Financeiro/Financeiro.jsx";
 import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
@@ -37,8 +40,14 @@ const MasterRoute = ({ children, redirectTo = "/admin" }) => {
     return null;
   }
 
-  if (!signed || !user?.is_master) {
+  if (!signed) {
     return <Navigate to={redirectTo} replace />;
+  }
+
+  if (!user?.is_master) {
+    return (
+      <NaoAutorizado mensagem="Esta área é exclusiva para administradores master. Peça a um master para liberar seu acesso, se precisar." />
+    );
   }
 
   return children;
@@ -98,6 +107,24 @@ const RoutesAdm = () => {
           element={
             <PrivateRoute>
               <RevisaoById />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="analises/financeiro"
+          element={
+            <MasterRoute>
+              <Financeiro />
+            </MasterRoute>
+          }
+        />
+
+        <Route
+          path="ecommerce/pedidos"
+          element={
+            <PrivateRoute>
+              <Vendas />
             </PrivateRoute>
           }
         />

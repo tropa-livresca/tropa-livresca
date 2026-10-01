@@ -1,0 +1,100 @@
+.pagina {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 3rem 16px;
+  background: var(--cor-fundo, #fff8c9);
+  color: var(--cor-texto, #432c28);
+  text-align: center;
+}
+
+.logo {
+  width: min(320px, 70vw);
+  height: auto;
+  /* O fundo branco da imagem some sobre o creme da página. */
+  mix-blend-mode: multiply;
+  /* Corta a borda acinzentada do JPEG. */
+  clip-path: inset(2px);
+}
+
+.codigo {
+  margin: 1rem 0 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: clamp(4rem, 12vw, 7rem);
+  line-height: 1;
+}
+
+.titulo {
+  margin: 0.5rem 0 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 6rem;
+  height: 4px;
+  margin: 1rem auto 0;
+  background: var(--cor-dourado, #d4b46a);
+  border-radius: 999px;
+}
+
+.texto {
+  max-width: 34rem;
+  margin: 1.5rem 0 2rem;
+  color: var(--cor-texto-muted, #7a6a5b);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.botaoPrincipal,
+.botaoSecundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.6rem;
+  border: 2px solid #67170c;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.botaoPrincipal {
+  background: #67170c;
+  color: #ede6b3;
+}
+
+.botaoPrincipal:hover {
+  border-color: #ffbb33;
+  background: #ffbb33;
+  color: #67170c;
+}
+
+.botaoSecundario {
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+}
+
+.botaoSecundario:hover {
+  background: #f7f0cf;
+}

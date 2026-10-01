@@ -3,6 +3,9 @@ import styles from "./LivroById.module.css";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Carregando from "../../../../components/Carregando/Carregando";
+import { useAvaliacoes } from "../../../loja/hooks/useAvaliacoes";
+import ResumoAvaliacao from "../../../loja/components/Avaliacao/ResumoAvaliacao";
+import AbasLivro from "../../../loja/components/AbasLivro/AbasLivro";
 import {
   FaBookOpen,
   FaCalendarAlt,
@@ -18,6 +21,12 @@ import {
 
 export default function LivroById() {
   const { id } = useParams();
+  const avaliacoes = useAvaliacoes();
+  const { resumo, buscarResumo } = avaliacoes;
+
+  useEffect(() => {
+    buscarResumo(id);
+  }, [id, buscarResumo]);
 
   const { autor, colaboradores, livro, BuscarDetalhesLivro, carregando } =
     useLivros();
@@ -62,13 +71,7 @@ export default function LivroById() {
                 <span className={styles.genero}>{livro.genero}</span>
               )}
 
-              <div className={styles.avaliacao}>
-                <span className={styles.estrelas}>★★★★★</span>
-
-                <strong className={styles.numero}>4.8</strong>
-
-                <span className={styles.numero}>(124 avaliações)</span>
-              </div>
+              <ResumoAvaliacao media={resumo.media} total={resumo.total} />
 
               <div className={styles.tags}>
                 {livro.idioma && <span>{livro.idioma}</span>}
@@ -173,30 +176,23 @@ export default function LivroById() {
 
       <section className={styles.conteudo}>
         <div className={styles.conteudoPrincipal}>
-          <div className={styles.tabs}>
-            <button className={styles.tabAtiva}>Sinopse</button>
-
-            <button>Sobre o autor</button>
-
-            <button>
-              Avaliações <span className={styles.numero}>(124)</span>
-            </button>
-          </div>
-
-          <div className={styles.sinopse}>
-            <p>{livro.descricao || "Sinopse não informada."}</p>
-          </div>
+          <AbasLivro
+            livroId={id}
+            descricao={livro.descricao}
+            autor={autor}
+            avaliacoes={avaliacoes}
+          />
         </div>
 
         <aside className={styles.compra}>
-          <div className={styles.preco}>
-            <span className={styles.numero}>R$ {livro.preco || "59,90"}</span>
-          </div>
+          <p className={styles.chamadaLoja}>
+            Veja os formatos e preços disponíveis na loja.
+          </p>
 
-          <button className={styles.btnCarrinho}>
+          <Link to={`/loja/livro/${id}`} className={styles.btnCarrinho}>
             <FaShoppingCart />
-            Adicionar ao carrinho
-          </button>
+            Comprar na loja
+          </Link>
 
           <div className={styles.divisor}></div>
 

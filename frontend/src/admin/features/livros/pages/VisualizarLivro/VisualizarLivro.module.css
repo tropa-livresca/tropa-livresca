@@ -1,0 +1,374 @@
+.container {
+  width: 100%;
+  padding: 2.5rem 4%;
+  color: #333;
+}
+
+/* Cabeçalho */
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 2rem 2.2rem;
+  border-radius: 1.5rem;
+  background: #f7f0cfb1;
+  border: 1px solid #ecdcae;
+}
+
+.headerInfo {
+  min-width: 0;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
+  background: #f3f3f3;
+  color: #616161;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.rascunho {
+  background: #fff1d6;
+  color: #8a5a00;
+}
+
+.em_revisao {
+  background: #e7eefc;
+  color: #2b4c8c;
+}
+
+.publicado {
+  background: #e3f3e6;
+  color: #2f6f3e;
+}
+
+.negado,
+.recall {
+  background: #ffe9e6;
+  color: #a1260f;
+}
+
+.titulo {
+  margin: 0.8rem 0 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  overflow-wrap: anywhere;
+}
+
+.subtitulo {
+  margin: 0.3rem 0 0;
+  color: #7a6a5b;
+  font-size: 1.2rem;
+}
+
+.autor {
+  margin: 0.8rem 0 0;
+  color: #555;
+}
+
+.autor strong {
+  color: #67170c;
+}
+
+.btnVoltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.2rem;
+  border: 2px solid #67170c;
+  border-radius: 999px;
+  color: #67170c;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.btnVoltar:hover {
+  background: #fff;
+}
+
+/* Grade principal */
+.layoutGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.mainContent,
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.card {
+  padding: 1.6rem 1.8rem;
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 2px solid #d4b46a;
+  color: #67170c;
+  font-size: 1.25rem;
+}
+
+.cardTopo {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.cardTopo h2 {
+  margin: 0;
+  border-bottom: none;
+}
+
+.linkExterno {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: #67170c;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.linkExterno:hover {
+  color: #c28a00;
+}
+
+.descricao {
+  margin: 0;
+  color: #444;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.pdfWrapper {
+  height: 70vh;
+  min-height: 28rem;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid #eee5c9;
+  background: #f4f4f4;
+}
+
+.vazio {
+  margin: 0;
+  padding: 1.5rem;
+  color: #777;
+  font-style: italic;
+}
+
+.btnlivro {
+  color: #67170c;
+  font-weight: 600;
+}
+
+/* Preços */
+.precosGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.precoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: #fffaf0;
+  border: 1px solid #f0e2bb;
+}
+
+.precoItem span {
+  color: #8a7a5a;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.precoItem strong {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.3rem;
+}
+
+/* Informações */
+.metaList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.metaList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #eee5c9;
+}
+
+.metaList li:last-child {
+  border-bottom: none;
+}
+
+.metaList span {
+  color: #7a6a5b;
+}
+
+.metaList strong {
+  color: #333;
+  text-align: right;
+}
+
+.metaColaboradores {
+  flex-direction: column;
+}
+
+.colabItem {
+  padding: 0.2rem 0;
+  font-weight: 600;
+}
+
+/* Capas */
+.capasContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.capaBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.capaBox span {
+  color: #8a7a5a;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.capaBox img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 0.8rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 1000px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 1.5rem 16px;
+  }
+
+  .header,
+  .card {
+    padding: 1.3rem;
+  }
+
+  .pdfWrapper {
+    height: 60vh;
+    min-height: 20rem;
+  }
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.inativo {
+  background: #eee;
+  color: #555;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.7rem;
+}
+
+.btnInativar,
+.btnAtivar {
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-family: inherit;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+.btnInativar {
+  border: 2px solid #b3261e;
+  background: transparent;
+  color: #b3261e;
+}
+
+.btnInativar:hover:not(:disabled) {
+  background: #b3261e;
+  color: #fff;
+}
+
+.btnAtivar {
+  border: 2px solid #2f6f3e;
+  background: #2f6f3e;
+  color: #fff;
+}
+
+.btnAtivar:hover:not(:disabled) {
+  background: #245831;
+}
+
+.btnInativar:disabled,
+.btnAtivar:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.erroAtivo {
+  max-width: 18rem;
+  margin: 0;
+  color: #a1260f;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .headerActions {
+    align-items: flex-start;
+  }
+}

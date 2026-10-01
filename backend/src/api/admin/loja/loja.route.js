@@ -8,8 +8,8 @@ router.get("/:id", LojaController.consultarVenda);
 router.patch("/autorizacao/:id", LojaController.autorizarEntrega);
 router.post("/entregue/:id", LojaController.alterarStatusEntrega);
 
-router.get("/:usuarioid", LojaController.buscarHistoricoVendasUsuario);
-router.get("/:livroid", LojaController.buscarNumeroVendasLivro);
+router.get("/usuario/:id", LojaController.buscarHistoricoVendasUsuario);
+router.get("/livro/:id", LojaController.buscarNumeroVendasLivro);
 router.get(
   "/relatorio/:usuarioid",
   LojaController.buscarRelatorioFinanceiroAutor,

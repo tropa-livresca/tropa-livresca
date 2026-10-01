@@ -3,11 +3,26 @@ import { error } from "../../common/utils/error.js";
 
 export class LojaService {
   static async consultarVendas({ page = 1, limit = 12, ordem = "" }) {
-    const venda = await LojaModel.consultarVendas({ page, limit, ordem });
+    const { data, count } = await LojaModel.consultarVendas({
+      page,
+      limit,
+      ordem,
+    });
 
-    if (venda.error) throw venda.error;
+    const vendas = data.map(({ movimentacoes_financeiras, ...venda }) => ({
+      ...venda,
+      repassado: movimentacoes_financeiras.length > 0,
+    }));
 
-    return venda;
+    return {
+      data: vendas,
+      meta: {
+        page,
+        limit,
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+      },
+    };
   }
 
   static async consultarVenda(vendaId) {
@@ -53,21 +68,25 @@ export class LojaService {
     if (!vendaId)
       error(400, "Id da venda não informada para alteração do status.");
 
-    const autorizacao = await LojaModel.autorizarEntrega(vendaId);
+    const venda = await LojaModel.consultarVenda(vendaId);
 
-    if (autorizacao.error) throw autorizacao.error;
+    if (venda.status_pagamento !== "pago")
+      error(400, "Só é possível enviar vendas pagas.");
+    if (venda.status_entrega !== "Pendente")
+      error(409, "Esta venda não está aguardando envio.");
 
-    return autorizacao;
+    return LojaModel.autorizarEntrega(vendaId);
   }
 
   static async alterarStatusEntrega(vendaId) {
     if (!vendaId)
       error(400, "Id da venda não informada para alteração do status.");
 
-    const autorizacao = await LojaModel.alterarStatusEntrega(vendaId);
+    const venda = await LojaModel.consultarVenda(vendaId);
 
-    if (autorizacao.error) throw autorizacao.error;
+    if (venda.status_entrega !== "A caminho")
+      error(409, "Só é possível marcar como entregue uma venda a caminho.");
 
-    return autorizacao;
+    return LojaModel.alterarStatusEntrega(vendaId);
   }
 }

@@ -1,0 +1,202 @@
+.mainContainer {
+  margin-top: -5rem;
+}
+
+.topo {
+  width: 100%;
+  margin-top: 5rem;
+  padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  font-size: 1.1rem;
+}
+
+.container {
+  width: 100%;
+  padding: 3rem 6%;
+}
+
+.tabelaWrapper {
+  overflow-x: auto;
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.tabela th {
+  padding: 1.2rem 1rem;
+  border-bottom: 2px solid #d4b46a;
+  background: #f7f0cf;
+  color: #67170c;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.tabela td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee5c9;
+  vertical-align: top;
+}
+
+.tabela tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tabela tbody tr:hover {
+  background: #fff9e9;
+}
+
+.data {
+  display: block;
+  color: #777;
+}
+
+.livros {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.livros small {
+  color: #777;
+}
+
+.etiqueta {
+  display: inline-block;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ok {
+  background: #e3f3e6;
+  color: #2f6f3e;
+}
+
+.pendente {
+  background: #fff1d6;
+  color: #8a5a00;
+}
+
+.valorRepasse {
+  color: #67170c;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 11rem;
+}
+
+.botao,
+.botaoPrincipal {
+  padding: 0.55rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.botaoPrincipal {
+  border: none;
+  background: #67170c;
+  color: #ede6b3;
+}
+
+.botaoPrincipal:hover:not(:disabled) {
+  background: #ffbb33;
+  color: #67170c;
+}
+
+.botao {
+  border: 2px solid #67170c;
+  background: transparent;
+  color: #67170c;
+}
+
+.botao:hover:not(:disabled) {
+  background: #f7f0cf;
+}
+
+.botao:disabled,
+.botaoPrincipal:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.semAcao {
+  color: #aaa;
+}
+
+.mensagemOk,
+.mensagemErro,
+.aviso {
+  margin: 0 0 1.2rem;
+  padding: 0.9rem 1.2rem;
+  border-radius: 1rem;
+}
+
+.mensagemOk {
+  background: #e3f3e6;
+  color: #2f6f3e;
+}
+
+.mensagemErro {
+  background: #ffe9e6;
+  color: #a1260f;
+}
+
+.aviso {
+  background: #fff1d6;
+  color: #8a5a00;
+}
+
+.vazio {
+  color: #777;
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .container,
+  .topo {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}

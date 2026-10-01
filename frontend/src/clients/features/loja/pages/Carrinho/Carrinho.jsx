@@ -1,9 +1,10 @@
 import styles from "./Carrinho.module.css";
 import { FiTrash2, FiMinus, FiPlus, FiArrowLeft } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../../hooks/useCarrinho";
 
 export default function Carrinho() {
+  const navigate = useNavigate();
   const {
     itens = [],
     adicionarItem,
@@ -25,13 +26,13 @@ export default function Carrinho() {
         <div className={styles.conteudo}>
           {itens.length === 0 ? (
             <section
-              className={styles.listaProdutos}
+              className={styles.listaProdutos2}
               style={{ textAlign: "center", padding: "40px 0" }}
             >
               <p>Seu carrinho está vazio no momento.</p>
               <Link
                 to="/loja"
-                className={styles.continuar}
+                className={styles.continuar2}
                 style={{ justifyContent: "center", marginTop: "20px" }}
               >
                 <FiArrowLeft /> Voltar para a Loja
@@ -83,14 +84,17 @@ export default function Carrinho() {
                               marginTop: "4px",
                             }}
                           >
-                            Formato: <strong>{item.tipo}</strong>
+                            Formato:{" "}
+                            <strong>
+                              {item.tipo === "fisico" ? "Físico" : "E-book"}
+                            </strong>
                           </small>
                         )}
                       </div>
                     </div>
 
                     <strong className={styles.preco}>
-                      R\$ {Number(item.preco).toFixed(2).replace(".", ",")}
+                      R$ {Number(item.preco).toFixed(2).replace(".", ",")}
                     </strong>
 
                     {item.tipo == "fisico" ? <div className={styles.quantidade}>
@@ -117,7 +121,7 @@ export default function Carrinho() {
                     
 
                     <strong className={styles.totalProduto}>
-                      R\$ {totalItem.toFixed(2).replace(".", ",")}
+                      R$ {totalItem.toFixed(2).replace(".", ",")}
                     </strong>
 
                     <button
@@ -131,17 +135,11 @@ export default function Carrinho() {
                 );
               })}
 
-              <div style={{ textAlign: "right", marginTop: "15px" }}>
+              <div className={styles.lim}>
                 <button
                   type="button"
                   onClick={limparCarrinho}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#ff4d4d",
-                    cursor: "pointer",
-                    fontWeight: "600",
-                  }}
+                  className={styles.limpar}
                 >
                   Limpar todo o carrinho
                 </button>
@@ -155,7 +153,7 @@ export default function Carrinho() {
             <div className={styles.subtotal}>
               <span className={styles.sub}>Subtotal</span>
               <strong>
-                R\$ {Number(valorSubtotal).toFixed(2).replace(".", ",")}
+                R$ {Number(valorSubtotal).toFixed(2).replace(".", ",")}
               </strong>
             </div>
 
@@ -167,7 +165,7 @@ export default function Carrinho() {
             <div className={styles.Total}>
               <span className={styles.sub}>Total</span>
               <strong>
-                R\$ {Number(valorTotal).toFixed(2).replace(".", ",")}
+                R$ {Number(valorTotal).toFixed(2).replace(".", ",")}
               </strong>
             </div>
 
@@ -175,6 +173,7 @@ export default function Carrinho() {
               type="button"
               className={styles.finalizar}
               disabled={itens.length === 0}
+              onClick={() => navigate("/checkout")}
             >
               Concluir minha compra
             </button>

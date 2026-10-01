@@ -249,50 +249,6 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.tabs {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-  border-bottom: 1px solid #e3d5ad;
-}
-
-.tabs button {
-  position: relative;
-  padding: 0 0 0.9rem;
-  border: none;
-  background: transparent;
-  color: #67170c;
-  font-family: inherit;
-  font-size: 0.95rem;
-  cursor: pointer;
-}
-
-.tabs .tabAtiva {
-  color: #67170c;
-  font-weight: bold;
-}
-
-.tabs .tabAtiva::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  width: 100%;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: #67170c;
-}
-
-.sinopse {
-  padding-top: 1.5rem;
-}
-
-.sinopse p {
-  margin: 0;
-  color: var(--cor-texto-muted);
-  font-size: 1rem;
-  line-height: 1.9;
-}
 
 .compra {
   width: 100%;
@@ -311,6 +267,84 @@
   font-family: "Jacques Francois", serif;
   font-size: 2rem;
   font-weight: bold;
+}
+
+.formatos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.formato {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.8rem;
+  border: 1px solid var(--cor-texto-muted);
+  background: #fffdf7;
+  color: #4f4638;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.formatoAtivo {
+  border-color: #67170c;
+  background: #fff8c9;
+}
+
+.quantidade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  color: #67170c;
+  font-weight: 600;
+  
+}
+
+.numero{
+font-family: none;
+text-align: center;
+}
+
+.numero::-webkit-inner-spin-button,
+.numero::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.numero:focus {
+  border: 1px solid #67170c; 
+  outline: none;        
+}
+
+.quantidade input {
+  width: 5rem;
+  padding: 0.5rem;
+  border: 1px solid #e4d9b9;
+  border-radius: 8px;
+}
+
+.adicionado {
+  margin: 1rem 0 0;
+  color: var(--cor-texto-muted);
+  font-weight: 600;
+}
+
+.adicionado a {
+  color: #67170c;
+ 
+}
+
+.adicionado a:hover{
+ text-decoration: underline;
+}
+.indisponivel {
+  margin: 0;
+  color: #777;
 }
 
 .btnCarrinho,

@@ -1,0 +1,70 @@
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2.5rem;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.tabs button {
+  position: relative;
+  padding: 0 0 0.9rem;
+  border: none;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.tabs .tabAtiva {
+  font-weight: bold;
+}
+
+.tabs .tabAtiva::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 100%;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: #67170c;
+}
+
+.numero {
+  font-family: none;
+}
+
+.conteudo {
+  padding-top: 1.5rem;
+}
+
+.conteudo > p {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  line-height: 1.9;
+}
+
+.linkAutor {
+  display: block;          
+  width: fit-content;    
+  margin-top: 1rem;
+  margin-left: auto;       
+  margin-right: auto;    
+  color: #ede6b3;
+  background-color: #67170c;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.linkAutor:hover{
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+.abaAvaliacoes {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}

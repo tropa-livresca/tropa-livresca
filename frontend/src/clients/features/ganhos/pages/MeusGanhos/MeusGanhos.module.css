@@ -1,0 +1,172 @@
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.5rem;
+}
+
+.cartaoResumo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.6rem 2rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.cartaoResumo span {
+  color: #67170c;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.cartaoResumo strong {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.8rem;
+  font-family: none;
+}
+
+.destaque {
+  background: #fffdf7;
+}
+
+.destaque span {
+  color: #67170c;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.destaque strong {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.8rem;
+  font-family: none;
+}
+
+.numero {
+  font-family: none;
+}
+
+.ex {
+  color: #67170c;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.extrato {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movimentacao {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #eee3c4;
+}
+
+.movimentacao:last-child {
+  border-bottom: none;
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+.iconeEntrada {
+  background: #e3f3e6;
+  color: #2f6f3e;
+}
+
+.iconeSaida {
+  background: #fff1d6;
+  color: #8a5a00;
+}
+
+.descricao {
+  display: flex;
+  flex-direction: column;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+.descricao small {
+  color: var(--cor-texto-muted);
+  font-size: 1.2rem;
+  font-family: none;
+}
+
+.valorEntrada {
+  color: green;
+  white-space: nowrap;
+  font-family: none;
+  font-size: 1.3rem;
+}
+
+.valorSaida {
+  color: red;
+  white-space: nowrap;
+  font-family: none;
+  font-size: 1.3rem;
+}
+
+@media (max-width: 700px) {
+  .cartaoResumo {
+    padding: 1.2rem 1.4rem;
+  }
+
+  .cartaoResumo span,
+  .destaque span,
+  .ex {
+    font-size: 1.2rem;
+  }
+
+  .cartaoResumo strong,
+  .destaque strong {
+    font-size: 1.5rem;
+  }
+
+  .movimentacao {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.8rem;
+  }
+
+  .valorEntrada,
+  .valorSaida {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 1.1rem;
+  }
+
+  .descricao {
+    font-size: 1.05rem;
+  }
+
+  .descricao small {
+    font-size: 0.95rem;
+  }
+
+  .icone {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1rem;
+  }
+}

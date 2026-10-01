@@ -3,11 +3,15 @@ import { LojaService } from "./loja.service.js";
 export class LojaController {
   static async consultarVendas(req, res, next) {
     try {
-      const { page, limit, ordem } = req.params;
+      const { page = 1, limit = 12, ordem = "" } = req.query;
 
-      const vendas = await LojaService.consultarVendas(page, limit, ordem);
+      const vendas = await LojaService.consultarVendas({
+        page: Number(page),
+        limit: Number(limit),
+        ordem,
+      });
 
-      return res.status(201).json({ vendas });
+      return res.status(200).json(vendas);
     } catch (err) {
       next(err);
     }
