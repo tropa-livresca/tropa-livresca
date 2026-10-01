@@ -5,7 +5,7 @@ import { AvaliacaoController } from "./avaliacao.controller.js";
 const router = express.Router();
 
 router.get("/", checkAuth, AvaliacaoController.buscarAvaliacoesLivro);
-router.post("/", checkAuth, AvaliacaoController.criarAvaliacao);
+router.post("/:id", checkAuth, AvaliacaoController.criarAvaliacao);
 router.patch("/:id", checkAuth, AvaliacaoController.alterarAvaliacao);
 
 export default router;
