@@ -13,6 +13,22 @@ import {
   LIVRO_ESTADO,
 } from "../../../../../common/config/livroEstados";
 
+// O backend ordena por "filtro" (campo) e "ordem" (sentido).
+const ORDENACOES = [
+  { chave: "az", rotulo: "Título (A–Z)", filtro: "", ordem: "" },
+  { chave: "za", rotulo: "Título (Z–A)", filtro: "alfabetico", ordem: "descendente" },
+  { chave: "recentes", rotulo: "Mais recentes", filtro: "data", ordem: "descendente" },
+  { chave: "antigos", rotulo: "Mais antigos", filtro: "data", ordem: "ascendente" },
+];
+
+const FILTROS_ESTADO = [
+  ["", "Todos"],
+  [LIVRO_ESTADO.RASCUNHO, "Rascunhos"],
+  [LIVRO_ESTADO.EM_REVISAO, "Em revisão"],
+  [LIVRO_ESTADO.PUBLICADO, "Publicados"],
+  [LIVRO_ESTADO.NEGADO, "Negados"],
+];
+
 export default function MeusLivros() {
   const {
     livros,
@@ -52,17 +68,16 @@ export default function MeusLivros() {
     setPaginaAtual(1);
   };
 
-  const handleFiltro = (novoFiltro) => {
-    setFiltro(novoFiltro);
+  const handleOrdenacao = (opcao) => {
+    setFiltro(opcao.filtro);
+    setOrdem(opcao.ordem);
     setPaginaAtual(1);
     setDropdownAberto(null);
   };
 
-  const handleOrdem = (novaOrdem) => {
-    setOrdem(novaOrdem);
-    setPaginaAtual(1);
-    setDropdownAberto(null);
-  };
+  const ordenacaoAtual =
+    ORDENACOES.find((o) => o.filtro === filtro && o.ordem === ordem) ||
+    ORDENACOES[0];
 
   const possuiLivros = Array.isArray(livros) && livros.length > 0;
 
@@ -86,143 +101,74 @@ export default function MeusLivros() {
       </header>
 
       <div className={styles.container}>
-        <form onSubmit={handleBuscar} className={styles.busca}>
-          <span className={styles.iconebusca}>
-            <FaSearch />
-          </span>
-
-          <div>
-            <button
-              type="button"
-              onClick={() => {
-                setEstado("");
-              }}
-            >
-              Todos
-            </button>
-
-            <button
-              type="button"
-              onClick={() => {
-                setEstado(LIVRO_ESTADO.RASCUNHO);
-              }}
-            >
-              Rascunhos
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEstado(LIVRO_ESTADO.PUBLICADO);
-              }}
-            >
-              Livros Publicados
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEstado(LIVRO_ESTADO.EM_REVISAO);
-              }}
-            >
-              Livros em Revisão
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setEstado(LIVRO_ESTADO.NEGADO);
-              }}
-            >
-              Livros Negados
-            </button>
-          </div>
-
-          <input
-            type="text"
-            placeholder="Buscar livros meus..."
-            value={busca}
-            onChange={(e) => {
-              setBusca(e.target.value);
-              setPaginaAtual(1);
-            }}
-            className={styles.inputBusca}
-          />
-
-          <div className={styles.selectContainer}>
-            <div
-              className={styles.select}
-              onClick={() =>
-                setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
-              }
-            >
-              <span>
-                {filtro === "alfabetico"
-                  ? "Ordem Alfabética"
-                  : filtro === "data"
-                    ? "Data de Publicação"
-                    : "Ordenar por"}
-              </span>
-
-              <FiChevronDown
-                className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
+        <form onSubmit={handleBuscar} className={styles.painelBusca}>
+          <div className={styles.linhaBusca}>
+            <label className={styles.campoBusca}>
+              <FaSearch className={styles.iconeLupa} aria-hidden="true" />
+              <input
+                type="search"
+                placeholder="Buscar pelo título..."
+                value={busca}
+                onChange={(e) => {
+                  setBusca(e.target.value);
+                  setPaginaAtual(1);
+                }}
+                aria-label="Buscar pelo título"
               />
+            </label>
+
+            <div className={styles.ordenar}>
+              <button
+                type="button"
+                className={styles.botaoOrdenar}
+                onClick={() => setDropdownAberto(!dropdownAberto)}
+                aria-expanded={!!dropdownAberto}
+              >
+                <span className={styles.rotuloOrdenar}>Ordenar:</span>{" "}
+                {ordenacaoAtual.rotulo}
+                <FiChevronDown
+                  className={dropdownAberto ? styles.setaAberta : ""}
+                />
+              </button>
+
+              {dropdownAberto && (
+                <ul className={styles.opcoesOrdenar}>
+                  {ORDENACOES.map((opcao) => (
+                    <li key={opcao.chave}>
+                      <button
+                        type="button"
+                        className={
+                          opcao.chave === ordenacaoAtual.chave
+                            ? styles.opcaoAtiva
+                            : ""
+                        }
+                        onClick={() => handleOrdenacao(opcao)}
+                      >
+                        {opcao.rotulo}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-
-            {dropdownAberto === "filtro" && (
-              <div className={styles.options}>
-                <div onClick={() => handleFiltro("")}>
-                  <span>Ordenar por</span>
-                </div>
-
-                <div onClick={() => handleFiltro("alfabetico")}>
-                  <span>Ordem Alfabética</span>
-                </div>
-
-                <div onClick={() => handleFiltro("data")}>
-                  <span>Data de Publicação</span>
-                </div>
-              </div>
-            )}
           </div>
 
-          <div className={styles.selectContainer}>
-            <div
-              className={styles.select1}
-              onClick={() =>
-                setDropdownAberto(dropdownAberto === "ordem" ? null : "ordem")
-              }
-            >
-              <span>
-                {ordem === "ascendente"
-                  ? "Mais Antigos"
-                  : ordem === "descendente"
-                    ? "Mais Recentes"
-                    : "Ordenar por"}
-              </span>
-
-              <FiChevronDown
-                className={dropdownAberto === "ordem" ? styles.setaAberta : ""}
-              />
-            </div>
-
-            {dropdownAberto === "ordem" && (
-              <div className={styles.options}>
-                <div onClick={() => handleOrdem("")}>
-                  <span>Ordenar por</span>
-                </div>
-
-                <div onClick={() => handleOrdem("ascendente")}>
-                  <span>Mais Antigos</span>
-                </div>
-
-                <div onClick={() => handleOrdem("descendente")}>
-                  <span>Mais Recentes</span>
-                </div>
-              </div>
-            )}
+          <div className={styles.estados} role="group" aria-label="Filtrar por estado">
+            {FILTROS_ESTADO.map(([valor, rotulo]) => (
+              <button
+                key={rotulo}
+                type="button"
+                className={`${styles.pilula} ${estado === valor ? styles.pilulaAtiva : ""}`}
+                aria-pressed={estado === valor}
+                onClick={() => {
+                  setEstado(valor);
+                  setPaginaAtual(1);
+                }}
+              >
+                {rotulo}
+              </button>
+            ))}
           </div>
-
-          <button type="submit" className={styles.btnbuscar}>
-            Buscar
-          </button>
         </form>
 
         {possuiLivros ? (
