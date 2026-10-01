@@ -331,6 +331,13 @@
 .btnCarrinho {
   background: #67170c;
   color: #ede6b3;
+  text-decoration: none;
+}
+
+.chamadaLoja {
+  margin: 0 0 1.2rem;
+  color: #67170c;
+  font-size: 1.05rem;
 }
 
 .btnCarrinho:hover {

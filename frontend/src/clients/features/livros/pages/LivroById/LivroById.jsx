@@ -189,14 +189,14 @@ export default function LivroById() {
         </div>
 
         <aside className={styles.compra}>
-          <div className={styles.preco}>
-            <span className={styles.numero}>R$ {livro.preco || "59,90"}</span>
-          </div>
+          <p className={styles.chamadaLoja}>
+            Veja os formatos e preços disponíveis na loja.
+          </p>
 
-          <button className={styles.btnCarrinho}>
+          <Link to={`/loja/livro/${id}`} className={styles.btnCarrinho}>
             <FaShoppingCart />
-            Adicionar ao carrinho
-          </button>
+            Comprar na loja
+          </Link>
 
           <div className={styles.divisor}></div>
 
