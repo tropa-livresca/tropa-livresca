@@ -111,7 +111,7 @@ export class MovimentacoesModel {
         const valorTotalItem = Number(item.subtotal);
         const autorId = item.livros.fk_user_profile_id;
 
-        const comissaoAutor = Math.round(valorTotalItem * 0.7 * 100) / 100;
+        const comissaoAutor = Math.round(valorTotalItem * 0.3 * 100) / 100;
 
         await supabase.from("movimentacoes_financeiras").insert({
           fk_user_profile_id: null,
