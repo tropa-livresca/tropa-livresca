@@ -130,8 +130,8 @@ export default function NavBarLateral() {
 
       {analisesAberto && (
         <div className={styles.subMenu}>
-          <Link to="/admin/analises/relatorios" className={styles.subItem}>
-            Relatórios Gerais
+          <Link to="/admin/analises/financeiro" className={styles.subItem}>
+            Financeiro
           </Link>
         </div>
       )}

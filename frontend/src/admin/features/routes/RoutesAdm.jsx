@@ -12,6 +12,7 @@ import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
 import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
 import Vendas from "../vendas/pages/Vendas/Vendas.jsx";
+import Financeiro from "../financeiro/pages/Financeiro/Financeiro.jsx";
 import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
 import MainLayout from "../../components/MainLayout/MainLayout";
@@ -107,6 +108,15 @@ const RoutesAdm = () => {
             <PrivateRoute>
               <RevisaoById />
             </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="analises/financeiro"
+          element={
+            <MasterRoute>
+              <Financeiro />
+            </MasterRoute>
           }
         />
 

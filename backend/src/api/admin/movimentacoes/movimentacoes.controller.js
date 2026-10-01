@@ -8,7 +8,7 @@ export class MovimentacoesController {
       const dados =
         await MovimentacoesService.buscarDadosMovimentacoesAutor(autorId);
 
-      return res.status(201).json({ dados });
+      return res.status(200).json({ dados });
     } catch (err) {
       next(err);
     }
@@ -18,7 +18,7 @@ export class MovimentacoesController {
     try {
       const dados = await MovimentacoesService.buscarMovimentacoesEditora();
 
-      return res.status(201).json({ dados });
+      return res.status(200).json({ dados });
     } catch (err) {
       next(err);
     }

@@ -7,7 +7,12 @@ import styles from "./NavBar.module.css";
 import logo from "../../../common/images/logo.png";
 
 import { FaUserCircle } from "react-icons/fa";
-import { FiLogOut, FiPackage, FiShoppingCart } from "react-icons/fi";
+import {
+  FiDollarSign,
+  FiLogOut,
+  FiPackage,
+  FiShoppingCart,
+} from "react-icons/fi";
 
 export default function NavBar() {
   const { perfil, getPerfil } = usePerfil();
@@ -156,6 +161,15 @@ export default function NavBar() {
                   >
                     <FiPackage className={styles.menuIcon} />
                     Meus Pedidos
+                  </Link>
+
+                  <Link
+                    to="/meus-ganhos"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FiDollarSign className={styles.menuIcon} />
+                    Meus Ganhos
                   </Link>
 
                   <button

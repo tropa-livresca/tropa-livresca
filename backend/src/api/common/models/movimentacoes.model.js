@@ -77,14 +77,20 @@ export class MovimentacoesModel {
       throw error;
     }
 
-    const saldoCaixa = (data || []).reduce((acc, mov) => {
-      const valor = Number(mov.valor);
-      return mov.tipo === "entrada" ? acc + valor : acc - valor;
-    }, 0);
+    const somar = (tipo) =>
+      (data || [])
+        .filter((mov) => mov.tipo === tipo)
+        .reduce((acc, mov) => acc + Number(mov.valor), 0);
+
+    const totalVendas = somar("entrada");
+    const totalRepassado = somar("saida");
+    const arredondar = (valor) => Math.round(valor * 100) / 100;
 
     return {
       extrato: data || [],
-      saldoTotalCaixa: Math.round(saldoCaixa * 100) / 100,
+      totalVendas: arredondar(totalVendas),
+      totalRepassado: arredondar(totalRepassado),
+      saldoTotalCaixa: arredondar(totalVendas - totalRepassado),
     };
   }
 

@@ -1,0 +1,105 @@
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.5rem;
+}
+
+.cartaoResumo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.6rem 2rem;
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.cartaoResumo span {
+  color: #8a7a5a;
+  font-weight: 600;
+}
+
+.cartaoResumo strong {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 2.2rem;
+}
+
+.destaque {
+  background: #67170c;
+}
+
+.destaque span {
+  color: #ede6b3;
+  opacity: 0.85;
+}
+
+.destaque strong {
+  color: #ede6b3;
+}
+
+.extrato {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movimentacao {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #eee3c4;
+}
+
+.movimentacao:last-child {
+  border-bottom: none;
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+.iconeEntrada {
+  background: #e3f3e6;
+  color: #2f6f3e;
+}
+
+.iconeSaida {
+  background: #fff1d6;
+  color: #8a5a00;
+}
+
+.descricao {
+  display: flex;
+  flex-direction: column;
+}
+
+.descricao small {
+  color: #888;
+}
+
+.valorEntrada {
+  color: #2f6f3e;
+  white-space: nowrap;
+}
+
+.valorSaida {
+  color: #8a5a00;
+  white-space: nowrap;
+}
