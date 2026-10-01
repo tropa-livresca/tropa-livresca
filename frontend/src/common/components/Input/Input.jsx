@@ -3,19 +3,22 @@ import styles from "./Input.module.css";
 export function InputTelefone({ type = "text", text, name, placeholder, handleOnChange, value }) {
     
     const handleChangeMascara = (e) => {
-        let valorAtual = e.target.value;
+        const digitos = e.target.value.replace(/\D/g, "").slice(0, 11);
+        const ddd = digitos.slice(0, 2);
+        const numero = digitos.slice(2);
 
-        valorAtual = valorAtual.replace(/\D/g, "");
+        // Celular começa com 9: (11) 91234-5678. Fixo: (11) 1234-5678.
+        const tamanhoPrefixo = numero.startsWith("9") ? 5 : 4;
 
-        if (valorAtual.length > 11) {
-            valorAtual = valorAtual.slice(0, 11);
-        }
-
-        if (valorAtual.length > 2) {
-            valorAtual = `(${valorAtual.slice(0, 2)}) ${valorAtual.slice(2)}`;
-        }
-        if (valorAtual.length > 9) {
-            valorAtual = `${valorAtual.slice(0, 10)}-${valorAtual.slice(10)}`;
+        // O hífen só entra quando já existe dígito depois dele,
+        // senão o backspace nunca consegue apagá-lo.
+        let valorAtual;
+        if (digitos.length <= 2) {
+            valorAtual = digitos;
+        } else if (numero.length <= tamanhoPrefixo) {
+            valorAtual = `(${ddd}) ${numero}`;
+        } else {
+            valorAtual = `(${ddd}) ${numero.slice(0, tamanhoPrefixo)}-${numero.slice(tamanhoPrefixo, tamanhoPrefixo + 4)}`;
         }
 
         e.target.value = valorAtual;

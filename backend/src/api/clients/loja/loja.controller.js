@@ -45,9 +45,9 @@ export class LojaController {
     try {
       const vendaId = req.params.id;
 
-      const venda = await LojaService.consultarVenda(vendaId);
+      const venda = await LojaService.consultarVenda(vendaId, req.user?.id);
 
-      return res.status(201).json({ venda });
+      return res.status(200).json({ venda });
     } catch (err) {
       next(err);
     }
@@ -55,18 +55,12 @@ export class LojaController {
 
   static async realizarVenda(req, res, next) {
     try {
-      const { metodo_pagamento, endereco_entrega, total, itensVenda } =
-        req.body;
+      const { itens, enderecoId } = req.body;
 
-      const usuarioId = req.user?.id;
-
-      const venda = await LojaService.realizarVenda(
-        usuarioId,
-        metodo_pagamento,
-        endereco_entrega,
-        total,
-        itensVenda,
-      );
+      const venda = await LojaService.realizarVenda(req.user?.id, {
+        itens,
+        enderecoId,
+      });
 
       return res.status(201).json({ venda });
     } catch (err) {
@@ -124,14 +118,10 @@ export class LojaController {
   static async mudarStatusPagamento(req, res, next) {
     try {
       const vendaId = req.params.id;
-      const usuarioEmail = req.body.email;
 
-      const email = await LojaService.mudarStatusPagamento(
-        vendaId,
-        usuarioEmail,
-      );
+      const venda = await LojaService.mudarStatusPagamento(vendaId, req.user);
 
-      return res.status(201).json({ email });
+      return res.status(200).json({ venda });
     } catch (err) {
       next(err);
     }

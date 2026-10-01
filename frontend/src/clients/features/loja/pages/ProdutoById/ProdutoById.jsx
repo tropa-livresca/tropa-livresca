@@ -29,9 +29,9 @@ export default function ProdutoById() {
 
   const { adicionarItem, calcularFrete, frete } = useCarrinho();
 
-  const [pedidoFisico, setPedidoFisico] = useState(false);
-  const [pedidoDigital, setPedidoDigital] = useState(false);
+  const [formatoEscolhido, setFormato] = useState(null);
   const [qtd, setQtd] = useState(1);
+  const [adicionado, setAdicionado] = useState(false);
 
   console.log(CEP);
 
@@ -69,32 +69,33 @@ export default function ProdutoById() {
       .replace(".", ",");
   };
 
-  console.log(pedidoFisico);
-  console.log(pedidoDigital);
+  const temFisico = Number(livro.preco_fisico) > 0;
+  const temDigital = Number(livro.preco_digital) > 0;
+  // Sem escolha do usuário, usa o primeiro formato à venda.
+  const formato =
+    formatoEscolhido || (temFisico ? "fisico" : temDigital ? "digital" : null);
+  const precoAtual =
+    formato === "fisico" ? livro.preco_fisico : livro.preco_digital;
+
+  const escolherFormato = (novoFormato) => {
+    setFormato(novoFormato);
+    setAdicionado(false);
+  };
 
   const handleAdicionarCarrinho = () => {
-    if (pedidoFisico) {
-      adicionarItem({
-        id,
-        titulo: livro.titulo,
-        autor: autor?.nome || "Autor desconhecido",
-        capa: capaFrente,
-        preco: Number(livro.preco_fisico || 0),
-        tipo: "fisico",
-        quantidade: qtd,
-      });
-    }
-    if (pedidoDigital) {
-      adicionarItem({
-        id,
-        titulo: livro.titulo,
-        autor: autor?.nome || "Autor desconhecido",
-        capa: capaFrente,
-        preco: Number(livro.preco_digital || 0),
-        tipo: "digital",
-        quantidade: 1,
-      });
-    }
+    if (!formato) return;
+
+    adicionarItem({
+      id,
+      titulo: livro.titulo,
+      autor: autor?.nome || "Autor desconhecido",
+      capa: capaFrente,
+      preco: Number(precoAtual),
+      tipo: formato,
+      // Digital é sempre uma unidade.
+      quantidade: formato === "fisico" ? qtd : 1,
+    });
+    setAdicionado(true);
   };
 
   return (
@@ -253,62 +254,77 @@ export default function ProdutoById() {
         </div>
 
         <aside className={styles.compra}>
-          {pedidoFisico || (pedidoFisico == false && pedidoDigital == false) ? (
-            <div className={styles.preco}>
-              <h2>Fisico</h2>
-              <span className={styles.numero}>
-                R$ {formatarPreco(livro.preco_fisico)}
-              </span>
-            </div>
-          ) : (
-            <></>
-          )}
+          {formato ? (
+            <>
+              <div className={styles.formatos}>
+                {temFisico && (
+                  <button
+                    type="button"
+                    className={`${styles.formato} ${formato === "fisico" ? styles.formatoAtivo : ""}`}
+                    onClick={() => escolherFormato("fisico")}
+                  >
+                    <span>Físico</span>
+                    <strong className={styles.numero}>
+                      R$ {formatarPreco(livro.preco_fisico)}
+                    </strong>
+                  </button>
+                )}
+                {temDigital && (
+                  <button
+                    type="button"
+                    className={`${styles.formato} ${formato === "digital" ? styles.formatoAtivo : ""}`}
+                    onClick={() => escolherFormato("digital")}
+                  >
+                    <span>E-book</span>
+                    <strong className={styles.numero}>
+                      R$ {formatarPreco(livro.preco_digital)}
+                    </strong>
+                  </button>
+                )}
+              </div>
 
-          {pedidoDigital ? (
-            <div className={styles.preco}>
-              <h2>Digital</h2>
-              <span className={styles.numero}>
-                R$ {formatarPreco(livro.preco_digital)}
-              </span>
-            </div>
-          ) : (
-            <></>
-          )}
+              <div className={styles.preco}>
+                <span className={styles.numero}>
+                  R$ {formatarPreco(precoAtual)}
+                </span>
+              </div>
 
-          <form>
-            <input
-              type="checkbox"
-              value={"fisico"}
-              onClick={() => {
-                setPedidoFisico(!pedidoFisico);
-              }}
-            ></input>
-            fisico{""}
-            <input
-              type="number"
-              value={qtd}
-              onChange={(e) => {
-                setQtd(e.target.value);
-              }}
-            ></input>
-            <br></br>
-            <input
-              type="checkbox"
-              value={"digital"}
-              onClick={() => {
-                setPedidoDigital(!pedidoDigital);
-              }}
-            ></input>
-            digital
-            <button
-              type="button"
-              className={styles.btnCarrinho}
-              onClick={handleAdicionarCarrinho}
-            >
-              <FaShoppingCart />
-              Adicionar ao carrinho
-            </button>
-          </form>
+              {formato === "fisico" && (
+                <label className={styles.quantidade}>
+                  Quantidade
+                  <input
+                    type="number"
+                    min="1"
+                    max="99"
+                    value={qtd}
+                    onChange={(e) => {
+                      setQtd(Math.min(99, Math.max(1, Number(e.target.value) || 1)));
+                      setAdicionado(false);
+                    }}
+                  />
+                </label>
+              )}
+
+              <button
+                type="button"
+                className={styles.btnCarrinho}
+                onClick={handleAdicionarCarrinho}
+              >
+                <FaShoppingCart />
+                Adicionar ao carrinho
+              </button>
+
+              {adicionado && (
+                <p className={styles.adicionado}>
+                  Adicionado ao carrinho! <Link to="/carrinho">Ver carrinho</Link>
+                </p>
+              )}
+            </>
+          ) : (
+            <p className={styles.indisponivel}>
+              Este livro ainda não está à venda.
+            </p>
+          )}
 
           <div className={styles.divisor}></div>
 

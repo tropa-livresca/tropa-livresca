@@ -1,6 +1,6 @@
 export function error(code, mensagem) {
   const erro = new Error(mensagem);
-  erro.statusCode(code);
+  erro.statusCode = code;
   throw erro;
 }
 
