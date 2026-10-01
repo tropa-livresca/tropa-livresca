@@ -16,42 +16,44 @@ e justificar na monografia o que ficou como trabalho futuro.
 4. **Nada quebrado na tela.** É melhor esconder um link do que mostrar uma página vazia ou com erro.
 5. **O que for cortado vira "Trabalho futuro" na monografia.** Mostra que o grupo conhece o problema.
 
-## Estado das branches (30/09/2026)
+## Progresso (01/10/2026)
 
-| Branch | O que tem além da `main` local | Impacto no plano |
+O fluxo central está **funcionando de ponta a ponta** no banco real:
+
+```
+Loja → carrinho → checkout → pagamento simulado → Meus Pedidos
+  → admin autoriza repasse (30%) → Financeiro (admin) e Meus Ganhos (autor)
+  → admin marca enviado → entregue
+```
+
+| Área | Situação | Onde |
 |---|---|---|
-| `origin/main` / `develop` (PR #131) | Removeu os módulos de **cartões** e **notificações** do backend; `itens_venda` ganhou `fisico` e `preco_unitario`; `vendas` trocou `fk_met_pagamentos_id` por `metodo_pagamento` | Parte do EPIC 01 e o corte de cartões/notificações **já foram feitos** |
-| `frontend` (luisfabiano77) — **mergeada na `develop` (PR #133)** | Estilo do admin: cabeçalho, navbar lateral, `GerenciarUsuarios`, `GerenciaLivros`, paginação, ajustes na Loja | Estilização de Usuários e da navbar já está na `develop` |
+| Backend sobe | ✅ Imports de `notificacoes`/`cartoes` removidos | — |
+| Rotas e banco da loja | ✅ Ordem das rotas, nomes de coluna (`data`, `fk_vendas_id`, `fisico`), colunas obrigatórias, sem `transacao_id` | `loja.route.js`, `loja.model.js` |
+| Checkout | ✅ Preço e frete calculados no servidor; endereço do próprio usuário; pagamento simulado | `/checkout`, `/pedido/:id` |
+| Meus Pedidos | ✅ | `/pedidos` (menu do perfil) |
+| E-book por e-mail | ⚠️ Código corrigido, **falta confirmar se o e-mail chega** | `enviarEbookAposPagamento` |
+| Repasse 30% | ✅ Controller, 30%, `data`/`status`, só venda paga, sem duplicar, cliente admin do Supabase | `movimentacoes.model.js` |
+| Pedidos e Entregas (admin) | ✅ Autorizar repasse (master), marcar enviado/entregue | `/admin/ecommerce/pedidos` |
+| Financeiro (admin) | ✅ Total vendido, repassado, saldo e extrato (master) | `/admin/analises/financeiro` |
+| Meus Ganhos (autor) | ✅ Saldo e extrato | `/meus-ganhos` (menu do perfil) |
+| Avaliações | ✅ Média real, 1–5 estrelas, só quem comprou, uma por usuário | página do produto, aba "Avaliações" |
+| Inativar livro | ✅ "Tirar da loja" / "Colocar de volta" | detalhes do livro no admin |
+| Menu do admin | ✅ Sem links mortos; Usuários e Financeiro só para master | — |
+| Páginas 404 e 403 | ✅ Com o logo e o visual do site | — |
+| Testes do backend | ✅ 90 passando | `npm test` em `backend` |
 
-> ⚠️ **A `develop` e a `origin/main` atuais não sobem o backend.** Os arquivos de `notificacoes` e `cartoes` foram
-> apagados, mas `backend/src/api/admin/index.js` e `backend/src/api/clients/index.js` ainda os importam
-> (`notificacoesRoutes`, `cartoesRoutes`). O erro é `ERR_MODULE_NOT_FOUND`. É preciso remover esses `import`
-> e `router.use` antes de tudo.
+### Pendências antes da banca
 
-## Situação atual (levantada no código)
-
-| Área | Situação | O que falta |
-|---|---|---|
-| Admin — Usuários | ✅ Pronto (listar, ver, inativar, promover, master) | — (estilização mergeada no PR #133) |
-| Admin — Revisões | ✅ Pronto (criar, completar, publicar, recall, negar) | — |
-| Admin — Livros | ⚠️ Só leitura | Botão de **inativar** livro. Edição completa **não** é necessária |
-| Admin — Autorização | ✅ `verificarAutenticacaoAdm` / `AdmMaster` em todas as rotas `/admin` | — |
-| **Repasse ao autor** | ⚠️ Código existe, mas **não funciona** (ver abaixo) | Corrigir e criar telas |
-| Admin — Vendas | ⚠️ Rotas existem, com bug de ordem (#97) | Página de vendas |
-| Loja — Cliente | ⚠️ Telas existem (`Loja`, `ProdutoById`, `Carrinho`, `Compra`, `ResumoCompra`) | Conectar checkout → venda → pedido |
-| Frete | ✅ `calcularFretePrazo` em `loja.model.js` calcula por região (1º dígito do CEP) + peso, sem API externa | Só chamar `GET /loja/frete` no checkout |
-| E-mail do e-book | ⚠️ `enviarEbookAposPagamento` em `loja.model.js` já monta e envia (nodemailer/SMTP) | Bug: filtra `formato = "digital"`, mas a coluna agora é `fisico` (boolean). Ver 1a |
-| Avaliações | ⚠️ Backend pronto (buscar, criar, alterar); hook `useAvaliacoes` existe mas não é usado | `ProdutoById.jsx` mostra ★★★★★ fixo no código |
-| Páginas de erro | ✅ `NotFound`, `NaoAutorizado` | Revisar e fechar a #82 |
-
-### Problemas encontrados no repasse (`movimentacoes`)
-
-| Problema | Onde | Efeito |
-|---|---|---|
-| Controller chama **a si mesmo** em vez do service | `admin/movimentacoes/movimentacoes.controller.js` → `autorizarDepositoContaAutor` | Recursão infinita, então o repasse **nunca executa** |
-| Percentual do autor está em **70%** | `common/models/movimentacoes.model.js` → `valorTotalItem * 0.7` | Precisa ser **30%** (`0.3`) |
-| Os inserts não definem `status` | mesmo método | A consulta de extrato filtra `status = "concluido"`. Se o default do banco não for esse, o repasse **não aparece no saldo** |
-| Chamar duas vezes duplica o repasse | mesmo método | Basta verificar se já existem movimentações para a venda antes de inserir |
+| Pendência | Quem |
+|---|---|
+| Conferir se o **e-mail do e-book** chega (caixa de entrada e spam) | grupo |
+| Decidir entre **`/pagamento`** (só visual) e **`/checkout`** (funciona) | grupo |
+| **Frete** na página do produto e no carrinho (`calcularFrete` em `Carrinho.jsx`) | colega que está nele |
+| **Limpar dados de teste**: livros "Yasmin chata", "kjkjjjjj", "g", capa de foto de caderno, descrição de autor de teste, vendas/repasses de teste | grupo |
+| **Documentar a senha inicial de admin** (`senha_adm`, definida via `alterar_senha_adm`) | grupo |
+| Chave **`SUPABASE_SERVICE_ROLE_KEY`** nova (`sb_secret_...`) no `.env` de todos e no deploy — as chaves antigas foram desativadas | todos |
+| **Ensaiar o roteiro de demo** abaixo | grupo |
 
 ---
 
@@ -107,17 +109,16 @@ Fluxo da demo: **cliente compra → venda fica paga → admin autoriza o repasse
 | 09.2 | Avaliar livro comprado | Formulário de 1 a 5 estrelas, **só para quem comprou o livro**. Liga a avaliação ao fluxo de vendas. |
 | — | Fora do escopo | Texto na avaliação, listagem individual de avaliações, edição. |
 
-> A rota `GET /clients/avaliacoes` exige login (`checkAuth`). Visitante sem login não vê a média.
-> Para a demo não importa, mas vale saber.
+> A média (`GET /clients/avaliacoes/livro/:id`) é pública; avaliar exige login e compra paga.
 
 ## Se sobrar tempo
 
 | # | Tarefa |
 |---|---|
-| 07.2 | Entregas (`pendente → a_caminho → entregue`). O backend já existe. |
+| ~~07.2~~ | ✅ Entregas feitas em Pedidos e Entregas |
 | — | Saque do autor. `solicitarSaque` já existe no model, falta ligar a rota e o botão. |
-| #82 | Revisar as páginas de erro e fechar a issue |
-| 10.1 | Garantir que o usuário só vê os próprios pedidos |
+| ~~#82~~ | ✅ Páginas de erro refeitas — a issue pode ser fechada |
+| ~~10.1~~ | ✅ Cliente só vê os próprios pedidos |
 
 ---
 
@@ -146,16 +147,16 @@ Fluxo da demo: **cliente compra → venda fica paga → admin autoriza o repasse
 
 ## Ordem de execução sugerida
 
-0. Remover os `import` quebrados de `notificacoes`/`cartoes`, para o backend voltar a subir
-1. Corrigir o repasse (controller, 30%, `status`, checagem de duplicidade). É rápido e desbloqueia o centro do TCC
-2. Alinhar banco e corrigir rotas da loja (#92–#94, #97, #98)
-3. Checkout com frete por região + pagamento simulado + criação da venda com preço do servidor
-4. E-mail do e-book após o pagamento (corrigir filtro `fisico`)
-5. Resumo e Meus Pedidos
-6. Tela de Vendas no admin com "Autorizar repasse"
-7. Telas de Financeiro (admin) e Meus ganhos (autor)
-8. Avaliações: média real no produto + avaliar livro comprado
-9. Inativar livro, limpar a navbar
+0. ✅ Remover os `import` quebrados de `notificacoes`/`cartoes`
+1. ✅ Corrigir o repasse
+2. ✅ Alinhar banco e corrigir rotas da loja
+3. ✅ Checkout com frete por região + pagamento simulado + preço do servidor
+4. ⚠️ E-mail do e-book: código pronto, falta confirmar a entrega
+5. ✅ Resumo e Meus Pedidos
+6. ✅ Pedidos e Entregas no admin com "Autorizar repasse"
+7. ✅ Financeiro (admin) e Meus Ganhos (autor)
+8. ✅ Avaliações
+9. ✅ Inativar livro e limpar o menu do admin
 10. Ensaiar o roteiro de demo e corrigir o que falhar
 11. O que sobrar de tempo vai para "Se sobrar tempo"
 
@@ -171,16 +172,17 @@ Fluxo da demo: **cliente compra → venda fica paga → admin autoriza o repasse
 - [ ] Avaliar o livro comprado e ver a média mudar na página do produto
 
 **Admin**
-- [ ] Ver a venda na tela de Vendas, com status "paga" e "não repassada"
+- [ ] Em E-commerce → Pedidos e Entregas, ver a venda "paga" com o valor do repasse
 - [ ] Clicar em "Autorizar repasse" e ver o status mudar
-- [ ] Clicar de novo e ver que o repasse **não** é duplicado
-- [ ] Ver no Financeiro a entrada bruta e a saída de 30% para o autor
-- [ ] Ver a lista de usuários, gerenciar uma revisão e inativar um livro
-- [ ] Tentar acessar `/admin` sem permissão e ver a página de não autorizado
+- [ ] Ver que o botão some e o repasse **não** pode ser duplicado
+- [ ] Marcar o pedido físico como enviado e depois como entregue
+- [ ] Em Desempenho → Financeiro, ver total vendido, 30% repassado e saldo de 70%
+- [ ] Ver a lista de usuários, gerenciar uma revisão e tirar um livro da loja
+- [ ] Com um funcionário que não é master, abrir `/admin/usuarios` e ver a página 403
 
 **Autor**
 - [ ] Entrar como o autor do livro vendido
-- [ ] Ver em "Meus ganhos" o crédito de 30% da venda
+- [ ] Menu do perfil → "Meus Ganhos": ver o crédito de 30% da venda
 
 ## Sugestão de organização no GitHub
 
