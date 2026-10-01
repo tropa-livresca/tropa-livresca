@@ -7,6 +7,29 @@ export const useAvaliacoes = () => {
   const [avaliacao, setAvaliacao] = useState(null);
   const [carregando, setCarregando] = useState(false);
 
+  const buscarAvaliacao = useCallback(async (livroid) => {
+    if (!livroid) return;
+
+    setCarregando(true);
+
+    try {
+      const response = await apiFetch(`/api/v1/clients/avaliacao/${livroid}`);
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Erro ao buscar avaliação:", data.error);
+        return;
+      }
+
+      setAvaliacao(data || 0);
+    } catch (err) {
+      console.error("Erro ao buscar a avaliação do autor.", err);
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
   const buscarAvaliacoes = useCallback(async () => {
     setCarregando(true);
 
@@ -28,14 +51,14 @@ export const useAvaliacoes = () => {
     }
   }, []);
 
-  const realizarAvaliacao = useCallback(async (id, e) => {
+  const realizarAvaliacao = useCallback(async (livroid, e) => {
     if (e && typeof e.preventDefault === "function") e.preventDefault();
     if (!informouEstrelas) return;
 
     setCarregando(true);
 
     try {
-      const response = await apiFetch(`/api/v1/clients/avaliacao/${id}`, {
+      const response = await apiFetch(`/api/v1/clients/avaliacao/${livroid}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ qtdEstrelas }),
@@ -59,18 +82,22 @@ export const useAvaliacoes = () => {
     if (!qtdEstrelas || qtdEstrelas.trim() === "") return false;
   });
 
-  const alterarAvaliacao = useCallback(async (id, e) => {
+  const alterarAvaliacao = useCallback(async (avaliacaoId, e) => {
     if (e && typeof e.preventDefault === "function") e.preventDefault();
+    if (!avaliacaoId) return;
     if (!informouEstrelas) return;
 
     setCarregando(true);
 
     try {
-      const response = await apiFetch(`/api/v1/clients/avaliacao/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qtdEstrelas }),
-      });
+      const response = await apiFetch(
+        `/api/v1/clients/avaliacao/${avaliacaoId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ qtdEstrelas }),
+        },
+      );
 
       if (!response.ok) {
         console.error("Erro ao alterar avaliação:", data.error);
@@ -96,6 +123,7 @@ export const useAvaliacoes = () => {
     avaliacao,
     carregando,
     setQtdEstrelas,
+    buscarAvaliacao,
     buscarAvaliacoes,
     realizarAvaliacao,
     alterarAvaliacao,

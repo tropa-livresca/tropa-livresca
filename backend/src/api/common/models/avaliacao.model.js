@@ -35,6 +35,22 @@ export class AvaliacaoModel {
     return data;
   }
 
+  static async buscarAvaliacaoLivro(usuarioId, idLivro) {
+    const { data, error } = await supabase
+      .from("avaliacoes")
+      .select("qtd_estrelas")
+      .eq("fk_livros_id", idLivro)
+      .eq("fk_user_profile_id", usuarioId)
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data || 0;
+  }
+
   static async buscarAvaliacoesLivro(idLivro) {
     const { data, error } = await supabase
       .from("avaliacoes")

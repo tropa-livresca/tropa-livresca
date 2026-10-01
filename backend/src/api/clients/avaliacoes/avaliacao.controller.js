@@ -1,6 +1,22 @@
 import { AvaliacaoService } from "./avaliacao.service.js";
 
 export class AvaliacaoController {
+  static async buscarAvaliacao(req, res, next) {
+    try {
+      const livroId = req.params.id;
+      const usuarioId = req.user?.id;
+
+      const avaliacao = await AvaliacaoService.buscarAvaliacao(
+        usuarioId,
+        livroId,
+      );
+
+      return res.status(201).json({ avaliacao });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async criarAvaliacao(req, res, next) {
     try {
       const livroId = req.params.id;

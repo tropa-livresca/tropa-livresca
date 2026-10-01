@@ -2,6 +2,20 @@ import { AvaliacaoModel } from "../../common/models/avaliacao.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
 export class AvaliacaoService {
+  static async buscarAvaliacao(usuarioId, livroId) {
+    if (!usuarioId) errorUsuarioId();
+    if (!livroId) error(400, "Id do livro não informado.");
+
+    const avaliacao = await AvaliacaoModel.buscarAvaliacaoLivro(
+      usuarioId,
+      livroId,
+    );
+
+    if (avaliacao.error) throw avaliacao.error;
+
+    return avaliacao;
+  }
+
   static async criarAvaliacao(livroId, usuarioId, qtd_estrelas) {
     if (!usuarioId) errorUsuarioId();
 
