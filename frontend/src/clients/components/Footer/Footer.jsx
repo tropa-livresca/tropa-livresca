@@ -29,19 +29,28 @@ export default function Footer() {
 
           <ul>
             <li>
-              <Link to="/">Inicio</Link>
+              <Link to="/">Início</Link>
             </li>
             <li>
-              <Link to="/">Sobre Nós</Link>
+              <Link to="/historia">Sobre Nós</Link>
             </li>
             <li>
-              <Link to="/">Livros</Link>
+              <Link to="/livros">Livros</Link>
             </li>
             <li>
-              <Link to="/">Loja</Link>
+              <Link to="/loja">Loja</Link>
             </li>
             <li>
-              <Link to="/">Autores</Link>
+              <Link to="/autores">Autores</Link>
+            </li>
+            <li>
+              <Link to="/sobreautopublicacao">Autopublicação</Link>
+            </li>
+            <li>
+              <Link to="/FAQ">Perguntas Frequentes</Link>
+            </li>
+            <li>
+              <Link to="/suporte">Contato</Link>
             </li>
           </ul>
         </div>
