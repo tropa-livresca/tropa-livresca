@@ -1,131 +1,77 @@
 import { apiFetch } from "../../../../common/services/api.js";
 import { useState, useCallback } from "react";
 
+const BASE = "/api/v1/clients/avaliacoes";
+
 export const useAvaliacoes = () => {
-  const [qtdEstrelas, setQtdEstrelas] = useState(0);
-  const [media, setMedia] = useState(0);
-  const [avaliacao, setAvaliacao] = useState(null);
-  const [carregando, setCarregando] = useState(false);
+  const [resumo, setResumo] = useState({ media: 0, total: 0 });
+  const [minhaAvaliacao, setMinhaAvaliacao] = useState(null);
+  const [podeAvaliar, setPodeAvaliar] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [erro, setErro] = useState(null);
 
-  const buscarAvaliacao = useCallback(async (livroid) => {
-    if (!livroid) return;
-
-    setCarregando(true);
-
+  // Média e quantidade de avaliações do livro (não exige login).
+  const buscarResumo = useCallback(async (livroId) => {
+    if (!livroId) return;
     try {
-      const response = await apiFetch(`/api/v1/clients/avaliacao/${livroid}`);
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Erro ao buscar avaliação:", data.error);
-        return;
-      }
-
-      setAvaliacao(data || 0);
-    } catch (err) {
-      console.error("Erro ao buscar a avaliação do autor.", err);
-    } finally {
-      setCarregando(false);
-    }
-  }, []);
-
-  const buscarAvaliacoes = useCallback(async () => {
-    setCarregando(true);
-
-    try {
-      const response = await apiFetch(`/api/v1/clients/avaliacao/`);
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Erro ao buscar avaliações:", data.error);
-        return;
-      }
-
-      setMedia(data);
+      const response = await apiFetch(`${BASE}/livro/${livroId}`, {
+        skipAuthRedirect: true,
+      });
+      if (response.ok) setResumo(await response.json());
     } catch (err) {
       console.error("Não foi possível buscar as avaliações do livro.", err);
-    } finally {
-      setCarregando(false);
     }
   }, []);
 
-  const realizarAvaliacao = useCallback(async (livroid, e) => {
-    if (e && typeof e.preventDefault === "function") e.preventDefault();
-    if (!informouEstrelas) return;
-
-    setCarregando(true);
-
+  // Avaliação do usuário logado e se ele comprou o livro.
+  const buscarMinhaAvaliacao = useCallback(async (livroId) => {
+    if (!livroId) return;
     try {
-      const response = await apiFetch(`/api/v1/clients/avaliacao/${livroid}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ qtdEstrelas }),
+      const response = await apiFetch(`${BASE}/${livroId}`, {
+        skipAuthRedirect: true,
       });
+      if (!response.ok) return;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Erro ao realizar avaliação:", data.error);
-        return;
-      }
-      setAvaliacao(data);
+      const json = await response.json();
+      setMinhaAvaliacao(json.avaliacao);
+      setPodeAvaliar(json.podeAvaliar);
     } catch (err) {
-      console.error("Não foi possível realizar a avaliação", err);
-    } finally {
-      setCarregando(false);
+      console.error("Não foi possível buscar sua avaliação.", err);
     }
   }, []);
 
-  const informouEstrelas = useCallback(() => {
-    if (!qtdEstrelas || qtdEstrelas.trim() === "") return false;
-  });
-
-  const alterarAvaliacao = useCallback(async (avaliacaoId, e) => {
-    if (e && typeof e.preventDefault === "function") e.preventDefault();
-    if (!avaliacaoId) return;
-    if (!informouEstrelas) return;
-
-    setCarregando(true);
-
+  const avaliar = useCallback(async (livroId, qtdEstrelas) => {
+    setSalvando(true);
+    setErro(null);
     try {
-      const response = await apiFetch(
-        `/api/v1/clients/avaliacao/${avaliacaoId}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ qtdEstrelas }),
-        },
-      );
+      const response = await apiFetch(`${BASE}/${livroId}`, {
+        method: "POST",
+        body: JSON.stringify({ qtd_estrelas: qtdEstrelas }),
+      });
+      const json = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        console.error("Erro ao alterar avaliação:", data.error);
-        return;
+        throw new Error(json.error || "Não foi possível salvar a avaliação.");
       }
 
-      const data = response.json();
-
-      setAvaliacao(data);
+      setMinhaAvaliacao(json.avaliacao);
+      return true;
     } catch (err) {
-      console.error(
-        "Não foi possível alterar a avaliação feita para o livro.",
-        err,
-      );
+      setErro(err.message);
+      return false;
     } finally {
-      setCarregando(false);
+      setSalvando(false);
     }
   }, []);
 
   return {
-    media,
-    qtdEstrelas,
-    avaliacao,
-    carregando,
-    setQtdEstrelas,
-    buscarAvaliacao,
-    buscarAvaliacoes,
-    realizarAvaliacao,
-    alterarAvaliacao,
+    resumo,
+    minhaAvaliacao,
+    podeAvaliar,
+    salvando,
+    erro,
+    buscarResumo,
+    buscarMinhaAvaliacao,
+    avaliar,
   };
 };

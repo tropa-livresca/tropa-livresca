@@ -1,0 +1,104 @@
+.resumo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  color: #51433e;
+  font-size: 0.9rem;
+}
+
+.estrelasCheias,
+.estrelasVazias {
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+}
+
+.estrelasCheias {
+  color: #b67b1d;
+}
+
+.estrelasVazias {
+  color: #e4d9b9;
+}
+
+.media {
+  color: #67170c;
+  font-family: none;
+}
+
+.total,
+.semAvaliacao {
+  color: #7a6a5b;
+}
+
+/* Avaliar */
+.avaliar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.pergunta {
+  margin: 0;
+  color: #67170c;
+  font-weight: 600;
+}
+
+.seletor {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.estrela {
+  padding: 0 0.1rem;
+  border: none;
+  background: none;
+  color: #e4d9b9;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    transform 0.15s;
+}
+
+.estrela:hover:not(:disabled) {
+  transform: scale(1.15);
+}
+
+.estrela:disabled {
+  cursor: wait;
+}
+
+.estrelaAtiva {
+  color: #b67b1d;
+}
+
+.rotulo {
+  margin-left: 0.6rem;
+  color: #7a6a5b;
+  font-size: 0.95rem;
+}
+
+.aviso {
+  margin: 0;
+  color: #7a6a5b;
+}
+
+.aviso a {
+  color: #67170c;
+  font-weight: 600;
+}
+
+.sucesso {
+  margin: 0;
+  color: #2f6f3e;
+  font-weight: 600;
+}
+
+.erro {
+  margin: 0;
+  color: #a1260f;
+}

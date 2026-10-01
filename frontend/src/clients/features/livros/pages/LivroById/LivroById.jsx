@@ -3,6 +3,8 @@ import styles from "./LivroById.module.css";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import Carregando from "../../../../components/Carregando/Carregando";
+import { useAvaliacoes } from "../../../loja/hooks/useAvaliacoes";
+import ResumoAvaliacao from "../../../loja/components/Avaliacao/ResumoAvaliacao";
 import {
   FaBookOpen,
   FaCalendarAlt,
@@ -18,6 +20,11 @@ import {
 
 export default function LivroById() {
   const { id } = useParams();
+  const { resumo, buscarResumo } = useAvaliacoes();
+
+  useEffect(() => {
+    buscarResumo(id);
+  }, [id, buscarResumo]);
 
   const { autor, colaboradores, livro, BuscarDetalhesLivro, carregando } =
     useLivros();
@@ -62,13 +69,7 @@ export default function LivroById() {
                 <span className={styles.genero}>{livro.genero}</span>
               )}
 
-              <div className={styles.avaliacao}>
-                <span className={styles.estrelas}>★★★★★</span>
-
-                <strong className={styles.numero}>4.8</strong>
-
-                <span className={styles.numero}>(124 avaliações)</span>
-              </div>
+              <ResumoAvaliacao media={resumo.media} total={resumo.total} />
 
               <div className={styles.tags}>
                 {livro.idioma && <span>{livro.idioma}</span>}
@@ -179,7 +180,7 @@ export default function LivroById() {
             <button>Sobre o autor</button>
 
             <button>
-              Avaliações <span className={styles.numero}>(124)</span>
+              Avaliações <span className={styles.numero}>({resumo.total})</span>
             </button>
           </div>
 

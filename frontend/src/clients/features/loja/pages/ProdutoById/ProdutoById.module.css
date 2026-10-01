@@ -621,3 +621,20 @@
     font-size: 1.7rem;
   }
 }
+
+.linkAutor {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #67170c;
+  font-weight: 600;
+}
+
+.abaAvaliacoes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.abaAvaliacoes p {
+  text-align: left;
+}
