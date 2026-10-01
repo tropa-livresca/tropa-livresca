@@ -29,7 +29,7 @@ export class MovimentacoesController {
       const vendaId = req.params.vendaid;
 
       const deposito =
-        await MovimentacoesController.autorizarDepositoContaAutor(vendaId);
+        await MovimentacoesService.autorizarDepositoContaAutor(vendaId);
 
       return res.status(201).json({ deposito });
     } catch (err) {

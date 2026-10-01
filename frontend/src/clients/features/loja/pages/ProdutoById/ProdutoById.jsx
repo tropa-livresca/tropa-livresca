@@ -25,7 +25,7 @@ export default function ProdutoById() {
   const { autor, colaboradores, livro, buscarLivroById, carregando } =
     useLivrosLoja();
 
-  const {BuscarEnderecoPrincipal, CEP} = useEndereco();
+  const { BuscarEnderecoPrincipal, CEP } = useEndereco();
 
   const { adicionarItem, calcularFrete, frete } = useCarrinho();
 
@@ -42,17 +42,14 @@ export default function ProdutoById() {
   }, [id, buscarLivroById]);
 
   useEffect(() => {
-    BuscarEnderecoPrincipal()
+    BuscarEnderecoPrincipal();
   }, [BuscarEnderecoPrincipal]);
 
   useEffect(() => {
-    if(CEP != null){
-      calcularFrete(CEP, [{tipo:"fisico", qtd:qtd}]);
+    if (CEP != null) {
+      calcularFrete(CEP, [{ tipo: "fisico", qtd: qtd }]);
     }
   }, [CEP, qtd]);
-
-
-  const [tipoSelecionado] = useState("Físico");
 
   console.log(frete);
 
@@ -64,10 +61,7 @@ export default function ProdutoById() {
     return <p className={styles.naoEncontrado}>Livro não encontrado.</p>;
   }
 
-
   const capaFrente = livro.capa?.frente;
-
-  const tipoProduto = livro.preco_fisico != null ? "Físico" : "Digital";
 
   const formatarPreco = (valor) => {
     return Number(valor || 0)
@@ -79,29 +73,28 @@ export default function ProdutoById() {
   console.log(pedidoDigital);
 
   const handleAdicionarCarrinho = () => {
-    if(pedidoFisico){
+    if (pedidoFisico) {
       adicionarItem({
-      id,
-      titulo: livro.titulo,
-      autor: autor?.nome || "Autor desconhecido",
-      capa: capaFrente,
-      preco: Number(livro.preco_fisico || 0),
-      tipo: "fisico",
-      quantidade: qtd,
-    });
+        id,
+        titulo: livro.titulo,
+        autor: autor?.nome || "Autor desconhecido",
+        capa: capaFrente,
+        preco: Number(livro.preco_fisico || 0),
+        tipo: "fisico",
+        quantidade: qtd,
+      });
     }
-    if(pedidoDigital){
+    if (pedidoDigital) {
       adicionarItem({
-      id,
-      titulo: livro.titulo,
-      autor: autor?.nome || "Autor desconhecido",
-      capa: capaFrente,
-      preco: Number(livro.preco_digital || 0),
-      tipo: "digital",
-      quantidade: 1,
-    });
+        id,
+        titulo: livro.titulo,
+        autor: autor?.nome || "Autor desconhecido",
+        capa: capaFrente,
+        preco: Number(livro.preco_digital || 0),
+        tipo: "digital",
+        quantidade: 1,
+      });
     }
-    
   };
 
   return (
@@ -260,50 +253,70 @@ export default function ProdutoById() {
         </div>
 
         <aside className={styles.compra}>
-          {pedidoFisico || pedidoFisico == false && pedidoDigital == false ? <div className={styles.preco}>
-            <h2>Fisico</h2>
-            <span className={styles.numero}>
-              R$ {formatarPreco(livro.preco_fisico)}
-            </span>
-          </div> : <></>}
+          {pedidoFisico || (pedidoFisico == false && pedidoDigital == false) ? (
+            <div className={styles.preco}>
+              <h2>Fisico</h2>
+              <span className={styles.numero}>
+                R$ {formatarPreco(livro.preco_fisico)}
+              </span>
+            </div>
+          ) : (
+            <></>
+          )}
 
-          {pedidoDigital ? <div className={styles.preco}>
-            <h2>Digital</h2>
-            <span className={styles.numero}>
-              R$ {formatarPreco(livro.preco_digital)}
-            </span>
-          </div> : <></>}
+          {pedidoDigital ? (
+            <div className={styles.preco}>
+              <h2>Digital</h2>
+              <span className={styles.numero}>
+                R$ {formatarPreco(livro.preco_digital)}
+              </span>
+            </div>
+          ) : (
+            <></>
+          )}
 
           <form>
-
-            <input type="checkbox" value={"fisico"} onClick={() => {setPedidoFisico(!pedidoFisico)}}></input>fisico{""}
-            <input type="number" value={qtd} onChange={(e) => {setQtd(e.target.value)}}></input><br></br>
-            <input type="checkbox" value={"digital"} onClick={() => {setPedidoDigital(!pedidoDigital)}}></input>digital
-
+            <input
+              type="checkbox"
+              value={"fisico"}
+              onClick={() => {
+                setPedidoFisico(!pedidoFisico);
+              }}
+            ></input>
+            fisico{""}
+            <input
+              type="number"
+              value={qtd}
+              onChange={(e) => {
+                setQtd(e.target.value);
+              }}
+            ></input>
+            <br></br>
+            <input
+              type="checkbox"
+              value={"digital"}
+              onClick={() => {
+                setPedidoDigital(!pedidoDigital);
+              }}
+            ></input>
+            digital
             <button
-            type="button"
-            className={styles.btnCarrinho}
-            onClick={handleAdicionarCarrinho}
-          >
-            <FaShoppingCart />
-            Adicionar ao carrinho
-          </button>
-
-
+              type="button"
+              className={styles.btnCarrinho}
+              onClick={handleAdicionarCarrinho}
+            >
+              <FaShoppingCart />
+              Adicionar ao carrinho
+            </button>
           </form>
 
-          
           <div className={styles.divisor}></div>
 
           <div className={styles.beneficio}>
             <FaTruck />
 
-            <span>
-              Envio imediato via e-mail
-            </span>
-            <span>
-              Entrega para todo o Brasil
-            </span>
+            <span>Envio imediato via e-mail</span>
+            <span>Entrega para todo o Brasil</span>
           </div>
 
           <div className={styles.beneficio}>

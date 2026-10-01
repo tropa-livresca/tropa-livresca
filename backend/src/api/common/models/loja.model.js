@@ -416,7 +416,7 @@ export class LojaModel {
         `,
         )
         .eq("fk_vendas_id", vendaId)
-        .eq("formato", "digital");
+        .eq("fisico", false);
 
       if (error || !itens || itens.length === 0) return;
 
