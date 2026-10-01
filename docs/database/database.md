@@ -123,7 +123,6 @@ CREATE TABLE public.vendas (
     data timestamp with time zone NOT NULL,
     total numeric NOT NULL,
     metodo_pagamento bigint NOT NULL,
-    transacao_id text NOT NULL,
     status_pagamento text NOT NULL,
     fk_user_profile_id uuid NOT NULL,
     endereco_entrega jsonb,

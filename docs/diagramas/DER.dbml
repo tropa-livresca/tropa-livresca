@@ -71,7 +71,6 @@ Table vendas {
   data timestamptz [not null]
   total numeric [not null]
   metodo_pagamento bigint [not null]
-  transacao_id text [not null]
   status_pagamento text [not null]
   fk_user_profile_id uuid [not null]
   endereco_entrega jsonb

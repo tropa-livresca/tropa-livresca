@@ -89,7 +89,6 @@ describe("LojaService.realizarVenda", () => {
       status_entrega: "Pendente",
       endereco_entrega: expect.objectContaining({ cep: "17010-000" }),
     });
-    expect(dadosVenda.transacao_id).toEqual(expect.any(String));
     expect(dadosVenda.data).toEqual(expect.any(String));
   });
 

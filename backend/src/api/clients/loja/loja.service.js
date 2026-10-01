@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { LojaModel } from "../../common/models/loja.model.js";
 import { EnderecoModel } from "../../common/models/endereco.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
@@ -178,8 +177,6 @@ export class LojaService {
       endereco_entrega: enderecoEntrega,
       total,
       data: new Date().toISOString(),
-      // Pagamento é simulado, então o id da transação é gerado aqui.
-      transacao_id: randomUUID(),
       status_pagamento: "pendente",
       status_entrega: itensFisicos.length > 0 ? "Pendente" : "Não se aplica",
     };
