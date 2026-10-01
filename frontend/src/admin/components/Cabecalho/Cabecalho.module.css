@@ -7,23 +7,14 @@
   background: #67170c;
   color: #fffdf7;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   padding: 0 2rem;
   z-index: 1200;
 }
 
-.btnmenu {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: inherit;
-  display: flex;
-  align-items: center;
-}
 
 .titulo {
-  margin-left: 2rem;
   font-family: "Jacques Francois", serif;
   font-size: 1.5rem;
   font-weight: normal;
@@ -33,10 +24,12 @@
   background: transparent;
   border: none;
   font-size: 1rem;
+  color: #fffdf7;
   cursor: pointer;
   font-family: "Jacques Francois", serif;
 }
 
 .btnsair:hover {
+  transition: 0.3s;
   color: #ffbb33;
 }
