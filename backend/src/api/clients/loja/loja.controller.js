@@ -95,21 +95,17 @@ export class LojaController {
 
   static async calcularFretePrazo(req, res, next) {
     try {
-      const { cepDestino, itensVenda } = req.query;
+      const { itensVenda } = req.query.json();
+      const userId = req.user?.id;
 
-      console.log(cepDestino);
       console.log(itensVenda);
 
-      /*
-
       const frete = await LojaService.calcularFretePrazo(
-        cepDestino,
+        userId,
         itensVenda,
       );
 
-      */
-
-      return res.status(201).json({ teste:1 });
+      return res.status(201).json({ frete });
     } catch (err) {
       next(err);
     }

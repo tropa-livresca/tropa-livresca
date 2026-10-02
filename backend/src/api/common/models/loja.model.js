@@ -305,8 +305,27 @@ export class LojaModel {
     };
   }
 
-  static async calcularFretePrazo(cepDestino, produtos) {
-    const cepLimpo = cepDestino.replace(/\D/g, "");
+  static async calcularFretePrazo(userId, produtos) {
+
+    const {data, error} = supabase
+    .from("endereco")
+    .select("cep")
+    .eq("fk_user_profile_id", userId)
+    .eq("principal", true)
+    .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (!data) {
+      const erro = new Error("CEP não encontrada.");
+      erro.statusCode = 404;
+      throw erro;
+    }
+
+    const cepLimpo = data.cep.replace(/\D/g, "");
 
     if (cepLimpo.length !== 8) {
       const erroCep = new Error(

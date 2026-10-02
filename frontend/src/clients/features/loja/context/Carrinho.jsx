@@ -71,7 +71,7 @@ export const CarrinhoProvider = ({ children }) => {
     );
   };
 
-  const calcularFrete = async (cep , produtos) => {
+  const calcularFrete = async (produtos) => {
     setCarregando(true);
     try{
 
@@ -79,7 +79,7 @@ export const CarrinhoProvider = ({ children }) => {
       const queryProdutos = produtos.reduce((inicio, produto) => {"{"+"tipo:"+produto.tipo+","+"quantidade:"+produto.quantidade+"},"})
 
 
-      const response = await apiFetch(`/api/v1/clients/loja/frete?cepDestino=${cep}&itensVenda=[${queryProdutos}]`)
+      const response = await apiFetch(`/api/v1/clients/loja/frete?itensVenda=[${queryProdutos}]`)
 
       if(!response.ok){
         console.error("Erro ao calcular frete:", response.error);

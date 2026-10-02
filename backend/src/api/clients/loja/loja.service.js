@@ -219,13 +219,13 @@ export class LojaService {
     return numeroVendas;
   }
 
-  static async calcularFretePrazo(cepDestino, itensVenda) {
-    if (!cepDestino) error(400, "Cep de envio não informado.");
+  static async calcularFretePrazo(userId, itensVenda) {
+    if (!userId) error(400, "id do usuario de envio não informado.");
 
     if (!itensVenda)
       error(400, "Itens da Venda não informados para o cálculo do frete.");
 
-    const frete = await LojaModel.calcularFretePrazo(cepDestino, itensVenda);
+    const frete = await LojaModel.calcularFretePrazo(userId, itensVenda);
 
     if (frete.error) throw frete.error;
 
