@@ -44,6 +44,7 @@ export class LojaController {
   static async consultarVenda(req, res, next) {
     try {
       const vendaId = req.params.id;
+      const modoDeEntrega = req.params.mod;
 
       const venda = await LojaService.consultarVenda(vendaId, req.user?.id);
 
@@ -55,15 +56,19 @@ export class LojaController {
 
   static async realizarVenda(req, res, next) {
     try {
-      const { itens, enderecoId } = req.body;
+      const { itens, enderecoId, modoDeEntrega } = req.body;
+
+      console.log(req.user.id);
 
       const venda = await LojaService.realizarVenda(req.user?.id, {
         itens,
         enderecoId,
+        modoDeEntrega
       });
 
       return res.status(201).json({ venda });
     } catch (err) {
+      console.log(req.user.id);
       next(err);
     }
   }
@@ -94,15 +99,18 @@ export class LojaController {
   }
 
   static async calcularFretePrazo(req, res, next) {
+    
     try {
-      const { itensVenda } = req.query.json();
-      const userId = req.user?.id;
 
-      console.log(itensVenda);
+      const { itensVenda } = req.query;
+      const produtos = JSON.parse(itensVenda);
+      
+      const userId = req?.user.id;
+
 
       const frete = await LojaService.calcularFretePrazo(
         userId,
-        itensVenda,
+        produtos,
       );
 
       return res.status(201).json({ frete });

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import styles from "./Pagamento.module.css";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
@@ -13,16 +13,19 @@ const formatarPreco = (valor) =>
     .replace(".", ",")}`;
 
 export default function Pagamento() {
+  const {frete, mod} = useParams();
   const navigate = useNavigate();
-  const { itens, valorSubtotal, limparCarrinho } = useCarrinho();
+  const { itens, valorSubtotal, limparCarrinho} = useCarrinho();
   const { enderecos = [], BuscarEnderecos } = useEndereco();
-  const { criarPedido, pagarPedido, carregando, erro } = useCompra();
+  const { criarPedido, pagarPedido, carregando, erro, venda } = useCompra();
 
   const [enderecoEscolhido, setEnderecoId] = useState(null);
   const [pedido, setPedido] = useState(null);
   const [formaPagamento, setFormaPagamento] = useState("");
 
   const temFisico = itens.some((item) => item.tipo === "fisico");
+
+  console.log(console.log(mod));
 
   useEffect(() => {
     if (temFisico) BuscarEnderecos();
@@ -33,7 +36,8 @@ export default function Pagamento() {
 
   const handleConfirmar = async () => {
     if (temFisico && !enderecoId) return;
-    const venda = await criarPedido(itens, temFisico ? enderecoId : null);
+    const venda = await criarPedido(itens, temFisico ? enderecoId : null, temFisico ? mod : null);
+    console.log(venda);
     if (venda) setPedido(venda);
   };
 
@@ -102,6 +106,7 @@ export default function Pagamento() {
                 </div>
               </div>
               <span className={styles.numero}>{formatarPreco(item.preco)}</span>
+              {temFisico ? <span className={styles.numero}>{formatarPreco(frete)}</span> : <></>} 
               <span className={styles.quantidade}>{item.quantidade}</span>
               <span className={styles.numero}>
                 {formatarPreco(
@@ -348,13 +353,8 @@ export default function Pagamento() {
                 <div>
                   <span>Frete</span>
                   <strong className={styles.numero}>
-                    {pedido
-                      ? pedido.frete > 0
-                        ? formatarPreco(pedido.frete)
-                        : "Grátis"
-                      : temFisico
-                        ? "A calcular"
-                        : "Grátis"}
+                    {pedido && temFisico ? pedido.frete > 0 ? formatarPreco(pedido.frete) : "Grátis"  : temFisico  ? "A calcular"  : "compra apenas digital"
+                      }
                   </strong>
                 </div>
                 <div className={styles.total}>

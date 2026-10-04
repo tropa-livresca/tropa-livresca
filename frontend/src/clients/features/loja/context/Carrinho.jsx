@@ -4,7 +4,7 @@ import { apiFetch } from "../../../../common/services/api";
 
 export const CarrinhoProvider = ({ children }) => {
   const [carregando, setCarregando] = useState(false);
-  const [frete, setFrete] = useState(0);
+  const [frete, setFrete] = useState(null);
 
   const [itens, setItens] = useState(() => {
     try {
@@ -73,22 +73,28 @@ export const CarrinhoProvider = ({ children }) => {
 
   const calcularFrete = async (produtos) => {
     setCarregando(true);
+    console.log(produtos);
     try{
 
-      const inicio = "";
-      const queryProdutos = produtos.reduce((inicio, produto) => {"{"+"tipo:"+produto.tipo+","+"quantidade:"+produto.quantidade+"},"})
+       let produto = "";
+      let queryProdutos = produtos.map(produto => {return {tipo:produto.tipo, quantidade:produto.quantidade}})
+      queryProdutos = JSON.stringify(queryProdutos);
 
+      console.log(queryProdutos);
+      console.log(produtos);
 
-      const response = await apiFetch(`/api/v1/clients/loja/frete?itensVenda=[${queryProdutos}]`)
+      const response = await apiFetch(`/api/v1/clients/loja/frete?itensVenda=${queryProdutos}`)
 
       if(!response.ok){
         console.error("Erro ao calcular frete:", response.error);
         return;
       }
 
-      const res = response.json();
+      const res = await response.json();
 
-      setFrete(res.preco);
+      console.log(res.frete[1].preco);
+
+      setFrete({precoSedex: res.frete[1].preco, precoPac:res.frete[0].preco});
 
     }catch(err){
        console.error("Erro ao calcular frete:", err);
@@ -126,6 +132,7 @@ export const CarrinhoProvider = ({ children }) => {
         valorFrete,
         valorTotal,
         frete,
+        setFrete,
       }}
     >
       {children}
