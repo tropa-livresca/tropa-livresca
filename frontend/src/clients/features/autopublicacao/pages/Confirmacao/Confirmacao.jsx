@@ -1,4 +1,5 @@
-﻿﻿import { useEffect, useMemo } from "react";
+﻿﻿
+import { useEffect, useMemo } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
@@ -17,6 +18,8 @@ export default function Confirmacao({
     if (Array.isArray(dado) && dado.length > 0) return dado[0];
     return null;
   };
+
+  console.log(dados);
 
   const previews = useMemo(() => {
     const urlsCriadas = [];

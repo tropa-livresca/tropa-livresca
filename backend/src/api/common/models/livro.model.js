@@ -1,3 +1,4 @@
+
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
@@ -163,3 +164,7 @@ export class LivroModel {
     return data;
   }
 }
+
+
+
+

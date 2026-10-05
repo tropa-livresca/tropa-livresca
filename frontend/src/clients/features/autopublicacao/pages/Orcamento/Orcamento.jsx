@@ -1,4 +1,6 @@
-﻿import Input from "../../../../../common/components/Input/Input";
+﻿
+
+import Input from "../../../../../common/components/Input/Input";
 import styles from "./Orcamento.module.css";
 import { Link } from "react-router-dom";
 
@@ -12,6 +14,8 @@ export default function Orcamento({
   const numeroPaginas = Number(orcamento.numeroPaginas) || 0;
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
   const custoMinimoDigitalCentavos = 599;
+
+  console.log(dados);
 
   const formatarMoeda = (centavos) => {
     const stringCentavos = String(centavos).padStart(3, "0");
@@ -47,10 +51,7 @@ export default function Orcamento({
     const valorValidado = valor.replace(/[^0-9.,]/g, "");
     onChange({
       ...dados,
-      orcamento: {
-        ...orcamento,
         [chave]: valorValidado,
-      },
     });
   };
 
@@ -65,14 +66,12 @@ export default function Orcamento({
     if (isNaN(valorNumerico) || valorNumerico < custoMinimo) {
       onChange({
         ...dados,
-        orcamento: {
-          ...orcamento,
           [chave]: formatarMoeda(
             chave === "valorLivroFisico"
               ? custoMinimoFisicoCentavos
               : custoMinimoDigitalCentavos,
           ),
-        },
+        
       });
     }
   };
@@ -90,19 +89,6 @@ export default function Orcamento({
     <main>
       <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
         <h1 className={styles.titulo}>Orçamento</h1>
-
-        <div className={styles.card}>
-          <legend>Especificações do Livro</legend>
-          <label>Número de Páginas: </label>
-          <Input
-            placeholder="Inserir número de páginas"
-            type="number"
-            className={styles.inputmodificado}
-            min={1}
-            value={orcamento.numeroPaginas || ""}
-            readOnly
-          />
-        </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
@@ -190,3 +176,4 @@ export default function Orcamento({
     </main>
   );
 }
+
