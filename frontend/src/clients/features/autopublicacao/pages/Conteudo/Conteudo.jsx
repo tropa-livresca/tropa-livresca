@@ -1,4 +1,5 @@
-﻿import { useEffect, useMemo } from "react";
+﻿
+import { useEffect, useMemo } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -17,31 +18,32 @@ export default function Conteudo({
     const arquivo = e.target.files?.[0];
     if (arquivo) {
       if (chave === "manuscrito" && arquivo.type === "application/pdf") {
+        console.log(chave);
         try {
           const buffer = await arquivo.arrayBuffer();
           const loadingTask = pdfjsLib.getDocument({ data: buffer });
           const pdfDocument = await loadingTask.promise;
           const totalPaginas = pdfDocument.numPages;
 
+          console.log(dados);
+
           onChange({
-            ...dados,
-            conteudo: { ...(dados.conteudo || {}), [chave]: arquivo },
-            orcamento: {
-              ...(dados.orcamento || {}),
-              numeroPaginas: String(totalPaginas),
-            },
+            conteudo:{...dados,
+            [chave]: arquivo ,},
+            numeroPaginas: String(totalPaginas),
+
           });
         } catch (erro) {
           console.error("Erro ao ler as páginas do PDF:", erro);
           onChange({
             ...dados,
-            conteudo: { ...(dados.conteudo || {}), [chave]: arquivo },
+            [chave]: arquivo ,
           });
         }
       } else {
         onChange({
           ...dados,
-          conteudo: { ...(dados.conteudo || {}), [chave]: arquivo },
+          [chave]: arquivo ,
         });
       }
     }
@@ -52,10 +54,8 @@ export default function Conteudo({
     if (arquivo) {
       onChange({
         ...dados,
-        conteudo: {
-          ...(dados.conteudo || {}),
-          capa: { ...(dados.conteudo?.capa || {}), [parte]: arquivo },
-        },
+          capa: { ...dados.capa, [parte]: arquivo },
+        
       });
     }
   };
@@ -75,17 +75,17 @@ export default function Conteudo({
     };
 
     return {
-      frente: obterPreview(dados.conteudo?.capa?.frente),
-      verso: obterPreview(dados.conteudo?.capa?.verso),
-      orelhas: obterPreview(dados.conteudo?.capa?.orelhas),
-      manuscrito: obterPreview(dados.conteudo?.manuscrito),
+      frente: obterPreview(dados?.capa?.frente),
+      verso: obterPreview(dados?.capa?.verso),
+      orelhas: obterPreview(dados?.capa?.orelhas),
+      manuscrito: obterPreview(dados?.manuscrito),
       _urlsCriadas: urlsCriadas,
     };
   }, [
-    dados.conteudo?.capa?.frente,
-    dados.conteudo?.capa?.verso,
-    dados.conteudo?.capa?.orelhas,
-    dados.conteudo?.manuscrito,
+    dados?.capa?.frente,
+    dados?.capa?.verso,
+    dados?.capa?.orelhas,
+    dados?.manuscrito,
   ]);
 
   useEffect(() => {
@@ -246,3 +246,6 @@ export default function Conteudo({
     </main>
   );
 }
+
+
+

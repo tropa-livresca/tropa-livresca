@@ -95,9 +95,7 @@ export class LojaService {
     return venda;
   }
 
-  static async realizarVenda(usuarioId, { itens, enderecoId, modoDeEntrega }) {
-    console.log("usuarioId");
-    console.log(usuarioId);
+  static async realizarVenda(usuarioId, { itens, enderecoId }) {
     if (!usuarioId) errorUsuarioId();
 
     if (!Array.isArray(itens) || itens.length === 0)
@@ -151,7 +149,6 @@ export class LojaService {
         usuarioId,
       );
 
-
       enderecoEntrega = {
         rua: endereco.rua,
         num: endereco.num,
@@ -164,21 +161,15 @@ export class LojaService {
       };
 
       const opcoesFrete = await LojaModel.calcularFretePrazo(
-        usuarioId,
+        endereco.cep,
         itensFisicos.map((item) => ({ tipo: "fisico", quantidade: item.qtd })),
       );
       // Usa a opção mais barata (PAC).
-      if(modoDeEntrega == "pac"){
-        frete = opcoesFrete[0].preco;
-      }else{
-        frete = opcoesFrete[1].preco;
-      }
+      frete = Math.min(...opcoesFrete.map((opcao) => opcao.preco));
     }
 
     const totalItens = itensVenda.reduce((acc, item) => acc + item.subtotal, 0);
     const total = arredondar(totalItens + frete);
-
-
 
     const dadosVenda = {
       fk_user_profile_id: usuarioId,
@@ -228,13 +219,13 @@ export class LojaService {
     return numeroVendas;
   }
 
-  static async calcularFretePrazo(userId, produtos) {
+  static async calcularFretePrazo(userId, itensVenda) {
     if (!userId) error(400, "id do usuario de envio não informado.");
 
-    if (!produtos)
+    if (!itensVenda)
       error(400, "Itens da Venda não informados para o cálculo do frete.");
 
-    const frete = await LojaModel.calcularFretePrazo(userId, produtos);
+    const frete = await LojaModel.calcularFretePrazo(userId, itensVenda);
 
     if (frete.error) throw frete.error;
 
@@ -252,3 +243,5 @@ export class LojaService {
     return LojaModel.mudarStatusPagamento(vendaId, usuario.email);
   }
 }
+
+
