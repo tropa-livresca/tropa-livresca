@@ -1,16 +1,8 @@
-.container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  max-width: 100%;
-    padding: 5rem 6%;
-  box-sizing: border-box;
-}
+
 
 .popup {
   position: relative;
-  width: 50%;
+  width: 100%;
   padding: 2.5rem 2rem;
   background: #fffdf7;
   border-radius: 1.5rem;
@@ -33,7 +25,6 @@
 }
 
 .popup h3 {
-  margin: 0 0 0.8rem;
   color: #67170c;
   font-size: 1.8rem;
 }
@@ -41,8 +32,10 @@
 .popup p {
   margin: 0 0 1rem;
   color: #67170c;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   line-height: 1.5;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
 }
 
 .numero {
@@ -51,16 +44,15 @@
 
 .btn{
    border: none;
-  padding: 0.8rem;
   border-radius: 0.5rem;
-  background-color: #67170c;
-  color: #ede6b3;
+  background-color: transparent;
+  color:#67170c;
+  font-weight: 300;
   cursor: pointer;
   transition: 0.3s;
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 .btn:hover{
-   background-color: #ffbb33;
-  transition: 0.3s;
+   text-decoration: underline;
 }

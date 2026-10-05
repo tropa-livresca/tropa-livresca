@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import { FaCheckCircle } from "react-icons/fa";
-
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import base from "../Compra/Compra.module.css";
 import styles from "./ResumoCompra.module.css";
 import confirmadoStyles from "../Confirmado/Confirmado.module.css";
@@ -60,10 +60,19 @@ export default function ResumoCompra() {
 
   return (
     <main>
-      <div className={base.topo}>
-        <h1 className={base.titulo}>Pedido #{pedido.id}</h1>
-        <p>Feito em {formatarData(pedido.data)}</p>
-      </div>
+      <DescricaoTela
+        titulo={
+          <>
+            Pedido #<span className={styles.numero}>{pedido.id}</span>
+          </>
+        }
+        descricao={
+          <>
+            Feito em{" "}
+            <span className={styles.numero}>{formatarData(pedido.data)}</span>
+          </>
+        }
+      />
 
       <div className={base.container}>
         <div className={base.conteudo}>
@@ -104,6 +113,55 @@ export default function ResumoCompra() {
               </section>
             )}
 
+            {endereco && (
+              <section className={base.cartao}>
+                <h2>Entrega</h2>
+
+                <p className={base.aviso}>
+                  {endereco.rua}, {endereco.num}
+                  {endereco.complemento ? ` - ${endereco.complemento}` : ""}
+                  <br />
+                  {endereco.bairro} · {endereco.cidade}/{endereco.estado} · CEP{" "}
+                  {endereco.cep}
+                </p>
+
+                <p className={styles.status}>
+                  Status da entrega: <strong>{pedido.status_entrega}</strong>
+                </p>
+              </section>
+            )}
+          </div>
+
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+          >
+            <aside className={base.resumo}>
+              <h2>Resumo</h2>
+
+              <div className={base.linha}>
+                <span>Livros</span>
+                <strong>{formatarPreco(totalItens)}</strong>
+              </div>
+
+              <div className={base.linha}>
+                <span>Frete</span>
+                <strong>{frete > 0 ? formatarPreco(frete) : "Grátis"}</strong>
+              </div>
+
+              <div className={`${base.linha} ${base.total}`}>
+                <span>Total</span>
+                <strong>{formatarPreco(pedido.total)}</strong>
+              </div>
+
+              <p className={styles.status}>
+                Pagamento: <strong>{pago ? "Pago" : "Pendente"}</strong>
+              </p>
+
+              <Link to="/pedidos" className={base.voltar}>
+                <FiArrowLeft /> Ver meus pedidos
+              </Link>
+            </aside>
+
             <section className={base.cartao}>
               <h2>Itens</h2>
 
@@ -124,52 +182,7 @@ export default function ResumoCompra() {
                 ))}
               </ul>
             </section>
-
-            {endereco && (
-              <section className={base.cartao}>
-                <h2>Entrega</h2>
-
-                <p className={base.aviso}>
-                  {endereco.rua}, {endereco.num}
-                  {endereco.complemento ? ` - ${endereco.complemento}` : ""}
-                  <br />
-                  {endereco.bairro} · {endereco.cidade}/{endereco.estado} · CEP{" "}
-                  {endereco.cep}
-                </p>
-
-                <p className={styles.status}>
-                  Status da entrega: <strong>{pedido.status_entrega}</strong>
-                </p>
-              </section>
-            )}
           </div>
-
-          <aside className={base.resumo}>
-            <h2>Resumo</h2>
-
-            <div className={base.linha}>
-              <span>Livros</span>
-              <strong>{formatarPreco(totalItens)}</strong>
-            </div>
-
-            <div className={base.linha}>
-              <span>Frete</span>
-              <strong>{frete > 0 ? formatarPreco(frete) : "Grátis"}</strong>
-            </div>
-
-            <div className={`${base.linha} ${base.total}`}>
-              <span>Total</span>
-              <strong>{formatarPreco(pedido.total)}</strong>
-            </div>
-
-            <p className={styles.status}>
-              Pagamento: <strong>{pago ? "Pago" : "Pendente"}</strong>
-            </p>
-
-            <Link to="/pedidos" className={base.voltar}>
-              <FiArrowLeft /> Ver meus pedidos
-            </Link>
-          </aside>
         </div>
       </div>
     </main>

@@ -84,7 +84,7 @@ export default function Endereco() {
 
       <div className={styles.conteudoLayout}>
         <div className={styles.colunaFormulario}>
-          <h2 className={styles.subtitulo}>{idSelecionado ? "Editar Endereço" : "Novo Endereço"}</h2>
+          <h2 className={styles.subtitulo2}>{idSelecionado ? "Editar Endereço" : "Novo Endereço"}</h2>
 
           <form onSubmit={executarSalvar} className={styles.formularioGrid}>
             <div className={styles.formGrupo}>

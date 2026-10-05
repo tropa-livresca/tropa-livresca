@@ -96,7 +96,7 @@
   color: #67170c;
   font-size: 2rem;
   font-weight: 600;
-  padding-left: 2%;
+  padding-left:2%;
 }
 
 .subtitulo::after {
@@ -105,6 +105,23 @@
   width: 2.5rem;
   height: 1.8px;
   margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.subtitulo2 {
+  color: #67170c;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.subtitulo2::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
   background: #d4b46a;
   border-radius: 999px;
 }
@@ -159,7 +176,7 @@
   border-radius: 0.7em;
   display: grid;
   justify-self: center;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   color: #ede6b3;
   font-size: 1rem;
 }
@@ -180,7 +197,7 @@
   border-radius: 0.7em;
   display: grid;
   justify-self: center;
-  margin-top: 1.5rem;
+  margin-top: 0.5rem;
   font-size: 1rem;
 }
 
@@ -250,8 +267,9 @@
 .tabelaVazia {
   padding: 1rem;
   text-align: center;
-  color: #94a3b8;
+  color: var(--cor-texto-muted);
   font-style: italic;
+  font-size:0.95rem;
 }
 
 .acoesTabela {

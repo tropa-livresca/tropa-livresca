@@ -19,6 +19,10 @@
   font-family: "Jacques Francois", serif;
 }
 
+.numero{
+  font-family:none;
+}
+
 .titulo::after {
   content: "";
   display: block;

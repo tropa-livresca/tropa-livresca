@@ -33,7 +33,7 @@
   align-items: center;
   padding: 1rem 1.5rem;
   color: var(--cor-texto-muted);
-  font-size: 0.85rem;
+  font-size: 1rem;
   font-weight: 600;
 }
 
@@ -66,18 +66,32 @@
 
 .numero{
   font-family: none;
+  font-size: 1.2rem;
+  font-weight:600;
+}
+
+.numero2{
+  font-family: none;
 }
 
 .capa {
-  width: 4.5rem;
-  height: 5.8rem;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.45rem;
-  font-size: 0.75rem;
-  border: 1px solid #e3d5ad;
+     width: 6.5rem;
+    height: 8.5rem;
+    flex-shrink: 0;
+    display: block;
+    overflow: hidden;
+}
+
+.capa img{
+  width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.capa:hover img {
+  transform: scale(1.08);
 }
 
 .infoProduto {
@@ -155,12 +169,12 @@
 .tituloCard strong {
   color: #67170c;
   font-family: "Jacques Francois", serif;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
 }
 
 .tituloCard span {
   color: var(--cor-texto-muted);
-  font-size: 0.85rem;
+  font-size: 1.02rem;
   line-height: 1.4;
 }
 
@@ -172,7 +186,7 @@
   color: #ede6b3;
   padding: 0.8rem;
   border-radius: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   cursor: pointer;
    text-decoration: none;
    margin-top: 0;
@@ -211,7 +225,7 @@
   width: 1rem;
   height: 1rem;
   margin-top: 0.2rem;
-  accent-color: #67170c;
+  accent-color: #67170c !important;
   flex-shrink: 0;
   cursor: pointer;
 }
@@ -222,15 +236,36 @@
   gap: 0.2rem;
 }
 
+.voltar{
+  background-color: #67170c;
+  color:#ede6b3;
+  padding:0.5rem;
+  border-radius:0.5rem;
+      font-size: 0.95rem;
+      width:100%;
+}
+
+.voltar:hover{
+   background-color:#ffbb33;
+   transition:0.3s;
+}
+
+.dvd{
+    display: flex;
+    justify-content: center; 
+    align-items: center;    
+    height:2.3rem;
+}
+
 .dadosEndereco strong {
   margin-bottom: 0.15rem;
   color: #67170c;
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .dadosEndereco span {
   color: var(--cor-texto-muted);
-  font-size: 0.83rem;
+  font-size: 0.9rem;
   line-height: 1.35;
 }
 
@@ -238,6 +273,23 @@
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+}
+
+.aviso{
+  color:var(--cor-texto-muted);
+  font-size:0.95rem;
+  margin-bottom:0;
+  text-align:center;
+      font-style: italic;
+}
+
+.aviso a{
+  color: #67170c;
+  font-weight:bold;
+}
+
+.aviso a:hover{
+  text-decoration:underline;
 }
 
 .frete {
@@ -331,12 +383,12 @@
 
 .formaPagamento strong {
   color: #67170c;
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .formaPagamento span {
   color: var(--cor-texto-muted);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .formPagamento {
@@ -363,7 +415,7 @@
 
 .formTitulo span {
   color: var(--cor-texto-muted);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .formPagamento > label {
@@ -371,7 +423,7 @@
   flex-direction: column;
   gap: 0.45rem;
   color: var(--cor-texto-muted);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
@@ -427,12 +479,12 @@
 
 .pagamentoInfo strong {
   color: #67170c;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .pagamentoInfo span {
   color: var(--cor-texto-muted);
-  font-size: 0.83rem;
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 
@@ -489,7 +541,7 @@
 
 .botaoFinalizar {
   width: 100%;
-  height: 3.2rem;
+  height: 3rem;
   border: 0;
   border-radius: 0.7rem;
   background: #67170c;
@@ -506,9 +558,10 @@
 .seguro {
   display: block;
   margin-top: 0.9rem;
+  margin-bottom: 0.9rem;
   text-align: center;
   color: var(--cor-texto-muted);
-  font-size: 0.75rem;
+  font-size: 0.9rem;
 }
 
 .email{

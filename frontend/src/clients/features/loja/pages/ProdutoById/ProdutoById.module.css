@@ -70,7 +70,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.5rem;
   align-items: center;
 }
 
@@ -133,7 +133,7 @@
 .autorCard {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1.2rem;
   width: 100%;
   box-sizing: border-box;
   border-radius: 1.5rem;
@@ -166,27 +166,26 @@
   display: block;
   margin-bottom: 0.2rem;
   color: var(--cor-texto-muted);
-  font-size: 0.8rem;
+  font-size: 0.9rem;
 }
 
 .autorDados h3 {
   margin: 0 0 0.4rem;
   color: #67170c;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
 }
 
 .btnAutor {
-  color: #ede6b3;
+  color: #67170c;
   font-size: 0.85rem;
-  background-color: #67170c;
-  padding: 0.3rem;
   border-radius: 0.3rem;
   text-decoration: none;
+  font-weight: 400;
+  font-size: 1rem;
 }
 
 .btnAutor:hover {
-  background-color: #ffbb33;
-  transition: 0.3s;
+  text-decoration: underline;
 }
 
 .linha {
@@ -220,13 +219,13 @@
   display: block;
   margin-bottom: 0.2rem;
   color: #67170c;
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 .informacao p {
   margin: 0;
   color: var(--cor-texto-muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   line-height: 1.4;
 }
 
@@ -283,8 +282,9 @@
   padding: 0.8rem;
   border: 1px solid var(--cor-texto-muted);
   background: #fffdf7;
-  color: #4f4638;
+  color: #67170c;
   border-radius: 10px;
+  font-size: 1.1rem;
   cursor: pointer;
   text-align: left;
 }
@@ -385,7 +385,7 @@ text-align: center;
   gap: 0.9rem;
   margin-bottom: 1.1rem;
   color: #51433e;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .beneficio:last-child {

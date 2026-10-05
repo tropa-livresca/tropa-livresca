@@ -29,12 +29,15 @@
 
 .container {
   width: 100%;
-  padding: 4rem 6%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
 }
 
 .conteudo {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 22rem;
+  grid-template-columns: 1fr 1fr;
   gap: 2rem;
   align-items: start;
 }
@@ -60,6 +63,8 @@
   color:#67170c;
   font-size: 1.2rem;
 }
+
+
 
 .cartao h2,
 .resumo h2 {

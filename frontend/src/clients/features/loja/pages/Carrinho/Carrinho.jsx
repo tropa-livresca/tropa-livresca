@@ -159,7 +159,7 @@ export default function Carrinho() {
 
             <div className={styles.cep}>
               <span className={styles.sub}>CEP</span>
-              <input type="text" placeholder="CEP" />
+              <input type="text" className={styles.numero} placeholder="CEP" />
             </div>
 
             <div className={styles.Total}>

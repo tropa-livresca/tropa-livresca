@@ -88,7 +88,7 @@ export default function Pagamento() {
               <div className={styles.produto}>
                 <div className={styles.capa}>
                   {item.capa ? (
-                    <img src={item.capa} alt={`Capa de ${item.titulo}`} />
+                    <img src={item.capa}  alt={`Capa de ${item.titulo}`} />
                   ) : (
                     <span>Livro</span>
                   )}
@@ -166,7 +166,7 @@ export default function Pagamento() {
                               : "Endereço"}
                           </strong>
                           <span>
-                            {endereco.rua}, {endereco.num}
+                            {endereco.rua}, <span className={styles.numero2}>{endereco.num}</span>
                             {endereco.complemento
                               ? ` - ${endereco.complemento}`
                               : ""}
@@ -175,7 +175,7 @@ export default function Pagamento() {
                           <span>
                             {endereco.cidade} - {endereco.estado}
                           </span>
-                          <span>CEP: {endereco.cep}</span>
+                          <span>CEP:<span className={styles.numero2}> {endereco.cep}</span></span>
                         </div>
                       </label>
                     ))}
@@ -223,7 +223,7 @@ export default function Pagamento() {
                   {
                     value: "boleto",
                     titulo: "Boleto",
-                    descricao: "Até 3 dias úteis",
+                    descricao: <span className={styles.numero2}>Até 3 dias úteis</span>,
                   },
                 ].map((forma) => (
                   <label
@@ -259,7 +259,7 @@ export default function Pagamento() {
                     Número do cartão
                     <input
                       type="text"
-                      className={styles.numero}
+                      className={styles.numero2}
                       placeholder="0000 0000 0000 0000"
                       autoComplete="cc-number"
                     />
@@ -288,7 +288,7 @@ export default function Pagamento() {
                       CVV
                       <input
                         type="text"
-                        className={styles.numero}
+                        className={styles.numero2}
                         placeholder="123"
                         autoComplete="cc-csc"
                       />
@@ -396,9 +396,11 @@ export default function Pagamento() {
               </span>
               {erro && <p className={styles.erro}>{erro}</p>}
               {!pedido && (
+                <div className={styles.dvd}>
                 <Link to="/carrinho" className={styles.voltar}>
                   <FiArrowLeft /> Voltar ao carrinho
                 </Link>
+                </div>
               )}
             </section>
           </div>
