@@ -172,6 +172,9 @@ export class LojaModel {
   }
 
   static async realizarVenda(dadosVenda, itensVenda) {
+
+    console.log(dadosVenda);
+
     const { data, error } = await supabaseAdmin
       .from("vendas")
       .insert(dadosVenda)
@@ -305,8 +308,32 @@ export class LojaModel {
     };
   }
 
-  static async calcularFretePrazo(cepDestino, produtos) {
-    const cepLimpo = cepDestino.replace(/\D/g, "");
+  static async calcularFretePrazo(userId, produtos) {
+
+    console.log(userId);
+    console.log(produtos);
+
+    const {data, error} = await supabase
+    .from("enderecos")
+    .select("cep")
+    .eq("fk_user_profile_id", userId)
+    .eq("principal", true)
+    .maybeSingle();
+
+    console.log(data);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (!data) {
+      const erro = new Error("CEP não encontrada.");
+      erro.statusCode = 404;
+      throw erro;
+    }
+
+    const cepLimpo = data.cep.replace(/\D/g, "");
 
     if (cepLimpo.length !== 8) {
       const erroCep = new Error(
@@ -387,6 +414,10 @@ export class LojaModel {
     }
 
     const taxaPeso = pesoTotalKg * 3.5;
+
+    console.log("preco");
+    console.log(precoBasePac);
+    console.log(precoBaseSedex);
 
     return [
       {

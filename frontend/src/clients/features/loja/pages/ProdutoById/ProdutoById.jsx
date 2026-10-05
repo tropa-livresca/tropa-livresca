@@ -56,10 +56,10 @@ export default function ProdutoById() {
   }, [BuscarEnderecoPrincipal]);
 
   useEffect(() => {
-    if (CEP != null) {
-      calcularFrete(CEP, [{ tipo: "fisico", qtd: qtd }]);
-    }
-  }, [CEP, qtd]);
+    
+      calcularFrete([{ tipo: "fisico", qtd: qtd }]);
+    
+  }, [qtd]);
 
   console.log(frete);
 

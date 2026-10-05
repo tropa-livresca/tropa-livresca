@@ -13,7 +13,7 @@ const formatarPreco = (valor) =>
 
 export default function Compra() {
   const navigate = useNavigate();
-  const { itens, valorSubtotal, limparCarrinho } = useCarrinho();
+  const { itens, valorSubtotal, limparCarrinho} = useCarrinho();
   const { enderecos = [], BuscarEnderecos } = useEndereco();
   const { criarPedido, pagarPedido, carregando, erro } = useCompra();
 
@@ -25,6 +25,7 @@ export default function Compra() {
   useEffect(() => {
     if (temFisico) BuscarEnderecos();
   }, [temFisico, BuscarEnderecos]);
+
 
   // Sem escolha do usuário, usa o endereço principal.
   const enderecoPadrao = enderecos.find((e) => e.principal) || enderecos[0];

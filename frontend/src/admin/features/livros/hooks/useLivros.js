@@ -119,6 +119,7 @@ export const useLivros = () => {
 
   // Tira o livro da loja (ativo = false) ou o devolve; retorna o erro ou null.
   const alterarAtivo = useCallback(async (id, ativo) => {
+    console.log("a");
     const res = await apiFetch(`/api/v1/admin/livros/${id}/ativo`, {
       method: "PATCH",
       body: JSON.stringify({ ativo }),
@@ -127,7 +128,8 @@ export const useLivros = () => {
 
     if (!res.ok) return json.error || "Não foi possível alterar o livro.";
 
-    setLivro((atual) => (atual ? { ...atual, ativo: json.livro.ativo } : atual));
+    console.log(json);
+
     return null;
   }, []);
 
