@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import styles from "./GerenciaLivros.module.css";
+import { FaBookOpen } from 'react-icons/fa'; 
 
 export default function GerenciaLivros() {
   const { livros, carregando, count, buscarLivros, alterarAtivo } = useLivros();
@@ -148,8 +149,7 @@ export default function GerenciaLivros() {
             <thead>
               <tr>
                 <th>Capa</th>
-                <th>Título</th>
-                <th>Autor</th>
+                <th>Título e Autor</th>
                 <th>Data de Publicação</th>
                 <th>Estado</th>
                 <th>Revisão</th>
@@ -180,7 +180,7 @@ export default function GerenciaLivros() {
                             className={styles.capaMini}
                           />
                         ) : (
-                          <div className={styles.semCapaMini}>📖</div>
+                          <div className={styles.semCapaMini}><FaBookOpen color="#67170c"/></div>
                         )}
                       </div>
                     </td>
@@ -194,12 +194,7 @@ export default function GerenciaLivros() {
                         </span>
                       </div>
                     </td>
-                    <td>
-                      <Link to={`admin/autores/${livro.fk_user_profile_id}`}>
-                        {livro.autor_nome} {livro.autor_sobrenome}
-                      </Link>
-                    </td>
-                    <td>{livro.data_de_publicacao}</td>
+                    <td className={styles.numero}>{livro.data_de_publicacao}</td>
                     <td>
                       {livro.estado !== "publicado"  ? (
                         <span>Nâo publicado</span>
@@ -230,13 +225,13 @@ export default function GerenciaLivros() {
                           to={`/admin/livros/detalhes/${livro.id}`}
                           className={`${styles.btnAcao} ${styles.btnVisualizar}`}
                         >
-                          Ver Livro {livro.id}
+                          Ver Livro <span className={styles.numero2}>{livro.id}</span>
                         </Link>
 
                         {livro.estado === "em_revisao" && (
                           <Link
                             to={`/admin/livros/revisoes/nova-revisao/${livro.id}`}
-                            className={`${styles.btnAcao} ${styles.btnEditar}`}
+                            className={styles.inativar}
                           >
                             Revisar
                           </Link>
@@ -245,6 +240,7 @@ export default function GerenciaLivros() {
                         {livro.estado === "publicado" && (
                           <button
                             onClick={() => {handleInativar(livro)}}
+                            className={styles.inativar}
                           >
                             {livro.ativo == true ? <>Inativar</> : <>Ativar</>}
                           </button>
@@ -286,12 +282,3 @@ export default function GerenciaLivros() {
     </main>
   );
 }
-
-
-
-
-
-
-
-
-

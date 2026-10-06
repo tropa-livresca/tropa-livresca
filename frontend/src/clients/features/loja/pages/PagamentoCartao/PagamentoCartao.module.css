@@ -1,0 +1,303 @@
+.container {
+  width: 75%;
+  margin: 0 auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.topo {
+  margin-bottom: 2rem;
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #67170c;
+  text-decoration: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.voltar:hover {
+  text-decoration: underline;
+}
+
+.formPagamento {
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.formTitulo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.formTitulo strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #67170c;
+  font-size: 1.4rem;
+}
+
+.formTitulo span {
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+}
+
+.icone {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f7f0cf;
+  color: #67170c;
+  font-size: 1.4rem;
+}
+
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+}
+
+.formulario label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-family: "Jacques Francois", serif;
+  font-weight: 600;
+}
+
+.formulario input {
+  display: block;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  height: 3rem;
+  box-sizing: border-box !important;
+  margin: 0;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+}
+
+.formulario input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.formulario input::placeholder {
+  color: var(--cor-texto-muted);
+}
+
+.numero2 {
+  font-family: none !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+.linhaCampos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.linhaCampos label {
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.linhaCampos input {
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  display: block !important;
+}
+
+.parcelamento {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.parcelamento > span {
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-family: "Jacques Francois", serif;
+  font-weight: 600;
+}
+
+.opcoesParcelamento {
+  position: relative;
+  width: 100%;
+}
+
+.opcoesParcelamento svg{
+    color: #67170c;
+}
+
+.opcaoSelecionada {
+  width: 100%;
+  min-height: 3rem;
+  box-sizing: border-box;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  color: #67170c;
+  font-size: 1rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.opcaoSelecionada:hover {
+  border-color: #67170c;
+}
+
+.opcaoSelecionada > span {
+  color: #67170c;
+}
+
+.seta,
+.setaAberta {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  color: #67170c;
+  transition: transform 0.25s ease;
+}
+
+.seta {
+  transform: rotate(0deg);
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.listaParcelamento {
+  top: calc(100% + 0.4rem);
+  width: 100%;
+  background: #fffdf4;
+  border: 1px solid #e2c77c;
+  margin-top: 0.4rem;
+  border-radius: 1rem;
+  overflow: hidden;
+  z-index: 100;
+  max-height: 350px;
+  animation: abrir 0.2s ease;
+  color:#67170c;
+}
+
+@keyframes abrir {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+
+  to {
+    opacity: 1;
+    max-height: 300px;
+  }
+}
+
+.listaParcelamento button {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: none;
+  background: transparent;
+  color: #67170c;
+  font-size: 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.listaParcelamento button:not(:last-child) {
+  border-bottom: 1px solid #e2c77c;
+}
+
+.listaParcelamento button:hover {
+   background: #fff8d767;
+  color: #ffbb33;
+}
+
+.numero{
+    font-family: none;
+}
+
+.seguro {
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.botao {
+  width: 100%;
+    padding: 0.7rem;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: normal;
+    background-color: #67170c;
+    color: #ede6b3;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.botao:hover{
+    background-color: #ffbb33;
+  transition: 0.3s;
+}
+@media (max-width: 600px) {
+  .container {
+    width: 90%;
+    padding: 2rem 5%;
+  }
+
+  .formPagamento {
+    padding: 1.3rem;
+  }
+
+  .linhaCampos {
+    grid-template-columns: 1fr;
+  }
+
+  .topo h1 {
+    font-size: 1.6rem;
+  }
+}

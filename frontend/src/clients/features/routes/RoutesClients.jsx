@@ -28,6 +28,9 @@ import ResumoCompra from "../loja/pages/ResumoCompra/ResumoCompra.jsx";
 import MeusPedidos from "../loja/pages/MeusPedidos/MeusPedidos.jsx";
 import MeusGanhos from "../ganhos/pages/MeusGanhos/MeusGanhos.jsx";
 import Pagamento from "../loja/pages/Pagamento/Pagamento.jsx";
+import PagamentoCartao from "../loja/pages/PagamentoCartao/PagamentoCartao.jsx";
+import PagamentoPix from "../loja/pages/PagamentoPix/PagamentoPix.jsx";
+import PagamentoBoleto from "../loja/pages/PagamentoBoleto/PagamentoBoleto.jsx";
 
 const Private = ({ Item, redirectTo = "/auth/login" }) => {
   const { signed, loading } = useAuth();
@@ -56,9 +59,24 @@ const RoutesClients = () => {
             />
             <Route path="/loja" element={<Loja />} />
             <Route path="/pagamento" element={<Pagamento />} />
+            <Route
+              path="/pagamento/cartao"
+              element={<Private Item={PagamentoCartao} />}
+            />
+            <Route
+              path="/pagamento/pix"
+              element={<Private Item={PagamentoPix} />}
+            />
+            <Route
+              path="/pagamento/boleto"
+              element={<Private Item={PagamentoBoleto} />}
+            />
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/loja/livro/:id" element={<ProdutoById />} />
-            <Route path="/checkout/:frete/:mod" element={<Private Item={Pagamento} />} />
+            <Route
+              path="/checkout/:frete/:mod"
+              element={<Private Item={Pagamento} />}
+            />
             <Route
               path="/pedido/:id"
               element={<Private Item={ResumoCompra} />}

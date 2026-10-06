@@ -2,12 +2,13 @@
   margin-top: -5rem;
 }
 
+
 .topo {
   width: 100%;
-  margin-top: 5rem;
-  padding: 3rem 6%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
+  margin-top: 5rem;
+  padding: 3rem 6%;
 }
 
 .titulo {
@@ -23,21 +24,23 @@
   width: 8rem;
   height: 4px;
   margin-top: 1rem;
-  margin-bottom: 2rem;
   background: #d4b46a;
   border-radius: 999px;
+  margin-bottom: 2rem;
 }
 
 .topo p {
   color: var(--cor-texto-muted);
-  font-size: 1.1rem;
+  text-align: left;
+  font-size: 1.2rem;
 }
 
 .container {
   width: 100%;
-  padding: 3rem 6%;
+  max-width: 100%;
+  margin: auto;
+  padding:3rem 6%;
 }
-
 .tabelaWrapper {
   overflow-x: auto;
   border-radius: 1.5rem;

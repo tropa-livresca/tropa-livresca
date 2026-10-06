@@ -1,23 +1,21 @@
-/* Container Principal */
 .container {
   width: 100%;
   max-width: 100%;
   margin: auto;
-  padding: 5rem 6%;
+  padding:3rem 6%;
 }
-
 
 .topo {
   width: 100%;
-  padding: 3rem 6%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
+  padding: 3rem 6%;
 }
 
 .titulo {
   margin: 0;
   color: #67170c;
-  font-size: clamp(2rem, 4vw, 4rem);
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
   font-family: "Jacques Francois", serif;
 }
 
@@ -29,6 +27,7 @@
   margin-top: 1rem;
   background: #d4b46a;
   border-radius: 999px;
+  margin-bottom: 2rem;
 }
 
 .topo p {
@@ -37,245 +36,358 @@
   font-size: 1.2rem;
 }
 
-/* Formulário de Filtros */
 .filtroForm {
-    background: #fffdf7 !important;
-  border-radius: 1.5rem !important;
-  padding: 2rem !important;
- box-shadow:
-    0 8px 20px rgba(103, 23, 12, 0.08),
-    0 2px 6px rgba(103, 23, 12, 0.05);
-    margin-bottom: 4rem;
+background: #fffdf7 !important;
+padding: 2rem !important;
+box-shadow: 0 8px 20px rgba(103, 23, 12, 0.08), 0 2px 6px rgba(103, 23, 12, 0.05);
+margin-bottom: 3rem;
+display: flex;
+flex-direction: column;
+gap: 1.25rem;
+box-sizing: border-box;
 }
 
 .buscaWrapper {
-    position: relative;
-    margin-bottom: 1rem;
+position: relative;
+width: 100%;
 }
 
 .buscaIcon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
+position: absolute;
+left: 1rem;
+top: 50%;
+transform: translateY(-50%);
+color: #6c757d;
+pointer-events: none;
 }
 
 .inputBusca {
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    font-size: 1rem;
-    box-sizing: border-box;
-    transition: border-color 0.2s;
+width: 100%;
+padding: 0.85rem 1rem 0.85rem 2.75rem;
+border: 1px solid #ced4da;
+border-radius: 8px;
+font-size: 1rem;
+box-sizing: border-box;
+transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .inputBusca:focus {
-    outline: none;
-    border-color: #4a90e2;
+outline: none;
+border-color: #67170c;
+box-shadow: 0 0 0 3px rgba(103, 23, 12, 0.15);
 }
 
-/* Grid de Seleções e Botão */
 .selectsGrid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1rem;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 1rem;
+align-items: center;
+width: 100%;
 }
 
 .selectsGrid select {
-    flex: 1;
-    min-width: 150px;
-    padding: 0.75rem;
-    border: 1px solid #ced4da;
-    border-radius: 8px;
-    background-color: #fff;
-    font-size: 0.95rem;
-    cursor: pointer;
+width: 100%;
+padding: 0.85rem;
+border: 1px solid #ced4da;
+border-radius: 8px;
+background-color: #fff;
+font-size: 0.95rem;
+cursor: pointer;
+box-sizing: border-box;
+transition: border-color 0.2s;
+}
+
+.selectsGrid select:focus {
+outline: none;
+border-color: #67170c;
 }
 
 .selectsGrid .btn {
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s;
+width: 100%;
+padding: 0.85rem 1.5rem;
+background-color: #67170c;
+color: white;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+font-weight: 600;
+font-size: 1rem;
+transition: background-color 0.2s;
+box-sizing: border-box;
 }
 
 .selectsGrid .btn:hover {
-    background-color: #357abd;
+background-color: #4a1008;
 }
 
-/* Estrutura da Tabela */
 .tabelaContainer {
-      background: #fffdf7 !important;
-  border-radius: 1.5rem !important;
-  padding: 2rem !important;
- box-shadow:
-    0 8px 20px rgba(103, 23, 12, 0.08),
-    0 2px 6px rgba(103, 23, 12, 0.05);
+background: #fffdf7 !important;
+box-shadow: 0 8px 20px rgba(103, 23, 12, 0.08), 0 2px 6px rgba(103, 23, 12, 0.05);
+border-radius: 1.5rem;
+overflow-x: auto;
 }
 
 .tabelaLivros {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
+width: 100%;
+text-align: left;
+border-collapse: separate;
+border-spacing: 0;
+min-width: 600px;
 }
 
-.tabelaLivros th {
-    background-color: #f8f9fa;
-    color: #495057;
-    font-weight: 600;
-    padding: 1rem;
-    border-bottom: 2px solid #dee2e6;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.tabelaLivros th { 
+  padding: 1.25rem 1rem 1.25rem 1.5rem;
+  color: #67170c; 
+  font-size: 0.95rem; 
+  font-weight: bold; 
+  text-align: center; 
+  white-space: nowrap; 
+  border-bottom: 1.5px solid #d4b46a; 
+  background-color: #f7f0cf48; 
+  text-align: left; 
 }
 
 .tabelaLivros td {
-    padding: 1rem;
-    border-bottom: 1px solid #dee2e6;
-    vertical-align: middle;
-    color: #333;
+padding: 1.05rem;
+border-bottom: 1px solid #e3d5ad;
+vertical-align: middle;
+color: #67170c;
+}
+
+.tabelaLivros tr:last-child td:first-child {
+border-bottom-left-radius: 1.5rem;
+}
+
+.tabelaLivros tr:last-child td:last-child {
+border-bottom-right-radius: 1.5rem;
 }
 
 .tabelaLivros tbody tr:hover {
-    background-color: #fdfdfd;
+background-color: #fff8d767;
+transition:0.3s;
 }
 
-/* Capa do Livro */
 .capaContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+width: 5.5rem;
+height: 7.5rem;
+flex-shrink: 0;
+display: block;
+overflow: hidden;
+border-radius: 4px;
+margin: 0 auto;
 }
 
 .capaMini {
-    width: 45px;
-    height: 65px;
-    object-fit: cover;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+width: 100%;
+height: 100%;
+object-fit: cover;
+display: block;
+transition: transform 0.3s ease;
+}
+
+.capaMini:hover {
+transform: scale(1.08);
 }
 
 .semCapaMini {
-    font-size: 1.5rem;
+width: 5.5rem;
+height: 7.5rem;
+font-size: 1.25rem;
+display: flex;
+align-items: center;
+justify-content: center;
+border: 1px solid #67170c;
+border-radius: 4px;
+margin: 0 auto;
+background-color: #f7f0cf20;
 }
 
-/* Títulos e Textos internos */
 .livroTitulo {
-    font-size: 1rem;
-    margin: 0 0 0.25rem 0;
-    color: #212529;
+font-size: 1.05rem;
+margin: 0 0 0.25rem 0;
+color: #67170c;
+font-weight: 600;
 }
 
 .sub {
-    font-size: 0.85rem;
-    color: #6c757d;
+font-size: 0.9rem;
+color: var(--cor-texto-muted);
 }
 
-/* Badges de Status */
+.numero{
+font-family: none;
+color:#67170c;
+font-size:1.05rem;
+}
+
+.numero2{
+    font-family:none;
+}
+
 .badge {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: capitalize;
+display: inline-block;
+padding: 0.35rem 0.85rem;
+border-radius: 999px;
+font-size: 0.8rem;
+font-weight: 600;
+text-transform: capitalize;
+text-align: center;
 }
 
 .badge.publicado {
-    background-color: #e6f4ea;
-    color: #137333;
+background-color: #e6f4ea;
+color: #137333;
 }
 
 .badge.em_revisao {
-    background-color: #fef7e0;
-    color: #b06000;
+background-color: #fef7e0;
+color: #b06000;
 }
 
 .badge.rascunho {
-    background-color: #f1f3f4;
-    color: #3c4043;
+background-color: #f1f3f4;
+color: #3c4043;
 }
 
-/* Coluna de Ações */
 .acoesColuna {
-    display: flex;
-    gap: 0.5rem;
-    justify-content: flex-end;
-    align-items: center;
+display: flex;
+flex-direction: column;
+gap: 0.5rem;
+justify-content: center;
+align-items: center;
 }
 
 .btnAcao {
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: opacity 0.2s;
+margin-top:0;
+margin-bottom:1rem;
+text-decoration: none;
+padding: 0.5rem 0.85rem;
+font-size: 0.85rem;
+font-weight: 500;
+text-align: center;
+border-radius: 0.7rem;
+border: 1px solid #e2c77c;
+color: #67170c;
+background: rgb(255, 248, 215) !important;
+width: 100%;
+max-width: 120px;
+box-sizing: border-box;
 }
 
-.btnAcao:hover {
-    opacity: 0.9;
+.btnAcao:hover{
+    background-color: #ffbb33 !important;
+  color: #ede6b3 !important;
+  transition: 0.3s !important;
 }
+
+
+
 
 .btnVisualizar {
-    background-color: #f1f3f4;
-    color: #3c4043;
+background-color: #f1f3f4;
+color: #3c4043;
 }
 
 .btnEditar {
-    background-color: #e8f0fe;
-    color: #1a73e8;
+border-radius: 0.7rem;
+border: 1px solid #e2c77c;
+color: #67170c;
+background: rgb(255, 248, 215);
 }
 
-/* Estado Vazio (Nenhum Livro) */
 .cardnenhumlivro {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: #6c757d;
+text-align: center;
+padding: 3rem 1rem;
+color: #6c757d;
 }
 
 .titulon {
-    margin: 1rem 0 0.5rem 0;
-    color: #333;
+margin: 1rem 0 0.5rem 0;
+color: #333;
 }
 
-/* Paginação */
+.inativar{
+    margin-top:0;
+margin-bottom:0;
+  text-decoration: none;
+padding: 0.5rem 0.85rem;
+font-size: 0.85rem;
+font-weight: 500;
+text-align: center;
+border-radius: 0.7rem;
+border: 1px solid #e2c77c;
+color: #67170c;
+background: rgb(255, 248, 215) !important;
+width: 100%;
+max-width: 120px;
+box-sizing: border-box;
+}
+
+.inativar:hover{
+    background-color: #ffbb33 !important;
+  color: #ede6b3 !important;
+  transition: 0.3s !important;
+}
+
 .paginacao {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    margin-top: 2rem;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 1rem;
+margin-top: 2rem;
+flex-wrap: wrap;
 }
 
 .btnPaginacao {
-    padding: 0.5rem 1rem;
-    border: 1px solid #ced4da;
-    background-color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
+padding: 0.6rem 1.2rem;
+border: 1px solid #ced4da;
+background-color: white;
+border-radius: 6px;
+cursor: pointer;
+font-weight: 500;
+transition: all 0.2s;
 }
 
 .btnPaginacao:hover:not(:disabled) {
-    background-color: #f8f9fa;
-    border-color: #adb5bd;
+background-color: #f8f9fa;
+border-color: #adb5bd;
 }
 
 .btnPaginacao:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+opacity: 0.5;
+cursor: not-allowed;
 }
 
 .textoPaginacao {
-    font-size: 0.95rem;
-    color: #495057;
+font-size: 0.95rem;
+color: #495057;
+}
+
+@media (max-width: 768px) {
+.container {
+padding: 1rem;
+}
+
+.topo {
+padding: 1.5rem 1.25rem;
+}
+
+.filtroForm {
+padding: 1.25rem !important;
+}
+
+.selectsGrid {
+grid-template-columns: 1fr;
+}
+
+.acoesColuna {
+flex-direction: column;
+align-items: center;
+}
+
+.btnAcao {
+width: 100%;
+max-width: none;
+box-sizing: border-box;
+}
 }

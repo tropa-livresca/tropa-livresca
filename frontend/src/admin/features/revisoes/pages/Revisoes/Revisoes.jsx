@@ -31,8 +31,13 @@ export default function Revisoes() {
   };
 
   return (
-    <main className={styles.container}>
-      <h1 className={styles.titulo}>Revisões de Livros</h1>
+    <main>
+       <div className={styles.topo}>
+              <h1 className={styles.titulo}>Livros publicados pela editora</h1>
+              <p>Acompanhe os livros da editora, seus autores e o estado de revisão.</p>
+            </div>
+
+            <div className={styles.container}>
 
       {/* Barra de Filtros e Busca */}
       <form onSubmit={handleBuscar} className={styles.filtroContainer}>
@@ -121,12 +126,12 @@ export default function Revisoes() {
 
                 <div className={styles.cardBody}>
                   <p>
-                    <strong>Revisor:</strong> {revisao.nome}
+                    <strong>Revisor:</strong> <span className={styles.numero}>{revisao.nome}</span>
                   </p>
-                  <p className={styles.apontamento}>
-                    <strong>Apontamento:</strong> {revisao.apontamento}
+                  <p>
+                    <strong>Apontamento:</strong> <span className={styles.numero}>{revisao.apontamento}</span>
                   </p>
-                  <span className={styles.dataRevisao}>{revisao.data}</span>
+                  <p><strong>Data da revisão: </strong>{revisao.data}</p>
                 </div>
 
                 <div className={styles.cardAcoes}>
@@ -162,6 +167,7 @@ export default function Revisoes() {
           />
         </div>
       )}
+      </div>
     </main>
   );
 }

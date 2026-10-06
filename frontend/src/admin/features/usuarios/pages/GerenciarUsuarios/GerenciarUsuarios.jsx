@@ -18,7 +18,7 @@ export default function GerenciarUsuarios() {
 
   useEffect(() => {
     const carregarDados = async () => {
-      await buscarUsuarios(paginaAtual, 3, busca, funcao, ordem);
+      await buscarUsuarios(paginaAtual, 8, busca, funcao, ordem);
     };
 
     carregarDados();
@@ -237,9 +237,8 @@ export default function GerenciarUsuarios() {
             </table>
           </div>
         )}
-      </div>
 
-      {!carregando && meta && meta.totalPages > 1 && (
+        {!carregando && meta && meta.totalPages > 1 && (
         <Paginacao
           totalPaginas={meta.totalPages}
           totalItems={meta.totalItems}
@@ -247,6 +246,9 @@ export default function GerenciarUsuarios() {
           onMudarPagina={setPaginaAtual}
         />
       )}
+      </div>
+
+      
     </main>
   );
 }
