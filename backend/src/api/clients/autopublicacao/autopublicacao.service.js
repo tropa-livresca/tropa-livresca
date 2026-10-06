@@ -312,7 +312,8 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    if (estadoInicial !== LIVRO_ESTADO.RASCUNHO) {
+    console.log(estadoInicial);
+    if (estadoInicial !== LIVRO_ESTADO.RASCUNHO && estadoInicial !== LIVRO_ESTADO.EM_REVISAO  ) {
       const error = new Error(
         "Livros só podem ser criados inicialmente como rascunho.",
       );
@@ -347,7 +348,7 @@ export class AutopublicacaoService {
     const dadosParaInserir = {
       ativo: true,
       fk_user_profile_id: userId,
-      estado: LIVRO_ESTADO.RASCUNHO,
+      estado: estadoInicial,
       ISBN: dadosLivro.detalhes?.ISBN || null,
       titulo: dadosLivro.detalhes?.titulo || null,
       subtitulo: dadosLivro.detalhes?.subtitulo || null,

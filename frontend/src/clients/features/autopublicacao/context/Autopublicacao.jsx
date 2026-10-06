@@ -335,7 +335,17 @@ export const AutopublicacaoProvider = ({ children }) => {
       }
     }
 
-    setDadosLivro((atual) => ({ ...atual, [chave]: novosDados }));
+    if(chave === "conteudo" && novosDados?.numeroPaginas != null){
+     console.log("a");
+     console.log(novosDados);
+     console.log(novosDados.conteudo);
+     setDadosLivro({...dadosLivro, [chave]: novosDados.conteudo, orcamento:{...dadosLivro.orcamento, numeroPaginas:novosDados.numeroPaginas}});
+    }else{
+      setDadosLivro((atual) => ({ ...atual, [chave]: novosDados }));
+    }
+    
+
+    console.log(dadosLivro);
   };
 
   const inserirLivro = useCallback(

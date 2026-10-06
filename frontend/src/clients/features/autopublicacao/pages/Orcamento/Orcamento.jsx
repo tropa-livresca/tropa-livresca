@@ -8,7 +8,7 @@ export default function Orcamento({
   irParaProximaEtapa,
   voltarEtapa,
 }) {
-  const orcamento = dados?.orcamento || {};
+  const orcamento = dados|| {};
   const numeroPaginas = Number(orcamento.numeroPaginas) || 0;
   const custoMinimoFisicoCentavos = numeroPaginas * 8;
   const custoMinimoDigitalCentavos = 599;
@@ -47,10 +47,7 @@ export default function Orcamento({
     const valorValidado = valor.replace(/[^0-9.,]/g, "");
     onChange({
       ...dados,
-      orcamento: {
-        ...orcamento,
         [chave]: valorValidado,
-      },
     });
   };
 
@@ -65,14 +62,11 @@ export default function Orcamento({
     if (isNaN(valorNumerico) || valorNumerico < custoMinimo) {
       onChange({
         ...dados,
-        orcamento: {
-          ...orcamento,
           [chave]: formatarMoeda(
             chave === "valorLivroFisico"
               ? custoMinimoFisicoCentavos
               : custoMinimoDigitalCentavos,
           ),
-        },
       });
     }
   };

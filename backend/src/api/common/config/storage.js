@@ -66,6 +66,9 @@ export function validarMetadadosUpload({ tipo, extensao, mimeType, tamanho }) {
   const extensaoNormalizada = normalizarExtensao(extensao);
   const tamanhoNumerico = Number(tamanho);
 
+  console.log(regra);
+  console.log(mimeType);
+
   if (!regra.extensions.includes(extensaoNormalizada)) {
     throw erroStorage("Extensão de arquivo não permitida.");
   }

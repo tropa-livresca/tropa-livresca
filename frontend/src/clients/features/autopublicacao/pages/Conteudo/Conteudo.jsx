@@ -24,25 +24,19 @@ export default function Conteudo({
           const totalPaginas = pdfDocument.numPages;
 
           onChange({
-            ...dados,
-            conteudo: { ...(dados.conteudo || {}), [chave]: arquivo },
-            orcamento: {
-              ...(dados.orcamento || {}),
-              numeroPaginas: String(totalPaginas),
-            },
+            conteudo:{...dados, [chave]: arquivo}, 
+            numeroPaginas: totalPaginas,
           });
         } catch (erro) {
           console.error("Erro ao ler as páginas do PDF:", erro);
           onChange({
-            ...dados,
-            conteudo: { ...(dados.conteudo || {}), [chave]: arquivo },
+            conteudo:{...dados, [chave]: arquivo}, 
           });
         }
       } else {
-        onChange({
-          ...dados,
-          conteudo: { ...(dados.conteudo || {}), [chave]: arquivo },
-        });
+        onChange(
+          {...dados, [chave]: arquivo},
+        );
       }
     }
   };
@@ -50,12 +44,10 @@ export default function Conteudo({
   const atualizarCapa = (parte, e) => {
     const arquivo = e.target.files?.[0];
     if (arquivo) {
-      onChange({
-        ...dados,
-        conteudo: {
-          ...(dados.conteudo || {}),
-          capa: { ...(dados.conteudo?.capa || {}), [parte]: arquivo },
-        },
+      onChange(
+        {
+          ...dados,
+          capa: { ...dados?.capa , [parte]: arquivo },
       });
     }
   };
@@ -75,17 +67,17 @@ export default function Conteudo({
     };
 
     return {
-      frente: obterPreview(dados.conteudo?.capa?.frente),
-      verso: obterPreview(dados.conteudo?.capa?.verso),
-      orelhas: obterPreview(dados.conteudo?.capa?.orelhas),
-      manuscrito: obterPreview(dados.conteudo?.manuscrito),
+      frente: obterPreview(dados?.capa?.frente),
+      verso: obterPreview(dados?.capa?.verso),
+      orelhas: obterPreview(dados?.capa?.orelhas),
+      manuscrito: obterPreview(dados?.manuscrito),
       _urlsCriadas: urlsCriadas,
     };
   }, [
-    dados.conteudo?.capa?.frente,
-    dados.conteudo?.capa?.verso,
-    dados.conteudo?.capa?.orelhas,
-    dados.conteudo?.manuscrito,
+    dados?.capa?.frente,
+    dados?.capa?.verso,
+    dados?.capa?.orelhas,
+    dados?.manuscrito,
   ]);
 
   useEffect(() => {
