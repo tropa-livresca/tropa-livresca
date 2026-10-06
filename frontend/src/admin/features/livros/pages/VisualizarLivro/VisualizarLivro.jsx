@@ -62,7 +62,6 @@ export default function VisualizarLivro() {
     preco_fisico,
     colaboradores,
     direitos_de_publicacao,
-    conteudo_por_IA,
     ativo,
   } = livro;
 
@@ -204,10 +203,6 @@ export default function VisualizarLivro() {
               <li>
                 <span>Imagens explícitas</span>{" "}
                 <strong>{imagens_explicitas ? "Sim" : "Não"}</strong>
-              </li>
-              <li>
-                <span>Conteúdo por IA</span>{" "}
-                <strong>{conteudo_por_IA ? "Sim" : "Não"}</strong>
               </li>
               <li>
                 <span>Direitos de autopublicação</span>{" "}

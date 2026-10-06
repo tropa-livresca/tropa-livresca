@@ -17,7 +17,6 @@ const COLUNAS_LIVRO = `
   capa,
   ISBN,
   numero_edicao,
-  conteudo_por_IA,
   direitos_de_publicacao
 `;
 

@@ -7,7 +7,7 @@
 - Cadastro de metadados da obra
 - Upload de manuscrito e capa
 - Pré-visualização da publicação
-- Definição de categorias e palavras-chave
+- Definição de categorias
 - Configuração de direitos autorais
 - Definição de preço e orçamento
 - Edição e exclusão de livros publicados
