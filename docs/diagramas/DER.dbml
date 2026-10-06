@@ -34,7 +34,6 @@ Table comentarios {
 Table livros {
   id bigint [pk, increment, not null]
   direitos_de_publicacao boolean [not null]
-  conteudo_por_IA boolean [not null]
   imagens_explicitas boolean [not null]
   numero_edicao smallint
   data_de_publicacao date [not null]
@@ -54,7 +53,6 @@ Table livros {
   capa jsonb
   categoria text
   ISBN text
-  palavras_chave text
   numero_paginas smallint
 }
 

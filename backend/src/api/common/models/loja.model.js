@@ -17,7 +17,6 @@ const COLUNAS_LIVRO = `
   capa,
   ISBN,
   numero_edicao,
-  conteudo_por_IA,
   direitos_de_publicacao
 `;
 
@@ -95,7 +94,6 @@ export class LojaModel {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
 
-    // movimentacoes_financeiras indica se o repasse ao autor já foi feito.
     let query = supabaseAdmin.from("vendas").select(
       `
         id, data, total, status_pagamento, status_entrega, endereco_entrega,
@@ -193,7 +191,6 @@ export class LojaModel {
       .insert(itens);
 
     if (erroItens) {
-      // Sem itens a venda fica inconsistente, então ela é desfeita.
       await supabaseAdmin.from("vendas").delete().eq("id", data.id);
       erroItens.statusCode = 500;
       throw erroItens;

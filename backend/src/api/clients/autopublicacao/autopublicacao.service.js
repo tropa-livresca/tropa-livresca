@@ -18,17 +18,6 @@ import {
 } from "../../common/config/storage.js";
 
 export class AutopublicacaoService {
-  static _serializarPalavrasChave(palavras) {
-    if (Array.isArray(palavras)) {
-      return palavras
-        .map((palavra) => String(palavra).trim())
-        .filter(Boolean)
-        .join("; ");
-    }
-
-    return typeof palavras === "string" ? palavras : "";
-  }
-
   static _parseCapa(capa) {
     if (!capa) return {};
     if (typeof capa === "object") return capa;
@@ -360,9 +349,6 @@ export class AutopublicacaoService {
         ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
         : null,
       idioma: dadosLivro.detalhes.idioma,
-      palavras_chave: this._serializarPalavrasChave(
-        dadosLivro.detalhes?.palavrasChave,
-      ),
       categoria: dadosLivro.detalhes.categoria,
       autor_nome: dadosLivro.detalhes?.autor?.nome || null,
       autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome || null,
@@ -370,7 +356,6 @@ export class AutopublicacaoService {
       direitos_de_publicacao:
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
-      conteudo_por_IA: dadosLivro.detalhes?.conteudoPorIA === true,
       imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
       data_de_publicacao: new Date().toISOString().split("T")[0],
       preco_digital: dadosLivro.orcamento?.valorLivroDigital
@@ -514,9 +499,6 @@ export class AutopublicacaoService {
       autor_nome: dadosLivro.detalhes?.autor?.nome || livroAtual.autor_nome,
       autor_sobrenome:
         dadosLivro.detalhes?.autor?.sobrenome || livroAtual.autor_sobrenome,
-      palavras_chave: this._serializarPalavrasChave(
-        dadosLivro.detalhes?.palavrasChave ?? livroAtual.palavras_chave,
-      ),
       numero_paginas: dadosLivro.orcamento?.numeroPaginas
         ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
         : livroAtual.numero_paginas,
@@ -526,9 +508,6 @@ export class AutopublicacaoService {
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true ||
         livroAtual.direitos_de_publicacao,
-      conteudo_por_IA:
-        dadosLivro.detalhes?.conteudoPorIA === true ||
-        livroAtual.conteudo_por_IA,
       imagens_explicitas:
         dadosLivro.detalhes?.imagensExplicitas === true ||
         livroAtual.imagens_explicitas,

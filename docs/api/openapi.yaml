@@ -1689,7 +1689,7 @@ components:
           nullable: true
     LivroAutopublicacao:
       type: object
-      required: [id, estado, titulo, capa, manuscrito, palavras_chave]
+      required: [id, estado, titulo, capa, manuscrito]
       properties:
         id:
           type: integer
@@ -1711,10 +1711,6 @@ components:
         manuscritoPath:
           type: string
           nullable: true
-        palavras_chave:
-          type: string
-          nullable: true
-          description: Tipo PostgreSQL text; listas recebidas pela API são serializadas como palavras separadas por ponto e vírgula.
     PaginaLivros:
       type: object
       required: [data, meta]
@@ -1746,10 +1742,6 @@ components:
           type: string
         categoria:
           type: string
-        palavrasChave:
-          type: array
-          items:
-            type: string
         autor:
           type: object
           properties:
@@ -1773,10 +1765,6 @@ components:
             - type: string
               enum: [sim, nao]
             - type: boolean
-        conteudoPorIA:
-          type: boolean
-        imagensExplicitas:
-          type: boolean
     OrcamentoAutopublicacao:
       type: object
       properties:

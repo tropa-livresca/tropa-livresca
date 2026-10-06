@@ -144,19 +144,6 @@ export default function Confirmacao({
                   </div>
                 </div>
 
-                <div>
-                  <label>Palavras-chave:</label>
-                  <div className={styles.liinput}>
-                    <div className={styles.chips}>
-                      {dados.detalhes.palavrasChave?.map((palavra, i) => (
-                        <span key={i} className={styles.chip}>
-                          {palavra}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
                 <div className={styles.colunaCompleta}>
                   <label>Colaboradores:</label>
 

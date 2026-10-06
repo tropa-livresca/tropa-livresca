@@ -63,25 +63,6 @@ export class UsuariosService {
     return resultado;
   }
 
-  static async alterarIsMasterFuncionario(funcionarioId, isMaster) {
-    if (!funcionarioId || !isMaster) {
-      const erroDados = new Error(
-        "Dados não informados para alteração da função.",
-      );
-      erroDados.statusCode = 400;
-      throw erroDados;
-    }
-
-    const resultado = await UsuariosModel.alterarIsMasterFuncionario(
-      funcionarioId,
-      isMaster,
-    );
-
-    if (resultado.error) throw resultado.error;
-
-    return resultado;
-  }
-
   static async inativarFuncionario(funcionarioId) {
     if (!funcionarioId) {
       const erroId = new Error("Funcionário a inativar não informado.");
