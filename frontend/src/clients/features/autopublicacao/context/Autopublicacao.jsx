@@ -23,7 +23,6 @@ const ESTADO_INICIAL_LIVRO = {
     direitoPublicacao: "",
     imagensExplicitas: "",
     categoria: "",
-    palavrasChave: [],
   },
 
   conteudo: {
@@ -80,7 +79,6 @@ export const AutopublicacaoProvider = ({ children }) => {
     [userId],
   );
 
-  /* eslint-disable react-hooks/set-state-in-effect */
   useEffect(() => {
     setDadosLivro(ESTADO_INICIAL_LIVRO);
     setEtapa(1);
@@ -104,7 +102,6 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (etapaSalva >= 1 && etapaSalva <= 4) setEtapa(etapaSalva);
     setRascunhoUsuarioId(userId);
   }, [chaveRascunho, userId]);
-  /* eslint-enable react-hooks/set-state-in-effect */
 
   useEffect(() => {
     if (isEdicao || !userId || rascunhoUsuarioId !== userId) return;
@@ -127,19 +124,6 @@ export const AutopublicacaoProvider = ({ children }) => {
     setIsEdicao(true);
     setEstadoAtualLivro(dadosBanco.estado || LIVRO_ESTADO.RASCUNHO);
     setEtapa(1);
-
-    let palavras = dadosBanco.palavras_chave || [];
-
-    if (typeof palavras === "string") {
-      palavras = palavras
-        .split(/,|;|\n/)
-        .map((palavra) => palavra.trim())
-        .filter(Boolean);
-    }
-
-    if (!Array.isArray(palavras)) {
-      palavras = [];
-    }
 
     let capa = dadosBanco.capa;
 
@@ -221,8 +205,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         imagensExplicitas: imagensExplicitasNorm ?? "",
 
         categoria: dadosBanco.categoria || "",
-
-        palavrasChave: palavras,
       },
 
       conteudo: {

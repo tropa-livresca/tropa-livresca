@@ -425,23 +425,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
           </div>
         ) : null}
 
-        <div className={styles.card}>
-          <legend>Tags</legend>
-          <label>Palavras-chave (separadas por ponto e vírgula) </label>
-          <Input
-            placeholder="Inserir palavras-chave"
-            type="text"
-            value={
-              Array.isArray(dados.palavrasChave)
-                ? dados.palavrasChave.join("; ")
-                : ""
-            }
-            onChange={(e) =>
-              atualizarCampo("palavrasChave", e.target.value.split("; "))
-            }
-            className={styles.inputmodificado}
-          />
-        </div>
         <div className={styles.botao}>
           <Link to="/meuslivros" className={styles.btnmeu}>
             Voltar a Meus Livros
