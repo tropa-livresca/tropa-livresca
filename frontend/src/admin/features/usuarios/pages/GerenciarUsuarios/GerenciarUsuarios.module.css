@@ -212,14 +212,15 @@
 }
 
 .tabela th {
-  padding: 1.5rem;
+      padding: 1.25rem 1rem;
+  width:25%;
   color: #67170c;
   font-size: 1rem;
   font-weight: bold;
-  text-align: left;
+  text-align: center;
   white-space: nowrap;
-  border-bottom: 2px solid #d4b46a;
-  background: #f7f0cf;
+  border-bottom: 1.5px solid #d4b46a;
+  background-color:#f7f0cf48;
 }
 
 
@@ -235,8 +236,12 @@ border-top-left-radius:1.5rem;
 
 .tabela td {
   padding: 1rem;
-  border-bottom: 1px solid #eee5c9;
+  border-bottom: 1px solid #e3d5ad;
   vertical-align: middle;
+  font-size: 1rem;
+  width: 25%;
+  text-align: center;
+  background-color: #fffdf7;
 }
 
 .tabela tbody tr:last-child td:first-child {
@@ -260,17 +265,16 @@ border-top-left-radius:1.5rem;
 }
 
 .colunaNome {
-  min-width: 200px;
   color: #67170c;
 }
 
 .avatarInline {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 3rem;
+  height: 3rem;
   display: inline-grid;
   place-items: center;
   margin-right: 0.75rem;
-  background: #f7f0cf;
+  background: #f7f0cfb1;
   color: #67170c;
   border-radius: 50%;
   vertical-align: middle;
@@ -281,30 +285,26 @@ border-top-left-radius:1.5rem;
   align-items: center;
   justify-content: center;
   min-width: 5rem;
-  padding: 0.4rem 0.7rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  font-size: 1rem;
   white-space: nowrap;
 }
 
 .badgeAdmin {
-  background-color: #w;
   color: #67170c;
 }
 
 .badgeCliente {
-  background-color: #eee9d1;
-  color: #665b29;
+  color: #67170c;
 }
 
 .badgeSim {
-  background-color: #dcefdc;
-  color: #286528;
+  color: #67170c;
 }
 
 .badgeNao {
-  background-color: #f2dddd;
-  color: #8a3030;
+  color: #67170c;
 }
 
 
@@ -324,16 +324,18 @@ border-top-left-radius:1.5rem;
 
 .colunaAcoes a {
   display: inline-block;
-  padding: 0.55rem 0.9rem;
-  background-color: #67170c;
-  color: #ede6b3;
-  border-radius: 0.8rem;
+  padding: 0.9rem;
+  border: 1px solid #e2c77c;
+color: #67170c;
+background: rgb(255, 248, 215) !important;
+  border-radius: 0.9rem;
   font-size: 0.8rem;
   text-decoration: none;
-  transition: 0.25s ease;
+  transition: 0.3s;
 }
 
 .colunaAcoes a:hover {
-  background-color: #ffbb33;
-  color: #67170c;
+      background-color: #ffbb33 !important;
+  color: #ede6b3 !important;
+  transition: 0.3s !important;
 }
