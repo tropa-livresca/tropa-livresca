@@ -13,7 +13,7 @@
   background: transparent;
   color: #67170c;
   font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   cursor: pointer;
 }
 
@@ -43,7 +43,7 @@
 .conteudo > p {
   margin: 0;
   color: var(--cor-texto-muted);
-  font-size: 1rem;
+  font-size: 1.02rem;
   line-height: 1.9;
 }
 

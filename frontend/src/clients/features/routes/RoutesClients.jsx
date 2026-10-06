@@ -58,7 +58,7 @@ const RoutesClients = () => {
             <Route path="/pagamento" element={<Pagamento />} />
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/loja/livro/:id" element={<ProdutoById />} />
-            <Route path="/checkout" element={<Private Item={Pagamento} />} />
+            <Route path="/checkout/:frete/:mod" element={<Private Item={Pagamento} />} />
             <Route
               path="/pedido/:id"
               element={<Private Item={ResumoCompra} />}

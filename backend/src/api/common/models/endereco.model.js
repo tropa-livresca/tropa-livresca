@@ -34,6 +34,11 @@ export class EnderecoModel {
   }
 
   static async BuscarEnderecoById(id, userId) {
+
+    console.log('d');
+    console.log(id);
+    console.log(userId);
+
     const { data, error } = await supabaseAdmin
       .from("enderecos")
       .select()

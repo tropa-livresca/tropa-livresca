@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import styles from "./Pagamento.module.css";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
@@ -13,16 +13,19 @@ const formatarPreco = (valor) =>
     .replace(".", ",")}`;
 
 export default function Pagamento() {
+  const {frete, mod} = useParams();
   const navigate = useNavigate();
-  const { itens, valorSubtotal, limparCarrinho } = useCarrinho();
+  const { itens, valorSubtotal, limparCarrinho} = useCarrinho();
   const { enderecos = [], BuscarEnderecos } = useEndereco();
-  const { criarPedido, pagarPedido, carregando, erro } = useCompra();
+  const { criarPedido, pagarPedido, carregando, erro, venda } = useCompra();
 
   const [enderecoEscolhido, setEnderecoId] = useState(null);
   const [pedido, setPedido] = useState(null);
   const [formaPagamento, setFormaPagamento] = useState("");
 
   const temFisico = itens.some((item) => item.tipo === "fisico");
+
+  console.log(console.log(mod));
 
   useEffect(() => {
     if (temFisico) BuscarEnderecos();
@@ -33,7 +36,8 @@ export default function Pagamento() {
 
   const handleConfirmar = async () => {
     if (temFisico && !enderecoId) return;
-    const venda = await criarPedido(itens, temFisico ? enderecoId : null);
+    const venda = await criarPedido(itens, temFisico ? enderecoId : null, temFisico ? mod : null);
+    console.log(venda);
     if (venda) setPedido(venda);
   };
 
@@ -88,7 +92,7 @@ export default function Pagamento() {
               <div className={styles.produto}>
                 <div className={styles.capa}>
                   {item.capa ? (
-                    <img src={item.capa} alt={`Capa de ${item.titulo}`} />
+                    <img src={item.capa}  alt={`Capa de ${item.titulo}`} />
                   ) : (
                     <span>Livro</span>
                   )}
@@ -102,6 +106,7 @@ export default function Pagamento() {
                 </div>
               </div>
               <span className={styles.numero}>{formatarPreco(item.preco)}</span>
+              {temFisico ? <span className={styles.numero}>{formatarPreco(frete)}</span> : <></>} 
               <span className={styles.quantidade}>{item.quantidade}</span>
               <span className={styles.numero}>
                 {formatarPreco(
@@ -166,7 +171,7 @@ export default function Pagamento() {
                               : "Endereço"}
                           </strong>
                           <span>
-                            {endereco.rua}, {endereco.num}
+                            {endereco.rua}, <span className={styles.numero2}>{endereco.num}</span>
                             {endereco.complemento
                               ? ` - ${endereco.complemento}`
                               : ""}
@@ -175,7 +180,7 @@ export default function Pagamento() {
                           <span>
                             {endereco.cidade} - {endereco.estado}
                           </span>
-                          <span>CEP: {endereco.cep}</span>
+                          <span>CEP:<span className={styles.numero2}> {endereco.cep}</span></span>
                         </div>
                       </label>
                     ))}
@@ -223,7 +228,7 @@ export default function Pagamento() {
                   {
                     value: "boleto",
                     titulo: "Boleto",
-                    descricao: "Até 3 dias úteis",
+                    descricao: <span className={styles.numero2}>Até 3 dias úteis</span>,
                   },
                 ].map((forma) => (
                   <label
@@ -259,7 +264,7 @@ export default function Pagamento() {
                     Número do cartão
                     <input
                       type="text"
-                      className={styles.numero}
+                      className={styles.numero2}
                       placeholder="0000 0000 0000 0000"
                       autoComplete="cc-number"
                     />
@@ -288,7 +293,7 @@ export default function Pagamento() {
                       CVV
                       <input
                         type="text"
-                        className={styles.numero}
+                        className={styles.numero2}
                         placeholder="123"
                         autoComplete="cc-csc"
                       />
@@ -348,13 +353,8 @@ export default function Pagamento() {
                 <div>
                   <span>Frete</span>
                   <strong className={styles.numero}>
-                    {pedido
-                      ? pedido.frete > 0
-                        ? formatarPreco(pedido.frete)
-                        : "Grátis"
-                      : temFisico
-                        ? "A calcular"
-                        : "Grátis"}
+                    {pedido && temFisico ? pedido.frete > 0 ? formatarPreco(pedido.frete) : "Grátis"  : temFisico  ? "A calcular"  : "compra apenas digital"
+                      }
                   </strong>
                 </div>
                 <div className={styles.total}>
@@ -396,9 +396,11 @@ export default function Pagamento() {
               </span>
               {erro && <p className={styles.erro}>{erro}</p>}
               {!pedido && (
+                <div className={styles.dvd}>
                 <Link to="/carrinho" className={styles.voltar}>
                   <FiArrowLeft /> Voltar ao carrinho
                 </Link>
+                </div>
               )}
             </section>
           </div>

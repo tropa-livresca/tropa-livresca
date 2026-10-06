@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import styles from "./Formulario.module.css";
 
@@ -24,6 +25,8 @@ export default function Formulario({ idLivroEdicao }) {
     irParaEtapaEspecifica,
     publicarLivro,
   } = useAutopublicacao();
+
+  console.log(dadosLivro);
 
   const { buscarLivroById } = useMeusLivros();
 
@@ -128,3 +131,6 @@ export default function Formulario({ idLivroEdicao }) {
     </main>
   );
 }
+
+
+

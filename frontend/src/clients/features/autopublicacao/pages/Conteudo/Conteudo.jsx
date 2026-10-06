@@ -1,4 +1,5 @@
-﻿import { useEffect, useMemo } from "react";
+﻿
+import { useEffect, useMemo } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -17,26 +18,33 @@ export default function Conteudo({
     const arquivo = e.target.files?.[0];
     if (arquivo) {
       if (chave === "manuscrito" && arquivo.type === "application/pdf") {
+        console.log(chave);
         try {
           const buffer = await arquivo.arrayBuffer();
           const loadingTask = pdfjsLib.getDocument({ data: buffer });
           const pdfDocument = await loadingTask.promise;
           const totalPaginas = pdfDocument.numPages;
 
+          console.log(dados);
+
           onChange({
-            conteudo:{...dados, [chave]: arquivo}, 
-            numeroPaginas: totalPaginas,
+            conteudo:{...dados,
+            [chave]: arquivo ,},
+            numeroPaginas: String(totalPaginas),
+
           });
         } catch (erro) {
           console.error("Erro ao ler as páginas do PDF:", erro);
           onChange({
-            conteudo:{...dados, [chave]: arquivo}, 
+            ...dados,
+            [chave]: arquivo ,
           });
         }
       } else {
-        onChange(
-          {...dados, [chave]: arquivo},
-        );
+        onChange({
+          ...dados,
+          [chave]: arquivo ,
+        });
       }
     }
   };
@@ -44,10 +52,10 @@ export default function Conteudo({
   const atualizarCapa = (parte, e) => {
     const arquivo = e.target.files?.[0];
     if (arquivo) {
-      onChange(
-        {
-          ...dados,
-          capa: { ...dados?.capa , [parte]: arquivo },
+      onChange({
+        ...dados,
+          capa: { ...dados.capa, [parte]: arquivo },
+        
       });
     }
   };
@@ -238,3 +246,6 @@ export default function Conteudo({
     </main>
   );
 }
+
+
+

@@ -1,3 +1,4 @@
+
 import { useLivros } from "../../hooks/useLivros";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -5,17 +6,18 @@ import { useState, useEffect } from "react";
 import styles from "./GerenciaLivros.module.css";
 
 export default function GerenciaLivros() {
-  const { livros, carregando, count, buscarLivros } = useLivros();
+  const { livros, carregando, count, buscarLivros, alterarAtivo } = useLivros();
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");
   const [estado, setEstado] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
 
+  const [executandoAcao, setExecutandoAcao] = useState(false);
+
   const itensPorPagina = 12;
   const totalPages = count ? Math.ceil(count / itensPorPagina) : 1;
 
-  console.log(count);
 
   useEffect(() => {
     buscarLivros(paginaAtual, itensPorPagina, busca, filtro, ordem, estado);
@@ -27,7 +29,32 @@ export default function GerenciaLivros() {
     buscarLivros(1, itensPorPagina, busca, filtro, ordem, estado);
   };
 
-  console.log("q");
+  const handleInativar = async (livro) => {
+    console.log(livro);
+    let mensagem = null;
+
+    if(livro.ativo == true){
+      mensagem = `Tem certeza que deseja INATIVAR o livro ${livro.titulo}? Ele ficara indisponivel para compra.`
+    }else{
+      mensagem = `Tem certeza que deseja INATIVAR o livro ${livro.titulo}? Ele ficara dispinivel para compra.`
+    }
+
+    if (
+      !window.confirm(
+       mensagem,
+      )
+    )
+      return;
+    setExecutandoAcao(true);
+    try {
+      await alterarAtivo(livro.id, !livro.ativo);
+      await buscarLivros(1, itensPorPagina, busca, filtro, ordem, estado);
+    } catch (erro) {
+      alert(erro.message || "Erro ao inativar livro.");
+    } finally {
+      setExecutandoAcao(false);
+    }
+  };
 
   return (
     <main>
@@ -126,6 +153,7 @@ export default function GerenciaLivros() {
                 <th>Data de Publicação</th>
                 <th>Estado</th>
                 <th>Revisão</th>
+                <th>Ativo</th>
                 <th style={{ textAlign: "center" }}>Ações</th>
               </tr>
             </thead>
@@ -189,6 +217,14 @@ export default function GerenciaLivros() {
                     </td>
 
                     <td>
+                      {livro.ativo == true? (
+                        <span>Sim</span>
+                      ) : (
+                        <span>Não</span>
+                      )}
+                    </td>
+
+                    <td>
                       <div className={styles.acoesColuna}>
                         <Link
                           to={`/admin/livros/detalhes/${livro.id}`}
@@ -204,6 +240,14 @@ export default function GerenciaLivros() {
                           >
                             Revisar
                           </Link>
+                        )}
+
+                        {livro.estado === "publicado" && (
+                          <button
+                            onClick={() => {handleInativar(livro)}}
+                          >
+                            {livro.ativo == true ? <>Inativar</> : <>Ativar</>}
+                          </button>
                         )}
                       </div>
                     </td>
@@ -242,3 +286,12 @@ export default function GerenciaLivros() {
     </main>
   );
 }
+
+
+
+
+
+
+
+
+

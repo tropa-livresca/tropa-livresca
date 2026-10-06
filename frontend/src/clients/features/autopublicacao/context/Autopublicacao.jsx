@@ -1,4 +1,5 @@
-﻿import { apiFetch } from "../../../../common/services/api";
+﻿
+import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback, useContext, useEffect } from "react";
 import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
@@ -108,14 +109,11 @@ export const AutopublicacaoProvider = ({ children }) => {
   useEffect(() => {
     if (isEdicao || !userId || rascunhoUsuarioId !== userId) return;
 
+
+
     localStorage.setItem(chaveRascunho("etapa"), etapa.toString());
     const dadosParaSalvar = {
-      ...dadosLivro,
-      conteudo: {
-        ...dadosLivro.conteudo,
-        manuscrito: null,
-        capa: { frente: null, verso: null, orelhas: null },
-      },
+      ...dadosLivro
     };
     localStorage.setItem(
       chaveRascunho("dados"),
@@ -335,17 +333,17 @@ export const AutopublicacaoProvider = ({ children }) => {
       }
     }
 
-    if(chave === "conteudo" && novosDados?.numeroPaginas != null){
-     console.log("a");
-     console.log(novosDados);
-     console.log(novosDados.conteudo);
-     setDadosLivro({...dadosLivro, [chave]: novosDados.conteudo, orcamento:{...dadosLivro.orcamento, numeroPaginas:novosDados.numeroPaginas}});
+    console.log(dadosLivro);
+    console.log(novosDados);
+    console.log(chave);
+
+    if(chave === "conteudo" && novosDados?.numeroPaginas != undefined){
+      console.log("a");
+      setDadosLivro({ ...dadosLivro, [chave]: novosDados.conteudo, orcamento: {...dadosLivro.orcamento, numeroPaginas:novosDados.numeroPaginas}  });
     }else{
-      setDadosLivro((atual) => ({ ...atual, [chave]: novosDados }));
+      setDadosLivro({ ...dadosLivro, [chave]: novosDados  });
     }
     
-
-    console.log(dadosLivro);
   };
 
   const inserirLivro = useCallback(
@@ -390,6 +388,8 @@ export const AutopublicacaoProvider = ({ children }) => {
             },
           );
           const uploadData = await res.json();
+          console.log(uploadData);
+
           if (!res.ok)
             throw new Error(uploadData.error || "Erro ao autorizar upload");
 
@@ -403,7 +403,7 @@ export const AutopublicacaoProvider = ({ children }) => {
             throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
 
           arquivosEnviados.push({ tipo, path });
-          return path;
+          return false;
         };
 
         let caminhosArquivos;
@@ -538,3 +538,7 @@ export const AutopublicacaoProvider = ({ children }) => {
     </AutopublicacaoContext.Provider>
   );
 };
+
+
+
+
