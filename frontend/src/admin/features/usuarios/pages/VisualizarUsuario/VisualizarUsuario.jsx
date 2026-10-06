@@ -24,7 +24,6 @@ export default function VisualizarUsuario() {
     usuario,
     carregando,
     promoverUsuario,
-    alterarIsMasterFuncionario,
     inativarFuncionario,
   } = useUsuarios();
 
@@ -74,25 +73,6 @@ export default function VisualizarUsuario() {
       await buscarUsuarioById(usuario.id);
     } catch (erro) {
       alert(erro.message || "Erro ao promover usuário.");
-    } finally {
-      setExecutandoAcao(false);
-    }
-  };
-
-  const handleMudarMaster = async () => {
-    const novoStatusMaster = !isMaster;
-    const mensagem = novoStatusMaster
-      ? `Deseja dar cargo de Gerente Master para ${usuario.nome}?`
-      : `Deseja remover as permissões Master de ${usuario.nome}?`;
-
-    if (!window.confirm(mensagem)) return;
-
-    setExecutandoAcao(true);
-    try {
-      await alterarIsMasterFuncionario(usuario.id, novoStatusMaster);
-      await buscarUsuarioById(usuario.id);
-    } catch (erro) {
-      alert(erro.message || "Erro ao alterar nível administrativo.");
     } finally {
       setExecutandoAcao(false);
     }
@@ -188,14 +168,6 @@ export default function VisualizarUsuario() {
               </button>
             ) : (
               <div className={styles.grupoBotoes}>
-                <button
-                  onClick={handleMudarMaster}
-                  disabled={executandoAcao}
-                  className={isMaster ? styles.btnSecundario : styles.btnPrincipal}
-                >
-                  {isMaster ? "Remover cargo Master" : "Tornar Master"}
-                </button>
-
                 <button
                   onClick={handleInativar}
                   disabled={executandoAcao}

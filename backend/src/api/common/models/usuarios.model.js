@@ -101,22 +101,6 @@ export class UsuariosModel {
     return data;
   }
 
-  static async alterarIsMasterFuncionario(funcionarioId, isMaster) {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .update({ is_master: isMaster })
-      .select()
-      .eq("id", funcionarioId)
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
-  }
-
   static async inativarFuncionario(funcionarioId) {
     const { data, error } = await supabaseAdmin
       .from("users_profile")

@@ -122,13 +122,6 @@ export default function GerenciarUsuarios() {
                 }
               >
                 <span>
-                  {/* 
-                  {ordem === "ascendente"
-                  ? "Mais Antigos"
-                  : ordem === "descendente"
-                    ? "Mais Recentes"
-                    : "Ordenar por"}*/}
-
                     {ordem === "ascendente"
                     ? "Mais Antigos"
                     : ordem === "descendente"

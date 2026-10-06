@@ -35,22 +35,6 @@ export class UsuariosController {
     }
   }
 
-  static async alterarIsMasterFuncionario(req, res, next) {
-    const { isMaster } = req.body;
-    const funcionarioId = req.params.id;
-
-    try {
-      const data = await UsuariosService.alterarIsMasterFuncionario(
-        funcionarioId,
-        isMaster,
-      );
-
-      return res.status(200).json({ data });
-    } catch (err) {
-      next(err);
-    }
-  }
-
   static async inativarFuncionario(req, res, next) {
     const funcionarioId = req.params.id;
 
