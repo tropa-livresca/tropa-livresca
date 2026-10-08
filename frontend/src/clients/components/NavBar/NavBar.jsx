@@ -1,23 +1,16 @@
 ﻿import { Link } from "react-router-dom";
 import useAuth from "../../../common/hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
-import { useCarrinho } from "../../features/loja/hooks/useCarrinho";
 import { useState, useEffect } from "react";
 import styles from "./NavBar.module.css";
 import logo from "../../../common/images/logo.png";
 
 import { FaUserCircle } from "react-icons/fa";
-import {
-  FiDollarSign,
-  FiLogOut,
-  FiPackage,
-  FiShoppingCart,
-} from "react-icons/fi";
+import { FiDollarSign, FiLogOut, FiPackage } from "react-icons/fi";
 
 export default function NavBar() {
   const { perfil, getPerfil } = usePerfil();
   const { signed, loading, signout } = useAuth();
-  const { quantidadeTotal } = useCarrinho();
   const [menuAberto, setMenuAberto] = useState(false);
   const [menuUsuario, setMenuUsuario] = useState(false);
 
@@ -95,13 +88,16 @@ export default function NavBar() {
                 <Link to="/FAQ">Perguntas Frequentes</Link>
               </li>
               <li>
+                <Link to="/politica-de-privacidade">
+                  Política de Privacidade
+                </Link>
+              </li>
+              <li>
                 <Link to="/suporte">Contato</Link>
               </li>
             </ul>
           </li>
         </ul>
-
-        
 
         {signed ? (
           <div className={styles.navbutton}>

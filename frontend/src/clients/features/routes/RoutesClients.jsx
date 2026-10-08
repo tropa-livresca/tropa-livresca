@@ -5,6 +5,7 @@ import { PerfilProvider } from "../../context/Perfil.jsx";
 import { CarrinhoProvider } from "../loja/context/Carrinho.jsx";
 
 import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound.jsx";
+import PoliticaPrivacidade from "../institucional/pages/PoliticaPrivacidade/PoliticaPrivacidade.jsx";
 import Inicio from "../institucional/pages/Inicio/Inicio";
 import TrocarSenha from "../perfil/pages/TrocarSenha/TrocarSenha";
 import SobreAutopublicacao from "../institucional/pages/SobreAutopublicacao/SobreAutopublicacao";
@@ -54,11 +55,18 @@ const RoutesClients = () => {
               path="/sobreautopublicacao"
               element={<SobreAutopublicacao />}
             />
+            <Route
+              path="/politica-de-privacidade"
+              element={<PoliticaPrivacidade />}
+            />
             <Route path="/loja" element={<Loja />} />
             <Route path="/pagamento" element={<Pagamento />} />
             <Route path="/carrinho" element={<Carrinho />} />
             <Route path="/loja/livro/:id" element={<ProdutoById />} />
-            <Route path="/checkout/:frete/:mod" element={<Private Item={Pagamento} />} />
+            <Route
+              path="/checkout/:frete/:mod"
+              element={<Private Item={Pagamento} />}
+            />
             <Route
               path="/pedido/:id"
               element={<Private Item={ResumoCompra} />}

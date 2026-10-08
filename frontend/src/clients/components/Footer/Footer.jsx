@@ -61,12 +61,16 @@ export default function Footer() {
           <p>
             Telefone: <span className={styles.numero}>(14) 9967-6767</span>
           </p>
-          <p>Atendimento: Segunda à sexta, das <span className={styles.numero}>9</span>h às <span className={styles.numero}>18</span>h</p>
-
           <p>
-            Endereço: Rua Dr. David Gabriel <span className={styles.numero}>667</span>- Taquarituba-SP
+            Atendimento: Segunda à sexta, das{" "}
+            <span className={styles.numero}>9</span>h às{" "}
+            <span className={styles.numero}>18</span>h
           </p>
 
+          <p>
+            Endereço: Rua Dr. David Gabriel{" "}
+            <span className={styles.numero}>667</span>- Taquarituba-SP
+          </p>
         </div>
 
         <div className={styles.footercolunas}>
@@ -98,11 +102,12 @@ export default function Footer() {
       </div>
 
       <div className={styles.footerbottom}>
-        <p>© <span className={styles.numero}>2026</span> Editora Tropa Livresca</p>
+        <p>
+          © <span className={styles.numero}>2026</span> Editora Tropa Livresca
+        </p>
 
         <div className={styles.footerlinks}>
-          <Link to="/">Politica de Privacidade</Link>
-          <Link to="/">Termos de Uso</Link>
+          <Link to="/politica-de-privacidade">Politica de Privacidade</Link>
         </div>
       </div>
     </footer>
