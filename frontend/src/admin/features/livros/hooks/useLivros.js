@@ -10,7 +10,7 @@ export const useLivros = () => {
   const buscarLivros = useCallback(
     async (
       page = 1,
-      limit = 12,
+      limit = 8,
       busca = "",
       filtro = "",
       ordem = "",
@@ -18,13 +18,22 @@ export const useLivros = () => {
       estado = "",
     ) => {
       setCarregando(true);
+
       try {
         let ativoBooleano = "";
-        if (ativo === "true" || ativo === true) ativoBooleano = true;
-        if (ativo === "false" || ativo === false) ativoBooleano = false;
+
+        if (ativo === "true" || ativo === true) {
+          ativoBooleano = true;
+        }
+
+        if (ativo === "false" || ativo === false) {
+          ativoBooleano = false;
+        }
 
         const res = await apiFetch(
-          `api/v1/admin/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}&filtro=${filtro}&ordem=${ordem}&ativo=${ativoBooleano}&estado=${estado}`,
+          `api/v1/admin/livros/?page=${page}&limit=${limit}&busca=${encodeURIComponent(
+            busca,
+          )}&filtro=${filtro}&ordem=${ordem}&ativo=${ativoBooleano}&estado=${estado}`,
           {
             method: "GET",
           },
@@ -35,21 +44,29 @@ export const useLivros = () => {
         if (!res.ok) {
           if (res.status === 404) {
             setLivros([]);
-            setCount(null);
-            setCarregando(false);
+            setCount(0);
             return;
           }
 
           throw new Error(`Erro encontrado ao buscar livros: ${res.status}`);
         }
 
-        console.log(result);
+        console.log("Resposta dos livros:", result);
 
         setLivros(result.data || []);
-        setCount(result.meta.totalPages);
-        setCarregando(false);
+        
+        setCount(
+          result.meta?.totalItems ??
+            result.meta?.total ??
+            result.count ??
+            result.data?.length ??
+            0,
+        );
       } catch (error) {
         console.error("Erro detectado ao buscar os livros", error);
+
+        setLivros([]);
+        setCount(0);
       } finally {
         setCarregando(false);
       }
@@ -61,6 +78,7 @@ export const useLivros = () => {
     if (!id) return;
 
     setCarregando(true);
+
     try {
       const res = await apiFetch(`/api/v1/admin/livros/${id}`, {
         method: "GET",
@@ -71,14 +89,15 @@ export const useLivros = () => {
       if (!res.ok) {
         if (res.status === 404) {
           setLivro(null);
-          setCarregando(false);
           return;
         }
+
         throw new Error(json.error || `Erro ${res.status}`);
       }
+
       setLivro(json);
     } catch (error) {
-      console.error(`Erro detectado ao buscar livro por id`, error);
+      console.error("Erro detectado ao buscar livro por id", error);
     } finally {
       setCarregando(false);
     }
@@ -88,6 +107,7 @@ export const useLivros = () => {
     if (!id) return;
 
     setCarregando(true);
+
     try {
       const res = await apiFetch(`/api/v1/admin/livros/user/${id}`, {
         method: "GET",
@@ -100,8 +120,7 @@ export const useLivros = () => {
       if (!res.ok) {
         if (res.status === 404) {
           setLivros([]);
-          setCount(null);
-          setCarregando(false);
+          setCount(0);
           return;
         }
 
@@ -109,7 +128,8 @@ export const useLivros = () => {
       }
 
       setLivros(result || []);
-      setCount(result.count);
+
+      setCount(result?.count ?? result?.length ?? 0);
     } catch (error) {
       console.error("Erro detectado ao buscar os livros", error);
     } finally {
@@ -117,18 +137,17 @@ export const useLivros = () => {
     }
   }, []);
 
-  // Tira o livro da loja (ativo = false) ou o devolve; retorna o erro ou null.
   const alterarAtivo = useCallback(async (id, ativo) => {
-    console.log("a");
     const res = await apiFetch(`/api/v1/admin/livros/${id}/ativo`, {
       method: "PATCH",
       body: JSON.stringify({ ativo }),
     });
+
     const json = await res.json().catch(() => ({}));
 
-    if (!res.ok) return json.error || "Não foi possível alterar o livro.";
-
-    console.log(json);
+    if (!res.ok) {
+      throw new Error(json.error || "Não foi possível alterar o livro.");
+    }
 
     return null;
   }, []);
@@ -148,7 +167,3 @@ export const useLivros = () => {
     buscarLivrosByUserId,
   };
 };
-
-
-
-
