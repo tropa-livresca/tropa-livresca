@@ -154,6 +154,7 @@ export class LojaModel {
   }
 
   static async buscarLivrosParaVenda(livroIds) {
+    
     const { data, error } = await supabase
       .from("livros")
       .select("id, titulo, preco_fisico, preco_digital")
@@ -170,6 +171,9 @@ export class LojaModel {
   }
 
   static async realizarVenda(dadosVenda, itensVenda) {
+
+    console.log(dadosVenda);
+
     const { data, error } = await supabaseAdmin
       .from("vendas")
       .insert(dadosVenda)
@@ -304,8 +308,8 @@ export class LojaModel {
 
   static async calcularFretePrazo(userId, produtos) {
 
-    const {data, error} = supabase
-    .from("endereco")
+    const {data, error} = await supabase
+    .from("enderecos")
     .select("cep")
     .eq("fk_user_profile_id", userId)
     .eq("principal", true)
@@ -334,6 +338,8 @@ export class LojaModel {
 
     let pesoTotalKg = 0;
     let possuiProdutoFisico = false;
+
+    console.log(produtos);
 
     produtos.forEach((produto) => {
       if (produto.tipo?.toLowerCase() === "fisico") {

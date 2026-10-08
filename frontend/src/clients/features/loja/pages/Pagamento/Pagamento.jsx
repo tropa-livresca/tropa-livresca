@@ -24,8 +24,9 @@ export default function Pagamento() {
   const [formaPagamento, setFormaPagamento] = useState("");
 
   const temFisico = itens.some((item) => item.tipo === "fisico");
+  const precoTotal = Number(valorSubtotal) + Number(frete);
 
-  console.log(console.log(mod));
+  console.log(precoTotal);
 
   useEffect(() => {
     if (temFisico) BuscarEnderecos();
@@ -36,7 +37,7 @@ export default function Pagamento() {
 
   const handleConfirmar = async () => {
     if (temFisico && !enderecoId) return;
-    const venda = await criarPedido(itens, temFisico ? enderecoId : null, temFisico ? mod : null);
+    const venda = await criarPedido(itens, temFisico ? enderecoId : null, temFisico);
     console.log(venda);
     if (venda) setPedido(venda);
   };
@@ -353,18 +354,13 @@ export default function Pagamento() {
                 <div>
                   <span>Frete</span>
                   <strong className={styles.numero}>
-                    {pedido && temFisico ? pedido.frete > 0 ? formatarPreco(pedido.frete) : "Grátis"  : temFisico  ? "A calcular"  : "compra apenas digital"
-                      }
+                    {temFisico ?  frete > 0 ? formatarPreco(frete) : "Grátis" : "compra apenas digital" }
                   </strong>
                 </div>
                 <div className={styles.total}>
                   <span>Total</span>
                   <strong className={styles.numero}>
-                    {pedido
-                      ? formatarPreco(pedido.total)
-                      : temFisico
-                        ? "A calcular"
-                        : formatarPreco(valorSubtotal)}
+                    {formatarPreco(precoTotal)}
                   </strong>
                 </div>
               </div>
