@@ -1,55 +1,114 @@
-
 import { useLivros } from "../../hooks/useLivros";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaBookOpen, FaChevronDown } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./GerenciaLivros.module.css";
-import { FaBookOpen } from 'react-icons/fa'; 
+import Carregando from "../../../../components/Carregando/Carregando";
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
 export default function GerenciaLivros() {
   const { livros, carregando, count, buscarLivros, alterarAtivo } = useLivros();
+
   const [busca, setBusca] = useState("");
   const [filtro, setFiltro] = useState("");
-  const [ordem, setOrdem] = useState("");
+  const [ordem, setOrdem] = useState("ascendente");
   const [estado, setEstado] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
-
   const [executandoAcao, setExecutandoAcao] = useState(false);
+  const [dropdownAberto, setDropdownAberto] = useState(null);
 
-  const itensPorPagina = 12;
+  const dropdownRef = useRef(null);
+
+  const itensPorPagina = 8;
   const totalPages = count ? Math.ceil(count / itensPorPagina) : 1;
 
+  useEffect(() => {
+    buscarLivros(
+      paginaAtual,
+      itensPorPagina,
+      busca,
+      filtro,
+      ordem,
+      "",
+      estado
+    );
+  }, [paginaAtual, buscarLivros, filtro, ordem, estado]);
 
   useEffect(() => {
-    buscarLivros(paginaAtual, itensPorPagina, busca, filtro, ordem, estado);
-  }, [paginaAtual, buscarLivros, filtro, ordem, estado]);
+    const fecharDropdown = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownAberto(null);
+      }
+    };
+
+    document.addEventListener("mousedown", fecharDropdown);
+
+    return () => {
+      document.removeEventListener("mousedown", fecharDropdown);
+    };
+  }, []);
 
   const handleBuscar = (e) => {
     e.preventDefault();
+
     setPaginaAtual(1);
-    buscarLivros(1, itensPorPagina, busca, filtro, ordem, estado);
+
+    buscarLivros(
+      1,
+      itensPorPagina,
+      busca,
+      filtro,
+      ordem,
+      "",
+      estado
+    );
+  };
+
+  const selecionarFiltro = (valor) => {
+    setFiltro(valor);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+  };
+
+  const selecionarOrdem = (valor) => {
+    setOrdem(valor);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+  };
+
+  const selecionarEstado = (valor) => {
+    setEstado(valor);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
   };
 
   const handleInativar = async (livro) => {
     console.log(livro);
+
     let mensagem = null;
 
-    if(livro.ativo == true){
-      mensagem = `Tem certeza que deseja INATIVAR o livro ${livro.titulo}? Ele ficara indisponivel para compra.`
-    }else{
-      mensagem = `Tem certeza que deseja INATIVAR o livro ${livro.titulo}? Ele ficara dispinivel para compra.`
+    if (livro.ativo == true) {
+      mensagem = `Tem certeza que deseja INATIVAR o livro ${livro.titulo}? Ele ficara indisponivel para compra.`;
+    } else {
+      mensagem = `Tem certeza que deseja ATIVAR o livro ${livro.titulo}? Ele ficara disponivel para compra.`;
     }
 
-    if (
-      !window.confirm(
-       mensagem,
-      )
-    )
-      return;
+    if (!window.confirm(mensagem)) return;
+
     setExecutandoAcao(true);
+
     try {
       await alterarAtivo(livro.id, !livro.ativo);
-      await buscarLivros(1, itensPorPagina, busca, filtro, ordem, estado);
+
+      await buscarLivros(
+        1,
+        itensPorPagina,
+        busca,
+        filtro,
+        ordem,
+        "",
+        estado
+      );
     } catch (erro) {
       alert(erro.message || "Erro ao inativar livro.");
     } finally {
@@ -57,227 +116,342 @@ export default function GerenciaLivros() {
     }
   };
 
+  const textoFiltro =
+    filtro === "alfabetico"
+      ? "Ordem Alfabética"
+      : filtro === "data"
+        ? "Data de Publicação"
+        : "Ordenar por";
+
+  const textoOrdem =
+    filtro === "data"
+      ? ordem === "descendente"
+        ? "Mais Recentes"
+        : "Antigos"
+      : ordem === "descendente"
+        ? "Decrescente"
+        : "Crescente";
+
+  const textoEstado =
+    estado === "publicado"
+      ? "Publicados"
+      : estado === "em_revisao"
+        ? "Para revisão"
+        : "Todos";
+
   return (
     <main>
       <div className={styles.topo}>
-              <h1 className={styles.titulo}>Livros publicados pela editora</h1>
-              <p>Acompanhe os livros da editora, seus autores e o estado de revisão.</p>
-            </div>
+        <h1 className={styles.titulo}>Livros publicados pela editora</h1>
+
+        <p>
+          Acompanhe os livros da editora, seus autores e o estado de revisão.
+        </p>
+      </div>
 
       <div className={styles.container}>
+        <form className={styles.filtroForm} onSubmit={handleBuscar}>
+          <div className={styles.buscaWrapper}>
+            <FaSearch className={styles.buscaIcon} />
 
-      <form className={styles.filtroForm} onSubmit={handleBuscar}>
-        <div className={styles.buscaWrapper}>
-          <FaSearch className={styles.buscaIcon} />
-          <input
-            type="text"
-            className={styles.inputBusca}
-            placeholder="Buscar livro"
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-          />
-        </div>
+            <input
+              type="text"
+              className={styles.inputBusca}
+              placeholder="Buscar livro"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </div>
 
-        <div className={styles.selectsGrid}>
-          <select
-            value={filtro}
-            onChange={(e) => {
-              setFiltro(e.target.value);
-              setPaginaAtual(1);
-            }}
-          >
-            <option value="">Ordenar por</option>
-            <option value="alfabetico">Ordem Alfabética</option>
-            <option value="data">Data de Publicação</option>
-          </select>
+          <div className={styles.selectWrapper}>
+            <div
+              className={styles.selectDiv}
+              onClick={() =>
+                setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
+              }
+            >
+              <span>{textoFiltro}</span>
 
-          <select
-            value={ordem}
-            onChange={(e) => {
-              setOrdem(e.target.value);
-              setPaginaAtual(1);
-            }}
-          >
-            {filtro === "" || filtro === "alfabetico" ? (
-              <div>
-                <option value="ascendente">Crescente</option>
-                <option value="descendente">Decrescente</option>
-              </div>
-            ) : (
-              <div>
-                <option value="ascendente">Antigos</option>
-                <option value="descendente">Mais Recentes</option>
+              <FaChevronDown
+                className={`${styles.selectIcon} ${
+                  dropdownAberto === "filtro" ? styles.selectIconAberto : ""
+                }`}
+              />
+            </div>
+
+            {dropdownAberto === "filtro" && (
+              <div className={styles.opcoes}>
+                <div
+                  className={`${styles.opcao} ${
+                    filtro === "" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarFiltro("")}
+                >
+                  Ordenar por
+                </div>
+
+                <div
+                  className={`${styles.opcao} ${
+                    filtro === "alfabetico" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarFiltro("alfabetico")}
+                >
+                  Ordem Alfabética
+                </div>
+
+                <div
+                  className={`${styles.opcao} ${
+                    filtro === "data" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarFiltro("data")}
+                >
+                  Data de Publicação
+                </div>
               </div>
             )}
-          </select>
+          </div>
 
-          <select
-            value={estado}
-            onChange={(e) => {
-              setEstado(e.target.value);
-              setPaginaAtual(1);
-            }}
-          >
-            <option value="">Todos</option>
-            <option value="publicado">Publicados</option>
-            <option value="em_revisao">Para revisão</option>
-          </select>
+          <div className={styles.selectWrapper}>
+            <div
+              className={styles.selectDiv}
+              onClick={() =>
+                setDropdownAberto(dropdownAberto === "ordem" ? null : "ordem")
+              }
+            >
+              <span>{textoOrdem}</span>
+
+              <FaChevronDown
+                className={`${styles.selectIcon} ${
+                  dropdownAberto === "ordem" ? styles.selectIconAberto : ""
+                }`}
+              />
+            </div>
+
+            {dropdownAberto === "ordem" && (
+              <div className={styles.opcoes}>
+                <div
+                  className={`${styles.opcao} ${
+                    ordem === "ascendente" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarOrdem("ascendente")}
+                >
+                  {filtro === "data" ? "Antigos" : "Crescente"}
+                </div>
+
+                <div
+                  className={`${styles.opcao} ${
+                    ordem === "descendente" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarOrdem("descendente")}
+                >
+                  {filtro === "data" ? "Mais Recentes" : "Decrescente"}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.selectWrapper}>
+            <div
+              className={styles.selectDiv}
+              onClick={() =>
+                setDropdownAberto(dropdownAberto === "estado" ? null : "estado")
+              }
+            >
+              <span>{textoEstado}</span>
+
+              <FaChevronDown
+                className={`${styles.selectIcon} ${
+                  dropdownAberto === "estado" ? styles.selectIconAberto : ""
+                }`}
+              />
+            </div>
+
+            {dropdownAberto === "estado" && (
+              <div className={styles.opcoes}>
+                <div
+                  className={`${styles.opcao} ${
+                    estado === "" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarEstado("")}
+                >
+                  Todos
+                </div>
+
+                <div
+                  className={`${styles.opcao} ${
+                    estado === "publicado" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarEstado("publicado")}
+                >
+                  Publicados
+                </div>
+
+                <div
+                  className={`${styles.opcao} ${
+                    estado === "em_revisao" ? styles.opcaoSelecionada : ""
+                  }`}
+                  onClick={() => selecionarEstado("em_revisao")}
+                >
+                  Para revisão
+                </div>
+              </div>
+            )}
+          </div>
 
           <button type="submit" className={styles.btn}>
-            Buscar
+            <FaSearch />
+            <span>Buscar</span>
           </button>
-        </div>
+        </form>
 
-        <div className={styles.totalEncontrado}>
-          Livros encontrados: {count}
-        </div>
-      </form>
+        {carregando ? (
+          <Carregando mensagem="Carregando livros..." />
+        ) : !livros || livros.length === 0 ? (
+          <div className={styles.cardnenhumlivro}>
+            <FaSearch size={40} />
 
-      {carregando ? (
-        <p>Carregando...</p>
-      ) : !livros || livros.length === 0 ? (
-        <div className={styles.cardnenhumlivro}>
-          <FaSearch size={40} />
-          <h3 className={styles.titulon}>Nenhum livro encontrado</h3>
-          <p className={styles.sub}>
-            Tente mudar os termos da busca ou os filtros aplicados.
-          </p>
-        </div>
-      ) : (
-        <div className={styles.tabelaContainer}>
-          <table className={styles.tabelaLivros}>
-            <thead>
-              <tr>
-                <th>Capa</th>
-                <th>Título e Autor</th>
-                <th>Data de Publicação</th>
-                <th>Estado</th>
-                <th>Revisão</th>
-                <th>Ativo</th>
-                <th style={{ textAlign: "center" }}>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {livros.map((livro) => {
-                let capaObjeto = null;
-                try {
-                  capaObjeto =
-                    typeof livro.capa === "string"
-                      ? JSON.parse(livro.capa)
-                      : livro.capa;
-                } catch (e) {
-                  console.error("Erro ao converter capa JSONB:", e);
-                }
+            <h3 className={styles.titulon}>Nenhum livro encontrado</h3>
 
-                return (
-                  <tr key={livro.id}>
-                    <td>
-                      <div className={styles.capaContainer}>
-                        {capaObjeto ? (
-                          <img
-                            src={capaObjeto.frente}
-                            alt={livro.titulo}
-                            className={styles.capaMini}
-                          />
-                        ) : (
-                          <div className={styles.semCapaMini}><FaBookOpen color="#67170c"/></div>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className={styles.detalhesTexto}>
-                        <h3 className={styles.livroTitulo}>
-                          {livro.titulo || "Sem título"}
-                        </h3>
-                        <span className={styles.sub}>
-                          {livro.autor_nome} {livro.autor_sobrenome}
-                        </span>
-                      </div>
-                    </td>
-                    <td className={styles.numero}>{livro.data_de_publicacao}</td>
-                    <td>
-                      {livro.estado !== "publicado"  ? (
-                        <span>Nâo publicado</span>
-                      ) : (
-                        <span>Publicado</span>
-                      )}
-                    </td>
+            <p className={styles.sub}>
+              Tente mudar os termos da busca ou os filtros aplicados.
+            </p>
+          </div>
+        ) : (
+          <div className={styles.tabelaContainer}>
+            <table className={styles.tabelaLivros}>
+              <thead>
+                <tr>
+                  <th>Capa</th>
+                  <th>Título e Autor</th>
+                  <th>Data de Publicação</th>
+                  <th>Estado</th>
+                  <th>Revisão</th>
+                  <th>Ativo</th>
+                  <th style={{ textAlign: "center" }}>Ações</th>
+                </tr>
+              </thead>
 
-                    <td>
-                      {livro.estado === "em_revisao" ? (
-                        <span>Em revisão</span>
-                      ) : (
-                        <span>Revisto</span>
-                      )}
-                    </td>
+              <tbody>
+                {livros.map((livro) => {
+                  let capaObjeto = null;
 
-                    <td>
-                      {livro.ativo == true? (
-                        <span>Sim</span>
-                      ) : (
-                        <span>Não</span>
-                      )}
-                    </td>
+                  try {
+                    capaObjeto =
+                      typeof livro.capa === "string"
+                        ? JSON.parse(livro.capa)
+                        : livro.capa;
+                  } catch (e) {
+                    console.error("Erro ao converter capa JSONB:", e);
+                  }
 
-                    <td>
-                      <div className={styles.acoesColuna}>
-                        <Link
-                          to={`/admin/livros/detalhes/${livro.id}`}
-                          className={`${styles.btnAcao} ${styles.btnVisualizar}`}
+                  return (
+                    <tr key={livro.id}>
+                      <td>
+                        <div className={styles.capaContainer}>
+                          {capaObjeto ? (
+                            <img
+                              src={capaObjeto.frente}
+                              alt={livro.titulo}
+                              className={styles.capaMini}
+                            />
+                          ) : (
+                            <div className={styles.semCapaMini}>
+                              <FaBookOpen color="#67170c" />
+                            </div>
+                          )}
+                        </div>
+                      </td>
+
+                      <td>
+                        <div className={styles.detalhesTexto}>
+                          <h3 className={styles.livroTitulo}>
+                            {livro.titulo || "Sem título"}
+                          </h3>
+
+                          <span className={styles.sub}>
+                            {livro.autor_nome} {livro.autor_sobrenome}
+                          </span>
+                        </div>
+                      </td>
+
+                      <td className={styles.numero}>
+                        {livro.data_de_publicacao}
+                      </td>
+
+                      <td>
+                        <span
+                          className={`${styles.badge} ${livro.estado === "publicado" ? styles.badgeOn : styles.badgeOff}`}
                         >
-                          Ver Livro <span className={styles.numero2}>{livro.id}</span>
-                        </Link>
+                          {livro.estado === "publicado"
+                            ? "Publicado"
+                            : "Não publicado"}
+                        </span>
+                      </td>
 
-                        {livro.estado === "em_revisao" && (
+                      <td>
+                        <span
+                          className={`${styles.badge} ${livro.estado === "em_revisao" ? styles.badgeOn : styles.badgeOff}`}
+                        >
+                          {livro.estado === "em_revisao"
+                            ? "Em revisão"
+                            : "Revisto"}
+                        </span>
+                      </td>
+
+                      <td>
+                        <span
+                          className={`${styles.badge} ${livro.ativo == true ? styles.badgeOn : styles.badgeOff}`}
+                        >
+                          {livro.ativo == true ? "Sim" : "Não"}
+                        </span>
+                      </td>
+
+                      <td>
+                        <div className={styles.acoesColuna}>
                           <Link
-                            to={`/admin/livros/revisoes/nova-revisao/${livro.id}`}
-                            className={styles.inativar}
+                            to={`/admin/livros/detalhes/${livro.id}`}
+                            className={`${styles.btnAcao} ${styles.btnVisualizar}`}
                           >
-                            Revisar
+                            Ver Livro{" "}
+                            <span className={styles.numero2}>{livro.id}</span>
                           </Link>
-                        )}
 
-                        {livro.estado === "publicado" && (
-                          <button
-                            onClick={() => {handleInativar(livro)}}
-                            className={styles.inativar}
-                          >
-                            {livro.ativo == true ? <>Inativar</> : <>Ativar</>}
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      )}
+                          {livro.estado === "em_revisao" && (
+                            <Link
+                              to={`/admin/livros/revisoes/nova-revisao/${livro.id}`}
+                              className={styles.inativar}
+                            >
+                              Revisar
+                            </Link>
+                          )}
 
-      {!carregando && totalPages > 1 && (
-        <div className={styles.paginacao}>
-          <button
-            className={styles.btnPaginacao}
-            onClick={() => setPaginaAtual((prev) => Math.max(prev - 1, 1))}
-            disabled={paginaAtual === 1}
-          >
-            Anterior
-          </button>
-          <span className={styles.textoPaginacao}>
-            Página {paginaAtual} de {totalPages} (Total: {count})
-          </span>
-          <button
-            className={styles.btnPaginacao}
-            onClick={() =>
-              setPaginaAtual((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={paginaAtual === totalPages}
-          >
-            Próximo
-          </button>
-        </div>
-      )}
+                          {livro.estado === "publicado" && (
+                            <button
+                              onClick={() => handleInativar(livro)}
+                              className={styles.inativar}
+                              disabled={executandoAcao}
+                            >
+                              {livro.ativo == true ? "Inativar" : "Ativar"}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {!carregando && totalPages > 1 && (
+          <Paginacao
+            totalPaginas={totalPages}
+            totalItems={count}
+            paginaAtual={paginaAtual}
+            onMudarPagina={setPaginaAtual}
+          />
+        )}
       </div>
     </main>
   );

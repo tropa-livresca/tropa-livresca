@@ -26,8 +26,10 @@ export default function GerenciarUsuarios() {
 
   const handleBuscar = (e) => {
     e.preventDefault();
+
     setPaginaAtual(1);
-    buscarUsuarios(1, 3, busca, funcao, ordem);
+
+    buscarUsuarios(1, 8, busca, funcao, ordem);
   };
 
   const handleFiltro = (filtro, funcaoBool) => {
@@ -36,6 +38,7 @@ export default function GerenciarUsuarios() {
     } else {
       setOrdem(filtro);
     }
+
     setPaginaAtual(1);
     setDropdownAberto(null);
   };
@@ -44,14 +47,19 @@ export default function GerenciarUsuarios() {
     <main className={styles.mainContainer}>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Gerenciar Usuários</h1>
-        <p>Consulte leitores, autores e funcionários e gerencie suas permissões.</p>
+
+        <p>
+          Consulte leitores, autores e funcionários e gerencie suas permissões.
+        </p>
       </div>
 
       <div className={styles.container}>
         <form onSubmit={handleBuscar} className={styles.busca}>
+          <div className={styles.inputGrupo}>
             <span className={styles.iconebusca}>
               <FaSearch />
             </span>
+
             <input
               className={styles.inputBusca}
               type="text"
@@ -59,8 +67,9 @@ export default function GerenciarUsuarios() {
               value={busca}
               onChange={(e) => setBusca(e.target.value)}
             />
+          </div>
 
-          
+          <div className={styles.selectGrupo}>
             <div className={styles.selectContainer}>
               <div
                 className={styles.select}
@@ -79,8 +88,11 @@ export default function GerenciarUsuarios() {
                         ? "Funcionários"
                         : "Todos"}
                 </span>
+
                 <FiChevronDown
-                  className={`${styles.seta} ${dropdownAberto === "filtro" ? styles.setaAberta : ""}`}
+                  className={`${styles.seta} ${
+                    dropdownAberto === "filtro" ? styles.setaAberta : ""
+                  }`}
                 />
               </div>
 
@@ -92,18 +104,21 @@ export default function GerenciarUsuarios() {
                   >
                     Todos
                   </div>
+
                   <div
                     onClick={() => handleFiltro("cliente", true)}
                     className={styles.optionItem}
                   >
                     Clientes
                   </div>
+
                   <div
                     onClick={() => handleFiltro("autor", true)}
                     className={styles.optionItem}
                   >
                     Autores
                   </div>
+
                   <div
                     onClick={() => handleFiltro("funcionario", true)}
                     className={styles.optionItem}
@@ -122,17 +137,17 @@ export default function GerenciarUsuarios() {
                 }
               >
                 <span>
-                    {ordem === "ascendente"
+                  {ordem === "ascendente"
                     ? "Mais Antigos"
                     : ordem === "descendente"
                       ? "Mais Recentes"
-                       : ordem === ""
-                        ? "Ordenar por"
-                        : "Ordenar por"}
-
+                      : "Ordenar por"}
                 </span>
+
                 <FiChevronDown
-                  className={`${styles.seta} ${dropdownAberto === "ordem" ? styles.setaAberta : ""}`}
+                  className={`${styles.seta} ${
+                    dropdownAberto === "ordem" ? styles.setaAberta : ""
+                  }`}
                 />
               </div>
 
@@ -144,25 +159,29 @@ export default function GerenciarUsuarios() {
                   >
                     Mais Antigos
                   </div>
+
                   <div
                     onClick={() => handleFiltro("descendente", false)}
                     className={styles.optionItem}
                   >
                     Mais Recentes
                   </div>
+
                   <div
                     onClick={() => handleFiltro("", false)}
                     className={styles.optionItem}
                   >
-                    Ordenar Por
+                    Ordenar por
                   </div>
                 </div>
               )}
             </div>
+          </div>
 
-            <button type="submit" className={styles.btnbuscar}>
-              Buscar
-            </button>
+          <button type="submit" className={styles.btnbuscar}>
+            <FaSearch />
+            <span>Buscar</span>
+          </button>
         </form>
 
         {carregando ? (
@@ -181,10 +200,13 @@ export default function GerenciarUsuarios() {
                   <th>Nome</th>
                   <th>Nível Administrativo</th>
                   <th>É Autor?</th>
+
                   {funcao === "funcionario" && <th>E-mail Corporativo</th>}
+
                   <th className={styles.acoesHeader}>Ações</th>
                 </tr>
               </thead>
+
               <tbody>
                 {usuarios.map((usuario, c) => (
                   <tr key={c} className={styles.linhaTabela}>
@@ -198,27 +220,38 @@ export default function GerenciarUsuarios() {
                           <FaUser />
                         )}
                       </span>
+
                       {usuario.nome}
                     </td>
+
                     <td>
                       <span
-                        className={`${styles.badge} ${usuario.isAdmin ? styles.badgeAdmin : styles.badgeCliente}`}
+                        className={`${styles.badge} ${
+                          usuario.isAdmin
+                            ? styles.badgeAdmin
+                            : styles.badgeCliente
+                        }`}
                       >
                         {usuario.isAdmin ? "Funcionário" : "Cliente"}
                       </span>
                     </td>
+
                     <td>
                       <span
-                        className={`${styles.badge} ${usuario.isAutor ? styles.badgeSim : styles.badgeNao}`}
+                        className={`${styles.badge} ${
+                          usuario.isAutor ? styles.badgeSim : styles.badgeNao
+                        }`}
                       >
                         {usuario.isAutor ? "Sim" : "Não"}
                       </span>
                     </td>
+
                     {funcao === "funcionario" && (
                       <td className={styles.colunaEmail}>
                         {usuario.redes_sociais?.email || "-"}
                       </td>
                     )}
+
                     <td className={styles.colunaAcoes}>
                       <Link to={`/admin/usuarios/${usuario.id}`}>
                         Visualizar Usuário
@@ -232,16 +265,14 @@ export default function GerenciarUsuarios() {
         )}
 
         {!carregando && meta && meta.totalPages > 1 && (
-        <Paginacao
-          totalPaginas={meta.totalPages}
-          totalItems={meta.totalItems}
-          paginaAtual={paginaAtual}
-          onMudarPagina={setPaginaAtual}
-        />
-      )}
+          <Paginacao
+            totalPaginas={meta.totalPages}
+            totalItems={meta.totalItems}
+            paginaAtual={paginaAtual}
+            onMudarPagina={setPaginaAtual}
+          />
+        )}
       </div>
-
-      
     </main>
   );
 }
