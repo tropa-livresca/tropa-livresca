@@ -1,259 +1,564 @@
 .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333333;
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 3rem 6%;
+}
+
+.topo {
+  width: 100%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+  padding: 3rem 6%;
 }
 
 .titulo {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: #1a1a1a;
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-family: "Jacques Francois", serif;
 }
 
-/* Barra de Filtros e Busca */
-.filtroContainer {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  background-color: #ffffff;
-  padding: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
   margin-bottom: 2rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+   color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+     margin-bottom: 0.5rem;
+}
+
+.filtroContainer {
+  display: grid;
+  grid-template-columns: minmax(250px, 1fr) auto auto;
   align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 2.5rem;
+  padding: 0.55rem;
+  background: #fffdf7;
+  border-radius: 1.25rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .inputGrupo {
   position: relative;
-  flex: 1;
-  min-width: 250px;
+  width: 100%;
 }
 
 .iconeBusca {
   position: absolute;
-  left: 12px;
+  left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: #a0aec0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
 }
 
 .inputBusca {
   width: 100%;
-  padding: 0.6rem 0.6rem 0.6rem 2.5rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
+  min-height: 46px;
+  padding: 0.7rem 1rem 0.7rem 2.7rem;
+  border: 1px solid #e3d5ad;
+  border-radius: 0.75rem;
+  background: #fffdf7;
+  color: #67170c;
+  font-family: inherit;
   font-size: 0.95rem;
   outline: none;
-  transition: border-color 0.2s;
 }
 
-.inputBusca:focus,
-.selectFiltro:focus {
-  border-color: #3182ce;
+.inputBusca::placeholder {
+  color: var(--cor-texto-muted);
+}
+
+.inputBusca:focus {
+  border-color: #67170c;
 }
 
 .selectGrupo {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(150px, 1fr));
+  gap: 0.6rem;
 }
 
-.selectFiltro {
-  padding: 0.6rem 2rem 0.6rem 0.8rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  background-color: #ffffff;
-  font-size: 0.95rem;
+.selectCustom {
+  position: relative;
+  min-width: 0;
+}
+
+.selectBotao {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e3d5ad;
+  border-radius: 0.75rem;
+  background: #fffdf7;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-align: left;
   cursor: pointer;
   outline: none;
 }
 
-.botaoBuscar {
-  background-color: #3182ce;
-  color: #ffffff;
-  padding: 0.6rem 1.5rem;
+.selectBotao:hover {
+  border-color: #67170c;
+  transition: 0.2s;
+}
+
+.selectBotao:focus {
+  border-color: #67170c;
+}
+
+.selectBotao svg {
+  flex-shrink: 0;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+  color:#67170c;
+}
+
+.iconeAberto {
+  transform: rotate(180deg);
+}
+
+.opcoes {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: 100%;
+  min-width: 100%;
+  padding: 0.2rem;
+  background: #fffdf7;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 10px 25px rgba(103, 23, 12, 0.13),
+    0 3px 8px rgba(103, 23, 12, 0.07);
+}
+
+.opcao {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.75rem;
   border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.88rem;
+  text-align: left;
   cursor: pointer;
-  transition: background-color 0.2s;
+}
+
+.opcao:hover {
+   background-color: #ffecc9;
+  color: #ffbb33;
+  transition: 0.25s;
+}
+
+.botaoBuscar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 0.75rem;
+  background: #67170c;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+    color: #ede6b3;
+    transition: 0.3s;
 }
 
 .botaoBuscar:hover {
-  background-color: #2b6cb0;
+  background-color: #ffbb33;
 }
 
-/* Grid e Layout dos Cards */
 .gridRevisoes {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(350px, 1fr)
+  );
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
 .cardRevisao {
-  background-color: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  min-width: 0;
   overflow: hidden;
+  background: #fffdf7;
+  border-radius: 1.35rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
   transition:
-    transform 0.2s,
-    box-shadow 0.2s;
+    transform 0.25s ease;
 }
 
 .cardRevisao:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transform: translateY(-3px);
 }
 
-/* Topo do Card (Capa e Info do Livro) */
 .cardHeader {
-  display: flex;
-  gap: 1rem;
-  padding: 1.25rem;
-  border-bottom: 1px solid #edf2f7;
-  background-color: #f7fafc;
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.4rem 1.5rem;
+  border-bottom: 1px solid #e3d5ad;
 }
 
 .capaContainer {
-  flex-shrink: 0;
-}
-
-.capaLivro {
-  width: 70px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.semCapa {
-  width: 70px;
-  height: 100px;
-  background-color: #e2e8f0;
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 82px;
+  min-width: 82px;
+}
+
+.capaLivro,
+.semCapa {
+  width: 72px;
+  height: 98px;
+  border-radius: 0.5rem;
+}
+
+.capaLivro {
+  display: block;
+  object-fit: cover;
+  border: 1px solid #e1d3ae;
+  box-shadow:
+    0 4px 10px rgba(103, 23, 12, 0.12);
+}
+
+.semCapa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: 1px solid #67170c;
+  background: #fffdf7;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
   font-size: 0.75rem;
-  color: #718096;
-  border-radius: 4px;
+  text-align: center;
 }
 
 .infoLivro {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 0.25rem;
 }
 
 .livroId {
-  font-size: 0.75rem;
-  color: #a0aec0;
+  width: fit-content;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .livroTitulo {
-  font-size: 1rem;
+  margin: 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.35rem;
   font-weight: 700;
-  margin: 0.2rem 0;
-  color: #2d3748;
-  line-height: 1.3;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
 }
 
 .livroSubtitulo {
-  font-size: 0.8rem;
-  color: #718096;
   margin: 0;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  line-height: 1.4;
+  text-align:left;
+  overflow-wrap: anywhere;
 }
 
-/* Corpo do Card (Dados da Revisão) */
 .cardBody {
-  padding: 1.25rem;
-  flex-grow: 1;
-  font-size: 0.9rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  padding: 1.35rem 1.5rem;
 }
 
-.cardBody p {
-  margin: 0;
-  color: #4a5568;
+.infoRevisao {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
 }
 
-.apontamento {
-  background-color: #f7fafc;
-  padding: 0.5rem;
-  border-radius: 4px;
-  font-style: italic;
-  border-left: 3px solid #cbd5e0;
-  margin-top: 0.25rem;
+.infoItem {
+  display: grid;
+  min-width: 0;
+  gap: 0.25rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 0.75rem;
+  background: rgb(255, 248, 215);
+  border: 1px solid #e2c77c;
 }
 
-.dataRevisao {
-  font-size: 0.8rem;
-  color: #a0aec0;
-  margin-top: auto;
-  display: block;
+.infoLabel {
+  color: var(--cor-texto-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
-/* Botões/Links de Ações */
+.numeroo{
+  font-family:none;
+}
+
+.infoValor {
+  min-width: 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.infoApontamento {
+  grid-column: 1 / -1;
+  background: #fffdf7;
+  border-color: #e2c77c;
+}
+
+.numero {
+  font-family: inherit;
+}
+
 .cardAcoes {
-  display: flex;
-  border-top: 1px solid #edf2f7;
-  background-color: #f8fafc;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  padding: 0rem 1.5rem 0rem;
+  border-top: 1px solid #e3d5ad;
 }
 
 .linkPrimario,
 .linkSecundario {
-  flex: 1;
-  text-align: center;
-  padding: 0.8rem;
-  font-size: 0.85rem;
-  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #e2c77c;
+  border-radius: 0.75rem;
+  color: #67170c !important;
+  background: #fff8d7 !important;
+  font-size: 0.9rem;
+  font-weight: normal;
   text-decoration: none;
-  transition: background-color 0.2s;
 }
 
-.linkPrimario {
-  color: #3182ce;
-  border-right: 1px solid #edf2f7;
-}
-
-.linkPrimario:hover {
-  background-color: #ebf8ff;
-}
-
-.linkSecundario {
-  color: #4a5568;
-}
-
+.linkPrimario:hover,
 .linkSecundario:hover {
-  background-color: #f7fafc;
+  background: #ffbb33 !important;
+  transition:0.3s;
+  color:#ede6b3 !important;
 }
 
-/* Feedbacks de status e Paginação */
+.linkPrimario svg,
+.linkSecundario svg {
+  font-size: 1rem;
+}
+
 .feedback {
-  text-align: center;
+  display: grid;
+  place-items: center;
+  min-height: 220px;
   padding: 3rem;
-  color: #718096;
-  font-size: 1.1rem;
-  background: #ffffff;
-  border-radius: 8px;
-  border: 1px dashed #e2e8f0;
+  color: #806f5d;
+  font-size: 1.05rem;
+  background: #fffdf7;
+  border: 1px dashed #d4b46a;
+  border-radius: 1.25rem;
 }
 
 .paginacaoContainer {
   display: flex;
   justify-content: center;
   margin-top: 2.5rem;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 2.5rem 4%;
+  }
+
+  .topo {
+    padding: 2.5rem 4%;
+  }
+
+  .filtroContainer {
+    grid-template-columns: 1fr auto;
+  }
+
+  .inputGrupo {
+    min-width: 0;
+  }
+
+  .selectGrupo {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .botaoBuscar {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .gridRevisoes {
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(320px, 1fr)
+    );
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 4%;
+  }
+
+  .topo {
+    padding: 2.5rem 4%;
+  }
+
+  .titulo {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+  }
+
+  .topo p {
+    font-size: 1rem;
+  }
+
+  .filtroContainer {
+    grid-template-columns: 1fr;
+  }
+
+  .inputGrupo {
+    grid-column: 1;
+  }
+
+  .selectGrupo {
+    grid-column: 1;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .botaoBuscar {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .gridRevisoes {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    grid-template-columns: 82px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .topo {
+    padding: 2rem 1rem;
+  }
+
+  .titulo {
+    font-size: 1.8rem;
+  }
+
+  .titulo::after {
+    width: 5rem;
+    height: 3px;
+    margin-top: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .topo p {
+    font-size: 0.95rem;
+  }
+
+  .filtroContainer {
+    padding: 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .selectGrupo {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    grid-template-columns: 70px minmax(0, 1fr);
+    gap: 0.9rem;
+    padding: 1.1rem;
+  }
+
+  .capaContainer {
+    width: 70px;
+    min-width: 70px;
+  }
+
+  .capaLivro,
+  .semCapa {
+    width: 64px;
+    height: 88px;
+  }
+
+  .livroTitulo {
+    font-size: 1.15rem;
+  }
+
+  .livroSubtitulo {
+    font-size: 0.9rem;
+  }
+
+  .cardBody {
+    padding: 1rem;
+  }
+
+  .infoRevisao {
+    grid-template-columns: 1fr;
+  }
+
+  .infoApontamento {
+    grid-column: auto;
+  }
+
+  .cardAcoes {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+  }
 }

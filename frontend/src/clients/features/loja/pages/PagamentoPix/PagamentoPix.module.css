@@ -1,0 +1,288 @@
+.container {
+  width: 75%;
+  margin: 0 auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.topo {
+  margin-bottom: 2rem;
+}
+
+.voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #67170c;
+  text-decoration: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+.voltar:hover {
+  text-decoration: underline;
+}
+
+.card {
+  width: 100%;
+  padding: 2rem;
+  box-sizing: border-box;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.formTitulo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.formTitulo strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.4rem;
+}
+
+.formTitulo span {
+  display: block;
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.icone {
+  width: 3.5rem;
+  height: 3.5rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f7f0cf;
+  color: #67170c;
+  font-size: 1.4rem;
+}
+
+.chave {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0 auto 1.5rem;
+  padding: 0.7rem;
+      background: #fff8d7;
+    border: 1px solid #e2c77c;
+
+  border-radius: 1rem;
+  box-sizing: border-box;
+}
+
+.chave span {
+  flex: 1;
+  overflow: hidden;
+  color: #67170c;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.chave button {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 6px;
+  background: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.chave button:hover {
+  background-color: #ffbb33;
+}
+
+.qrCode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+}
+
+.qrCode img {
+  width: 190px;
+  height: 190px;
+  padding: 0.7rem;
+  background: #fff;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  box-sizing: content-box;
+  box-shadow: 0 5px 15px rgba(103, 23, 12, 0.08);
+}
+
+.qrCode span {
+  margin-top: 0.8rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+}
+
+.instrucoes {
+  width: 100%;
+  margin: 0 auto 2.5rem;
+  padding: 1.5rem;
+      background: #fff8d7;
+    border: 1px solid #e2c77c;
+
+  border-radius: 1rem;
+  box-sizing: border-box;
+}
+
+.instrucoes > strong {
+  display: block;
+  margin-bottom: 1.5rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.instrucoes div {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 2.5rem;
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 0.8rem;
+  box-sizing: border-box;
+  transition: 0.2s ease;
+}
+
+.instrucoes div:last-child {
+  margin-bottom: 0;
+}
+
+.instrucoes div:hover {
+  transform: translateX(3px);
+}
+
+.instrucoes div span {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #67170c;
+  color: #fffdf7;
+  font-size: 0.8rem;
+  box-shadow: 0 3px 8px rgba(103, 23, 12, 0.15);
+}
+
+.numero {
+  font-family: none;
+}
+
+.instrucoes p {
+  margin: 0;
+  color: #5d5547;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.botao {
+  width: 100%;
+  padding: 0.7rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  background-color: #67170c;
+  color: #ede6b3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botao:hover {
+  background-color: #ffbb33;
+}
+
+.seguro {
+  display: block;
+  margin-top: 1rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  .container {
+    width: 90%;
+  }
+
+  .chave,
+  .instrucoes {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 2rem 5%;
+  }
+
+  .card {
+    padding: 1.3rem;
+  }
+
+  .formTitulo {
+    gap: 0.8rem;
+  }
+
+  .formTitulo strong {
+    font-size: 1.2rem;
+  }
+
+  .formTitulo span {
+    font-size: 0.9rem;
+  }
+
+  .icone {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.2rem;
+  }
+
+  .instrucoes {
+    padding: 1rem;
+  }
+
+  .instrucoes div {
+    padding: 0.7rem;
+  }
+
+  .qrCode img {
+    width: 160px;
+    height: 160px;
+  }
+}
