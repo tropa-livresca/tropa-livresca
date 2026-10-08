@@ -48,6 +48,7 @@ export class EnderecoModel {
       .single();
 
     if (error) {
+      console.log(userId);
       error.statusCode = 500;
       throw error;
     }

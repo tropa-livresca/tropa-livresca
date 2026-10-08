@@ -30,8 +30,7 @@ export default function MeusGanhos() {
   return (
     <main>
 
-       <DescricaoTela titulo = "Meus ganhos" descricao = "A cada livro seu vendido na loja, você recebe 30% do valor como
-          direitos autorais." />
+       <DescricaoTela titulo = "Meus ganhos" descricao = "A cada livro seu vendido na loja, você recebe 30% do valor como direitos autorais." />
 
       <div className={base.container}>
         {carregando && !ganhos ? (

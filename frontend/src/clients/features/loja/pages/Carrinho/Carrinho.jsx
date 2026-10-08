@@ -18,6 +18,7 @@ export default function Carrinho() {
     setFrete,
     itens,
     excluirItem,
+    adicionarItem
   } = useCarrinho();
 
   console.log(frete);
@@ -32,7 +33,9 @@ export default function Carrinho() {
     }
   }, [itens] )
 
-  const handleConcluirCompra = () => {if(modDeEntrega == null){
+  console.log(modDeEntrega);
+
+  const handleConcluirCompra = () => {if(modDeEntrega == "" && frete != null){
     setErro("selecione uma modalide de entrega");
   }else{
     if(modDeEntrega == "sedex"){
@@ -205,7 +208,7 @@ export default function Carrinho() {
                   Preço base Sedex R$ {Number(frete.precoPac).toFixed(2).replace(".", ",")}
                 </strong>
               </div>
-              </> : <></>}
+              </> : <div>livro digital</div>}
               
               
             </div>

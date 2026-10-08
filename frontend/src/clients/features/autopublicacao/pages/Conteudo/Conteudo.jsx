@@ -4,7 +4,7 @@ import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -48,6 +48,8 @@ export default function Conteudo({
       }
     }
   };
+
+  console.log(dados);
 
   const atualizarCapa = (parte, e) => {
     const arquivo = e.target.files?.[0];

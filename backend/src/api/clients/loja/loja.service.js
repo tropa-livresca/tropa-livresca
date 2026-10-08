@@ -161,7 +161,7 @@ export class LojaService {
       };
 
       const opcoesFrete = await LojaModel.calcularFretePrazo(
-        endereco.cep,
+        usuarioId,
         itensFisicos.map((item) => ({ tipo: "fisico", quantidade: item.qtd })),
       );
       // Usa a opção mais barata (PAC).
@@ -170,6 +170,8 @@ export class LojaService {
 
     const totalItens = itensVenda.reduce((acc, item) => acc + item.subtotal, 0);
     const total = arredondar(totalItens + frete);
+
+    console.log(usuarioId);
 
     const dadosVenda = {
       fk_user_profile_id: usuarioId,

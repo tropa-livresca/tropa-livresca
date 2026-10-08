@@ -20,6 +20,7 @@ export default function Confirmacao({
   };
 
   console.log(dados);
+  
 
   const previews = useMemo(() => {
     const urlsCriadas = [];
@@ -35,6 +36,7 @@ export default function Confirmacao({
       return null;
     };
 
+
     return {
       manga: obterUrl(dados?.conteudo?.manuscrito),
       frente: obterUrl(dados?.conteudo?.capa?.frente),
@@ -43,6 +45,8 @@ export default function Confirmacao({
       _urlsCriadas: urlsCriadas,
     };
   }, [dados?.conteudo]);
+
+      console.log(previews);
 
   useEffect(() => {
     return () => {

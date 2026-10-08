@@ -319,6 +319,8 @@ export const AutopublicacaoProvider = ({ children }) => {
     console.log(novosDados);
     console.log(chave);
 
+    console.log(1);
+
     if(chave === "conteudo" && novosDados?.numeroPaginas != undefined){
       console.log("a");
       setDadosLivro({ ...dadosLivro, [chave]: novosDados.conteudo, orcamento: {...dadosLivro.orcamento, numeroPaginas:novosDados.numeroPaginas}  });
