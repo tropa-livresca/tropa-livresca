@@ -1,54 +1,47 @@
 import styles from "./Carrinho.module.css";
 import { FiTrash2, FiMinus, FiPlus, FiArrowLeft } from "react-icons/fi";
-import { Link, useNavigate, } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCarrinho } from "../../hooks/useCarrinho";
-import useAuth from "../../../../../common/hooks/useAuth.js";
 
 import { useEffect, useState } from "react";
 
 export default function Carrinho() {
   const navigate = useNavigate();
 
-    const {
+  const {
     limparCarrinho,
     valorSubtotal,
     valorTotal,
     calcularFrete,
     frete,
-    setFrete,
     itens,
     excluirItem,
-    adicionarItem
+    removerQuantidade,
+    adicionarItem,
   } = useCarrinho();
-
-  console.log(frete);
 
   const [modDeEntrega, setModDeEntrega] = useState("");
   const [erro, setErro] = useState("");
-  console.log(modDeEntrega);
 
   useEffect(() => {
-    if(itens.length != 0 ){
-       calcularFrete(itens);
+    if (itens.length != 0) {
+      calcularFrete(itens);
     }
-  }, [itens] )
+  }, [itens]);
 
-  console.log(modDeEntrega);
-
-  const handleConcluirCompra = () => {if(modDeEntrega == "" && frete != null){
-    setErro("selecione uma modalide de entrega");
-  }else{
-    if(modDeEntrega == "sedex"){
-      navigate("/checkout/"+frete.precoSedex+"/sedex");
-    }else if(modDeEntrega == "pac"){
-      navigate("/checkout/"+frete.precoPac+"/pac");
-    }else{
-      navigate("/checkout/0/digital");
+  const handleConcluirCompra = () => {
+    if (modDeEntrega == "" && frete != null) {
+      setErro("selecione uma modalide de entrega");
+    } else {
+      if (modDeEntrega == "sedex") {
+        navigate("/checkout/" + frete.precoSedex + "/sedex");
+      } else if (modDeEntrega == "pac") {
+        navigate("/checkout/" + frete.precoPac + "/pac");
+      } else {
+        navigate("/checkout/0/digital");
+      }
     }
-    
-  }};
-
-
+  };
 
   return (
     <main>
@@ -132,28 +125,33 @@ export default function Carrinho() {
                       R$ {Number(item.preco).toFixed(2).replace(".", ",")}
                     </strong>
 
-                    {item.tipo == "fisico" ? <div className={styles.quantidade}>
-                      <div className={styles.redondo}>
-                        <button
-                          type="button"
-                          onClick={() => removerQuantidade(item.id, item.tipo)}
-                        >
-                          <FiMinus />
-                        </button>
+                    {item.tipo == "fisico" ? (
+                      <div className={styles.quantidade}>
+                        <div className={styles.redondo}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removerQuantidade(item.id, item.tipo)
+                            }
+                          >
+                            <FiMinus />
+                          </button>
 
-                        <span>{item.quantidade}</span>
+                          <span>{item.quantidade}</span>
 
-                        <button
-                          type="button"
-                          onClick={() =>
-                            adicionarItem({ ...item, quantidade: 1 })
-                          }
-                        >
-                          <FiPlus />
-                        </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              adicionarItem({ ...item, quantidade: 1 })
+                            }
+                          >
+                            <FiPlus />
+                          </button>
+                        </div>
                       </div>
-                    </div> : <></>}
-                    
+                    ) : (
+                      <></>
+                    )}
 
                     <strong className={styles.totalProduto}>
                       R$ {totalItem.toFixed(2).replace(".", ",")}
@@ -194,29 +192,60 @@ export default function Carrinho() {
 
             <div className={styles.cep}>
               <span className={styles.sub}>Frete</span>
-              {frete != null ? <>
-               <div>
-                <input type="radio" value="sedex" name="madalidade" checked={modDeEntrega == "sedex"} onChange={(e) => setModDeEntrega("sedex")}></input><h5>Sedex</h5>
-                <strong>
-                  Preço base Pac R$ {Number(frete.precoSedex).toFixed(2).replace(".", ",")}
-                </strong>
-              </div>
-              
-              <div>
-                <input type="radio" value="pac" name="madalidade" checked={modDeEntrega == "pac"} onChange={(e) => setModDeEntrega("pac")}></input><h5>Pac</h5>
-                <strong>
-                  Preço base Sedex R$ {Number(frete.precoPac).toFixed(2).replace(".", ",")}
-                </strong>
-              </div>
-              </> : <div>livro digital</div>}
-              
-              
+              {frete != null ? (
+                <>
+                  <div>
+                    <input
+                      type="radio"
+                      value="sedex"
+                      name="madalidade"
+                      checked={modDeEntrega == "sedex"}
+                      onChange={(e) =>
+                        setModDeEntrega(e.target.checked ? "sedex" : "")
+                      }
+                    ></input>
+                    <h5>Sedex</h5>
+                    <strong>
+                      Preço base Pac R${" "}
+                      {Number(frete.precoSedex).toFixed(2).replace(".", ",")}
+                    </strong>
+                  </div>
+
+                  <div>
+                    <input
+                      type="radio"
+                      value="pac"
+                      name="madalidade"
+                      checked={modDeEntrega == "pac"}
+                      onChange={(e) =>
+                        setModDeEntrega(e.target.checked ? "pac" : "")
+                      }
+                    ></input>
+                    <h5>Pac</h5>
+                    <strong>
+                      Preço base Sedex R${" "}
+                      {Number(frete.precoPac).toFixed(2).replace(".", ",")}
+                    </strong>
+                  </div>
+                </>
+              ) : (
+                <div>livro digital</div>
+              )}
             </div>
 
             <div className={styles.Total}>
               <span className={styles.sub}>Total</span>
               <strong>
-                R$ {modDeEntrega == "sedex" ? Number(valorTotal + frete.precoSedex).toFixed(2).replace(".", ",") : modDeEntrega == "pac" ? Number(valorTotal + frete.precoPac).toFixed(2).replace(".", ",") : Number(valorTotal).toFixed(2).replace(".", ",")}
+                R${" "}
+                {modDeEntrega == "sedex"
+                  ? Number(valorTotal + frete.precoSedex)
+                      .toFixed(2)
+                      .replace(".", ",")
+                  : modDeEntrega == "pac"
+                    ? Number(valorTotal + frete.precoPac)
+                        .toFixed(2)
+                        .replace(".", ",")
+                    : Number(valorTotal).toFixed(2).replace(".", ",")}
               </strong>
             </div>
 
@@ -230,12 +259,6 @@ export default function Carrinho() {
             </button>
 
             <h5>{erro}</h5>
-
-            <div className={styles.cupom}>
-              <span className={styles.sub}>Cupom</span>
-              <input type="text" placeholder="Código do cupom" />
-              <button type="button">Aplicar cupom</button>
-            </div>
 
             <Link to="/loja" className={styles.continuar}>
               <FiArrowLeft />
