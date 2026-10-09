@@ -10,7 +10,6 @@ import {
   FaTruck,
   FaUndo,
   FaFileAlt,
-  FaRobot,
 } from "react-icons/fa";
 
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
@@ -205,16 +204,6 @@ export default function ProdutoById() {
                 <p className={styles.numero}>
                   {livro.numero_edicao || "Não informado"}
                 </p>
-              </div>
-            </div>
-
-            <div className={styles.informacao}>
-              <FaRobot />
-
-              <div>
-                <strong>Feito com IA?</strong>
-
-                <p>{livro.conteudo_por_IA ? "Sim" : "Não"}</p>
               </div>
             </div>
 

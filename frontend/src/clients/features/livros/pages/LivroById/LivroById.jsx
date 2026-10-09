@@ -16,7 +16,6 @@ import {
   FaTruck,
   FaUndo,
   FaFileAlt,
-  FaRobot,
 } from "react-icons/fa";
 
 export default function LivroById() {
@@ -81,10 +80,10 @@ export default function LivroById() {
 
             {autor && (
               <div className={styles.autorCard}>
-                {autor.imagem_perfil ? (
+                {autor.imagem ? (
                   <img
                     className={styles.fotoAutor}
-                    src={autor.imagem_perfil}
+                    src={autor.imagem}
                     alt={autor.nome}
                   />
                 ) : (
@@ -148,16 +147,6 @@ export default function LivroById() {
                 <p className={styles.numero}>
                   {livro.numero_edicao || "Não informado"}
                 </p>
-              </div>
-            </div>
-
-            <div className={styles.informacao}>
-              <FaRobot />
-
-              <div>
-                <strong>Feito com IA?</strong>
-
-                <p>{livro.conteudo_por_IA ? "Sim" : "Não"}</p>
               </div>
             </div>
 
