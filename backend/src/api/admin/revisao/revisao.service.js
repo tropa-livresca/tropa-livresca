@@ -11,6 +11,25 @@ import {
 } from "../../common/config/storage.js";
 
 export class RevisaoService {
+  static _parseCapaUrls(livro) {
+    if (!livro) return livro;
+
+    const livroClonado = { ...livro };
+
+    try {
+      if (typeof livroClonado.capa === "string") {
+        livroClonado.capa = JSON.parse(livroClonado.capa);
+      }
+    } catch (e) {
+      console.warn("Erro ao parsear capa JSON", e);
+    }
+    return livroClonado;
+  }
+
+  static _parseCapasArray(livros) {
+    return livros.map((livro) => this._parseCapaUrls(livro));
+  }
+
   static async _formatarRevisao(revisao) {
     if (!revisao) return revisao;
 
@@ -114,9 +133,16 @@ export class RevisaoService {
 
     if (revisoes.error) throw revisoes.error;
 
+    const dadosFormatados = await this._formatarRevisoes(revisoes.data);
+
+    const dadosComCapas = dadosFormatados.map((revisao) => ({
+      ...revisao,
+      livros: this._parseCapaUrls(revisao.livros),
+    }));
+
     return {
-      data: await this._formatarRevisoes(revisoes.data),
-      livros: revisoes.livros,
+      data: dadosComCapas,
+      livros: this._parseCapasArray(revisoes.livros ?? []),
       meta: {
         page,
         limit,

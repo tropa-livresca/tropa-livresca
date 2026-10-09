@@ -233,7 +233,9 @@ export default function Revisoes() {
                         <span className={styles.infoLabel}>Revisor</span>
 
                         <strong className={styles.infoValor}>
-                          <span className={styles.numeroo}>{revisao.nome || "---"}</span>
+                          <span className={styles.numeroo}>
+                            {revisao.nome || "---"}
+                          </span>
                         </strong>
                       </div>
 
@@ -243,7 +245,9 @@ export default function Revisoes() {
                         </span>
 
                         <strong className={styles.infoValor}>
-                          <span className={styles.numeroo}>{revisao.data || "---"}</span>
+                          <span className={styles.numeroo}>
+                            {revisao.data_criacao || "---"}
+                          </span>
                         </strong>
                       </div>
 
@@ -253,7 +257,9 @@ export default function Revisoes() {
                         <span className={styles.infoLabel}>Apontamento</span>
 
                         <strong className={styles.infoValor}>
-                          <span className={styles.numeroo}>{revisao.apontamento || "---"}</span>
+                          <span className={styles.numeroo}>
+                            {revisao.apontamento || "---"}
+                          </span>
                         </strong>
                       </div>
                     </div>
@@ -270,7 +276,7 @@ export default function Revisoes() {
 
                     {livro?.id && (
                       <Link
-                        to={`/admin/livros/visualizar/${livro.id}`}
+                        to={`/admin/livros/detalhes/${livro.id}`}
                         className={styles.linkSecundario}
                       >
                         <FiBookOpen />
