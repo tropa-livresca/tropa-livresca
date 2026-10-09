@@ -10,6 +10,7 @@ export class LojaController {
         filtro = "",
         ordem = "",
         categoria = "",
+        idioma = "",
       } = req.query;
 
       const resultado = await LojaService.buscarLivros({
@@ -19,6 +20,7 @@ export class LojaController {
         filtro,
         ordem,
         categoria,
+        idioma,
       });
 
       return res.status(200).json(resultado);
@@ -100,12 +102,7 @@ export class LojaController {
       const produtos = JSON.parse(itensVenda);
       const userId = req.user?.id;
 
-      
-
-      const frete = await LojaService.calcularFretePrazo(
-        userId,
-        produtos,
-      );
+      const frete = await LojaService.calcularFretePrazo(userId, produtos);
 
       return res.status(201).json({ frete });
     } catch (err) {

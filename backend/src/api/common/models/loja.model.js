@@ -28,6 +28,7 @@ export class LojaModel {
     filtro = "",
     ordem = "",
     categoria = "",
+    idioma = "",
   }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
@@ -44,6 +45,10 @@ export class LojaModel {
 
     if (categoria) {
       query = query.ilike("categoria", categoria);
+    }
+
+    if (idioma) {
+      query = query.ilike("idioma", `%${idioma}%`);
     }
 
     if (filtro === "alfabetico") {
@@ -154,7 +159,6 @@ export class LojaModel {
   }
 
   static async buscarLivrosParaVenda(livroIds) {
-    
     const { data, error } = await supabase
       .from("livros")
       .select("id, titulo, preco_fisico, preco_digital")
@@ -171,7 +175,6 @@ export class LojaModel {
   }
 
   static async realizarVenda(dadosVenda, itensVenda) {
-
     console.log(dadosVenda);
 
     const { data, error } = await supabaseAdmin
@@ -307,13 +310,12 @@ export class LojaModel {
   }
 
   static async calcularFretePrazo(userId, produtos) {
-
-    const {data, error} = await supabase
-    .from("enderecos")
-    .select("cep")
-    .eq("fk_user_profile_id", userId)
-    .eq("principal", true)
-    .maybeSingle();
+    const { data, error } = await supabase
+      .from("enderecos")
+      .select("cep")
+      .eq("fk_user_profile_id", userId)
+      .eq("principal", true)
+      .maybeSingle();
 
     if (error) {
       error.statusCode = 500;
@@ -523,5 +525,3 @@ export class LojaModel {
     return data;
   }
 }
-
-

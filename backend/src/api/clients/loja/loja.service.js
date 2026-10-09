@@ -2,7 +2,6 @@ import { LojaModel } from "../../common/models/loja.model.js";
 import { EnderecoModel } from "../../common/models/endereco.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
-// Não há mais tabela de métodos; o pagamento da demo é sempre simulado.
 const METODO_PAGAMENTO_SIMULADO = 1;
 const MAX_QTD_POR_ITEM = 99;
 
@@ -35,6 +34,7 @@ export class LojaService {
     filtro = "",
     ordem = "",
     categoria = "",
+    idioma = "",
   }) {
     const livrosTropa = await LojaModel.buscarComFiltros({
       page,
@@ -43,6 +43,7 @@ export class LojaService {
       filtro,
       ordem,
       categoria,
+      idioma,
     });
 
     if (livrosTropa.error) {
@@ -124,7 +125,9 @@ export class LojaService {
       const livro = livrosPorId.get(livroId);
       if (!livro) error(400, "Um dos livros do carrinho não está disponível.");
 
-      const precoUnitario = Number(fisico ? livro.preco_fisico : livro.preco_digital);
+      const precoUnitario = Number(
+        fisico ? livro.preco_fisico : livro.preco_digital,
+      );
       if (!(precoUnitario > 0))
         error(400, `"${livro.titulo}" não está à venda neste formato.`);
 
@@ -245,5 +248,3 @@ export class LojaService {
     return LojaModel.mudarStatusPagamento(vendaId, usuario.email);
   }
 }
-
-
