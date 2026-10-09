@@ -18,13 +18,6 @@ export const STORAGE_FILE_RULES = Object.freeze({
   capa_verso: Object.freeze({
     bucket: STORAGE_BUCKET.CAPAS,
     extensions: Object.freeze(["jpg", "jpeg", "png"]),
-    mimeTypes: Object.freeze(["image/jpe g", "image/png"]),
-    maxBytes: 10 * 1024 * 1024,
-    signature: "image",
-  }),
-  capa_orelhas: Object.freeze({
-    bucket: STORAGE_BUCKET.CAPAS,
-    extensions: Object.freeze(["jpg", "jpeg", "png"]),
     mimeTypes: Object.freeze(["image/jpeg", "image/png"]),
     maxBytes: 10 * 1024 * 1024,
     signature: "image",

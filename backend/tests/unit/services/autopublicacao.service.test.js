@@ -70,7 +70,6 @@ const livroBase = {
   capa: {
     frente: "user-1/capa-frente.png",
     verso: "user-1/capa-verso.png",
-    orelhas: "user-1/capa-orelhas.png",
   },
   manuscrito: "user-1/manuscrito.pdf",
   titulo: "Livro",
@@ -123,7 +122,6 @@ describe("AutopublicacaoService - Storage", () => {
       capa: {
         frente: "user-1/capa-frente.png",
         verso: null,
-        orelhas: null,
       },
       manuscrito: "user-1/manuscrito.pdf",
     });

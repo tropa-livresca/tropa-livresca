@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import styles from "./Formulario.module.css";
 
@@ -113,6 +112,7 @@ export default function Formulario({ idLivroEdicao }) {
         {etapa === 3 && (
           <Orcamento
             dados={dadosLivro.orcamento}
+            numeroPaginas={dadosLivro.orcamento.numeroPaginas}
             onChange={atualizarEtapa("orcamento")}
             {...navegar}
           />
@@ -131,6 +131,3 @@ export default function Formulario({ idLivroEdicao }) {
     </main>
   );
 }
-
-
-

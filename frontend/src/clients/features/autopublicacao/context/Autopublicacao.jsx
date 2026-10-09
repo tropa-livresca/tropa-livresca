@@ -1,5 +1,4 @@
-﻿
-import { apiFetch } from "../../../../common/services/api";
+﻿import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback, useContext, useEffect } from "react";
 import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
@@ -31,12 +30,10 @@ const ESTADO_INICIAL_LIVRO = {
     capa: {
       frente: null,
       verso: null,
-      orelhas: null,
     },
     capaPaths: {
       frente: null,
       verso: null,
-      orelhas: null,
     },
   },
 
@@ -106,11 +103,9 @@ export const AutopublicacaoProvider = ({ children }) => {
   useEffect(() => {
     if (isEdicao || !userId || rascunhoUsuarioId !== userId) return;
 
-
-
     localStorage.setItem(chaveRascunho("etapa"), etapa.toString());
     const dadosParaSalvar = {
-      ...dadosLivro
+      ...dadosLivro,
     };
     localStorage.setItem(
       chaveRascunho("dados"),
@@ -138,14 +133,12 @@ export const AutopublicacaoProvider = ({ children }) => {
     capa = {
       frente: capa?.frente || null,
       verso: capa?.verso || null,
-      orelhas: capa?.orelhas || null,
     };
 
     if (!capa) {
       capa = {
         frente: null,
         verso: null,
-        orelhas: null,
       };
     }
 
@@ -214,7 +207,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         capaPaths: dadosBanco.capaPaths || {
           frente: null,
           verso: null,
-          orelhas: null,
         },
       },
 
@@ -262,15 +254,10 @@ export const AutopublicacaoProvider = ({ children }) => {
   };
 
   const validarConteudo = () =>
-    !!conteudo.manuscrito &&
-    !!conteudo.capa?.frente &&
-    !!conteudo.capa?.verso &&
-    !!conteudo.capa?.orelhas;
+    !!conteudo.manuscrito && !!conteudo.capa?.frente && !!conteudo.capa?.verso;
 
   const validarOrcamento = () =>
-    !!orcamento.numeroPaginas &&
-    !!orcamento.valorLivroFisico &&
-    !!orcamento.valorLivroDigital;
+    !!orcamento.valorLivroFisico && !!orcamento.valorLivroDigital;
 
   const validarEtapaAtual = (etapaAtual) => {
     switch (etapaAtual) {
@@ -300,8 +287,9 @@ export const AutopublicacaoProvider = ({ children }) => {
   };
 
   const atualizarEtapa = (chave) => (novosDados) => {
-    if (estadoAtualLivro === LIVRO_ESTADO.PUBLICADO && chave === "detalhes") {
+    if (chave === "detalhes" && estadoAtualLivro === LIVRO_ESTADO.PUBLICADO) {
       const dadosAntigos = dadosLivro.detalhes;
+
       if (
         novosDados.titulo !== dadosAntigos.titulo ||
         novosDados.autor?.nome !== dadosAntigos.autor?.nome ||
@@ -315,19 +303,28 @@ export const AutopublicacaoProvider = ({ children }) => {
       }
     }
 
-    console.log(dadosLivro);
-    console.log(novosDados);
-    console.log(chave);
+    setDadosLivro((estadoAnterior) => {
+      if (chave === "conteudo") {
+        const { numeroPaginas, ...dadosConteudo } = novosDados;
 
-    console.log(1);
+        return {
+          ...estadoAnterior,
+          conteudo: dadosConteudo,
+          orcamento: {
+            ...estadoAnterior.orcamento,
+            ...(Number.isInteger(Number(numeroPaginas)) &&
+            Number(numeroPaginas) > 0
+              ? { numeroPaginas: Number(numeroPaginas) }
+              : {}),
+          },
+        };
+      }
 
-    if(chave === "conteudo" && novosDados?.numeroPaginas != undefined){
-      console.log("a");
-      setDadosLivro({ ...dadosLivro, [chave]: novosDados.conteudo, orcamento: {...dadosLivro.orcamento, numeroPaginas:novosDados.numeroPaginas}  });
-    }else{
-      setDadosLivro({ ...dadosLivro, [chave]: novosDados  });
-    }
-    
+      return {
+        ...estadoAnterior,
+        [chave]: novosDados,
+      };
+    });
   };
 
   const inserirLivro = useCallback(
@@ -392,39 +389,29 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         let caminhosArquivos;
         try {
-          const [
-            capaFrentePath,
-            capaVersoPath,
-            capaOrelhasPath,
-            manuscritoPath,
-          ] = await Promise.all([
-            uploadArquivo(
-              capa?.frente,
-              "capa_frente",
-              conteudo?.capaPaths?.frente,
-            ),
-            uploadArquivo(
-              capa?.verso,
-              "capa_verso",
-              conteudo?.capaPaths?.verso,
-            ),
-            uploadArquivo(
-              capa?.orelhas,
-              "capa_orelhas",
-              conteudo?.capaPaths?.orelhas,
-            ),
-            uploadArquivo(
-              conteudo?.manuscrito,
-              "manuscrito",
-              conteudo?.manuscritoPath,
-            ),
-          ]);
+          const [capaFrentePath, capaVersoPath, manuscritoPath] =
+            await Promise.all([
+              uploadArquivo(
+                capa?.frente,
+                "capa_frente",
+                conteudo?.capaPaths?.frente,
+              ),
+              uploadArquivo(
+                capa?.verso,
+                "capa_verso",
+                conteudo?.capaPaths?.verso,
+              ),
+              uploadArquivo(
+                conteudo?.manuscrito,
+                "manuscrito",
+                conteudo?.manuscritoPath,
+              ),
+            ]);
 
           caminhosArquivos = {
             capa: {
               frente: capaFrentePath,
               verso: capaVersoPath,
-              orelhas: capaOrelhasPath,
             },
             manuscritoPath,
           };
@@ -522,7 +509,3 @@ export const AutopublicacaoProvider = ({ children }) => {
     </AutopublicacaoContext.Provider>
   );
 };
-
-
-
-
