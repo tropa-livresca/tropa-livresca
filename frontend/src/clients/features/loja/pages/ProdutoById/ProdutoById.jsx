@@ -28,9 +28,9 @@ export default function ProdutoById() {
   const { autor, colaboradores, livro, buscarLivroById, carregando } =
     useLivrosLoja();
 
-  const { BuscarEnderecoPrincipal, CEP } = useEndereco();
+  const { BuscarEnderecoPrincipal } = useEndereco();
 
-  const { adicionarItem, calcularFrete, frete } = useCarrinho();
+  const { adicionarItem, calcularFrete } = useCarrinho();
 
   const [formatoEscolhido, setFormato] = useState(null);
   const [qtd, setQtd] = useState(1);
@@ -43,8 +43,6 @@ export default function ProdutoById() {
     buscarResumo(id);
   }, [id, buscarResumo]);
 
-  console.log(CEP);
-
   useEffect(() => {
     if (id) {
       buscarLivroById(id);
@@ -56,12 +54,8 @@ export default function ProdutoById() {
   }, [BuscarEnderecoPrincipal]);
 
   useEffect(() => {
-    
-      calcularFrete([{ tipo: "fisico", qtd: qtd }]);
-    
+    calcularFrete([{ tipo: "fisico", qtd: qtd }]);
   }, [qtd]);
-
-  console.log(frete);
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -81,7 +75,6 @@ export default function ProdutoById() {
 
   const temFisico = Number(livro.preco_fisico) > 0;
   const temDigital = Number(livro.preco_digital) > 0;
-  // Sem escolha do usuário, usa o primeiro formato à venda.
   const formato =
     formatoEscolhido || (temFisico ? "fisico" : temDigital ? "digital" : null);
   const precoAtual =
@@ -294,7 +287,9 @@ export default function ProdutoById() {
                     max="99"
                     value={qtd}
                     onChange={(e) => {
-                      setQtd(Math.min(99, Math.max(1, Number(e.target.value) || 1)));
+                      setQtd(
+                        Math.min(99, Math.max(1, Number(e.target.value) || 1)),
+                      );
                       setAdicionado(false);
                     }}
                   />
@@ -312,7 +307,8 @@ export default function ProdutoById() {
 
               {adicionado && (
                 <p className={styles.adicionado}>
-                  Adicionado ao carrinho! <Link to="/carrinho">Ver carrinho</Link>
+                  Adicionado ao carrinho!{" "}
+                  <Link to="/carrinho">Ver carrinho</Link>
                 </p>
               )}
             </>

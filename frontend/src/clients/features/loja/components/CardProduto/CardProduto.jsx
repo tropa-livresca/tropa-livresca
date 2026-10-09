@@ -60,11 +60,22 @@ export default function CardProduto({ livro, aoAdicionar }) {
           <h3>{livro.titulo}</h3>
           <p className={styles.autor}>{nomeAutor}</p>
           <div className={styles.precos}>
-            {precoDigital != null && (
-              <span className={styles.numero2}>
-                R$ {Number(precoDigital).toFixed(2)}
-              </span>
-            )}
+            <div>
+              Preço Digital
+              {precoDigital != null && (
+                <span className={styles.numero2}>
+                  R$ {Number(precoDigital).toFixed(2)}
+                </span>
+              )}
+            </div>
+            <div>
+              Preço Físico
+              {precoFisico != null && (
+                <span className={styles.numero2}>
+                  R$ {Number(precoFisico).toFixed(2)}
+                </span>
+              )}
+            </div>
           </div>
         </Link>
       </div>
