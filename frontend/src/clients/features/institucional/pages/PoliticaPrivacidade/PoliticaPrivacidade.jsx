@@ -3,6 +3,7 @@ import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import VoltarHistorico from "../../../../../common/components/VoltarHistorico/VoltarHistorico";
 import politicaPrivacidadePdf from "../../utils/POLÍTICA_DE_PRIVACIDADE_TROPA_LIVRESCA_ABNT.pdf";
 
 export default function PoliticaPrivacidade() {
@@ -278,6 +279,7 @@ export default function PoliticaPrivacidade() {
         descricao="Encontre respostas para as dúvidas mais comuns."
       />
 
+      <VoltarHistorico />
       <a
         href={politicaPrivacidadePdf}
         download="Politica-de-Privacidade-Tropa-Livresca.pdf"

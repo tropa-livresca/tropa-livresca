@@ -29,11 +29,12 @@ export default function Cadastro() {
     setTelefone,
     navigate,
     handleSignup,
+    privacidade,
+    setPrivacidade,
   } = useCadastro();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [mostrarConfSenha, setMostrarConfSenha] = useState(false);
-  const [privacidade, setPrivacidade] = useState(false);
 
   return (
     <div className={styles.container}>

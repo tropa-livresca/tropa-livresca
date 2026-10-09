@@ -24,6 +24,7 @@ export const useCadastro = () => {
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [error, setError] = useState("");
+  const [privacidade, setPrivacidade] = useState(false);
 
   const { signup } = useAuth();
 
@@ -58,6 +59,10 @@ export const useCadastro = () => {
       novosErros.push("Número de telefone incorreto.");
     }
 
+    if (!privacidade) {
+      novosErros.push("Por favor, clique em aceitar Política de Privacidade.");
+    }
+
     if (novosErros.length > 0) {
       setError(novosErros);
       return;
@@ -78,6 +83,8 @@ export const useCadastro = () => {
     setEmail,
     senha,
     setSenha,
+    privacidade,
+    setPrivacidade,
     error,
     setError,
     nome,
