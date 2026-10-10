@@ -13,7 +13,6 @@ import {
   LIVRO_ESTADO,
 } from "../../../../../common/config/livroEstados";
 
-// O backend ordena por "filtro" (campo) e "ordem" (sentido).
 const ORDENACOES = [
   { chave: "az", rotulo: "Título (A–Z)", filtro: "", ordem: "" },
   { chave: "za", rotulo: "Título (Z–A)", filtro: "alfabetico", ordem: "descendente" },
@@ -271,7 +270,7 @@ export default function MeusLivros() {
           </div>
         )}
 
-        {!carregando && meta && meta.totalPages > 1 && (
+        {meta && meta.totalPages > 1 && (
           <Paginacao
             paginaAtual={paginaAtual}
             totalPaginas={meta?.totalPages}

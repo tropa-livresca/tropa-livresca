@@ -269,13 +269,10 @@ export class RevisaoService {
       throw erroLivro;
     }
 
-    let manuscritoPath;
-    if (manuscritoRevisto) {
-      manuscritoPath = await this._uploadRevisao(
-        manuscritoRevisto,
-        funcionarioId,
-      );
-    }
+    let manuscritoPath = await this._uploadRevisao(
+      manuscritoRevisto,
+      funcionarioId,
+    );
 
     const dadosRevisao = {};
     if (nome !== undefined) dadosRevisao.nome = nome;

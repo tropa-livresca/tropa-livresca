@@ -135,13 +135,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       verso: capa?.verso || null,
     };
 
-    if (!capa) {
-      capa = {
-        frente: null,
-        verso: null,
-      };
-    }
-
     const manuscrito = dadosBanco.manuscrito || null;
 
     const normalizeBool = (valor) => {

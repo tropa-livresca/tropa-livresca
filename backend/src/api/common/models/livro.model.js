@@ -1,4 +1,3 @@
-
 import supabase, { supabaseAdmin } from "../config/supabase.js";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
@@ -20,7 +19,7 @@ export class LivroModel {
     let query = supabaseAdmin
       .from("livros")
       .select("*", { count: "exact" })
-      .neq("estado", LIVRO_ESTADO.RASCUNHO)
+      .neq("estado", LIVRO_ESTADO.RASCUNHO);
 
     if (busca) {
       query = query.or(`titulo.ilike.%${busca}%,subtitulo.ilike.%${busca}%`);
@@ -161,7 +160,3 @@ export class LivroModel {
     return data;
   }
 }
-
-
-
-

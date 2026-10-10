@@ -199,9 +199,7 @@ export const useRevisao = () => {
         formData.append("apontamento", apontamento);
         formData.append("idLivro", idLivro);
 
-        if (manuscrito) {
           formData.append("manuscritoRevisto", manuscrito);
-        }
 
         const response = await apiFetch(`/api/v1/admin/revisao`, {
           method: "POST",
