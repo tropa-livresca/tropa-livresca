@@ -3,6 +3,7 @@ import { useNavigate, Link, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import styles from "./Pagamento.module.css";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
+import BotaoComprar from "../../components/BotaoComprar/BotaoComprar";
 import { useCarrinho } from "../../hooks/useCarrinho";
 import { useCompra } from "../../hooks/useCompra";
 import { useEndereco } from "../../../perfil/hooks/useEndereco";
@@ -13,14 +14,14 @@ const formatarPreco = (valor) =>
     .replace(".", ",")}`;
 
 export default function Pagamento() {
-  const {frete, mod} = useParams();
+  const { frete } = useParams();
   const navigate = useNavigate();
-  const { itens, valorSubtotal, limparCarrinho} = useCarrinho();
+  const { itens, valorSubtotal, limparCarrinho } = useCarrinho();
   const { enderecos = [], BuscarEnderecos } = useEndereco();
-  const { criarPedido, pagarPedido, carregando, erro, venda } = useCompra();
+  const { criarPedido, pagarPedido, carregando, erro } = useCompra();
 
   const [enderecoEscolhido, setEnderecoId] = useState(null);
-  const [pedido, setPedido] = useState(null);
+  const [pedido] = useState(null);
   const [formaPagamento, setFormaPagamento] = useState("");
 
   const temFisico = itens.some((item) => item.tipo === "fisico");
@@ -36,12 +37,25 @@ export default function Pagamento() {
   const enderecoId = enderecoEscolhido ?? enderecoPadrao?.id ?? null;
 
   const handleConfirmar = async () => {
+    if (!formaPagamento) return;
     if (temFisico && !enderecoId) return;
-    const venda = await criarPedido(itens, temFisico ? enderecoId : null, temFisico);
-    console.log(venda);
-    if (venda) setPedido(venda);
-  };
 
+    const vendaCriada = await criarPedido(
+      itens,
+      temFisico ? enderecoId : null,
+      temFisico,
+    );
+
+    if (!vendaCriada?.id) return;
+
+    navigate(`/pagamento/${formaPagamento}`, {
+      state: {
+        pedido: vendaCriada,
+        formaPagamento,
+        frete: Number(frete || 0),
+      },
+    });
+  };
   const handlePagar = async () => {
     if (!pedido?.id) return;
     const pago = await pagarPedido(pedido.id);
@@ -93,7 +107,7 @@ export default function Pagamento() {
               <div className={styles.produto}>
                 <div className={styles.capa}>
                   {item.capa ? (
-                    <img src={item.capa}  alt={`Capa de ${item.titulo}`} />
+                    <img src={item.capa} alt={`Capa de ${item.titulo}`} />
                   ) : (
                     <span>Livro</span>
                   )}
@@ -107,7 +121,11 @@ export default function Pagamento() {
                 </div>
               </div>
               <span className={styles.numero}>{formatarPreco(item.preco)}</span>
-              {temFisico ? <span className={styles.numero}>{formatarPreco(frete)}</span> : <></>} 
+              {temFisico ? (
+                <span className={styles.numero}>{formatarPreco(frete)}</span>
+              ) : (
+                <></>
+              )}
               <span className={styles.quantidade}>{item.quantidade}</span>
               <span className={styles.numero}>
                 {formatarPreco(
@@ -172,7 +190,10 @@ export default function Pagamento() {
                               : "Endereço"}
                           </strong>
                           <span>
-                            {endereco.rua}, <span className={styles.numero2}>{endereco.num}</span>
+                            {endereco.rua},{" "}
+                            <span className={styles.numero2}>
+                              {endereco.num}
+                            </span>
                             {endereco.complemento
                               ? ` - ${endereco.complemento}`
                               : ""}
@@ -181,7 +202,13 @@ export default function Pagamento() {
                           <span>
                             {endereco.cidade} - {endereco.estado}
                           </span>
-                          <span>CEP:<span className={styles.numero2}> {endereco.cep}</span></span>
+                          <span>
+                            CEP:
+                            <span className={styles.numero2}>
+                              {" "}
+                              {endereco.cep}
+                            </span>
+                          </span>
                         </div>
                       </label>
                     ))}
@@ -224,12 +251,12 @@ export default function Pagamento() {
                   {
                     value: "pix",
                     titulo: "Pix",
-                    descricao: "Aprovação imediata",
+                    descricao: "Pagamento via Pix",
                   },
                   {
                     value: "boleto",
-                    titulo: "Boleto",
-                    descricao: <span className={styles.numero2}>Até 3 dias úteis</span>,
+                    titulo: "Boleto bancário",
+                    descricao: "Pagamento com código de barras",
                   },
                 ].map((forma) => (
                   <label
@@ -244,8 +271,9 @@ export default function Pagamento() {
                       value={forma.value}
                       checked={formaPagamento === forma.value}
                       onChange={(e) => setFormaPagamento(e.target.value)}
-                      disabled={!!pedido}
+                      disabled={!!pedido || carregando}
                     />
+
                     <div>
                       <strong>{forma.titulo}</strong>
                       <span>{forma.descricao}</span>
@@ -253,87 +281,6 @@ export default function Pagamento() {
                   </label>
                 ))}
               </div>
-
-              {formaPagamento === "cartao" && (
-                <div className={styles.formPagamento}>
-                  <div className={styles.formTitulo}>
-                    <strong>Dados do cartão</strong>
-                    <span>Informe os dados do cartão para pagamento.</span>
-                  </div>
-
-                  <label>
-                    Número do cartão
-                    <input
-                      type="text"
-                      className={styles.numero2}
-                      placeholder="0000 0000 0000 0000"
-                      autoComplete="cc-number"
-                    />
-                  </label>
-
-                  <label>
-                    Nome no cartão
-                    <input
-                      type="text"
-                      placeholder="Nome completo"
-                      autoComplete="cc-name"
-                    />
-                  </label>
-
-                  <div className={styles.linhaCampos}>
-                    <label>
-                      Validade
-                      <input
-                        type="text"
-                        placeholder="MM/AA"
-                        autoComplete="cc-exp"
-                      />
-                    </label>
-
-                    <label>
-                      CVV
-                      <input
-                        type="text"
-                        className={styles.numero2}
-                        placeholder="123"
-                        autoComplete="cc-csc"
-                      />
-                    </label>
-                  </div>
-
-                  <label>
-                    Parcelamento
-                    <select defaultValue="">
-                      <option value="" disabled>
-                        Selecione o parcelamento
-                      </option>
-                      <option value="1">1x sem juros</option>
-                      <option value="2">2x sem juros</option>
-                      <option value="3">3x sem juros</option>
-                    </select>
-                  </label>
-                  <span className={styles.seguro}>
-                    Pagamento demonstrativo: os dados não são enviados nem
-                    processados por um serviço de pagamento.
-                  </span>
-                </div>
-              )}
-              {formaPagamento === "pix" && (
-                <div className={styles.pagamentoInfo}>
-                  <strong>Pagamento via Pix</strong>
-                  <span>
-                    O fluxo atual é simulado e não gera um código Pix real.
-                  </span>
-                </div>
-              )}
-              {formaPagamento === "boleto" && (
-                <div className={styles.pagamentoInfo}>
-                  <strong>Pagamento via boleto</strong>
-                  <span>
-                    O fluxo atual é simulado e não gera um boleto real.
-                  </span>
-                </div>
-              )}
             </section>
 
             <section className={styles.resumo}>
@@ -354,7 +301,11 @@ export default function Pagamento() {
                 <div>
                   <span>Frete</span>
                   <strong className={styles.numero}>
-                    {temFisico ?  frete > 0 ? formatarPreco(frete) : "Grátis" : "compra apenas digital" }
+                    {temFisico
+                      ? frete > 0
+                        ? formatarPreco(frete)
+                        : "Grátis"
+                      : "compra apenas digital"}
                   </strong>
                 </div>
                 <div className={styles.total}>
@@ -365,27 +316,16 @@ export default function Pagamento() {
                 </div>
               </div>
 
-              {pedido ? (
-                <button
-                  className={styles.botaoFinalizar}
-                  type="button"
-                  onClick={handlePagar}
-                  disabled={carregando}
-                >
-                  {carregando ? "Processando..." : "Pagar (simulado)"}
-                </button>
-              ) : (
-                <button
-                  className={styles.botaoFinalizar}
-                  type="button"
-                  onClick={handleConfirmar}
-                  disabled={
-                    carregando || (temFisico && !enderecoId) || !formaPagamento
-                  }
-                >
-                  {carregando ? "Criando pedido..." : "Finalizar compra"}
-                </button>
-              )}
+              <BotaoComprar
+                pedido={pedido}
+                handleConfirmar={handleConfirmar}
+                handlePagar={handlePagar}
+                carregando={carregando}
+                temFisico={temFisico}
+                enderecoId={enderecoId}
+                formaPagamento={formaPagamento}
+                className={styles.botaoFinalizar}
+              />
 
               <span className={styles.seguro}>
                 Compra demonstrativa: nenhuma cobrança real é feita.
@@ -393,9 +333,9 @@ export default function Pagamento() {
               {erro && <p className={styles.erro}>{erro}</p>}
               {!pedido && (
                 <div className={styles.dvd}>
-                <Link to="/carrinho" className={styles.voltar}>
-                  <FiArrowLeft /> Voltar ao carrinho
-                </Link>
+                  <Link to="/carrinho" className={styles.voltar}>
+                    <FiArrowLeft /> Voltar ao carrinho
+                  </Link>
                 </div>
               )}
             </section>

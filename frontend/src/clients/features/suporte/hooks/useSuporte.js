@@ -39,7 +39,7 @@ export const useSuporte = () => {
       }
 
       setError({
-        text: "FormulÃ¡rio enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
+        text: "Formulário enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
         success: true,
       });
 
