@@ -382,7 +382,7 @@ export default function GerenciaLivros() {
                             className={`${styles.btnAcao} ${styles.btnVisualizar}`}
                           >
                             Ver Livro{" "}
-                            <span className={styles.numero2}>{livro.id}</span>
+                            <span className={styles.numero3}>{livro.id}</span>
                           </Link>
 
                           {livro.estado === "em_revisao" && (

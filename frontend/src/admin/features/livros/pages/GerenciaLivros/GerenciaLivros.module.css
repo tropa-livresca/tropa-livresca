@@ -263,8 +263,12 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  color: #4a2a22;
+  color: #67170c;
   font-size: 0.95rem;
+}
+
+.numero3{
+  font-family: none;
 }
 
 .tabelaLivros th {
@@ -276,6 +280,10 @@
   text-align: center;
   white-space: normal;
   border-left:1px solid #fffdf7;
+}
+
+.tabelaLivros tbody tr:hover td {
+  background: #fff9e9;
 }
 
 .tabelaLivros th:first-child {

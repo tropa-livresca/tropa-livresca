@@ -1,13 +1,11 @@
 .mainContainer {
-  margin-top: -5rem;
-  color: #333;
+  margin-top: 0rem;
 }
 
 .topo {
   width: 100%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
-  margin-top: 5rem;
   padding: 3rem 6%;
 }
 
@@ -33,8 +31,14 @@
   color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
+.numero {
+  font-family: none;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
 
 .container {
   display: flex;
@@ -52,9 +56,12 @@
 
 .cartaoResumo,
 .cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
   padding: 1.6rem 2rem;
   border-radius: 1.5rem;
-  background: #fff;
+  background: #fffdf7;
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
@@ -67,38 +74,27 @@
 }
 
 .cartaoResumo span {
-  color: #8a7a5a;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
   font-weight: 600;
 }
 
 .cartaoResumo strong {
   color: #67170c;
-  font-family: "Jacques Francois", serif;
   font-size: 2rem;
+  font-family: none;
 }
 
 .cartaoResumo small {
-  color: #999;
-}
-
-.destaque {
-  background: #67170c;
-}
-
-.destaque span,
-.destaque small {
-  color: #ede6b3;
-  opacity: 0.85;
-}
-
-.destaque strong {
-  color: #ede6b3;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
 .subtitulo {
-  margin: 0 0 1rem;
+  margin: 0 0 0.5rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #d4b46a;
+  border-bottom: 1.8px solid #d4b46a;
   color: #67170c;
   font-size: 1.3rem;
 }
@@ -114,11 +110,14 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
+  margin: 0;
   padding: 0.9rem 0;
-  border-bottom: 1px solid #eee5c9;
+  border-bottom: 1px solid #e3d5ad;
 }
 
 .movimentacao:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
   border-bottom: none;
 }
 
@@ -133,13 +132,13 @@
 }
 
 .iconeEntrada {
-  background: #e3f3e6;
-  color: #2f6f3e;
+  color: var(--cor-texto-muted);
+  border: 1px solid #e3d5ad;
 }
 
 .iconeSaida {
-  background: #fff1d6;
-  color: #8a5a00;
+  color: #67170c;
+  border: 1px solid #e3d5ad;
 }
 
 .descricao {
@@ -150,7 +149,21 @@
 
 .descricao small {
   overflow: hidden;
-  color: #888;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 0.2rem;
+}
+
+.descricao small .numero {
+  font-size: inherit;
+}
+
+.descricao strong {
+  overflow: hidden;
+  color: #67170c;
+  font-size: 1.05rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -158,14 +171,16 @@
 .valorEntrada,
 .valorSaida {
   white-space: nowrap;
+  font-family: none;
+  font-size: 1.05rem;
 }
 
 .valorEntrada {
-  color: #2f6f3e;
+  color: green;
 }
 
 .valorSaida {
-  color: #8a5a00;
+  color: red;
 }
 
 .vazio {
