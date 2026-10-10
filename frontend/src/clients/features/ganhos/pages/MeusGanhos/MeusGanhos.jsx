@@ -91,6 +91,28 @@ export default function MeusGanhos() {
     }
   };
 
+  const formatarContaMovimentacao = (mov) => {
+    const conta = mov.dados_bancarios;
+
+    if (!conta || typeof conta !== "object") {
+      return "Não se aplica";
+    }
+
+    const banco = conta.numero_banco || "Banco não informado";
+    const agencia = conta.numero_agencia || "—";
+    const numeroConta = String(conta.numero_conta || "");
+
+    const contaMascarada = numeroConta
+      ? `****${numeroConta.slice(-4)}`
+      : "Conta não informada";
+
+    return {
+      banco,
+      agencia,
+      conta: contaMascarada,
+      titular: conta.nome_completo || "Titular não informado",
+    };
+  };
   return (
     <main>
       <DescricaoTela
@@ -181,54 +203,89 @@ export default function MeusGanhos() {
 
             <section className={base.cartao}>
               <strong className={styles.ex}>Extrato</strong>
-
               {extrato.length === 0 ? (
                 <p className={base.aviso}>
-                  Você ainda não recebeu repasses. Quando um livro seu for
-                  vendido e o repasse for autorizado, ele aparece aqui.{" "}
+                  Você ainda não possui movimentações financeiras.{" "}
                   <Link to="/meuslivros">Ver meus livros</Link>
                 </p>
               ) : (
-                <ul className={styles.extrato}>
-                  {extrato.map((mov) => {
-                    const entrada = mov.tipo === "entrada";
+                <div className={styles.tabelaContainer}>
+                  <table className={styles.tabelaExtrato}>
+                    <thead>
+                      <tr>
+                        <th>Movimentação</th>
+                        <th>Data</th>
+                        <th>Conta da movimentação</th>
+                        <th>Valor</th>
+                      </tr>
+                    </thead>
 
-                    return (
-                      <li key={mov.id} className={styles.movimentacao}>
-                        <span
-                          className={`${styles.icone} ${
-                            entrada ? styles.iconeEntrada : styles.iconeSaida
-                          }`}
-                        >
-                          {entrada ? <FiArrowDownLeft /> : <FiArrowUpRight />}
-                        </span>
+                    <tbody>
+                      {extrato.map((mov) => {
+                        const entrada = mov.tipo === "entrada";
+                        const conta = formatarContaMovimentacao(mov);
 
-                        <div className={styles.descricao}>
-                          <strong className={styles.numero}>
-                            {entrada
-                              ? `Direitos autorais${
-                                  mov.fk_vendas_id
-                                    ? ` · Pedido #${mov.fk_vendas_id}`
-                                    : ""
-                                }`
-                              : "Saque"}
-                          </strong>
+                        return (
+                          <tr key={mov.id}>
+                            <td>
+                              <span
+                                className={`${styles.icone} ${
+                                  entrada
+                                    ? styles.iconeEntrada
+                                    : styles.iconeSaida
+                                }`}
+                              >
+                                {entrada ? (
+                                  <FiArrowDownLeft />
+                                ) : (
+                                  <FiArrowUpRight />
+                                )}
+                              </span>
 
-                          <small>{formatarData(mov.data)}</small>
-                        </div>
+                              <strong className={styles.numero}>
+                                {entrada
+                                  ? `Direitos autorais${
+                                      mov.fk_vendas_id
+                                        ? ` · Pedido #${mov.fk_vendas_id}`
+                                        : ""
+                                    }`
+                                  : "Saque"}
+                              </strong>
+                            </td>
 
-                        <strong
-                          className={
-                            entrada ? styles.valorEntrada : styles.valorSaida
-                          }
-                        >
-                          {entrada ? "+" : "−"} {formatarPreco(mov.valor)}
-                        </strong>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+                            <td>{formatarData(mov.data)}</td>
+
+                            <td>
+                              {typeof conta === "string" ? (
+                                <span>{conta}</span>
+                              ) : (
+                                <div className={styles.dadosConta}>
+                                  <strong>{conta.banco}</strong>
+                                  <small>Agência: {conta.agencia}</small>
+                                  <small>Conta: {conta.conta}</small>
+                                  <small>Titular: {conta.titular}</small>
+                                </div>
+                              )}
+                            </td>
+
+                            <td>
+                              <strong
+                                className={
+                                  entrada
+                                    ? styles.valorEntrada
+                                    : styles.valorSaida
+                                }
+                              >
+                                {entrada ? "+" : "−"} {formatarPreco(mov.valor)}
+                              </strong>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}{" "}
             </section>
           </div>
         )}

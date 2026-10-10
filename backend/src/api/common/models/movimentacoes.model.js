@@ -209,9 +209,33 @@ export class MovimentacoesModel {
 
   static async solicitarSaque(autorId, valorSaque) {
     const valorSolicitado = Number(valorSaque);
-    if (isNaN(valorSolicitado) || valorSolicitado <= 0) {
+
+    if (
+      !Number.isFinite(valorSolicitado) ||
+      valorSolicitado <= 0 ||
+      Math.round(valorSolicitado * 100) !== valorSolicitado * 100
+    ) {
       const erro = new Error(
-        "O valor solicitado para saque deve ser maior que zero.",
+        "Informe um valor de saque válido, com até duas casas decimais.",
+      );
+      erro.statusCode = 400;
+      throw erro;
+    }
+
+    const dadosBancarios = await this.buscarDadosBancarios(autorId);
+
+    if (
+      !dadosBancarios ||
+      typeof dadosBancarios !== "object" ||
+      Array.isArray(dadosBancarios) ||
+      !dadosBancarios.nome_completo ||
+      !dadosBancarios.numero_banco ||
+      !dadosBancarios.numero_agencia ||
+      !dadosBancarios.numero_conta ||
+      !dadosBancarios.tipo_conta
+    ) {
+      const erro = new Error(
+        "Cadastre todos os dados bancários antes de solicitar um saque.",
       );
       erro.statusCode = 400;
       throw erro;
@@ -220,11 +244,11 @@ export class MovimentacoesModel {
     const infoFinanceira = await this.buscarDadosMovimentacoesAutor(autorId);
 
     if (infoFinanceira.saldo < valorSolicitado) {
-      const erroSaldo = new Error(
-        `Saldo insuficiente. Saldo disponível: R$ ${infoFinanceira.saldo}`,
+      const erro = new Error(
+        `Saldo insuficiente. Saldo disponível: R$ ${infoFinanceira.saldo.toFixed(2).replace(".", ",")}.`,
       );
-      erroSaldo.statusCode = 400;
-      throw erroSaldo;
+      erro.statusCode = 400;
+      throw erro;
     }
 
     const { data, error } = await supabaseAdmin
@@ -232,24 +256,28 @@ export class MovimentacoesModel {
       .insert({
         data: new Date().toISOString(),
         fk_user_profile_id: autorId,
+        fk_vendas_id: null,
         tipo: "saida",
         valor: valorSolicitado,
         descricao: "Saque de saldo de direitos autorais para conta bancária.",
         status: "concluido",
+        dados_bancarios: dadosBancarios,
       })
       .select()
-      .maybeSingle();
+      .single();
 
     if (error) {
       error.statusCode = 500;
       throw error;
     }
 
+    const novoSaldo =
+      Math.round((infoFinanceira.saldo - valorSolicitado) * 100) / 100;
+
     return {
       mensagem: "Saque realizado com sucesso!",
       transacao: data,
-      novoSaldo:
-        Math.round((infoFinanceira.saldo - valorSolicitado) * 100) / 100,
+      novoSaldo,
     };
   }
 
