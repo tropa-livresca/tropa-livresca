@@ -24,7 +24,7 @@ export const useSuporte = () => {
     };
 
     try {
-      const response = await apiFetch("/api/v1/clients/enviarEmail", {
+      const response = await apiFetch("/api/v1/clients/suporte/enviarEmail", {
         skipAuthRedirect: true,
         method: "POST",
         headers: {
@@ -39,7 +39,7 @@ export const useSuporte = () => {
       }
 
       setError({
-        text: "FormulÃ¡rio enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
+        text: "Formulário enviado com sucesso! Em breve te responderemos, por e-mail ou telefone.",
         success: true,
       });
 

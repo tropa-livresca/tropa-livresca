@@ -48,10 +48,6 @@ export class AutopublicacaoService {
         capaNormalizada.verso,
         STORAGE_BUCKET.CAPAS,
       ),
-      orelhas: normalizarCaminhoPersistido(
-        capaNormalizada.orelhas,
-        STORAGE_BUCKET.CAPAS,
-      ),
     };
   }
 
@@ -96,7 +92,7 @@ export class AutopublicacaoService {
     const pathsAtuais = this._capaPaths(capaAtual);
 
     return Object.fromEntries(
-      ["frente", "verso", "orelhas"].map((parte) => {
+      ["frente", "verso"].map((parte) => {
         const valor = Object.prototype.hasOwnProperty.call(entradas, parte)
           ? entradas[parte]
           : pathsAtuais[parte];
@@ -302,7 +298,10 @@ export class AutopublicacaoService {
     }
 
     console.log(estadoInicial);
-    if (estadoInicial !== LIVRO_ESTADO.RASCUNHO && estadoInicial !== LIVRO_ESTADO.EM_REVISAO  ) {
+    if (
+      estadoInicial !== LIVRO_ESTADO.RASCUNHO &&
+      estadoInicial !== LIVRO_ESTADO.EM_REVISAO
+    ) {
       const error = new Error(
         "Livros só podem ser criados inicialmente como rascunho.",
       );

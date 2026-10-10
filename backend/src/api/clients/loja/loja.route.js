@@ -6,8 +6,7 @@ const router = express.Router();
 
 router.get("/", LojaController.buscarLivros);
 
-// Rotas fixas antes de "/:id", senão o Express as trata como id de livro.
-router.get("/frete", checkAuth ,LojaController.calcularFretePrazo);
+router.get("/frete", checkAuth, LojaController.calcularFretePrazo);
 router.get(
   "/historico-vendas",
   checkAuth,

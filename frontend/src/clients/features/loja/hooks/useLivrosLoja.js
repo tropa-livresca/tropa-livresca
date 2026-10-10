@@ -39,6 +39,7 @@ export const useLivrosLoja = () => {
       filtro = "",
       ordem = "",
       categoria = "",
+      idioma = "",
     ) => {
       setCarregando(true);
       try {
@@ -49,6 +50,7 @@ export const useLivrosLoja = () => {
           filtro,
           ordem,
           categoria,
+          idioma,
         });
 
         const response = await apiFetch(

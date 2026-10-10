@@ -1684,9 +1684,6 @@ components:
         verso:
           type: string
           nullable: true
-        orelhas:
-          type: string
-          nullable: true
     LivroAutopublicacao:
       type: object
       required: [id, estado, titulo, capa, manuscrito]
@@ -1831,7 +1828,7 @@ components:
       properties:
         tipo:
           type: string
-          enum: [capa_frente, capa_verso, capa_orelhas, manuscrito]
+          enum: [capa_frente, capa_verso, manuscrito]
         extensao:
           type: string
           description: jpg/jpeg/png para capas; pdf para manuscrito.
@@ -1864,7 +1861,7 @@ components:
             properties:
               tipo:
                 type: string
-                enum: [capa_frente, capa_verso, capa_orelhas, manuscrito]
+                enum: [capa_frente, capa_verso, manuscrito]
               path:
                 type: string
     Revisao:

@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 export default function Loja() {
   const { livros = [], meta, carregando, buscarLivros } = useLivrosLoja();
   const { adicionarItem } = useCarrinho();
+
   const [dropdownAberto, setDropdownAberto] = useState(false);
   const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");
@@ -20,6 +21,7 @@ export default function Loja() {
   const [buscaEnviada, setBuscaEnviada] = useState("");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [categoria, setCategoria] = useState("");
+  const [idioma, setIdioma] = useState("");
 
   const generos = [
     "Romance",
@@ -35,13 +37,26 @@ export default function Loja() {
   ];
 
   useEffect(() => {
-    buscarLivros(paginaAtual, 12, buscaEnviada, filtro, ordem, categoria);
-  }, [paginaAtual, buscaEnviada, filtro, ordem, categoria]);
+    buscarLivros(
+      paginaAtual,
+      12,
+      buscaEnviada,
+      filtro,
+      ordem,
+      categoria,
+      idioma,
+    );
+  }, [paginaAtual, buscaEnviada, filtro, ordem, categoria, idioma]);
 
   const handleCategoria = (novaCategoria) => {
     setCategoria(categoria === novaCategoria ? "" : novaCategoria);
     setBusca("");
     setBuscaEnviada("");
+    setPaginaAtual(1);
+  };
+
+  const handleIdioma = (novoIdioma) => {
+    setIdioma(novoIdioma);
     setPaginaAtual(1);
   };
 
@@ -71,6 +86,7 @@ export default function Loja() {
         titulo="Loja"
         descricao="Nosso site é feito por quem respira livros, pensando na melhor experiência para você."
       />
+
       <div className={styles.container}>
         <div className={styles.containerlivros}>
           <div className={styles.filtros}>
@@ -78,7 +94,13 @@ export default function Loja() {
               <h1>Gênero</h1>
             </div>
             <ul>
-              <li onClick = {()=> handleCategoria("")}>Todos</li>
+              <li
+                onClick={() => handleCategoria("")}
+                className={categoria === "" ? styles.categoriaAtiva : ""}
+                style={{ cursor: "pointer" }}
+              >
+                Todos
+              </li>
               {generos.map((gen) => (
                 <li
                   key={gen}
@@ -93,7 +115,63 @@ export default function Loja() {
                 </li>
               ))}
             </ul>
+
+            <hr />
+            <div className={styles.oi}>
+              <h1>Idioma</h1>
+            </div>
+            <ul>
+              <li
+                onClick={() => handleIdioma("")}
+                className={idioma === "" ? styles.categoriaAtiva : ""}
+                style={{
+                  cursor: "pointer",
+                  fontWeight: idioma === "" ? "bold" : "normal",
+                }}
+              >
+                Todos
+              </li>
+              <li
+                onClick={() => handleIdioma("português")}
+                className={idioma === "português" ? styles.categoriaAtiva : ""}
+                style={{
+                  cursor: "pointer",
+                  fontWeight: idioma === "português" ? "bold" : "normal",
+                }}
+              >
+                Português
+              </li>
+              <li
+                onClick={() => handleIdioma("inglês")}
+                className={idioma === "inglês" ? styles.categoriaAtiva : ""}
+                style={{
+                  cursor: "pointer",
+                  fontWeight: idioma === "inglês" ? "bold" : "normal",
+                }}
+              >
+                Inglês
+              </li>
+              <li
+                onClick={() => handleIdioma("espanhol")}
+                className={idioma === "espanhol" ? styles.categoriaAtiva : ""}
+                style={{
+                  cursor: "pointer",
+                  fontWeight: idioma === "espanhol" ? "bold" : "normal",
+                }}
+              >
+                Espanhol
+              </li>
+            </ul>
+            <button
+              onClick={() => {
+                handleCategoria("");
+                handleIdioma("");
+              }}
+            >
+              Limpar Filtros
+            </button>
           </div>
+
           <div className={styles.form}>
             <form onSubmit={handleBusca} className={styles.busca}>
               <span className={styles.iconebusca}>
@@ -156,12 +234,12 @@ export default function Loja() {
               </button>
             </form>
           </div>
+
           <div className={styles.carrinho}>
             <Link to="/carrinho">
               <FiShoppingCart />
             </Link>
           </div>
-
 
           <div className={styles.livros}>
             {carregando ? (

@@ -20,6 +20,7 @@ export default function Confirmacao({
   };
 
   console.log(dados);
+  
 
   const previews = useMemo(() => {
     const urlsCriadas = [];
@@ -35,14 +36,16 @@ export default function Confirmacao({
       return null;
     };
 
+
     return {
       manga: obterUrl(dados?.conteudo?.manuscrito),
       frente: obterUrl(dados?.conteudo?.capa?.frente),
       verso: obterUrl(dados?.conteudo?.capa?.verso),
-      orelhas: obterUrl(dados?.conteudo?.capa?.orelhas),
       _urlsCriadas: urlsCriadas,
     };
   }, [dados?.conteudo]);
+
+      console.log(previews);
 
   useEffect(() => {
     return () => {
@@ -286,32 +289,6 @@ export default function Confirmacao({
                   <div className={styles.imagemContainer}>
                     <span className={styles.imgerro}>
                       Imagem do verso não adicionada.
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {previews.orelhas ? (
-                <div className={`${styles.capas} ${styles.card2}`}>
-                  <p className={styles.fvo}>
-                    <small>Orelhas:</small>
-                  </p>
-                  <div className={styles.imagemContainer}>
-                    <img
-                      src={previews.orelhas}
-                      alt="Orelhas da Capa"
-                      className={styles.fvoimg}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className={`${styles.capas} ${styles.card2}`}>
-                  <p className={styles.fvo}>
-                    <small>Orelhas:</small>
-                  </p>
-                  <div className={styles.imagemContainer}>
-                    <span className={styles.imgerro}>
-                      Imagem das orelhas não adicionada.
                     </span>
                   </div>
                 </div>

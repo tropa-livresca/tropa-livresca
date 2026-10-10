@@ -1,0 +1,117 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-bottom: 32px;
+  min-width: 0;
+}
+
+.filtros {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.filtros label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.filtros select {
+  min-width: 180px;
+  padding: 10px 12px;
+  border: 1px solid #d6d3e0;
+  border-radius: 8px;
+  background: white;
+  color: #292533;
+  font: inherit;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid #e5e1ed;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgb(30 20 60 / 4%);
+}
+
+.card h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+  color: #292533;
+}
+
+.descricao {
+  margin: 0 0 20px;
+  color: #716b7d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cardLargo {
+  grid-column: 1 / -1;
+}
+
+.vazio {
+  display: grid;
+  min-height: 240px;
+  place-items: center;
+  padding: 20px;
+  color: #716b7d;
+  text-align: center;
+  font-size: 14px;
+}
+
+.tooltip {
+  padding: 12px 14px;
+  border: 1px solid #e5e1ed;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgb(30 20 60 / 10%);
+}
+
+.tooltip strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #292533;
+}
+
+.tooltip p {
+  margin: 0;
+  color: #6d4aff;
+  font-size: 13px;
+}
+
+@media (max-width: 800px) {
+  .grade {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cardLargo {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 14px;
+  }
+
+  .filtros {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .filtros select {
+    width: 100%;
+  }
+}

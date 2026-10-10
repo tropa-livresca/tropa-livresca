@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { CarrinhoContext } from "./CarrinhoContext";
 import { apiFetch } from "../../../../common/services/api";
@@ -28,10 +27,13 @@ export const CarrinhoProvider = ({ children }) => {
 
       if (itemExistente) {
         return itensAtuais.map((item) =>
-          item.id === produto.id && item.tipo === produto.tipo && item.tipo == "fisico"
+          item.id === produto.id &&
+          item.tipo === produto.tipo &&
+          item.tipo == "fisico"
             ? {
                 ...item,
-                quantidade: Number(item.quantidade) + (Number(produto.quantidade) || 1),
+                quantidade:
+                  Number(item.quantidade) + (Number(produto.quantidade) || 1),
               }
             : item,
         );
@@ -74,27 +76,40 @@ export const CarrinhoProvider = ({ children }) => {
 
   const calcularFrete = async (produtos) => {
     setCarregando(true);
-    try{
+    try {
+      let queryProdutos = produtos.map((produto) => {
+        return { tipo: produto.tipo, quantidade: produto.quantidade };
+      });
 
-      const inicio = "";
-      const queryProdutos = produtos.reduce((inicio, produto) => {"{"+"tipo:"+produto.tipo+","+"quantidade:"+produto.quantidade+"},"})
+      console.log(queryProdutos);
 
+      queryProdutos = JSON.stringify(queryProdutos);
 
-      const response = await apiFetch(`/api/v1/clients/loja/frete?itensVenda=[${queryProdutos}]`)
+      const response = await apiFetch(
+        `/api/v1/clients/loja/frete?itensVenda=${queryProdutos}`,
+      );
 
-      if(!response.ok){
+      if (!response.ok) {
         console.error("Erro ao calcular frete:", response.error);
         return;
       }
 
-      const res = response.json();
+      const res = await response.json();
 
-      setFrete(res.preco);
+      console.log(res);
 
-    }catch(err){
-       console.error("Erro ao calcular frete:", err);
-    }finally{
-      setCarregando(false)
+      if (res.frete[1] != undefined) {
+        setFrete({
+          precoSedex: res.frete[1].preco,
+          precoPac: res.frete[0].preco,
+        });
+      } else {
+        setFrete(null);
+      }
+    } catch (err) {
+      console.error("Erro ao calcular frete:", err);
+    } finally {
+      setCarregando(false);
     }
   };
 
@@ -117,6 +132,7 @@ export const CarrinhoProvider = ({ children }) => {
     <CarrinhoContext.Provider
       value={{
         itens,
+        carregando,
         adicionarItem,
         removerQuantidade,
         excluirItem,
@@ -133,5 +149,3 @@ export const CarrinhoProvider = ({ children }) => {
     </CarrinhoContext.Provider>
   );
 };
-
-

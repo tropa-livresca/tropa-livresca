@@ -4,6 +4,7 @@ import { LojaController } from "./loja.controller.js";
 const router = express.Router();
 
 router.get("/", LojaController.consultarVendas);
+router.get("/estatisticas", LojaController.obterEstatisticasVendas);
 router.get("/:id", LojaController.consultarVenda);
 router.patch("/autorizacao/:id", LojaController.autorizarEntrega);
 router.post("/entregue/:id", LojaController.alterarStatusEntrega);

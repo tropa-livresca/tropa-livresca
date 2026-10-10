@@ -1,7 +1,6 @@
 ﻿import { useState } from "react";
 import Input, { InputTelefone } from "../../../../components/Input/Input";
 import SubmitButton from "../../../../components/Submit/SubmitButton";
-
 import logo from "../../images/cadastro.png";
 import logo2 from "../../../../images/logo.png";
 
@@ -30,6 +29,8 @@ export default function Cadastro() {
     setTelefone,
     navigate,
     handleSignup,
+    privacidade,
+    setPrivacidade,
   } = useCadastro();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
@@ -121,6 +122,25 @@ export default function Cadastro() {
               value={telefone}
             />
 
+            <div className={styles.privacidade}>
+              <label className={styles.checkboxPrivacidade}>
+                <input
+                  type="checkbox"
+                  name="privacidade"
+                  checked={privacidade}
+                  onChange={(e) => setPrivacidade(e.target.checked)}
+                />
+
+                <span>
+                  Li e concordo com a{" "}
+                  <Link to="/politica-de-privacidade" target="_blank">
+                    Política de Privacidade
+                  </Link>
+                  .
+                </span>
+              </label>
+            </div>
+
             <div className={styles.erro}>
               {Array.isArray(error) ? (
                 <ul className={styles.listaErros}>
@@ -137,7 +157,7 @@ export default function Cadastro() {
               Já tem cadastro? <Link to="/auth/login">Clique aqui.</Link>
             </span>
 
-            <SubmitButton text="CADASTRAR" />
+            <SubmitButton text="CADASTRAR" disabled={!privacidade} />
           </form>
         </div>
       </div>

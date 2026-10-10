@@ -89,4 +89,8 @@ export class LojaService {
 
     return LojaModel.alterarStatusEntrega(vendaId);
   }
+
+  static async obterEstatisticasVendas(periodo) {
+    return LojaModel.obterEstatisticasVendas(periodo);
+  }
 }

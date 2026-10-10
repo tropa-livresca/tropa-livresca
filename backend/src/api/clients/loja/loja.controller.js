@@ -10,6 +10,7 @@ export class LojaController {
         filtro = "",
         ordem = "",
         categoria = "",
+        idioma = "",
       } = req.query;
 
       const resultado = await LojaService.buscarLivros({
@@ -19,6 +20,7 @@ export class LojaController {
         filtro,
         ordem,
         categoria,
+        idioma,
       });
 
       return res.status(200).json(resultado);
@@ -95,15 +97,12 @@ export class LojaController {
 
   static async calcularFretePrazo(req, res, next) {
     try {
-      const { itensVenda } = req.query.json();
+      const { itensVenda } = req.query;
+      console.log(itensVenda);
+      const produtos = JSON.parse(itensVenda);
       const userId = req.user?.id;
 
-      console.log(itensVenda);
-
-      const frete = await LojaService.calcularFretePrazo(
-        userId,
-        itensVenda,
-      );
+      const frete = await LojaService.calcularFretePrazo(userId, produtos);
 
       return res.status(201).json({ frete });
     } catch (err) {

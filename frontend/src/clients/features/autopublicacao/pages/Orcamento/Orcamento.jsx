@@ -1,88 +1,129 @@
-﻿
-
-import Input from "../../../../../common/components/Input/Input";
+﻿import Input from "../../../../../common/components/Input/Input";
 import styles from "./Orcamento.module.css";
 import { Link } from "react-router-dom";
+
+const CUSTO_POR_PAGINA_CENTAVOS = 8;
+const CUSTO_MINIMO_DIGITAL_CENTAVOS = 599;
+const PORCENTAGEM_PLATAFORMA = 70;
 
 export default function Orcamento({
   dados,
   onChange,
   irParaProximaEtapa,
+  numeroPaginas,
   voltarEtapa,
 }) {
-  const orcamento = dados|| {};
-  const numeroPaginas = Number(orcamento.numeroPaginas) || 0;
-  const custoMinimoFisicoCentavos = numeroPaginas * 8;
-  const custoMinimoDigitalCentavos = 599;
+  const orcamento = dados || {};
 
-  console.log(dados);
+  numeroPaginas = Math.max(0, Number(numeroPaginas) || 0);
 
-  const formatarMoeda = (centavos) => {
-    const stringCentavos = String(centavos).padStart(3, "0");
-    const reais = stringCentavos.slice(0, -2);
-    const centavosFinais = stringCentavos.slice(-2);
-    return `${reais},${centavosFinais}`;
+  const custoMinimoFisico = numeroPaginas * CUSTO_POR_PAGINA_CENTAVOS;
+
+  const custoMinimoDigital = CUSTO_MINIMO_DIGITAL_CENTAVOS;
+
+  const converterParaCentavos = (valor) => {
+    const limpo = String(valor ?? "")
+      .replace(",", ".")
+      .trim();
+
+    if (!limpo || !/^\d+(\.\d{0,2})?$/.test(limpo)) {
+      return 0;
+    }
+
+    return Math.round(Number(limpo) * 100);
   };
 
-  const calcularEstruturaPrecoPorPrecoFinal = (
-    valorDigitado,
-    custoMinimoCentavos,
-  ) => {
-    const limpo = String(valorDigitado || "").replace(",", ".");
-    const valorFloat = parseFloat(limpo);
-    let precoDigitadoCentavos = 0;
-    if (!isNaN(valorFloat)) {
-      precoDigitadoCentavos = Math.round(valorFloat * 100);
-    }
-    const subtotalCentavos = Math.max(
-      precoDigitadoCentavos,
-      custoMinimoCentavos,
+  const formatarMoeda = (centavos) =>
+    (centavos / 100).toLocaleString("pt-BR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const calcularValores = (precoTotal, custoMinimo) => {
+    const precoTotalCentavos = converterParaCentavos(precoTotal);
+
+    const valorDesejadoAutor = Math.max(0, precoTotalCentavos - custoMinimo);
+
+    const valorPlataforma = Math.round(
+      (precoTotalCentavos * PORCENTAGEM_PLATAFORMA) / 100,
     );
-    const comissaoCentavos = Math.round(subtotalCentavos * 0.2);
-    const vendaTotalCentavos = subtotalCentavos + comissaoCentavos;
+
+    const valorAutor = precoTotalCentavos - valorPlataforma;
+
     return {
-      minimo: formatarMoeda(custoMinimoCentavos),
-      comissao: formatarMoeda(comissaoCentavos),
-      final: formatarMoeda(vendaTotalCentavos),
+      custoMinimo: formatarMoeda(custoMinimo),
+      valorDesejadoAutor: formatarMoeda(valorDesejadoAutor),
+      precoTotal: formatarMoeda(precoTotalCentavos),
+      valorPlataforma: formatarMoeda(valorPlataforma),
+      valorAutor: formatarMoeda(valorAutor),
     };
   };
 
-  const atualizarCampo = (chave, valor) => {
-    const valorValidado = valor.replace(/[^0-9.,]/g, "");
+  const atualizarPrecoTotal = (chave, valor, custoMinimo) => {
+    let valorValidado = valor.replace(/[^0-9.,]/g, "");
+
+    const indiceSeparador = valorValidado.search(/[.,]/);
+
+    if (indiceSeparador !== -1) {
+      const parteInteira = valorValidado
+        .slice(0, indiceSeparador)
+        .replace(/[.,]/g, "");
+
+      const parteDecimal = valorValidado
+        .slice(indiceSeparador + 1)
+        .replace(/[.,]/g, "")
+        .slice(0, 2);
+
+      valorValidado = `${parteInteira},${parteDecimal}`;
+    }
+
+    const valorDesejadoCentavos = converterParaCentavos(valorValidado);
+
+    const precoTotalCentavos = custoMinimo + valorDesejadoCentavos;
+
     onChange({
-      ...dados,
-        [chave]: valorValidado,
+      ...orcamento,
+      [chave]: formatarMoeda(precoTotalCentavos),
     });
   };
 
-  const validarPrecoMinimo = (chave) => {
-    const valor = orcamento[chave];
-    if (!valor) return;
-    const valorNumerico = parseFloat(String(valor).replace(",", "."));
-    const custoMinimo =
-      chave === "valorLivroFisico"
-        ? custoMinimoFisicoCentavos / 100
-        : custoMinimoDigitalCentavos / 100;
-    if (isNaN(valorNumerico) || valorNumerico < custoMinimo) {
-      onChange({
-        ...dados,
-          [chave]: formatarMoeda(
-            chave === "valorLivroFisico"
-              ? custoMinimoFisicoCentavos
-              : custoMinimoDigitalCentavos,
-          ),
-        
-      });
-    }
-  };
-
-  const valoresFisico = calcularEstruturaPrecoPorPrecoFinal(
+  const valoresFisico = calcularValores(
     orcamento.valorLivroFisico,
-    custoMinimoFisicoCentavos,
+    custoMinimoFisico,
   );
-  const valoresDigital = calcularEstruturaPrecoPorPrecoFinal(
+
+  const valoresDigital = calcularValores(
     orcamento.valorLivroDigital,
-    custoMinimoDigitalCentavos,
+    custoMinimoDigital,
+  );
+
+  const renderizarResumo = (valores) => (
+    <div className={styles.div2}>
+      <p>
+        Custo mínimo: R${" "}
+        <span className={styles.numero}>{valores.custoMinimo}</span>
+      </p>
+
+      <p>
+        Valor desejado pelo autor: R${" "}
+        <span className={styles.numero}>{valores.valorDesejadoAutor}</span>
+      </p>
+
+      <p>
+        Valor recebido pela plataforma (70%): R${" "}
+        <span className={styles.numero}>{valores.valorPlataforma}</span>
+      </p>
+
+      <p>
+        Valor destinado ao autor (30%): R${" "}
+        <span className={styles.numero}>{valores.valorAutor}</span>
+      </p>
+
+      <strong className={styles.strong}>
+        Preço total de venda: R${" "}
+        <span className={styles.numero}>{valores.precoTotal}</span>
+      </strong>
+    </div>
   );
 
   return (
@@ -92,69 +133,73 @@ export default function Orcamento({
 
         <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
+
           <p>
-            Custo de Fabricação Mínimo (R\${" "}
-            <span className={styles.numero}>0,08</span> por página): R\$
-            <span className={styles.numero}>{valoresFisico.minimo}</span>
+            Custo mínimo de fabricação (R$ 0,08 por página): R${" "}
+            <span className={styles.numero}>
+              {formatarMoeda(custoMinimoFisico)}
+            </span>
           </p>
-          <label>Preço Base Desejado (R\$): </label>
+
+          <label htmlFor="valorLivroFisico">
+            Valor desejado pelo autor (R$):
+          </label>
+
           <Input
+            id="valorLivroFisico"
             type="text"
             placeholder="0,00"
             className={styles.inputmodificado}
-            value={orcamento.valorLivroFisico || ""}
+            value={valoresFisico.valorDesejadoAutor}
             handleOnChange={(e) =>
-              atualizarCampo("valorLivroFisico", e.target.value)
+              atualizarPrecoTotal(
+                "valorLivroFisico",
+                e.target.value,
+                custoMinimoFisico,
+              )
             }
-            onBlur={() => validarPrecoMinimo("valorLivroFisico")}
           />
-          <div className={styles.div2}>
-            <p>
-              Comissão da Plataforma (+{" "}
-              <span className={styles.numero}>20</span>%): R\$
-              <span className={styles.numero}>{valoresFisico.comissao}</span>
-            </p>
-            <strong className={styles.strong}>
-              Valor Total de Venda: R\${" "}
-              <span className={styles.numero}>{valoresFisico.final}</span>
-            </strong>
-          </div>
+
+          {renderizarResumo(valoresFisico)}
         </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Digital</legend>
+
           <p>
-            Custo Digital Mínimo: R\${" "}
-            <span className={styles.numero}>{valoresDigital.minimo}</span>
+            Custo mínimo digital: R${" "}
+            <span className={styles.numero}>
+              {formatarMoeda(custoMinimoDigital)}
+            </span>
           </p>
-          <label>Preço Base Desejado (R\$): </label>
+
+          <label htmlFor="valorLivroDigital">
+            Valor desejado pelo autor (R$):
+          </label>
+
           <Input
+            id="valorLivroDigital"
             type="text"
             placeholder="0,00"
             className={styles.inputmodificado}
-            value={orcamento.valorLivroDigital || ""}
+            value={valoresDigital.valorDesejadoAutor}
             handleOnChange={(e) =>
-              atualizarCampo("valorLivroDigital", e.target.value)
+              atualizarPrecoTotal(
+                "valorLivroDigital",
+                e.target.value,
+                custoMinimoDigital,
+              )
             }
-            onBlur={() => validarPrecoMinimo("valorLivroDigital")}
           />
-          <div className={styles.div2}>
-            <p>
-              Comissão da Plataforma (+{" "}
-              <span className={styles.numero}>20</span>%): R\$
-              <span className={styles.numero}>{valoresDigital.comissao}</span>
-            </p>
-            <strong className={styles.strong}>
-              Valor Total de Venda: R\${" "}
-              <span className={styles.numero}>{valoresDigital.final}</span>
-            </strong>
-          </div>
+
+          {renderizarResumo(valoresDigital)}
         </div>
 
         <div className={styles.botao}>
           <Link to="/meuslivros" className={styles.btnmeu}>
             Voltar a Meus Livros
           </Link>
+
           <div className={styles.navegacao}>
             <button
               type="button"
@@ -163,6 +208,7 @@ export default function Orcamento({
             >
               Anterior
             </button>
+
             <button
               type="button"
               onClick={irParaProximaEtapa}
@@ -176,4 +222,3 @@ export default function Orcamento({
     </main>
   );
 }
-

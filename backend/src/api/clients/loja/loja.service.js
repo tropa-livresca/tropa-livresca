@@ -2,12 +2,10 @@ import { LojaModel } from "../../common/models/loja.model.js";
 import { EnderecoModel } from "../../common/models/endereco.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
-// Não há mais tabela de métodos; o pagamento da demo é sempre simulado.
 const METODO_PAGAMENTO_SIMULADO = 1;
 const MAX_QTD_POR_ITEM = 99;
 
 const arredondar = (valor) => Math.round(valor * 100) / 100;
-
 export class LojaService {
   static _parseCapaUrls(livro) {
     if (!livro) return livro;
@@ -35,6 +33,7 @@ export class LojaService {
     filtro = "",
     ordem = "",
     categoria = "",
+    idioma = "",
   }) {
     const livrosTropa = await LojaModel.buscarComFiltros({
       page,
@@ -43,6 +42,7 @@ export class LojaService {
       filtro,
       ordem,
       categoria,
+      idioma,
     });
 
     if (livrosTropa.error) {
@@ -88,7 +88,6 @@ export class LojaService {
 
     const venda = await LojaModel.consultarVenda(vendaId);
 
-    // Cliente só enxerga as próprias vendas.
     if (venda.fk_user_profile_id !== usuarioId)
       error(404, "Venda não encontrada.");
 
@@ -104,7 +103,6 @@ export class LojaService {
     const itensNormalizados = itens.map((item) => {
       const livroId = Number(item.livroId);
       const fisico = item.fisico === true;
-      // Livro digital é sempre uma unidade.
       const qtd = fisico ? Number(item.qtd) : 1;
 
       if (!Number.isInteger(livroId) || livroId <= 0)
@@ -119,12 +117,13 @@ export class LojaService {
     const livros = await LojaModel.buscarLivrosParaVenda(livroIds);
     const livrosPorId = new Map(livros.map((livro) => [livro.id, livro]));
 
-    // O preço vem sempre do banco, nunca do navegador.
     const itensVenda = itensNormalizados.map(({ livroId, fisico, qtd }) => {
       const livro = livrosPorId.get(livroId);
       if (!livro) error(400, "Um dos livros do carrinho não está disponível.");
 
-      const precoUnitario = Number(fisico ? livro.preco_fisico : livro.preco_digital);
+      const precoUnitario = Number(
+        fisico ? livro.preco_fisico : livro.preco_digital,
+      );
       if (!(precoUnitario > 0))
         error(400, `"${livro.titulo}" não está à venda neste formato.`);
 
@@ -161,15 +160,16 @@ export class LojaService {
       };
 
       const opcoesFrete = await LojaModel.calcularFretePrazo(
-        endereco.cep,
+        usuarioId,
         itensFisicos.map((item) => ({ tipo: "fisico", quantidade: item.qtd })),
       );
-      // Usa a opção mais barata (PAC).
       frete = Math.min(...opcoesFrete.map((opcao) => opcao.preco));
     }
 
     const totalItens = itensVenda.reduce((acc, item) => acc + item.subtotal, 0);
     const total = arredondar(totalItens + frete);
+
+    console.log(usuarioId);
 
     const dadosVenda = {
       fk_user_profile_id: usuarioId,
@@ -243,5 +243,3 @@ export class LojaService {
     return LojaModel.mudarStatusPagamento(vendaId, usuario.email);
   }
 }
-
-

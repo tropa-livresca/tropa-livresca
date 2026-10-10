@@ -16,9 +16,7 @@ export const useCompra = () => {
   const [pedido, setPedido] = useState(null);
   const [pedidos, setPedidos] = useState([]);
 
-  // Envia só o que o servidor precisa; preço e total são calculados lá.
-  const criarPedido = useCallback(async (itensCarrinho, enderecoId, modoDeEntrega) => {
-    console.log(modoDeEntrega);
+  const criarPedido = useCallback(async (itensCarrinho, enderecoId) => {
     setCarregando(true);
     setErro(null);
     try {
@@ -30,7 +28,7 @@ export const useCompra = () => {
 
       const response = await apiFetch("/api/v1/clients/loja/venda", {
         method: "POST",
-        body: JSON.stringify({ itens, enderecoId, modoDeEntrega }),
+        body: JSON.stringify({ itens, enderecoId }),
       });
 
       if (!response.ok) {
@@ -99,9 +97,7 @@ export const useCompra = () => {
     setCarregando(true);
     setErro(null);
     try {
-      const response = await apiFetch(
-        "/api/v1/clients/loja/historico-vendas",
-      );
+      const response = await apiFetch("/api/v1/clients/loja/historico-vendas");
 
       if (!response.ok) {
         throw new Error(
