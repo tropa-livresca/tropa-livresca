@@ -83,12 +83,12 @@ export default function BoasVindas() {
           </li>
         </ul>
 
-        {/*<p className={styles.rodape}>
+        <p className={styles.rodape}>
           Você também pode navegar pelo menu lateral.{" "}
           <Link to="/admin/configuracoes/novasenha" className={styles.link}>
             Alterar minha senha
           </Link>
-        </p>*/}
+        </p>
       </div>
     </section>
   );
