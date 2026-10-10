@@ -70,6 +70,31 @@ export class LojaController {
     }
   }
 
+  static async reenviarEmailLivrosDigitais(req, res, next) {
+    try {
+      const usuarioId = req.user?.id;
+      const usuarioEmail = req.user?.email;
+
+      const vendaId = Number(req.params.vendaId);
+
+      if (!Number.isSafeInteger(vendaId) || vendaId <= 0) {
+        return res.status(400).json({
+          mensagem: "Identificador de pedido inválido.",
+        });
+      }
+
+      const resultado = await LojaService.reenviarEmailLivrosDigitais(
+        usuarioId,
+        usuarioEmail,
+        vendaId,
+      );
+
+      return res.status(200).json({ resultado });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async buscarHistoricoVendasUsuario(req, res, next) {
     try {
       const usuarioId = req.user?.id;

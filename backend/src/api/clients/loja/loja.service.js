@@ -186,6 +186,22 @@ export class LojaService {
     return { id: venda.id, total, frete };
   }
 
+  static async reenviarEmailLivrosDigitais(vendaId, usuarioId, usuarioEmail) {
+    if (!vendaId) error(400, "Id da venda não informado.");
+    if (!usuarioEmail) error(400, "Email do usuário não informado.");
+    if (!usuarioId) errorUsuarioId();
+
+    const envio = await LojaModel.reenviarEmailLivrosDigitais(
+      vendaId,
+      usuarioId,
+      usuarioEmail,
+    );
+
+    if (envio.error) throw envio.error;
+
+    return envio;
+  }
+
   static async _buscarEnderecoDoUsuario(enderecoId, usuarioId) {
     try {
       const { data } = await EnderecoModel.BuscarEnderecoById(

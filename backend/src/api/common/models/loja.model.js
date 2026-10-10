@@ -254,13 +254,197 @@ export class LojaModel {
       throw error;
     }
 
-    if (data && usuarioEmail) {
-      this.enviarEbookAposPagamento(vendaId, usuarioEmail);
+    if (!data) {
+      const erro = new Error("Venda não encontrada.");
+      erro.statusCode = 404;
+      throw erro;
+    }
+
+    if (usuarioEmail) {
+      try {
+        await this.enviarEbookAposPagamento(vendaId, usuarioEmail);
+      } catch (erroEmail) {
+        // O pagamento continua confirmado mesmo se o e-mail falhar.
+        console.error(
+          `Falha no envio inicial dos e-books da venda ${vendaId}:`,
+          erroEmail,
+        );
+      }
     }
 
     return data;
   }
 
+  static async enviarEbookAposPagamento(vendaId, usuarioEmail) {
+    if (!usuarioEmail) {
+      const erro = new Error("E-mail do comprador não informado.");
+      erro.statusCode = 400;
+      throw erro;
+    }
+
+    const { data: venda, error: erroVenda } = await supabaseAdmin
+      .from("vendas")
+      .select("id, status_pagamento")
+      .eq("id", vendaId)
+      .maybeSingle();
+
+    if (erroVenda) {
+      erroVenda.statusCode = 500;
+      throw erroVenda;
+    }
+
+    if (!venda) {
+      const erro = new Error("Venda não encontrada.");
+      erro.statusCode = 404;
+      throw erro;
+    }
+
+    if (venda.status_pagamento !== "pago") {
+      const erro = new Error(
+        "Os livros digitais só podem ser enviados após a confirmação do pagamento.",
+      );
+      erro.statusCode = 400;
+      throw erro;
+    }
+
+    const { data: itens, error } = await supabaseAdmin
+      .from("itens_venda")
+      .select(
+        `
+      id,
+      fisico,
+      livros (
+        titulo,
+        manuscrito
+      )
+    `,
+      )
+      .eq("fk_vendas_id", vendaId)
+      .eq("fisico", false);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (!itens || itens.length === 0) {
+      const erro = new Error(
+        "Este pedido não possui livros digitais para enviar.",
+      );
+      erro.statusCode = 400;
+      throw erro;
+    }
+
+    let quantidadeEnviada = 0;
+
+    for (const item of itens) {
+      const livro = item.livros;
+
+      if (!livro?.manuscrito) {
+        throw new Error(
+          `O arquivo digital de "${livro?.titulo || "um livro"}" não está disponível.`,
+        );
+      }
+
+      const titulo = String(livro.titulo || "Livro digital");
+      const link = String(livro.manuscrito);
+
+      const dadosMail = {
+        from: `"Tropa Livresca" <${process.env.SMTP_USER}>`,
+        to: usuarioEmail,
+        subject: `Seu livro digital: ${titulo}`,
+        text: [
+          "Olá!",
+          "Este é o acesso ao livro digital adquirido na Tropa Livresca.",
+          `Livro: ${titulo}`,
+          `Acesso: ${link}`,
+        ].join("\n\n"),
+        html: `
+        <div style="font-family: Arial, sans-serif; padding: 24px; color: #333;">
+          <h2>Seu livro digital está disponível!</h2>
+          <p>Olá! Obrigado por comprar na Tropa Livresca.</p>
+          <p>
+            Você adquiriu a versão digital de
+            <strong>${titulo.replace(
+              /[&<>"']/g,
+              (c) =>
+                ({
+                  "&": "&amp;",
+                  "<": "&lt;",
+                  ">": "&gt;",
+                  '"': "&quot;",
+                  "'": "&#39;",
+                })[c],
+            )}</strong>.
+          </p>
+          <p>Utilize o botão abaixo para acessar o livro:</p>
+          <a
+            href="${link.replace(/&/g, "&amp;").replace(/"/g, "&quot;")}"
+            style="display:inline-block;padding:12px 20px;background:#4F46E5;color:#fff;text-decoration:none;border-radius:6px;"
+          >
+            Acessar livro digital
+          </a>
+          <p style="margin-top:20px;font-size:13px;color:#666;">
+            Guarde este e-mail para consultar o acesso novamente.
+          </p>
+        </div>
+      `,
+      };
+
+      await this.dispararEmailcomLivroDigital(dadosMail);
+      quantidadeEnviada++;
+    }
+
+    return {
+      sucesso: true,
+      quantidadeEnviada,
+    };
+  }
+
+  static async reenviarEmailLivrosDigitais(vendaId, usuarioId, usuarioEmail) {
+    const { data: venda, error } = await supabaseAdmin
+      .from("vendas")
+      .select("id, fk_user_profile_id, status_pagamento")
+      .eq("id", vendaId)
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    if (!venda) {
+      const erro = new Error("Pedido não encontrado.");
+      erro.statusCode = 404;
+      throw erro;
+    }
+
+    if (venda.fk_user_profile_id !== usuarioId) {
+      const erro = new Error(
+        "Você não tem permissão para reenviar os livros deste pedido.",
+      );
+      erro.statusCode = 403;
+      throw erro;
+    }
+
+    if (venda.status_pagamento !== "pago") {
+      const erro = new Error(
+        "O e-mail só pode ser reenviado para pedidos pagos.",
+      );
+      erro.statusCode = 400;
+      throw erro;
+    }
+
+    const resultado = await this.enviarEbookAposPagamento(
+      vendaId,
+      usuarioEmail,
+    );
+
+    return {
+      mensagem: `E-mail reenviado com sucesso! ${resultado.quantidadeEnviada} livro(s) digital(is) enviado(s).`,
+      quantidadeEnviada: resultado.quantidadeEnviada,
+    };
+  }
   static async buscarHistoricoVendasUsuario(usuarioId) {
     const { data, error } = await supabaseAdmin
       .from("vendas")
@@ -480,51 +664,6 @@ export class LojaModel {
     } catch (error) {
       error.statusCode = 500;
       throw error;
-    }
-  }
-
-  static async enviarEbookAposPagamento(vendaId, usuarioEmail) {
-    try {
-      const { data: itens, error } = await supabaseAdmin
-        .from("itens_venda")
-        .select(
-          `
-          id,
-          fisico,
-          livros (
-            titulo,
-            manuscrito
-          )
-        `,
-        )
-        .eq("fk_vendas_id", vendaId)
-        .eq("fisico", false);
-
-      if (error || !itens || itens.length === 0) return;
-
-      for (const item of itens) {
-        const livro = item.livros;
-
-        const dadosMail = {
-          from: `"Sua Loja de Livros" <${process.env.SMTP_USER}>`,
-          to: usuarioEmail,
-          subject: `Seu E-book chegou: ${livro.titulo}! 📚`,
-          text: `Olá! Seu pagamento foi confirmado. Aqui está o link/conteúdo do seu livro digital: ${livro.manuscrito}`,
-          html: `
-            <div style="font-family: sans-serif; padding: 20px; color: #333;">
-              <h2>Seu pagamento foi confirmado! 🎉</h2>
-              <p>Olá! Obrigado pela sua compra na nossa plataforma.</p>
-              <p>Você adquiriu a versão digital do livro <strong>${livro.titulo}</strong>.</p>
-              <p>Clique no link abaixo para fazer o download ou acessar o manuscrito:</p>
-              <a href="${livro.manuscrito}" style="display: inline-block; padding: 10px 20px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 5px;">Acessar Meu E-book</a>
-            </div>
-          `,
-        };
-
-        await this.dispararEmailcomLivroDigital(dadosMail);
-      }
-    } catch (error) {
-      console.error("Falha ao enviar e-book por e-mail:", error);
     }
   }
 
