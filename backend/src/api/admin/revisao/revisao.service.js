@@ -345,10 +345,7 @@ export class RevisaoService {
       throw erroRevisao;
     }
 
-    let manuscritoPath = null;
-    if (manuscritoRevisto) {
-      manuscritoPath = await this._uploadRevisao(manuscritoRevisto, userId);
-    }
+    let manuscritoPath = await this._uploadRevisao(manuscritoRevisto, userId);
 
     const dadosRevisao = {
       nome,
