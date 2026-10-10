@@ -169,8 +169,6 @@ export class LojaService {
     const totalItens = itensVenda.reduce((acc, item) => acc + item.subtotal, 0);
     const total = arredondar(totalItens + frete);
 
-    console.log(usuarioId);
-
     const dadosVenda = {
       fk_user_profile_id: usuarioId,
       metodo_pagamento: METODO_PAGAMENTO_SIMULADO,
@@ -184,6 +182,22 @@ export class LojaService {
     const venda = await LojaModel.realizarVenda(dadosVenda, itensVenda);
 
     return { id: venda.id, total, frete };
+  }
+
+  static async reenviarEmailLivrosDigitais(vendaId, usuarioId, usuarioEmail) {
+    if (!vendaId) error(400, "Id da venda não informado.");
+    if (!usuarioEmail) error(400, "Email do usuário não informado.");
+    if (!usuarioId) errorUsuarioId();
+
+    const envio = await LojaModel.reenviarEmailLivrosDigitais(
+      vendaId,
+      usuarioId,
+      usuarioEmail,
+    );
+
+    if (envio.error) throw envio.error;
+
+    return envio;
   }
 
   static async _buscarEnderecoDoUsuario(enderecoId, usuarioId) {

@@ -25,8 +25,6 @@ export default function Formulario({ idLivroEdicao }) {
     publicarLivro,
   } = useAutopublicacao();
 
-  console.log(dadosLivro);
-
   const { buscarLivroById } = useMeusLivros();
 
   const [carregandoLivro, setCarregandoLivro] = useState(false);
@@ -42,8 +40,6 @@ export default function Formulario({ idLivroEdicao }) {
         setErroCarregar(null);
 
         const dadosDoLivroDoBanco = await buscarLivroById(idLivroEdicao);
-
-        console.debug("Formulario: dadosDoLivroDoBanco:", dadosDoLivroDoBanco);
 
         if (dadosDoLivroDoBanco) {
           carregarDadosParaEdicao(dadosDoLivroDoBanco);

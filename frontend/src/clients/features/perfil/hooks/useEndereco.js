@@ -81,35 +81,40 @@ export const useEndereco = () => {
     }
   }, []);
 
-  const BuscarCepAutomatico = useCallback(async (cepInformado) => {
-    const cepLimpo = cepInformado.replace(/\D/g, "");
-    if (cepLimpo.length !== 8) return;
+  const BuscarCepAutomatico = useCallback(
+    async (cepInformado) => {
+      const cepLimpo = cepInformado.replace(/\D/g, "");
+      if (cepLimpo.length !== 8) return;
 
-    setCarregando(true);
+      setCarregando(true);
 
-    try {
-      const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
-      if (!response.ok) throw new Error("Erro na busca do CEP.");
+      try {
+        const response = await fetch(
+          `https://viacep.com.br/ws/${cepLimpo}/json/`,
+        );
+        if (!response.ok) throw new Error("Erro na busca do CEP.");
 
-      const json = await response.json();
+        const json = await response.json();
 
-      if (json.erro) {
-        mostrarPopup("", "CEP não encontrado.");
-        return;
+        if (json.erro) {
+          mostrarPopup("", "CEP não encontrado.");
+          return;
+        }
+
+        setEstado(json.uf || "");
+        setCidade(json.localidade || "");
+        setBairro(json.bairro || "");
+        setRua(json.logradouro || "");
+        setComplemento(json.complemento || "");
+        setPais("Brasil");
+      } catch (error) {
+        console.error("Erro ao buscar CEP externo: ", error);
+      } finally {
+        setCarregando(false);
       }
-
-      setEstado(json.uf || "");
-      setCidade(json.localidade || "");
-      setBairro(json.bairro || "");
-      setRua(json.logradouro || "");
-      setComplemento(json.complemento || "");
-      setPais("Brasil");
-    } catch (error) {
-      console.error("Erro ao buscar CEP externo: ", error);
-    } finally {
-      setCarregando(false);
-    }
-  }, [mostrarPopup]);
+    },
+    [mostrarPopup],
+  );
 
   const BuscarEnderecos = useCallback(async () => {
     setCarregando(true);
@@ -166,7 +171,7 @@ export const useEndereco = () => {
       setCidade(dadosEndereco.cidade || "");
       setBairro(dadosEndereco.bairro || "");
       setRua(dadosEndereco.rua || "");
-      setNumero(dadosEndereco.num || ""); 
+      setNumero(dadosEndereco.num || "");
       setPais(dadosEndereco.pais || "");
       setComplemento(dadosEndereco.complemento || "");
     } catch (error) {
@@ -190,101 +195,121 @@ export const useEndereco = () => {
     });
   }, [estado, pais, CEP, cidade, bairro, rua, numero, complemento]);
 
-  const AtualizarEndereco = useCallback(async (id, e) => {
-    if (e && typeof e.preventDefault === "function") e.preventDefault();
-    if (!id) return;
-    if (!ValidarCampos()) return;
+  const AtualizarEndereco = useCallback(
+    async (id, e) => {
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      if (!id) return;
+      if (!ValidarCampos()) return;
 
-    setCarregando(true);
+      setCarregando(true);
+      try {
+        const response = await apiFetch(`/api/v1/clients/enderecos/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: FinalizarPayload(),
+        });
+
+        if (!response.ok) throw new Error(`Erro ${response.status}`);
+
+        const json = await response.json();
+        const data = json.data || json;
+
+        setEndereco(data);
+        mostrarPopup("sucesso", "Informações atualizadas com sucesso!");
+        await BuscarEnderecos();
+      } catch (error) {
+        console.error("Erro ao atualizar endereço: ", error);
+        mostrarPopup("erro", "Ocorreu um erro ao atualizar o endereço.");
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [ValidarCampos, FinalizarPayload, BuscarEnderecos, mostrarPopup],
+  );
+
+  const InativarEndereco = useCallback(
+    async (id) => {
+      if (!id) return;
+      setCarregando(true);
+
+      try {
+        const response = await apiFetch(
+          `/api/v1/clients/enderecos/${id}/ativo`,
+          {
+            method: "PATCH",
+          },
+        );
+
+        if (!response.ok) throw new Error(`Erro ${response.status}`);
+
+        const json = await response.json();
+        const data = json.data || json;
+
+        setEndereco(data);
+        mostrarPopup("sucesso", "Status do endereço alterado com sucesso!");
+        await BuscarEnderecos();
+      } catch (error) {
+        console.error("Erro ao alterar status do endereço", error);
+        mostrarPopup(
+          "erro",
+          "Ocorreu um erro ao alterar o status do endereço.",
+        );
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [BuscarEnderecos, mostrarPopup],
+  );
+
+  const handleCriarEndereco = useCallback(
+    async (e) => {
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      if (!ValidarCampos()) return;
+
+      setCarregando(true);
+
+      try {
+        const response = await apiFetch(`/api/v1/clients/enderecos`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: FinalizarPayload(),
+        });
+
+        if (!response.ok) throw new Error(`Erro ${response.status}`);
+
+        const json = await response.json();
+        const data = json.data || json;
+
+        setEndereco(data);
+        mostrarPopup("sucesso", "Endereço criado com sucesso!");
+        LimparFormulario();
+        await BuscarEnderecos();
+      } catch (error) {
+        console.error("Erro ao criar endereço", error);
+        mostrarPopup("erro", "Ocorreu um erro ao criar endereço.");
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [
+      ValidarCampos,
+      FinalizarPayload,
+      LimparFormulario,
+      BuscarEnderecos,
+      mostrarPopup,
+    ],
+  );
+
+  const BuscarEnderecoPrincipal = useCallback(async () => {
     try {
-      const response = await apiFetch(`/api/v1/clients/enderecos/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: FinalizarPayload(),
-      });
-
-      if (!response.ok) throw new Error(`Erro ${response.status}`);
-
-      const json = await response.json();
-      const data = json.data || json;
-
-      setEndereco(data);
-       mostrarPopup("sucesso", "Informações atualizadas com sucesso!");
-      await BuscarEnderecos();
-    } catch (error) {
-      console.error("Erro ao atualizar endereço: ", error);
-      mostrarPopup("erro", "Ocorreu um erro ao atualizar o endereço.");
-    } finally {
-      setCarregando(false);
-    }
-  }, [ValidarCampos, FinalizarPayload, BuscarEnderecos, mostrarPopup]);
-
-  const InativarEndereco = useCallback(async (id) => {
-    if (!id) return;
-    setCarregando(true);
-
-    try {
-      const response = await apiFetch(`/api/v1/clients/enderecos/${id}/ativo`, {
-        method: "PATCH",
-      });
-
-      if (!response.ok) throw new Error(`Erro ${response.status}`);
-
-      const json = await response.json();
-      const data = json.data || json;
-
-      setEndereco(data);
-      mostrarPopup("sucesso", "Status do endereço alterado com sucesso!");
-      await BuscarEnderecos();
-    } catch (error) {
-      console.error("Erro ao alterar status do endereço", error);
-      mostrarPopup("erro", "Ocorreu um erro ao alterar o status do endereço.");
-    } finally {
-      setCarregando(false);
-    }
-  }, [BuscarEnderecos, mostrarPopup]);
-
-  const handleCriarEndereco = useCallback(async (e) => {
-    if (e && typeof e.preventDefault === "function") e.preventDefault();
-    if (!ValidarCampos()) return;
-    
-    setCarregando(true);
-
-    try {
-      const response = await apiFetch(`/api/v1/clients/enderecos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: FinalizarPayload(),
-      });
-
-      if (!response.ok) throw new Error(`Erro ${response.status}`);
-
-      const json = await response.json();
-      const data = json.data || json;
-
-      setEndereco(data);
-      mostrarPopup("sucesso", "Endereço criado com sucesso!");
-      LimparFormulario();
-      await BuscarEnderecos();
-    } catch (error) {
-      console.error("Erro ao criar endereço", error);
-      mostrarPopup("erro", "Ocorreu um erro ao criar endereço.");
-    } finally {
-      setCarregando(false);
-    }
-  }, [ValidarCampos, FinalizarPayload, LimparFormulario, BuscarEnderecos,mostrarPopup]);
-
-  const BuscarEnderecoPrincipal = useCallback(async()=>{
-    try{
       const response = await apiFetch(`/api/v1/clients/enderecos/principal`, {
-        method: "GET"
+        method: "GET",
       });
 
-      if(!response.ok) throw new Error(`Erro ${response.status}`);
+      if (!response.ok) throw new Error(`Erro ${response.status}`);
 
       const json = await response.json();
       const data = json.data || json;
-      console.log(data);
 
       const valorCep = data.cep || "";
       if (valorCep.replace(/\D/g, "").length === 8) {
@@ -294,35 +319,47 @@ export const useEndereco = () => {
       }
 
       setEndereco(data);
-    }catch(error){
+    } catch (error) {
       console.error("Erro ao buscar endereço principal: ", error);
     }
   }, []);
 
-  const DefinirEnderecoPrincipal = useCallback(async (id) => {
-    if (!id) return;
-    setCarregando(true);
+  const DefinirEnderecoPrincipal = useCallback(
+    async (id) => {
+      if (!id) return;
+      setCarregando(true);
 
-    try {
-      const response = await apiFetch(`/api/v1/clients/enderecos/${id}/principal`, {
-        method: "PATCH",
-      });
+      try {
+        const response = await apiFetch(
+          `/api/v1/clients/enderecos/${id}/principal`,
+          {
+            method: "PATCH",
+          },
+        );
 
-      if (!response.ok) throw new Error(`Erro ${response.status}`);
+        if (!response.ok) throw new Error(`Erro ${response.status}`);
 
-      const json = await response.json();
-      const data = json.data || json;
+        const json = await response.json();
+        const data = json.data || json;
 
-      setEndereco(data);
-      mostrarPopup("sucesso", "Endereço definido como principal com sucesso!");
-      await BuscarEnderecos();
-    } catch (error) {
-      console.error("Erro ao definir endereço principal: ", error);
-      mostrarPopup("erro", "Ocorreu um erro ao atualizar o endereço principal.");
-    } finally {
-      setCarregando(false);
-    }
-  }, [BuscarEnderecos, mostrarPopup]);
+        setEndereco(data);
+        mostrarPopup(
+          "sucesso",
+          "Endereço definido como principal com sucesso!",
+        );
+        await BuscarEnderecos();
+      } catch (error) {
+        console.error("Erro ao definir endereço principal: ", error);
+        mostrarPopup(
+          "erro",
+          "Ocorreu um erro ao atualizar o endereço principal.",
+        );
+      } finally {
+        setCarregando(false);
+      }
+    },
+    [BuscarEnderecos, mostrarPopup],
+  );
 
   return {
     endereco,

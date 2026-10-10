@@ -248,15 +248,11 @@ export const useRevisao = () => {
 
   const atualizarRevisao = useCallback(
     async (id, idLivro, novoEstado) => {
-      console.log("a");
-
       if (!id) return;
       if (!validarCamposTexto()) {
         alert("Preencha todos os campos obrigatórios (Nome e Apontamento).");
         return;
       }
-
-      console.log(novoEstado);
 
       setCarregando(true);
       setError(null);

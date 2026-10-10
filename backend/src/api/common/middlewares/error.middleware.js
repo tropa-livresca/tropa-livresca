@@ -1,4 +1,4 @@
-export const errorHandler = (err, req, res, next) => {
+export const errorHandler = (err, res) => {
   console.error(
     "Erro detectado no servidor (Detalhado):",
     JSON.stringify(err, null, 2),

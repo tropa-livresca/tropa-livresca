@@ -8,7 +8,9 @@ import Carregando from "../../../../components/Carregando/Carregando";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 
 const formatarPreco = (valor) =>
-  `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
+  `R$ ${Number(valor || 0)
+    .toFixed(2)
+    .replace(".", ",")}`;
 
 const formatarData = (data) =>
   data ? new Date(data).toLocaleDateString("pt-BR") : "";
@@ -28,9 +30,11 @@ export default function MeusPedidos() {
 
   return (
     <main>
+      <DescricaoTela
+        titulo="Meus pedidos"
+        descricao="Acompanhe suas compras na Tropa Livresca."
+      />
 
-    <DescricaoTela titulo = "Meus pedidos" descricao = "Acompanhe suas compras na Tropa Livresca."/>
-     
       <div className={base.container}>
         {carregando ? (
           <Carregando mensagem="Carregando pedidos..." />
@@ -52,7 +56,10 @@ export default function MeusPedidos() {
                 <li key={pedido.id}>
                   <Link to={`/pedido/${pedido.id}`} className={styles.pedido}>
                     <div className={styles.info}>
-                      <strong>Pedido <span className={styles.numero}>#{pedido.id}</span></strong>
+                      <strong>
+                        Pedido{" "}
+                        <span className={styles.numero}>#{pedido.id}</span>
+                      </strong>
                       <small>{formatarData(pedido.data)}</small>
                       <span className={styles.livros}>
                         {resumoItens(pedido.itens_venda)}

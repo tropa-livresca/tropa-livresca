@@ -53,7 +53,6 @@ export class AvaliacaoModel {
     return data.length > 0;
   }
 
-  // Cada usuário tem no máximo uma avaliação por livro: atualiza se já existir.
   static async salvarAvaliacao(usuarioId, livroId, qtdEstrelas) {
     const existente = await this.buscarAvaliacaoUsuario(usuarioId, livroId);
 

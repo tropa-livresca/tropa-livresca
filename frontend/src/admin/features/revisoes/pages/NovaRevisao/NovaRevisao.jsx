@@ -31,13 +31,10 @@ export default function NovaRevisao() {
     verificarRevisor(id);
   }, [verificarRevisor, id]);
 
-  console.log(revisaoAtual);
-
   const salvarRevisao = async (e, status) => {
     e.preventDefault();
     try {
       await criarRevisao(id, status);
-      console.log("a");
       alert(`Revisão salva com sucesso como ${status}!`);
     } catch (err) {
       alert(err.message || "Erro ao criar revisão.");
@@ -45,15 +42,12 @@ export default function NovaRevisao() {
   };
 
   const alterarRevisao = async (e, status) => {
-    console.log(e);
-    console.log(status);
-
     e.preventDefault();
 
     try {
       await atualizarRevisao(revisaoAtual.id, id, status);
     } catch (err) {
-      console.log(err.message);
+      console.error(err.message);
       alert(err.message || "Erro ao criar revisão.");
     }
   };

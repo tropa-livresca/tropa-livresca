@@ -81,8 +81,6 @@ export const CarrinhoProvider = ({ children }) => {
         return { tipo: produto.tipo, quantidade: produto.quantidade };
       });
 
-      console.log(queryProdutos);
-
       queryProdutos = JSON.stringify(queryProdutos);
 
       const response = await apiFetch(
@@ -95,8 +93,6 @@ export const CarrinhoProvider = ({ children }) => {
       }
 
       const res = await response.json();
-
-      console.log(res);
 
       if (res.frete[1] != undefined) {
         setFrete({

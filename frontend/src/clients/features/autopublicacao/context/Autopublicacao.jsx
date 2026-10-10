@@ -369,7 +369,6 @@ export const AutopublicacaoProvider = ({ children }) => {
             },
           );
           const uploadData = await res.json();
-          console.log(uploadData);
 
           if (!res.ok)
             throw new Error(uploadData.error || "Erro ao autorizar upload");

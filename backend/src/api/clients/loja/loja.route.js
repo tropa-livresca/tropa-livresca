@@ -21,4 +21,10 @@ router.patch("/status/:id", checkAuth, LojaController.mudarStatusPagamento);
 
 router.post("/venda", checkAuth, LojaController.realizarVenda);
 
+router.post(
+  "/:vendaId/reenviar-email",
+  checkAuth,
+  LojaController.reenviarEmailLivrosDigitais,
+);
+
 export default router;

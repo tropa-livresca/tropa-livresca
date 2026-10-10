@@ -297,7 +297,6 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    console.log(estadoInicial);
     if (
       estadoInicial !== LIVRO_ESTADO.RASCUNHO &&
       estadoInicial !== LIVRO_ESTADO.EM_REVISAO

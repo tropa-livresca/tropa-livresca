@@ -94,7 +94,7 @@ export class AuthController {
     }
   }
 
-  static async refreshSession(req, res, next) {
+  static async refreshSession(req, res) {
     const refreshToken = req.cookies["refresh-token"];
 
     if (!refreshToken) {
@@ -167,7 +167,7 @@ export class AuthController {
     }
   }
 
-  static async signout(req, res, next) {
+  static async signout(res, next) {
     try {
       await AuthService.signout();
       res.clearCookie("auth-token", AuthController.COOKIE_OPTIONS);
@@ -266,7 +266,7 @@ export class AuthController {
     }
   }
 
-  static async signoutAdm(req, res, next) {
+  static async signoutAdm(res, next) {
     try {
       res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
       res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
@@ -356,7 +356,7 @@ export class AuthController {
     }
   }
 
-  static async callbackRedefinirSenha(req, res) {
+  static async callbackRedefinirSenha(res) {
     return res.redirect(process.env.SUPABASE_RESET_PASSWORD_URL);
   }
 

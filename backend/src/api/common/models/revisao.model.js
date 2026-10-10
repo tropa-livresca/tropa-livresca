@@ -170,15 +170,12 @@ export class RevisaoModel {
   }
 
   static async VerificarRevisor(livroId, funcionarioId) {
-    console.log("c");
     const { data, error } = await supabase
       .from("revisoes")
       .select("*, livros!inner(estado)")
       .eq("completado", false)
       .eq("fk_livro_id", livroId)
       .maybeSingle();
-
-    console.log(data);
 
     if (error) {
       error.statusCode = 500;
@@ -328,7 +325,6 @@ export class RevisaoModel {
   }
 
   static async CriarRevisao(dadosRevisao) {
-    console.log(dadosRevisao);
     const { data, error } = await supabaseAdmin
       .from("revisoes")
       .insert(dadosRevisao)

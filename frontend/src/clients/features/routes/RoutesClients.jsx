@@ -4,6 +4,7 @@ import useAuth from "../../../common/hooks/useAuth";
 import { PerfilProvider } from "../../context/Perfil.jsx";
 import { CarrinhoProvider } from "../loja/context/Carrinho.jsx";
 
+import DadosBancarios from "../perfil/pages/DadosBancarios/DadosBancarios.jsx";
 import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound.jsx";
 import PoliticaPrivacidade from "../institucional/pages/PoliticaPrivacidade/PoliticaPrivacidade.jsx";
 import Inicio from "../institucional/pages/Inicio/Inicio";
@@ -53,6 +54,7 @@ const RoutesClients = () => {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Inicio />} />
+            <Route path="/perfil/dadosbancarios" element={<DadosBancarios />} />
             <Route path="/historia" element={<Historia />} />
             <Route
               path="/sobreautopublicacao"

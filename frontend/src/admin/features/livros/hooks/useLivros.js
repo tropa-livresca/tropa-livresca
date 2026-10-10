@@ -51,10 +51,8 @@ export const useLivros = () => {
           throw new Error(`Erro encontrado ao buscar livros: ${res.status}`);
         }
 
-        console.log("Resposta dos livros:", result);
-
         setLivros(result.data || []);
-        
+
         setCount(
           result.meta?.totalItems ??
             result.meta?.total ??
@@ -114,8 +112,6 @@ export const useLivros = () => {
       });
 
       const result = await res.json();
-
-      console.log(result);
 
       if (!res.ok) {
         if (res.status === 404) {

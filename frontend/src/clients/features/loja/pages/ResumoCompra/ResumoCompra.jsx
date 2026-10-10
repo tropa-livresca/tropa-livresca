@@ -22,7 +22,13 @@ export default function ResumoCompra() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { pedido, buscarPedido, carregando, erro } = useCompra();
+  const {
+    pedido,
+    buscarPedido,
+    carregando,
+    erro,
+    reenviarEmailLivrosDigitais,
+  } = useCompra();
 
   useEffect(() => {
     buscarPedido(id);
@@ -98,7 +104,18 @@ export default function ResumoCompra() {
                     </p>
 
                     {temDigital && (
-                      <p>Seu e-book será enviado para o e-mail da sua conta.</p>
+                      <>
+                        <p>
+                          Seu e-book será enviado para o e-mail da sua conta.
+                          Caso o e-mail não tenha chegado, clique no botão
+                          abaixo:
+                        </p>
+                        <button
+                          onClick={() => reenviarEmailLivrosDigitais(pedido.id)}
+                        >
+                          Reenviar Email
+                        </button>
+                      </>
                     )}
 
                     <button

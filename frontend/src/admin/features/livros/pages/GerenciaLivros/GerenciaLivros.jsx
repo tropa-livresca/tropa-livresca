@@ -67,13 +67,9 @@ export default function GerenciaLivros() {
   };
 
   const handleInativar = async (livro) => {
-    let mensagem = null;
-
-    if (livro.ativo == true) {
-      mensagem = `Tem certeza que deseja INATIVAR o livro ${livro.titulo}? Ele ficara indisponivel para compra.`;
-    } else {
-      mensagem = `Tem certeza que deseja ATIVAR o livro ${livro.titulo}? Ele ficara disponivel para compra.`;
-    }
+    const acao = livro.ativo ? "INATIVAR" : "ATIVAR";
+    const status = livro.ativo ? "indisponivel" : "disponivel";
+    const mensagem = `Tem certeza que deseja ${acao} o livro ${livro.titulo}? Ele ficara ${status} para compra.`;
 
     if (!window.confirm(mensagem)) return;
 
@@ -81,7 +77,6 @@ export default function GerenciaLivros() {
 
     try {
       await alterarAtivo(livro.id, !livro.ativo);
-
       await buscarLivros(1, itensPorPagina, busca, filtro, ordem, "", estado);
     } catch (erro) {
       alert(erro.message || "Erro ao inativar livro.");

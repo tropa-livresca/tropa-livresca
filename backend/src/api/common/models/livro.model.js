@@ -6,8 +6,6 @@ const COLUNAS_LIVRO =
   "id, ISBN, imagens_explicitas, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, direitos_de_publicacao";
 
 export class LivroModel {
-  //admin
-
   static async buscarLivrosAdmin({
     page = 1,
     limit = 12,
@@ -104,7 +102,6 @@ export class LivroModel {
     return data;
   }
 
-  //clients
   static async buscarComFiltros({
     page = 1,
     limit = 12,
