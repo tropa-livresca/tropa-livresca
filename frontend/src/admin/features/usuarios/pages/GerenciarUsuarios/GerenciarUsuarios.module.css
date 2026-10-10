@@ -290,6 +290,10 @@
   padding-right: 1.5rem;
 }
 
+.tabela tbody tr:hover td {
+  background: #fff9e9;
+}
+
 .tabela tbody tr {
   transition:
     background-color 0.2s ease,
