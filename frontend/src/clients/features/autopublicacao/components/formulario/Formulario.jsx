@@ -62,7 +62,7 @@ export default function Formulario({ idLivroEdicao }) {
     return <Carregando mensagem="Carregando dados do livro para edição..." />;
   }
 
-  if (idLivroEdicao && !carregandoLivro && erroCarregar) {
+  if (idLivroEdicao && erroCarregar) {
     return (
       <main>
         <div className={styles.erro}>{erroCarregar}</div>

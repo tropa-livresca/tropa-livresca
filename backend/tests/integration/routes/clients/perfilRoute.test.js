@@ -1,5 +1,4 @@
-
-import { createRequire } from 'node:module';
+import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
 jest.mock("../../../../src/api/common/config/supabase.js", () => {
@@ -9,20 +8,28 @@ jest.mock("../../../../src/api/common/config/supabase.js", () => {
       from: jest.fn(() => builder),
       storage: {
         from: jest.fn(() => ({
-          upload: jest.fn().mockImplementation(() => Promise.resolve({ error: null })),
-          getPublicUrl: jest.fn().mockImplementation(() => ({ data: { publicUrl: "https://supabase.co" } })),
+          upload: jest
+            .fn()
+            .mockImplementation(() => Promise.resolve({ error: null })),
+          getPublicUrl: jest
+            .fn()
+            .mockImplementation(() => ({
+              data: { publicUrl: "https://supabase.co" },
+            })),
         })),
       },
     },
   };
 });
 
-jest.mock("../../../../src/api/common/middlewares/auth.middleware.js", () => 
-  require("../../../mocks/auth.mock.js").authMiddlewareMock
+jest.mock(
+  "../../../../src/api/common/middlewares/auth.middleware.js",
+  () => require("../../../mocks/auth.mock.js").authMiddlewareMock,
 );
 
-jest.mock("../../../../src/api/common/middlewares/upload.middleware.js", () => 
-  require("../../../mocks/upload.mock.js").uploadMiddlewareMock
+jest.mock(
+  "../../../../src/api/common/middlewares/upload.middleware.js",
+  () => require("../../../mocks/upload.mock.js").uploadMiddlewareMock,
 );
 
 const request = require("supertest");
@@ -36,7 +43,6 @@ const {
 const {
   perfilCompleto,
   perfilAtualizado,
-  payloadFormMultipart,
 } = require("../../../fixtures/perfil.fixture.js");
 
 const app = createApp(router);
@@ -62,12 +68,11 @@ describe("Rotas de Perfil - Testes de Integração (E2E)", () => {
 
       const response = await request(app)
         .put("/")
-        .send({dadosPerfil:{nome:"1", telefone:"2", descricao:"3",}})
+        .send({ dadosPerfil: { nome: "1", telefone: "2", descricao: "3" } })
         .expect(200);
 
       expect(response.body).toEqual(perfilAtualizado);
     });
-    
   });
 
   describe("DELETE /imagem", () => {
@@ -77,12 +82,9 @@ describe("Rotas de Perfil - Testes de Integração (E2E)", () => {
       const response = await request(app)
         .delete("/imagem")
 
-        
         .expect(200);
 
       expect(response.body).toEqual(perfilAtualizado);
     });
-
   });
-
 });
