@@ -87,6 +87,9 @@ export default function NavBarLateral() {
               <Link to="/admin/analises/financeiro" className={styles.subItem}>
                 Financeiro
               </Link>
+              <Link to="/admin/analises/graficos" className={styles.subItem}>
+                Gráficos
+              </Link>
             </div>
           )}
         </>

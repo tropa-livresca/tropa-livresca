@@ -12,6 +12,7 @@ import GerenciaLivros from "../livros/pages/GerenciaLivros/GerenciaLivros";
 import VisualizarLivro from "../livros/pages/VisualizarLivro/VisualizarLivro";
 import GerenciaUsuarios from "../usuarios/pages/GerenciarUsuarios/GerenciarUsuarios.jsx";
 import Vendas from "../vendas/pages/Vendas/Vendas.jsx";
+import Graficos from "../financeiro/pages/Graficos/Graficos.jsx";
 import Financeiro from "../financeiro/pages/Financeiro/Financeiro.jsx";
 import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
 
@@ -116,6 +117,15 @@ const RoutesAdm = () => {
           element={
             <MasterRoute>
               <Financeiro />
+            </MasterRoute>
+          }
+        />
+
+        <Route
+          path="analises/graficos"
+          element={
+            <MasterRoute>
+              <Graficos />
             </MasterRoute>
           }
         />

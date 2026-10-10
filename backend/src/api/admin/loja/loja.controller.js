@@ -90,4 +90,16 @@ export class LojaController {
       next(err);
     }
   }
+
+  static async obterEstatisticasVendas(req, res, next) {
+    try {
+      const { periodo } = req.query;
+
+      const estatisticas = await LojaService.obterEstatisticasVendas(periodo);
+
+      return res.status(201).json({ estatisticas });
+    } catch (err) {
+      next(err);
+    }
+  }
 }

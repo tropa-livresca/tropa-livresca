@@ -23,15 +23,7 @@ export default function GerenciaLivros() {
   const totalPages = count ? Math.ceil(count / itensPorPagina) : 1;
 
   useEffect(() => {
-    buscarLivros(
-      paginaAtual,
-      itensPorPagina,
-      busca,
-      filtro,
-      ordem,
-      "",
-      estado
-    );
+    buscarLivros(paginaAtual, itensPorPagina, busca, filtro, ordem, "", estado);
   }, [paginaAtual, buscarLivros, filtro, ordem, estado]);
 
   useEffect(() => {
@@ -53,15 +45,7 @@ export default function GerenciaLivros() {
 
     setPaginaAtual(1);
 
-    buscarLivros(
-      1,
-      itensPorPagina,
-      busca,
-      filtro,
-      ordem,
-      "",
-      estado
-    );
+    buscarLivros(1, itensPorPagina, busca, filtro, ordem, "", estado);
   };
 
   const selecionarFiltro = (valor) => {
@@ -83,8 +67,6 @@ export default function GerenciaLivros() {
   };
 
   const handleInativar = async (livro) => {
-    console.log(livro);
-
     let mensagem = null;
 
     if (livro.ativo == true) {
@@ -100,15 +82,7 @@ export default function GerenciaLivros() {
     try {
       await alterarAtivo(livro.id, !livro.ativo);
 
-      await buscarLivros(
-        1,
-        itensPorPagina,
-        busca,
-        filtro,
-        ordem,
-        "",
-        estado
-      );
+      await buscarLivros(1, itensPorPagina, busca, filtro, ordem, "", estado);
     } catch (erro) {
       alert(erro.message || "Erro ao inativar livro.");
     } finally {

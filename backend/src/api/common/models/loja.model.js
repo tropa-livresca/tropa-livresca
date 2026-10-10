@@ -20,6 +20,41 @@ const COLUNAS_LIVRO = `
   direitos_de_publicacao
 `;
 
+function calcularPeriodo(periodo) {
+  const agora = new Date();
+  const fim = new Date(agora);
+  let inicio = new Date(agora);
+
+  switch (periodo) {
+    case "7d":
+      inicio.setDate(inicio.getDate() - 7);
+      break;
+
+    case "30d":
+      inicio.setDate(inicio.getDate() - 30);
+      break;
+
+    case "90d":
+      inicio.setDate(inicio.getDate() - 90);
+      break;
+
+    case "mes":
+      inicio = new Date(agora.getFullYear(), agora.getMonth(), 1);
+      break;
+
+    case "ano":
+      inicio = new Date(agora.getFullYear(), 0, 1);
+      break;
+
+    default:
+      throw new Error(`Período inválido: ${periodo}`);
+  }
+
+  return {
+    inicio: inicio.toISOString(),
+    fim: fim.toISOString(),
+  };
+}
 export class LojaModel {
   static async buscarComFiltros({
     page = 1,
@@ -520,6 +555,26 @@ export class LojaModel {
     if (error) {
       error.statusCode = 500;
       throw error;
+    }
+
+    return data;
+  }
+
+  static async obterEstatisticasVendas(periodo = "30d") {
+    const { inicio, fim } = calcularPeriodo(periodo);
+
+    const { data, error } = await supabaseAdmin.rpc(
+      "relatorio_estatisticas_vendas",
+      {
+        p_inicio: inicio,
+        p_fim: fim,
+      },
+    );
+
+    if (error) {
+      throw new Error(
+        `Erro ao consultar estatísticas de vendas: ${error.message}`,
+      );
     }
 
     return data;
