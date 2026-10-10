@@ -193,7 +193,6 @@ export class MovimentacoesModel {
         );
       }
 
-      // Um único insert: ou grava o repasse inteiro, ou nada.
       const { error: erroInsert } = await supabaseAdmin
         .from("movimentacoes_financeiras")
         .insert(movimentacoes);

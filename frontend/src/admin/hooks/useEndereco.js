@@ -20,7 +20,6 @@ export const useEndereco = () => {
 
       const json = await response.json();
       const dadosEnderecos = json.data || json;
-      console.log(dadosEnderecos);
       setEnderecos(dadosEnderecos);
     } catch (error) {
       console.error("Erro ao buscar endereços: ", error);

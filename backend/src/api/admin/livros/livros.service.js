@@ -47,7 +47,6 @@ export class LivrosService {
     return livro;
   }
 
-  // Tira o livro da loja (ou o devolve) sem apagar vendas e revisões.
   static async AlterarAtivoLivro(livroId, ativo) {
     if (!livroId) {
       const erroLivroId = new Error("Id do livro não informado.");

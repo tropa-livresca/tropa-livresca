@@ -4,15 +4,6 @@ import { useState, useCallback } from "react";
 export const useUsuarios = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [usuario, setUsuario] = useState(null);
-  const [nome, setNome] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [redesSociais, setRedesSociais] = useState({
-    instagram: "",
-    facebook: "",
-    linkedin: "",
-    email: "",
-  });
   const [carregando, setCarregando] = useState(true);
   const [meta, setMeta] = useState(null);
 

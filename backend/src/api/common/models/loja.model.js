@@ -210,8 +210,6 @@ export class LojaModel {
   }
 
   static async realizarVenda(dadosVenda, itensVenda) {
-    console.log(dadosVenda);
-
     const { data, error } = await supabaseAdmin
       .from("vendas")
       .insert(dadosVenda)
@@ -264,7 +262,6 @@ export class LojaModel {
       try {
         await this.enviarEbookAposPagamento(vendaId, usuarioEmail);
       } catch (erroEmail) {
-        // O pagamento continua confirmado mesmo se o e-mail falhar.
         console.error(
           `Falha no envio inicial dos e-books da venda ${vendaId}:`,
           erroEmail,
@@ -559,8 +556,6 @@ export class LojaModel {
 
     let pesoTotalKg = 0;
     let possuiProdutoFisico = false;
-
-    console.log(produtos);
 
     produtos.forEach((produto) => {
       if (produto.tipo?.toLowerCase() === "fisico") {

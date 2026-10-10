@@ -1,4 +1,4 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
+import { supabaseAdmin } from "../config/supabase.js";
 
 export class EnderecoModel {
   static async BuscarEnderecos(userId) {
@@ -34,11 +34,6 @@ export class EnderecoModel {
   }
 
   static async BuscarEnderecoById(id, userId) {
-
-    console.log('d');
-    console.log(id);
-    console.log(userId);
-
     const { data, error } = await supabaseAdmin
       .from("enderecos")
       .select()
@@ -48,7 +43,6 @@ export class EnderecoModel {
       .single();
 
     if (error) {
-      console.log(userId);
       error.statusCode = 500;
       throw error;
     }

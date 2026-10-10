@@ -27,8 +27,6 @@ export default function Pagamento() {
   const temFisico = itens.some((item) => item.tipo === "fisico");
   const precoTotal = Number(valorSubtotal) + Number(frete);
 
-  console.log(precoTotal);
-
   useEffect(() => {
     if (temFisico) BuscarEnderecos();
   }, [temFisico, BuscarEnderecos]);

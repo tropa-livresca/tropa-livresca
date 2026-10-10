@@ -169,8 +169,6 @@ export class LojaService {
     const totalItens = itensVenda.reduce((acc, item) => acc + item.subtotal, 0);
     const total = arredondar(totalItens + frete);
 
-    console.log(usuarioId);
-
     const dadosVenda = {
       fk_user_profile_id: usuarioId,
       metodo_pagamento: METODO_PAGAMENTO_SIMULADO,

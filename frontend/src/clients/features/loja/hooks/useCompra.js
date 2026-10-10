@@ -93,6 +93,35 @@ export const useCompra = () => {
     }
   }, []);
 
+  const reenviarEmailLivrosDigitais = useCallback(async (vendaId) => {
+    setCarregando(true);
+    setErro(null);
+    try {
+      const response = await apiFetch(
+        `/api/v1/clients/loja/${vendaId}/reenviar-email`,
+        {
+          method: "POST",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error(
+          await lerErro(
+            response,
+            "Não foi possível reenviar o email dos livros digitais.",
+          ),
+        );
+      }
+
+      return true;
+    } catch (err) {
+      setErro(err.message);
+      return false;
+    } finally {
+      setCarregando(false);
+    }
+  }, []);
+
   const buscarPedidos = useCallback(async () => {
     setCarregando(true);
     setErro(null);
@@ -120,6 +149,7 @@ export const useCompra = () => {
     erro,
     pedido,
     pedidos,
+    reenviarEmailLivrosDigitais,
     criarPedido,
     pagarPedido,
     buscarPedido,

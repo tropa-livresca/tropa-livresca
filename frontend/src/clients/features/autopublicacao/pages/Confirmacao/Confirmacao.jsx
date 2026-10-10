@@ -1,5 +1,4 @@
-﻿﻿
-import { useEffect, useMemo } from "react";
+﻿﻿import { useEffect, useMemo } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
@@ -19,9 +18,6 @@ export default function Confirmacao({
     return null;
   };
 
-  console.log(dados);
-  
-
   const previews = useMemo(() => {
     const urlsCriadas = [];
 
@@ -36,7 +32,6 @@ export default function Confirmacao({
       return null;
     };
 
-
     return {
       manga: obterUrl(dados?.conteudo?.manuscrito),
       frente: obterUrl(dados?.conteudo?.capa?.frente),
@@ -44,8 +39,6 @@ export default function Confirmacao({
       _urlsCriadas: urlsCriadas,
     };
   }, [dados?.conteudo]);
-
-      console.log(previews);
 
   useEffect(() => {
     return () => {
