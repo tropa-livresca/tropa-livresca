@@ -11,6 +11,11 @@ router.get(
   checkAuth,
   MovimentacoesController.buscarDadosMovimentacoesAutor,
 );
+router.get(
+  "/dados-bancarios",
+  checkAuth,
+  MovimentacoesController.buscarDadosBancarios,
+);
 router.patch("/", checkAuth, MovimentacoesController.solicitarSaque);
 
 export default router;

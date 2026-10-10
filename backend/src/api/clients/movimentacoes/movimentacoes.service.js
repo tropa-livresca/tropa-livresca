@@ -7,6 +7,7 @@ export class MovimentacoesService {
     nomeCompleto,
     numeroBanco,
     numeroAgencia,
+    numeroConta,
     tipoConta,
   ) {
     if (!usuarioId) errorUsuarioId();
@@ -19,6 +20,7 @@ export class MovimentacoesService {
       nome_completo: nomeCompleto,
       numero_banco: numeroBanco,
       numero_agencia: numeroAgencia,
+      numero_conta: numeroConta,
       tipo_conta: tipoConta,
     };
 
@@ -38,6 +40,7 @@ export class MovimentacoesService {
     nomeCompleto,
     numeroBanco,
     numeroAgencia,
+    numeroConta,
     tipoConta,
   ) {
     if (!usuarioId) errorUsuarioId();
@@ -47,6 +50,7 @@ export class MovimentacoesService {
       nome_completo: nomeCompleto,
       numero_banco: numeroBanco,
       numero_agencia: numeroAgencia,
+      numero_conta: numeroConta,
       tipo_conta: tipoConta,
     };
 
@@ -82,5 +86,16 @@ export class MovimentacoesService {
     if (dados.error) throw dados.error;
 
     return dados;
+  }
+
+  static async buscarDadosBancarios(usuarioId) {
+    if (!usuarioId) errorUsuarioId();
+
+    const dadosBancarios =
+      await MovimentacoesModel.buscarDadosBancarios(usuarioId);
+
+    if (dadosBancarios.error) throw dadosBancarios.error;
+
+    return dadosBancarios;
   }
 }

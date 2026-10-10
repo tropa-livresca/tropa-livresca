@@ -252,4 +252,19 @@ export class MovimentacoesModel {
         Math.round((infoFinanceira.saldo - valorSolicitado) * 100) / 100,
     };
   }
+
+  static async buscarDadosBancarios(userId) {
+    const { data, error } = await supabaseAdmin
+      .from("users_profile")
+      .select("dados_bancarios")
+      .eq("id", userId)
+      .maybeSingle();
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return data?.dados_bancarios || null;
+  }
 }

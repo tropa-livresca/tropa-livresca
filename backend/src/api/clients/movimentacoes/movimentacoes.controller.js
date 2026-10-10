@@ -3,8 +3,14 @@ import { MovimentacoesService } from "./movimentacoes.service.js";
 export class MovimentacoesController {
   static async criarConta(req, res, next) {
     try {
-      const { CPF, nomeCompleto, numeroBanco, numeroAgencia, tipoConta } =
-        req.body;
+      const {
+        CPF,
+        nomeCompleto,
+        numeroBanco,
+        numeroAgencia,
+        numeroConta,
+        tipoConta,
+      } = req.body;
 
       const usuarioId = req.user?.id;
 
@@ -14,6 +20,7 @@ export class MovimentacoesController {
         nomeCompleto,
         numeroBanco,
         numeroAgencia,
+        numeroConta,
         tipoConta,
       );
 
@@ -25,8 +32,14 @@ export class MovimentacoesController {
 
   static async alterarDadosConta(req, res, next) {
     try {
-      const { CPF, nomeCompleto, numeroBanco, numeroAgencia, tipoConta } =
-        req.body;
+      const {
+        CPF,
+        nomeCompleto,
+        numeroBanco,
+        numeroAgencia,
+        numeroConta,
+        tipoConta,
+      } = req.body;
 
       const usuarioId = req.user?.id;
 
@@ -36,6 +49,7 @@ export class MovimentacoesController {
         nomeCompleto,
         numeroBanco,
         numeroAgencia,
+        numeroConta,
         tipoConta,
       );
 
@@ -69,6 +83,19 @@ export class MovimentacoesController {
         await MovimentacoesService.buscarDadosMovimentacoesAutor(usuarioId);
 
       return res.status(200).json({ dados });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async buscarDadosBancarios(req, res, next) {
+    try {
+      const usuarioId = req.user?.id;
+
+      const dadosBancarios =
+        await MovimentacoesService.buscarDadosBancarios(usuarioId);
+
+      return res.status(200).json({ dadosBancarios });
     } catch (err) {
       next(err);
     }
