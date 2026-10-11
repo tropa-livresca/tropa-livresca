@@ -456,10 +456,8 @@ export const AutopublicacaoProvider = ({ children }) => {
         const arquivosEnviados = [];
 
         const uploadArquivo = async (arquivo, tipo, pathExistente) => {
-          // Sem novo arquivo, reutiliza o caminho persistido.
           if (!arquivo) return pathExistente || null;
 
-          // Nunca trate uma URL assinada como caminho persistente do Storage.
           if (typeof arquivo === "string") {
             if (pathExistente) return pathExistente;
             if (/^https?:\/\//i.test(arquivo)) {
@@ -470,7 +468,6 @@ export const AutopublicacaoProvider = ({ children }) => {
             return arquivo;
           }
 
-          // Um File serializado no localStorage vira um objeto comum e não pode ser enviado.
           if (typeof File === "undefined" || !(arquivo instanceof File)) {
             throw new Error(
               `O arquivo de ${tipo} não está mais disponível. Selecione-o novamente.`,
