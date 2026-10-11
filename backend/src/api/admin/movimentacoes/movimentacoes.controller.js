@@ -14,7 +14,7 @@ export class MovimentacoesController {
     }
   }
 
-  static async buscarDadosMovimentacoesEditora(res, next) {
+  static async buscarDadosMovimentacoesEditora(_req, res, next) {
     try {
       const dados = await MovimentacoesService.buscarMovimentacoesEditora();
 

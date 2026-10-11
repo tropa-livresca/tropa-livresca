@@ -4,6 +4,7 @@ import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFou
 import NaoAutorizado from "../../../common/features/paginasErro/pages/NaoAutorizado/NaoAutorizado";
 
 import BoasVindas from "../geral/pages/BoasVindas/BoasVindas.jsx";
+import AlterarSenha from "../perfil/pages/AlterarSenha/AlterarSenha.jsx";
 import NovaSenha from "../perfil/pages/NovaSenha/NovaSenha";
 import Revisoes from "../revisoes/pages/Revisoes/Revisoes";
 import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
@@ -162,6 +163,15 @@ const RoutesAdm = () => {
           element={
             <PrivateRoute>
               <NovaSenha />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="configuracoes/alterarsenha"
+          element={
+            <PrivateRoute>
+              <AlterarSenha />
             </PrivateRoute>
           }
         />

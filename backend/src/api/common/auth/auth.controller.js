@@ -266,7 +266,7 @@ export class AuthController {
     }
   }
 
-  static async signoutAdm(res, next) {
+  static async signoutAdm(_req, res, next) {
     try {
       res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
       res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
@@ -298,7 +298,7 @@ export class AuthController {
       const senhaAntiga = req.body.senhaAntiga;
       const novaSenha = req.body.novaSenha;
 
-      const resultado = await AuthService.alterarSenhaAntiga(
+      const resultado = await AuthService.alterarSenhaAntigaAdm(
         email,
         senhaAntiga,
         novaSenha,

@@ -58,7 +58,7 @@ export const useLoginAdmin = () => {
       return data;
     } catch (err) {
       console.error("Erro em useLoginAdmin", err);
-      setError("Erro de conexão com o servidor.");
+      setError("E-mail ou senha incorretos.");
       return null;
     } finally {
       setLoading(false);
