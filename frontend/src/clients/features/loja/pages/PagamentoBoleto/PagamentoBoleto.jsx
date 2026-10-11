@@ -4,6 +4,7 @@ import { FiArrowLeft, FiDownload, FiFileText } from "react-icons/fi";
 import { jsPDF } from "jspdf";
 
 import BotaoComprar from "../../components/BotaoComprar/BotaoComprar";
+import { useCompra } from "../../hooks/useCompra";
 import { useCarrinho } from "../../hooks/useCarrinho";
 
 import styles from "./PagamentoBoleto.module.css";
@@ -53,7 +54,8 @@ export default function PagamentoBoleto() {
   const pedido = location.state?.pedido;
   const frete = Number(location.state?.frete ?? pedido?.frete ?? 0);
 
-  const { limparCarrinho, pagarPedido } = useCarrinho();
+  const { limparCarrinho } = useCarrinho();
+  const { pagarPedido } = useCompra();
 
   const [mensagem, setMensagem] = useState("");
   const [erroLocal, setErroLocal] = useState("");
