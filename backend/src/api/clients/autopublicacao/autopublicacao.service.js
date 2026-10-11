@@ -409,11 +409,16 @@ export class AutopublicacaoService {
       error.statusCode = 400;
       throw error;
     }
+    
+
+    console.log("a");
 
     const livroAtual = await AutopublicacaoModel.buscarDetalhesPorId(
       livroId,
       userId,
     );
+
+    console.log("b");
 
     if (!livroAtual) {
       const error = new Error(
@@ -422,6 +427,8 @@ export class AutopublicacaoService {
       error.statusCode = 404;
       throw error;
     }
+
+    console.log(livroAtual);
 
     if (
       ![

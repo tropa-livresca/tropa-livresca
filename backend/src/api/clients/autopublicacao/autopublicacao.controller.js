@@ -71,6 +71,8 @@ export class AutopublicacaoController {
       const userId = req.user?.id;
       const { tipo, extensao, mimeType, tamanho } = req.body;
 
+      console.log("q");
+
       const resultado = await AutopublicacaoService.criarUploadLivro({
         userId,
         tipo,

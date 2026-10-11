@@ -294,7 +294,10 @@ export const AutopublicacaoProvider = ({ children }) => {
         );
         return;
       }
+     
     }
+
+     console.log(dadosLivro);
 
     setDadosLivro((estadoAnterior) => {
       if (chave === "conteudo") {
@@ -329,6 +332,8 @@ export const AutopublicacaoProvider = ({ children }) => {
         throw new Error("Este livro está travado para alterações no momento.");
       }
 
+      
+
       setCarregando(true);
       try {
         const userId = user?.id;
@@ -336,17 +341,19 @@ export const AutopublicacaoProvider = ({ children }) => {
           throw new Error("ID do usuário inválido");
 
         const conteudo = dadosDoLivro.conteudo;
-        const capa = conteudo?.capa;
+        const capa = new File([conteudo?.capa], "png");
+        const manuscrito = new File([conteudo?.manuscrito], "pdf");
 
         const arquivosEnviados = [];
 
-        const uploadArquivo = async (arquivo, tipo, pathExistente) => {
+        const uploadArquivo = async (arquivo, tipo, pathExistente, tipoDeArquivo) => {
           if (!arquivo) return null;
           if (typeof arquivo === "string") return pathExistente || arquivo;
 
+          let arquivoFormatado = new File([arquivo], "arquivo", {type:tipoDeArquivo})
+
           const extensao =
-            arquivo.name?.split(".").pop() ||
-            arquivo.type?.split("/").pop() ||
+            arquivoFormatado?.type.split("/").pop() ||
             "bin";
 
           const res = await apiFetch(
@@ -356,8 +363,8 @@ export const AutopublicacaoProvider = ({ children }) => {
               body: JSON.stringify({
                 tipo,
                 extensao,
-                mimeType: arquivo.type,
-                tamanho: arquivo.size,
+                mimeType: arquivoFormatado.type,
+                tamanho: arquivoFormatado.size,
               }),
             },
           );
@@ -387,16 +394,19 @@ export const AutopublicacaoProvider = ({ children }) => {
                 capa?.frente,
                 "capa_frente",
                 conteudo?.capaPaths?.frente,
+                "image/png",
               ),
               uploadArquivo(
                 capa?.verso,
                 "capa_verso",
                 conteudo?.capaPaths?.verso,
+                "image/png",
               ),
               uploadArquivo(
-                conteudo?.manuscrito,
+                manuscrito,
                 "manuscrito",
                 conteudo?.manuscritoPath,
+                "application/pdf",
               ),
             ]);
 
