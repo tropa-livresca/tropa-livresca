@@ -37,7 +37,7 @@ export class PerfilController {
       return res.status(200).json(perfilAtualizado);
     } catch (err) {
       next(err);
-    } 
+    }
   }
 
   static async AtualizarImagem(req, res, next) {

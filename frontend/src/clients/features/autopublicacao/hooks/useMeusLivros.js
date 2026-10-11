@@ -73,7 +73,8 @@ export const useMeusLivros = () => {
         headers: { "Content-Type": "application/json" },
       });
 
-      const data = res.status === 204 ? null : await res.json().catch(() => null);
+      const data =
+        res.status === 204 ? null : await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || `Erro ${res.status}`);
 
       return data;

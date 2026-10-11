@@ -1,8 +1,14 @@
-import ws from 'ws'
+import ws from "ws";
 import { createClient } from "@supabase/supabase-js";
 
-if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.SUPABASE_ANON_KEY) {
-  throw new Error("Erro crítico: Variáveis de ambiente do Supabase não encontradas no process.env");
+if (
+  !process.env.SUPABASE_URL ||
+  !process.env.SUPABASE_SERVICE_ROLE_KEY ||
+  !process.env.SUPABASE_ANON_KEY
+) {
+  throw new Error(
+    "Erro crítico: Variáveis de ambiente do Supabase não encontradas no process.env",
+  );
 }
 
 const supabaseOptions = {
@@ -15,13 +21,13 @@ const supabaseOptions = {
 const supabaseAdmin = await createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
-  supabaseOptions
+  supabaseOptions,
 );
 
 const supabase = await createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY,
-  supabaseOptions
+  supabaseOptions,
 );
 
 export { supabaseAdmin };

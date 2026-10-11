@@ -9,8 +9,9 @@ Este documento descreve a configuração, variáveis de ambiente e diretrizes de
 O frontend é construído sobre o ecossistema React e Vite, fornecendo suporte nativo a Hot Module Replacement (HMR) e análise de código com regras estruturadas do ESLint.
 
 A compilação utiliza plugins oficiais baseados nas seguintes tecnologias:
-* `@vitejs/plugin-react`: Processamento de alta velocidade utilizando a ferramenta Oxc.
-* `@vitejs/plugin-react-swc`: Alternativa estável baseada em compilação nativa com SWC.
+
+- `@vitejs/plugin-react`: Processamento de alta velocidade utilizando a ferramenta Oxc.
+- `@vitejs/plugin-react-swc`: Alternativa estável baseada em compilação nativa com SWC.
 
 ---
 

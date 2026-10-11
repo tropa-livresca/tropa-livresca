@@ -116,13 +116,15 @@
   z-index: 2;
   font-size: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease, background-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease;
 }
 
 .btnCarrinhoCapa:hover {
   transform: scale(1.1);
   color: #ffbb33;
-  transition:0.3s;
+  transition: 0.3s;
 }
 
 .infoLivro {

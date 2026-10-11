@@ -33,7 +33,7 @@ export default function Inicio() {
               e digitais de excelência.
             </p>
             <div className={styles.hero_actions}>
-              <Link to="/sobrenos" className={styles.btn_primary}>
+              <Link to="/sobreautopublicacao" className={styles.btn_primary}>
                 Publicar meu Projeto
               </Link>
               <Link to="/livros" className={styles.btn_secondary}>

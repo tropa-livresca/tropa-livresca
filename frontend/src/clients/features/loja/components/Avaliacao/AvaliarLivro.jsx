@@ -46,9 +46,7 @@ export default function AvaliarLivro({
 
   if (!podeAvaliar) {
     return (
-      <p className={styles.aviso}>
-        Compre este livro para poder avaliá-lo.
-      </p>
+      <p className={styles.aviso}>Compre este livro para poder avaliá-lo.</p>
     );
   }
 

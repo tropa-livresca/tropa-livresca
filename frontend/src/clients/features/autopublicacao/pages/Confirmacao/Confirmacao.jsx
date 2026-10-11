@@ -1,8 +1,8 @@
-﻿﻿import { useEffect, useMemo } from "react";
+﻿import { useEffect, useMemo } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados";
 
 export default function Confirmacao({
@@ -10,6 +10,17 @@ export default function Confirmacao({
   irParaEtapaEspecifica,
   publicarLivro,
 }) {
+  const navigate = useNavigate();
+
+  const salvarLivroERedirecionar = async (estado) => {
+    try {
+      await publicarLivro(estado);
+      navigate("/meuslivros");
+    } catch (erro) {
+      console.error("Erro ao salvar o livro:", erro);
+    }
+  };
+
   const extrairArquivo = (dado) => {
     if (!dado) return null;
     if (dado instanceof File) return dado;
@@ -166,7 +177,6 @@ export default function Confirmacao({
           </div>
         )}
       </div>
-
       <div>
         <div>
           <div>
@@ -336,28 +346,27 @@ export default function Confirmacao({
           </div>
         )}
       </div>
-      <div>
-        <div className={styles.botoes}>
-          <Link to="/meuslivros" className={styles.btn}>
-            Voltar a Meus Livros
-          </Link>
 
-          <button
-            type="button"
-            onClick={() => publicarLivro(LIVRO_ESTADO.EM_REVISAO)}
-            className={styles.btnenviar}
-          >
-            Enviar para Revisão
-          </button>
+      <div className={styles.botoes}>
+        <Link to="/meuslivros" className={styles.btn}>
+          Voltar a Meus Livros
+        </Link>
 
-          <button
-            type="button"
-            onClick={() => publicarLivro(LIVRO_ESTADO.RASCUNHO)}
-            className={styles.btnsalvar}
-          >
-            Salvar como Rascunho
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => salvarLivroERedirecionar(LIVRO_ESTADO.EM_REVISAO)}
+          className={styles.btnenviar}
+        >
+          Enviar para Revisão
+        </button>
+
+        <button
+          type="button"
+          onClick={() => salvarLivroERedirecionar(LIVRO_ESTADO.RASCUNHO)}
+          className={styles.btnsalvar}
+        >
+          Salvar como Rascunho
+        </button>
       </div>
     </main>
   );

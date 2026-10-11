@@ -7,7 +7,9 @@ export class SuporteService {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (!email || !mensagem || !emailRegex.test(email)) {
-        const erroValidacao = new Error("Dados inválidos ou e-mail malformatado.");
+        const erroValidacao = new Error(
+          "Dados inválidos ou e-mail malformatado.",
+        );
         erroValidacao.statusCode = 400;
         throw erroValidacao;
       }
@@ -21,12 +23,12 @@ export class SuporteService {
         from: `"Suporte Tropa Livresca" <${process.env.SMTP_USER}>`,
         to: "suporte.tropalivresca@gmail.com",
         replyTo: email,
-        subject: `Novo Chamado de Suporte pelo motivo: ${motivo || 'Geral'}`,
+        subject: `Novo Chamado de Suporte pelo motivo: ${motivo || "Geral"}`,
         html: `
               <h3>Novo Chamado Recebido</h3>
-              <b>Nome:</b> ${nome || 'Não informado'} <br>
+              <b>Nome:</b> ${nome || "Não informado"} <br>
               <b>E-mail do remetente:</b> ${email} <br>
-              <b>Telefone/Celular:</b> ${telefone || 'Não informado'} <br><br>
+              <b>Telefone/Celular:</b> ${telefone || "Não informado"} <br><br>
               <b>Mensagem:</b><br>
               <p>${mensagemSanitizada}</p>`,
       };

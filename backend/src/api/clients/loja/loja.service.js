@@ -189,15 +189,29 @@ export class LojaService {
     if (!usuarioEmail) error(400, "Email do usuário não informado.");
     if (!usuarioId) errorUsuarioId();
 
-    const envio = await LojaModel.reenviarEmailLivrosDigitais(
-      vendaId,
-      usuarioId,
-      usuarioEmail,
-    );
+    try {
+      const envio = await LojaModel.reenviarEmailLivrosDigitais(
+        vendaId,
+        usuarioId,
+        usuarioEmail,
+      );
 
-    if (envio.error) throw envio.error;
+      if (envio?.error) {
+        throw envio.error;
+      }
 
-    return envio;
+      return envio;
+    } catch (erro) {
+      console.error("[LojaService] Falha ao reenviar e-mail:", {
+        vendaId,
+        message: erro?.message,
+        code: erro?.code,
+        statusCode: erro?.statusCode,
+        stack: erro?.stack,
+      });
+
+      throw erro;
+    }
   }
 
   static async _buscarEnderecoDoUsuario(enderecoId, usuarioId) {

@@ -40,12 +40,14 @@ const ESTADO_INICIAL_LIVRO = {
   orcamento: {
     valorLivroFisico: "",
     valorLivroDigital: "",
+
     numeroPaginas: "",
   },
 };
 
 export const AutopublicacaoProvider = ({ children }) => {
   const { user } = useContext(AuthContext);
+
   const userId = user?.id;
 
   const [popup, setPopup] = useState(null);
@@ -53,6 +55,7 @@ export const AutopublicacaoProvider = ({ children }) => {
   const mostrarPopup = useCallback((tipo, mensagem) => {
     setPopup({
       tipo,
+
       mensagem,
     });
   }, []);
@@ -62,10 +65,8 @@ export const AutopublicacaoProvider = ({ children }) => {
   }, []);
 
   const [carregando, setCarregando] = useState(false);
-
   const [isEdicao, setIsEdicao] = useState(false);
   const [estadoAtualLivro, setEstadoAtualLivro] = useState(null);
-
   const [dadosLivro, setDadosLivro] = useState(ESTADO_INICIAL_LIVRO);
   const [etapa, setEtapa] = useState(1);
   const [rascunhoUsuarioId, setRascunhoUsuarioId] = useState(null);
@@ -86,17 +87,65 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (!userId) return;
 
     const dadosSalvos = localStorage.getItem(chaveRascunho("dados"));
+
     const etapaSalva = Number(localStorage.getItem(chaveRascunho("etapa")));
 
     if (dadosSalvos) {
       try {
-        setDadosLivro(JSON.parse(dadosSalvos));
+        const dadosRecuperados = JSON.parse(dadosSalvos);
+
+        // File/Blob não é restaurado por JSON.stringify/JSON.parse.
+        // Descarta objetos serializados como {} e mantém caminhos persistidos.
+        if (dadosRecuperados?.conteudo) {
+          const conteudoRecuperado = dadosRecuperados.conteudo;
+
+          dadosRecuperados.conteudo = {
+            ...conteudoRecuperado,
+            manuscrito:
+              typeof conteudoRecuperado.manuscrito === "string"
+                ? conteudoRecuperado.manuscrito
+                : null,
+            capa: {
+              frente:
+                typeof conteudoRecuperado.capa?.frente === "string"
+                  ? conteudoRecuperado.capa.frente
+                  : null,
+              verso:
+                typeof conteudoRecuperado.capa?.verso === "string"
+                  ? conteudoRecuperado.capa.verso
+                  : null,
+            },
+            capaPaths: {
+              frente: conteudoRecuperado.capaPaths?.frente || null,
+              verso: conteudoRecuperado.capaPaths?.verso || null,
+            },
+            manuscritoPath: conteudoRecuperado.manuscritoPath || null,
+          };
+        }
+
+        setDadosLivro({
+          ...ESTADO_INICIAL_LIVRO,
+          ...dadosRecuperados,
+          detalhes: {
+            ...ESTADO_INICIAL_LIVRO.detalhes,
+            ...(dadosRecuperados?.detalhes || {}),
+          },
+          conteudo: {
+            ...ESTADO_INICIAL_LIVRO.conteudo,
+            ...(dadosRecuperados?.conteudo || {}),
+          },
+          orcamento: {
+            ...ESTADO_INICIAL_LIVRO.orcamento,
+            ...(dadosRecuperados?.orcamento || {}),
+          },
+        });
       } catch {
         localStorage.removeItem(chaveRascunho("dados"));
       }
     }
 
     if (etapaSalva >= 1 && etapaSalva <= 4) setEtapa(etapaSalva);
+
     setRascunhoUsuarioId(userId);
   }, [chaveRascunho, userId]);
 
@@ -104,11 +153,41 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (isEdicao || !userId || rascunhoUsuarioId !== userId) return;
 
     localStorage.setItem(chaveRascunho("etapa"), etapa.toString());
+
+    const conteudoAtual = dadosLivro.conteudo || {};
+
+    // Arquivos locais não sobrevivem ao JSON. Para rascunhos, persistimos
+    // somente strings/caminhos; arquivos ainda não enviados precisam ser
+    // selecionados novamente após recarregar a página.
     const dadosParaSalvar = {
       ...dadosLivro,
+      conteudo: {
+        ...conteudoAtual,
+        manuscrito:
+          typeof conteudoAtual.manuscrito === "string"
+            ? conteudoAtual.manuscrito
+            : null,
+        capa: {
+          frente:
+            typeof conteudoAtual.capa?.frente === "string"
+              ? conteudoAtual.capa.frente
+              : null,
+          verso:
+            typeof conteudoAtual.capa?.verso === "string"
+              ? conteudoAtual.capa.verso
+              : null,
+        },
+        capaPaths: {
+          frente: conteudoAtual.capaPaths?.frente || null,
+          verso: conteudoAtual.capaPaths?.verso || null,
+        },
+        manuscritoPath: conteudoAtual.manuscritoPath || null,
+      },
     };
+
     localStorage.setItem(
       chaveRascunho("dados"),
+
       JSON.stringify(dadosParaSalvar),
     );
   }, [chaveRascunho, dadosLivro, etapa, isEdicao, rascunhoUsuarioId, userId]);
@@ -117,7 +196,9 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (!dadosBanco) return;
 
     setIsEdicao(true);
+
     setEstadoAtualLivro(dadosBanco.estado || LIVRO_ESTADO.RASCUNHO);
+
     setEtapa(1);
 
     let capa = dadosBanco.capa;
@@ -132,6 +213,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
     capa = {
       frente: capa?.frente || null,
+
       verso: capa?.verso || null,
     };
 
@@ -174,20 +256,27 @@ export const AutopublicacaoProvider = ({ children }) => {
 
       detalhes: {
         idioma: dadosBanco.idioma || "",
+
         titulo: dadosBanco.titulo || "",
+
         subtitulo: dadosBanco.subtitulo || "",
+
         numeroEdicao: dadosBanco.numero_edicao || "",
+
         ISBN: dadosBanco.ISBN || "",
 
         autor: {
           nome: dadosBanco.autor_nome || "",
+
           sobrenome: dadosBanco.autor_sobrenome || "",
         },
 
         colaboradores: dadosBanco.colaboradores || [],
+
         descricao: dadosBanco.descricao || "",
 
         direitoPublicacao,
+
         imagensExplicitas: imagensExplicitasNorm ?? "",
 
         categoria: dadosBanco.categoria || "",
@@ -195,24 +284,32 @@ export const AutopublicacaoProvider = ({ children }) => {
 
       conteudo: {
         manuscrito,
+
         capa,
+
         manuscritoPath: dadosBanco.manuscritoPath || null,
+
         capaPaths: dadosBanco.capaPaths || {
           frente: null,
+
           verso: null,
         },
       },
 
       orcamento: {
         valorLivroFisico: dadosBanco.preco_fisico ?? "",
+
         valorLivroDigital: dadosBanco.preco_digital ?? "",
+
         numeroPaginas: dadosBanco.numero_paginas ?? "",
       },
     });
   }, []);
 
   const detalhes = dadosLivro.detalhes;
+
   const conteudo = dadosLivro.conteudo;
+
   const orcamento = dadosLivro.orcamento;
 
   const validarDetalhes = () => {
@@ -247,7 +344,11 @@ export const AutopublicacaoProvider = ({ children }) => {
   };
 
   const validarConteudo = () =>
-    !!conteudo.manuscrito && !!conteudo.capa?.frente && !!conteudo.capa?.verso;
+    Boolean(
+      (conteudo.manuscrito || conteudo.manuscritoPath) &&
+      (conteudo.capa?.frente || conteudo.capaPaths?.frente) &&
+      (conteudo.capa?.verso || conteudo.capaPaths?.verso),
+    );
 
   const validarOrcamento = () =>
     !!orcamento.valorLivroFisico && !!orcamento.valorLivroDigital;
@@ -256,16 +357,20 @@ export const AutopublicacaoProvider = ({ children }) => {
     switch (etapaAtual) {
       case 1:
         return validarDetalhes();
+
       case 2:
         return validarConteudo();
+
       case 3:
         return validarOrcamento();
+
       default:
         return true;
     }
   };
 
   const irParaEtapaEspecifica = (numeroDaEtapa) => setEtapa(numeroDaEtapa);
+
   const voltarEtapa = () => setEtapa((atual) => Math.max(atual - 1, 1));
 
   const irParaProximaEtapa = () => {
@@ -274,6 +379,7 @@ export const AutopublicacaoProvider = ({ children }) => {
     } else {
       mostrarPopup(
         "erro",
+
         "Preencha todos os campos obrigatórios antes de continuar.",
       );
     }
@@ -290,8 +396,10 @@ export const AutopublicacaoProvider = ({ children }) => {
       ) {
         mostrarPopup(
           "erro",
+
           "Não é permitido alterar o Título ou o Autor de um livro já publicado.",
         );
+
         return;
       }
      
@@ -305,9 +413,12 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         return {
           ...estadoAnterior,
+
           conteudo: dadosConteudo,
+
           orcamento: {
             ...estadoAnterior.orcamento,
+
             ...(Number.isInteger(Number(numeroPaginas)) &&
             Number(numeroPaginas) > 0
               ? { numeroPaginas: Number(numeroPaginas) }
@@ -318,6 +429,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
       return {
         ...estadoAnterior,
+
         [chave]: novosDados,
       };
     });
@@ -335,8 +447,10 @@ export const AutopublicacaoProvider = ({ children }) => {
       
 
       setCarregando(true);
+
       try {
         const userId = user?.id;
+
         if (!userId || typeof userId !== "string")
           throw new Error("ID do usuário inválido");
 
@@ -358,53 +472,74 @@ export const AutopublicacaoProvider = ({ children }) => {
 
           const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",
+
             {
               method: "POST",
+
               body: JSON.stringify({
                 tipo,
+
                 extensao,
                 mimeType: arquivoFormatado.type,
                 tamanho: arquivoFormatado.size,
               }),
             },
           );
+
           const uploadData = await res.json();
 
           if (!res.ok)
             throw new Error(uploadData.error || "Erro ao autorizar upload");
 
           const { bucket, path, token } = uploadData;
+          if (!bucket || !path || !token) {
+            throw new Error(
+              `A autorização de upload para ${tipo} não retornou bucket, caminho e token válidos.`,
+            );
+          }
+
           const { error } = await supabase.storage
+
             .from(bucket)
+
             .uploadToSignedUrl(path, token, arquivo, {
               contentType: arquivo.type,
             });
+
           if (error)
             throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
 
           arquivosEnviados.push({ tipo, path });
-          return false;
+          return path;
         };
 
         let caminhosArquivos;
+
         try {
           const [capaFrentePath, capaVersoPath, manuscritoPath] =
             await Promise.all([
               uploadArquivo(
                 capa?.frente,
+
                 "capa_frente",
+
                 conteudo?.capaPaths?.frente,
                 "image/png",
               ),
+
               uploadArquivo(
                 capa?.verso,
+
                 "capa_verso",
+
                 conteudo?.capaPaths?.verso,
                 "image/png",
               ),
+
               uploadArquivo(
                 manuscrito,
                 "manuscrito",
+
                 conteudo?.manuscritoPath,
                 "application/pdf",
               ),
@@ -413,33 +548,43 @@ export const AutopublicacaoProvider = ({ children }) => {
           caminhosArquivos = {
             capa: {
               frente: capaFrentePath,
+
               verso: capaVersoPath,
             },
+
             manuscritoPath,
           };
         } catch (uploadError) {
           if (arquivosEnviados.length) {
             await apiFetch("/api/v1/clients/autopublicacao/upload-url", {
               method: "DELETE",
+
               body: JSON.stringify({ arquivos: arquivosEnviados }),
             }).catch((cleanupError) => {
               console.error(
                 "Erro ao limpar uploads incompletos:",
+
                 cleanupError,
               );
             });
           }
+
           throw uploadError;
         }
 
         const payload = {
           dadosLivro: {
             detalhes: dadosDoLivro.detalhes,
+
             orcamento: dadosDoLivro.orcamento,
           },
+
           ...(isEdicao ? {} : { estadoInicial: estadoDesejado }),
+
           capa: caminhosArquivos.capa,
+
           capaPaths: caminhosArquivos.capa,
+
           manuscritoPath: caminhosArquivos.manuscritoPath,
         };
 
@@ -451,20 +596,26 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         const res = await apiFetch(rota, {
           method: metodo,
+
           headers: { "Content-Type": "application/json" },
+
           body: JSON.stringify(payload),
         });
 
         const json = await res.json();
+
         if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
+
         return json;
       } catch (error) {
         console.error("Erro em salvar livro:", error);
+
         throw error;
       } finally {
         setCarregando(false);
       }
     },
+
     [user, isEdicao, estadoAtualLivro],
   );
 
@@ -474,10 +625,15 @@ export const AutopublicacaoProvider = ({ children }) => {
     await inserirLivro(dadosLivro, estadoDesejado);
 
     localStorage.removeItem(chaveRascunho("dados"));
+
     localStorage.removeItem(chaveRascunho("etapa"));
+
     setDadosLivro(ESTADO_INICIAL_LIVRO);
+
     setIsEdicao(false);
+
     setEstadoAtualLivro(null);
+
     setEtapa(1);
   };
 
@@ -487,15 +643,25 @@ export const AutopublicacaoProvider = ({ children }) => {
     <AutopublicacaoContext.Provider
       value={{
         carregando,
+
         dadosLivro: rascunhoPronto ? dadosLivro : ESTADO_INICIAL_LIVRO,
+
         etapa: rascunhoPronto ? etapa : 1,
+
         isEdicao: rascunhoPronto && isEdicao,
+
         estadoAtualLivro: rascunhoPronto ? estadoAtualLivro : null,
+
         carregarDadosParaEdicao,
+
         atualizarEtapa,
+
         irParaProximaEtapa,
+
         voltarEtapa,
+
         irParaEtapaEspecifica,
+
         publicarLivro: publicarLivroNoContexto,
       }}
     >

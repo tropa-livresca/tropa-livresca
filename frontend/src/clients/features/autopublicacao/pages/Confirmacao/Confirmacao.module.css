@@ -59,7 +59,7 @@
   margin-bottom: 2rem;
 }
 
-.card:last-child{
+.card:last-child {
   margin-bottom: 0;
 }
 
@@ -336,8 +336,8 @@ label {
   overflow: hidden;
 }
 
-.imgerro{
-  color:#67170c;
+.imgerro {
+  color: #67170c;
 }
 
 .fvoimg {
@@ -403,7 +403,7 @@ label {
   overflow-wrap: anywhere;
 }
 
-.numero{
+.numero {
   font-family: none;
 }
 
@@ -413,7 +413,6 @@ label {
   align-items: center;
   gap: 1rem;
 }
-
 
 .formOrcamento {
   margin-bottom: 4.5rem;
@@ -541,7 +540,7 @@ label {
     padding: 0 1rem;
     font-size: 0.85rem;
   }
-  
+
   .iframe {
     height: 55vh;
   }

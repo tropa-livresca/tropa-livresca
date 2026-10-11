@@ -14,8 +14,7 @@ export default function BotaoComprar({
 
   const desabilitado =
     carregando ||
-    (!pedidoCriado &&
-      ((temFisico && !enderecoId) || !formaPagamento));
+    (!pedidoCriado && ((temFisico && !enderecoId) || !formaPagamento));
 
   const handleClick = pedidoCriado ? handlePagar : handleConfirmar;
 
@@ -47,10 +46,7 @@ BotaoComprar.propTypes = {
   handlePagar: PropTypes.func.isRequired,
   carregando: PropTypes.bool,
   temFisico: PropTypes.bool,
-  enderecoId: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
+  enderecoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   formaPagamento: PropTypes.string,
   className: PropTypes.string,
 };

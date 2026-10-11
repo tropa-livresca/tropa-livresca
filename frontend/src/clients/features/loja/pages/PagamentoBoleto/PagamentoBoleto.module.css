@@ -158,13 +158,12 @@
   text-align: left;
 }
 
-
-.numero{
-    font-family: none;
+.numero {
+  font-family: none;
 }
 
-.numero2{
- font-family: none;
+.numero2 {
+  font-family: none;
 }
 
 .aviso strong {
@@ -184,20 +183,20 @@
 
 .botao {
   width: 100%;
-    padding: 0.7rem;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: normal;
-    background-color: #67170c;
-    color: #ede6b3;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: .3s;
+  padding: 0.7rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  background-color: #67170c;
+  color: #ede6b3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.botao:hover{
-    background-color: #ffbb33;
+.botao:hover {
+  background-color: #ffbb33;
   transition: 0.3s;
 }
 

@@ -1,7 +1,7 @@
-.btngoogle{
+.btngoogle {
   background: #fff8d7;
   width: 90%;
-  margin-left:5%;
+  margin-left: 5%;
   padding: 0.8rem;
   text-decoration: none;
   cursor: pointer;
@@ -19,13 +19,13 @@
   transition: 0.3s;
 }
 
-.btngoogle svg{
+.btngoogle svg {
   margin-right: 3%;
   font-size: 1.2rem;
-  color:#67170c;
+  color: #67170c;
 }
 
-@media (max-width: 1024px){
+@media (max-width: 1024px) {
   .btngoogle {
     width: 90%;
   }

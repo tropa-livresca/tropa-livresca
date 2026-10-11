@@ -1,6 +1,3 @@
-
-export const test = 
-  {
-    test: {test:"1234"}
-  }
-
+export const test = {
+  test: { test: "1234" },
+};

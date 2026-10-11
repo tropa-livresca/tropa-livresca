@@ -26,10 +26,10 @@ export const useRedefinirSenha = () => {
       const response = await apiFetch("/api/v1/auth/senha", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          senha: novaSenha
+        body: JSON.stringify({
+          senha: novaSenha,
         }),
-        skipAuthRedirect: true 
+        skipAuthRedirect: true,
       });
 
       const resultado = await response.json();

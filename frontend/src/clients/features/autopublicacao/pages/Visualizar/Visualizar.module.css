@@ -7,12 +7,11 @@
   padding: 5rem 6%;
 }
 
-
 .topo {
   width: 100%;
   padding: 3rem 6%;
-  display:grid;
-  grid-template-columns:1fr 1fr;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
 }
@@ -41,7 +40,8 @@
   font-size: 1.2rem;
 }
 
-.loading, .error {
+.loading,
+.error {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -51,10 +51,9 @@
   font-family: "Jacques Francois", serif;
 }
 
-.sub{
+.sub {
   font-size: 1.5rem !important;
 }
-
 
 .badge {
   display: inline-block;
@@ -65,18 +64,30 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
 }
 
-.rascunho { background-color: #feebc8; color: #c05621; }
-.em_revisao { background-color: #e2e8f0; color: #4a5568; }
-.publicado { background-color: #c6f6d5; color: #22543d; }
+.rascunho {
+  background-color: #feebc8;
+  color: #c05621;
+}
+.em_revisao {
+  background-color: #e2e8f0;
+  color: #4a5568;
+}
+.publicado {
+  background-color: #c6f6d5;
+  color: #22543d;
+}
 
 .headerActions {
-  display:flex;
-  width:100%;
-  align-items:center;
-  justify-content:end;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: end;
   gap: 1rem;
   flex-shrink: 0;
 }
@@ -92,7 +103,7 @@
 }
 
 .btnPrimary {
-    background-color: #67170c;
+  background-color: #67170c;
   color: #ede6b3;
 }
 
@@ -101,7 +112,7 @@
 }
 
 .btnSecondary {
-    background-color: #67170c;
+  background-color: #67170c;
   color: #ede6b3;
 }
 
@@ -109,9 +120,8 @@
   background-color: #ffbb33;
 }
 
-
-.headerInfo{
-  text-align:top;
+.headerInfo {
+  text-align: top;
 }
 /* ---------- Layout em Grid ---------- */
 
@@ -122,7 +132,8 @@
   align-items: start;
 }
 
-.mainContent, .sidebar {
+.mainContent,
+.sidebar {
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -134,15 +145,14 @@
   padding: 2rem;
   background: var(--cor-superficie);
   border-radius: 1.5rem;
-    box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05) !important;
 }
 
-
 .card h2 {
   margin: 0;
-  color:#67170c;
+  color: #67170c;
   font-size: 1.8rem;
   font-family: "Jacques Francois", serif;
 }
@@ -163,15 +173,14 @@
   padding: 2rem;
   background: var(--cor-superficie);
   border-radius: 1.5rem;
-    box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05) !important;
 }
 
-
 .card2 h2 {
   margin: 0;
-  color:#67170c;
+  color: #67170c;
   font-size: 1.8rem;
   font-family: "Jacques Francois", serif;
 }
@@ -199,16 +208,15 @@
   margin-bottom: 0;
 }
 
-
 .pdfWrapper {
-      display: block;
-    width: 100%;
-    height: 30rem;
+  display: block;
+  width: 100%;
+  height: 30rem;
   background: var(--cor-superficie-clara);
   border-radius: 0.75rem;
   overflow: hidden;
-      border: 1px solid #e2c77c;
-      margin-top: 1rem;
+  border: 1px solid #e2c77c;
+  margin-top: 1rem;
 }
 
 /* ---------- Preços e Metadados ---------- */
@@ -224,8 +232,8 @@
   padding: 1.2rem;
   border-radius: 1rem;
   text-align: center;
-  border:1px solid #d4b46a;
-  margin-top:1rem;
+  border: 1px solid #d4b46a;
+  margin-top: 1rem;
 }
 
 .precoItem span {
@@ -236,15 +244,15 @@
   font-family: "Jacques Francois", serif;
 }
 
-.numero{
+.numero {
   font-family: none;
-  color:  #67170c;
+  color: #67170c;
   font-weight: bold;
   font-size: 1.4rem;
 }
-.numero2{
+.numero2 {
   font-family: none;
-  color:  #67170c;
+  color: #67170c;
 }
 
 .metaList {
@@ -280,8 +288,8 @@
 }
 
 .colabItem {
-      color: #67170c;
-    font-weight: normal;
+  color: #67170c;
+  font-weight: normal;
   text-align: right;
 }
 
@@ -366,7 +374,8 @@
   .titulo {
     font-size: 2.5rem;
   }
-  .precosGrid, .capasContainer {
+  .precosGrid,
+  .capasContainer {
     grid-template-columns: 1fr;
   }
 }

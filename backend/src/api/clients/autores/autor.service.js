@@ -1,7 +1,7 @@
 import { AutorModel } from "../../common/models/autor.model.js";
 
 export class AutorService {
-  static _parseCapaUrls (livro) {
+  static _parseCapaUrls(livro) {
     if (!livro) return livro;
     const livroClonado = { ...livro };
     try {
@@ -14,9 +14,9 @@ export class AutorService {
     return livroClonado;
   }
 
-  static _parseCapasArray (livros) {
+  static _parseCapasArray(livros) {
     if (!livros) return [];
-    return livros.map(livro => this._parseCapaUrls(livro));
+    return livros.map((livro) => this._parseCapaUrls(livro));
   }
 
   static async getAutoresService({ page, limit, busca }) {
@@ -33,9 +33,9 @@ export class AutorService {
         throw erro404;
       }
 
-      const autoresComCapas = data.map(autor => ({
+      const autoresComCapas = data.map((autor) => ({
         ...autor,
-        livros: this._parseCapasArray(autor.livros)
+        livros: this._parseCapasArray(autor.livros),
       }));
 
       return {
@@ -55,7 +55,7 @@ export class AutorService {
     }
   }
 
- static async getAutorByIdService({ id, page, limit }) {
+  static async getAutorByIdService({ id, page, limit }) {
     try {
       const autor = await AutorModel.buscarPorId(id);
 
@@ -67,11 +67,11 @@ export class AutorService {
 
       const livrosOriginais = autor.livros || [];
       const totalLivros = livrosOriginais.length;
-      
+
       const start = (page - 1) * limit;
       const end = start + limit;
       const livrosPaginados = livrosOriginais.slice(start, end);
-      
+
       const livrosComCapas = this._parseCapasArray(livrosPaginados);
 
       delete autor.livros;

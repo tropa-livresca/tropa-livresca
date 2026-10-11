@@ -1,15 +1,28 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiHome } from "react-icons/fi";
+import { useState, useEffect } from "react";
 import styles from "../NotFound/NotFound.module.css";
+import useAdmin from "../../../../hooks/useAdmin.js";
 
 export default function NaoAutorizado({
   mensagem = "Você não tem permissão para acessar esta página. Se acha que isso é um engano, fale com um administrador master.",
 }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
+  const { signed, loading } = useAdmin();
 
-  const noAdmin = pathname.startsWith("/admin/") || pathname === "/admin";
-  const inicio = noAdmin ? "/admin" : "/";
+  const noAdmin = pathname.startsWith("/admin");
+  const [destino, setDestino] = useState("/");
+
+  useEffect(() => {
+    if (loading) return;
+
+    if (noAdmin) {
+      setDestino(signed ? "/admin" : "/auth/admin");
+    } else {
+      setDestino("/");
+    }
+  }, [noAdmin, signed, loading]);
 
   return (
     <main className={styles.pagina}>
@@ -24,9 +37,15 @@ export default function NaoAutorizado({
       <p className={styles.texto}>{mensagem}</p>
 
       <div className={styles.acoes}>
-        <Link to={inicio} className={styles.botaoPrincipal}>
-          <FiHome /> {noAdmin ? "Ir para o painel" : "Ir para o início"}
+        <Link to={destino} className={styles.botaoPrincipal}>
+          <FiHome />
+          {noAdmin
+            ? signed
+              ? "Ir para o painel"
+              : "Fazer login"
+            : "Ir para o início"}
         </Link>
+
         <button
           type="button"
           className={styles.botaoSecundario}

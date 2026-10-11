@@ -31,10 +31,10 @@
 }
 
 .topo p {
-   color: var(--cor-texto-muted);
+  color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
-     margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .filtroContainer {
@@ -133,7 +133,7 @@
   flex-shrink: 0;
   font-size: 1rem;
   transition: transform 0.2s ease;
-  color:#67170c;
+  color: #67170c;
 }
 
 .iconeAberto {
@@ -170,7 +170,7 @@
 }
 
 .opcao:hover {
-   background-color: #ffecc9;
+  background-color: #ffecc9;
   color: #ffbb33;
   transition: 0.25s;
 }
@@ -188,8 +188,8 @@
   font-family: inherit;
   font-size: 0.9rem;
   cursor: pointer;
-    color: #fffdf7;
-    transition: 0.3s;
+  color: #fffdf7;
+  transition: 0.3s;
 }
 
 .botaoBuscar:hover {
@@ -198,10 +198,7 @@
 
 .gridRevisoes {
   display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(350px, 1fr)
-  );
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
@@ -216,8 +213,7 @@
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
-  transition:
-    transform 0.25s ease;
+  transition: transform 0.25s ease;
 }
 
 .cardRevisao:hover {
@@ -252,8 +248,7 @@
   display: block;
   object-fit: cover;
   border: 1px solid #e1d3ae;
-  box-shadow:
-    0 4px 10px rgba(103, 23, 12, 0.12);
+  box-shadow: 0 4px 10px rgba(103, 23, 12, 0.12);
 }
 
 .semCapa {
@@ -299,7 +294,7 @@
   font-family: "Jacques Francois", serif;
   font-size: 1rem;
   line-height: 1.4;
-  text-align:left;
+  text-align: left;
   overflow-wrap: anywhere;
 }
 
@@ -331,8 +326,8 @@
   letter-spacing: 0.04em;
 }
 
-.numeroo{
-  font-family:none;
+.numeroo {
+  font-family: none;
 }
 
 .infoValor {
@@ -381,9 +376,9 @@
 .linkPrimario:hover,
 .linkSecundario:hover {
   background: #67170c !important;
-border-color: #67170c;
-  transition:0.3s;
-  color:#fffdf7 !important;
+  border-color: #67170c;
+  transition: 0.3s;
+  color: #fffdf7 !important;
 }
 
 .linkPrimario svg,
@@ -437,10 +432,7 @@ border-color: #67170c;
   }
 
   .gridRevisoes {
-    grid-template-columns: repeat(
-      auto-fill,
-      minmax(320px, 1fr)
-    );
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
 

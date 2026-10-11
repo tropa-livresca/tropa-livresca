@@ -48,18 +48,18 @@
 }
 
 .linkAutor {
-  display: block;          
-  width: fit-content;    
+  display: block;
+  width: fit-content;
   margin-top: 1rem;
-  margin-left: auto;       
-  margin-right: auto;    
+  margin-left: auto;
+  margin-right: auto;
   color: #ede6b3;
   background-color: #67170c;
   padding: 0.5rem;
   border-radius: 0.5rem;
 }
 
-.linkAutor:hover{
+.linkAutor:hover {
   background-color: #ffbb33;
   transition: 0.3s;
 }

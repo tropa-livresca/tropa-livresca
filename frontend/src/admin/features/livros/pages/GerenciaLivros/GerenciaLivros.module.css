@@ -34,7 +34,7 @@
   color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
-   margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .filtroForm {
@@ -108,7 +108,7 @@
 }
 
 .selectDiv {
- width: 100%;
+  width: 100%;
   min-height: 46px;
   display: flex;
   align-items: center;
@@ -147,7 +147,7 @@
 }
 
 .opcoes {
- position: absolute;
+  position: absolute;
   z-index: 20;
   top: calc(100% + 0.4rem);
   left: 0;
@@ -162,7 +162,7 @@
 }
 
 .opcao {
-   display: block;
+  display: block;
   width: 100%;
   padding: 0.7rem 0.75rem;
   border: none;
@@ -176,7 +176,7 @@
 }
 
 .opcao:hover {
-   background-color: #ffecc9;
+  background-color: #ffecc9;
   color: #ffbb33;
   transition: 0.25s;
 }
@@ -194,8 +194,8 @@
   font-family: inherit;
   font-size: 0.9rem;
   cursor: pointer;
-    color: #fffdf7;
-    transition: 0.3s;
+  color: #fffdf7;
+  transition: 0.3s;
 }
 
 .btn:hover {
@@ -248,7 +248,7 @@
 }
 
 .tabelaContainer::-webkit-scrollbar-thumb {
-  background: #faf4e1;;
+  background: #faf4e1;
   background-clip: padding-box;
   border: 3px solid transparent;
   border-radius: 999px;
@@ -267,7 +267,7 @@
   font-size: 0.95rem;
 }
 
-.numero3{
+.numero3 {
   font-family: none;
 }
 
@@ -279,7 +279,7 @@
   font-weight: 400;
   text-align: center;
   white-space: normal;
-  border-left:1px solid #fffdf7;
+  border-left: 1px solid #fffdf7;
 }
 
 .tabelaLivros tbody tr:hover td {
@@ -288,7 +288,7 @@
 
 .tabelaLivros th:first-child {
   padding-left: 1.5rem;
-  border-left:none;
+  border-left: none;
 }
 
 .tabelaLivros th:last-child {
@@ -430,7 +430,7 @@
   box-sizing: border-box;
   white-space: nowrap;
   cursor: pointer;
-  transition:0.3s;
+  transition: 0.3s;
 }
 
 .btnAcao {
@@ -463,12 +463,12 @@
   color: var(--cor-texto-muted);
 }
 
-.cardnenhumlivro svg{
-  color:#67170c;
+.cardnenhumlivro svg {
+  color: #67170c;
 }
 
-.cardnenhumlivro p{
-  margin:0;
+.cardnenhumlivro p {
+  margin: 0;
 }
 .titulon {
   margin-top: 0.5rem;
@@ -527,7 +527,6 @@
     padding: 0.35rem 0.65rem;
     font-size: 0.78rem;
   }
-
 }
 
 @media (max-width: 900px) {
@@ -545,7 +544,6 @@
 }
 
 @media (max-width: 768px) {
-
   .topo {
     padding: 1.5rem 1.25rem;
   }
@@ -648,5 +646,4 @@
     width: 2.75rem;
     height: 4rem;
   }
-
 }
