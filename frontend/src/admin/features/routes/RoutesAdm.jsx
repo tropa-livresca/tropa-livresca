@@ -1,9 +1,10 @@
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 
 import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound";
 import NaoAutorizado from "../../../common/features/paginasErro/pages/NaoAutorizado/NaoAutorizado";
 
 import BoasVindas from "../geral/pages/BoasVindas/BoasVindas.jsx";
+import AlterarSenha from "../perfil/pages/AlterarSenha/AlterarSenha.jsx";
 import NovaSenha from "../perfil/pages/NovaSenha/NovaSenha";
 import Revisoes from "../revisoes/pages/Revisoes/Revisoes";
 import NovaRevisao from "../revisoes/pages/NovaRevisao/NovaRevisao";
@@ -15,40 +16,28 @@ import Vendas from "../vendas/pages/Vendas/Vendas.jsx";
 import Graficos from "../financeiro/pages/Graficos/Graficos.jsx";
 import Financeiro from "../financeiro/pages/Financeiro/Financeiro.jsx";
 import VisualizarUsuario from "../usuarios/pages/VisualizarUsuario/VisualizarUsuario.jsx";
-
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
 
-const PrivateRoute = ({ children, redirectTo = "/auth/admin" }) => {
+const PrivateRoute = ({ children }) => {
   const { signed, loading } = useAdmin();
-  const location = useLocation();
 
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
 
   if (!signed) {
-    return <Navigate to={redirectTo} state={{ from: location }} replace />;
+    return <Navigate to="/admin/nao-autorizado" replace />;
   }
 
   return children;
 };
 
-const MasterRoute = ({ children, redirectTo = "/admin" }) => {
+const MasterRoute = ({ children }) => {
   const { signed, loading, user } = useAdmin();
 
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
 
-  if (!signed) {
-    return <Navigate to={redirectTo} replace />;
-  }
-
-  if (!user?.is_master) {
-    return (
-      <NaoAutorizado mensagem="Esta área é exclusiva para administradores master. Peça a um master para liberar seu acesso, se precisar." />
-    );
+  if (!signed || !user?.is_master) {
+    return <Navigate to="/admin/nao-autorizado" replace />;
   }
 
   return children;
@@ -165,7 +154,23 @@ const RoutesAdm = () => {
             </PrivateRoute>
           }
         />
+
+        <Route
+          path="configuracoes/alterarsenha"
+          element={
+            <PrivateRoute>
+              <AlterarSenha />
+            </PrivateRoute>
+          }
+        />
       </Route>
+
+      <Route
+        path="nao-autorizado"
+        element={
+          <NaoAutorizado mensagem="Você não tem permissão para acessar esta página." />
+        }
+      />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -113,8 +113,8 @@ export default function Vendas() {
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Gerenciar Pedidos</h1>
         <p>
-          Acompanhe as vendas, o envio dos livros físicos e o repasse de{" "}
-          {PERCENTUAL_AUTOR * 100}% aos autores.
+          Acompanhe as vendas, o envio dos livros físicos e o repasse de<span className={styles.numero}>{" "}
+          {PERCENTUAL_AUTOR * 100}%</span> aos autores.
         </p>
       </div>
 
@@ -166,9 +166,11 @@ export default function Vendas() {
                   return (
                     <tr key={venda.id}>
                       <td>
-                        <strong>#{venda.id}</strong>
+                        <strong className={styles.numero}>#{venda.id}</strong>
                         <small className={styles.data}>
-                          {formatarData(venda.data)}
+                          <span className={styles.numero}>
+                            {formatarData(venda.data)}
+                          </span>
                         </small>
                       </td>
                       <td>{venda.users_profile?.nome || "—"}</td>
@@ -176,15 +178,20 @@ export default function Vendas() {
                         <ul className={styles.livros}>
                           {(venda.itens_venda || []).map((item, index) => (
                             <li key={index}>
-                              {item.qtd}x {item.livros?.titulo || "Livro"}{" "}
-                              <small>
-                                ({item.fisico ? "físico" : "e-book"})
-                              </small>
+                              <span className={styles.numero}>{item.qtd}x</span>{" "}
+                              {item.livros?.titulo || "Livro"}{" "}
+                              <span className={styles.etiquetaMini}>
+                                {item.fisico ? "físico" : "e-book"}
+                              </span>
                             </li>
                           ))}
                         </ul>
                       </td>
-                      <td>{formatarPreco(venda.total)}</td>
+                      <td>
+                        <span className={styles.numero}>
+                          {formatarPreco(venda.total)}
+                        </span>
+                      </td>
                       <td>
                         <span
                           className={`${styles.etiqueta} ${
@@ -198,14 +205,26 @@ export default function Vendas() {
                             : "Pendente"}
                         </span>
                       </td>
-                      <td>{venda.status_entrega}</td>
+                      <td>
+                        <span
+                          className={`${styles.etiqueta} ${
+                            venda.status_entrega === "Pendente"
+                              ? styles.entregaPendente
+                              : ""
+                          }`}
+                        >
+                          {venda.status_entrega}
+                        </span>
+                      </td>
                       <td>
                         {venda.repassado ? (
                           <span className={`${styles.etiqueta} ${styles.ok}`}>
                             Repassado
                           </span>
                         ) : (
-                          <span className={styles.valorRepasse}>
+                          <span
+                            className={`${styles.etiqueta} ${styles.valorRepasse}`}
+                          >
                             {formatarPreco(totalLivros * PERCENTUAL_AUTOR)}
                           </span>
                         )}

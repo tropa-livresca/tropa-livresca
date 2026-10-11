@@ -1,0 +1,197 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 3rem 6%;
+}
+
+.topo {
+  width: 100%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+  padding: 3rem 6%;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.formulario {
+  width: 100%;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.formulario input {
+  width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-bottom: 1rem;
+}
+
+.formulario input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.formulario input::placeholder {
+   color: var(--cor-texto-muted) !important;
+}
+
+.inputGrupo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputGrupo input {
+  padding-right: 3rem; /* Abre espaço no final do input para o olho não sobrepor o texto */
+}
+
+.campo {
+   display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.campo label{
+     color: #67170c;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.botaoOlho {
+  position: absolute;
+  top: 35%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 1.2rem;
+  padding: 0;
+  z-index: 10;
+}
+
+
+.botaoOlho:hover {
+  color: #67170c;
+}
+
+
+.erro {
+  margin: 0;
+  padding: 0.9rem 1.2rem;
+  border-radius: 1rem;
+  background: #ffe9e6;
+  color: #a1260f;
+  font-size: 0.95rem;
+}
+
+.botaoSalvar {
+ width: 100%;
+  padding: 0.7rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  background-color: #67170c;
+  color: #fffdf7;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .3s;
+  margin-top: 1rem;
+}
+
+.botaoSalvar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 2.5rem 4%;
+  }
+
+  .topo {
+    padding: 2.5rem 4%;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 4%;
+  }
+
+  .titulo {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+  }
+
+  .topo p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
+  .topo {
+    padding: 2rem 1rem;
+  }
+
+  .titulo {
+    font-size: 1.8rem;
+  }
+
+  .titulo::after {
+    width: 5rem;
+    height: 3px;
+    margin-top: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .topo p {
+    font-size: 0.95rem;
+  }
+
+  .formulario {
+    padding: 1.2rem;
+  }
+}

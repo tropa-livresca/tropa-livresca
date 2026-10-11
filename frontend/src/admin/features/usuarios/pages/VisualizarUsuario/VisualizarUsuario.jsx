@@ -55,7 +55,8 @@ export default function VisualizarUsuario() {
           Usuário não encontrado ou dados inválidos.
         </p>
         <Link to="/admin/usuarios" className={styles.btnVoltar}>
-          Voltar para Gerenciar Usuários
+          <FiArrowLeft />
+          <span>Voltar para Gerenciar Usuários</span>
         </Link>
       </main>
     );
@@ -96,10 +97,11 @@ export default function VisualizarUsuario() {
     }
   };
 
-
   const livros = usuario.livros || [];
   const revisoes = usuario.revisoes || [];
-  const livrosVisiveis = verTodosLivros ? livros : livros.slice(0, LIMITE_LISTA);
+  const livrosVisiveis = verTodosLivros
+    ? livros
+    : livros.slice(0, LIMITE_LISTA);
   const revisoesVisiveis = verTodasRevisoes
     ? revisoes
     : revisoes.slice(0, LIMITE_LISTA);
@@ -113,10 +115,20 @@ export default function VisualizarUsuario() {
   return (
     <main className={styles.mainContainer}>
       <div className={styles.topo}>
-        <h1 className={styles.titulo}>Detalhes do Usuário</h1>
-        <Link to="/admin/usuarios" className={styles.btnVoltar}>
-          <FiArrowLeft /> Voltar para usuários
-        </Link>
+        <div className={styles.topoConteudo}>
+          <div className={styles.topoTexto}>
+            <h1 className={styles.titulo}>Detalhes do Usuário</h1>
+            <p>
+              Visualize o histórico de atividades e o status da conta do usuário
+              selecionado.
+            </p>
+          </div>
+
+          <Link to="/admin/usuarios" className={styles.btnVoltar}>
+            <FiArrowLeft />
+            <span>Voltar para usuários</span>
+          </Link>
+        </div>
       </div>
 
       <div className={styles.container}>
@@ -137,26 +149,45 @@ export default function VisualizarUsuario() {
             </div>
 
             <dl className={styles.dados}>
-              <div>
+              <div className={styles.email}>
                 <dt>
                   <FiMail /> E-mail
                 </dt>
                 <dd>{email || "Não informado"}</dd>
               </div>
-              <div>
+              <div className={styles.telefone}>
                 <dt>
                   <FiPhone /> Telefone
                 </dt>
-                <dd>{formatarTelefone(usuario.telefone)}</dd>
+                <dd className={styles.numero2}>
+                  {formatarTelefone(usuario.telefone)}
+                </dd>
               </div>
             </dl>
           </section>
 
-          <section className={styles.cartao}>
+          <section className={styles.cartao2}>
             <h3 className={styles.subtitulo}>Ações de controle</h3>
             <p className={styles.descricao}>
               Gerencie os níveis de permissão e acessos deste perfil no sistema.
             </p>
+
+            <dl className={styles.resumo}>
+              <div className={styles.resumoItem}>
+                <dt>Tipo de conta</dt>
+                <dd>{tipoConta}</dd>
+              </div>
+              <div className={styles.resumoItem}>
+                <dt>Livros cadastrados</dt>
+                <dd className={styles.numero}>{livros.length}</dd>
+              </div>
+              {isAdmin && (
+                <div className={styles.resumoItem}>
+                  <dt>Revisões realizadas</dt>
+                  <dd className={styles.numero}>{revisoes.length}</dd>
+                </div>
+              )}
+            </dl>
 
             {!isAdmin ? (
               <button
@@ -173,7 +204,7 @@ export default function VisualizarUsuario() {
                   disabled={executandoAcao}
                   className={styles.btnPerigo}
                 >
-                  Inativar funcionário
+                  {executandoAcao ? "Processando..." : "Inativar funcionário"}
                 </button>
               </div>
             )}
@@ -183,11 +214,16 @@ export default function VisualizarUsuario() {
         <section className={styles.cartao}>
           <div className={styles.cabecalhoSecao}>
             <h3 className={styles.subtitulo}>Livros do autor</h3>
-            <span className={styles.contador}>{livros.length}</span>
+            <span className={styles.totalTexto}>
+              <span className={styles.numero}>{livros.length}</span>{" "}
+              {livros.length === 1 ? "livro" : "livros"}
+            </span>
           </div>
 
           {livros.length === 0 ? (
-            <p className={styles.semDados}>Nenhum livro criado por este usuário.</p>
+            <p className={styles.semDados}>
+              Nenhum livro criado por este usuário.
+            </p>
           ) : (
             <>
               <ul className={styles.lista}>
@@ -215,9 +251,16 @@ export default function VisualizarUsuario() {
                   className={styles.btnVerTodos}
                   onClick={() => setVerTodosLivros(!verTodosLivros)}
                 >
-                  {verTodosLivros
-                    ? "Mostrar menos"
-                    : `Ver todos os ${livros.length} livros`}
+                  {verTodosLivros ? (
+                    "Mostrar menos"
+                  ) : (
+                    <><span>
+                      Ver todos os{" "}
+                      <span className={styles.numero}>{livros.length}</span>{" "}
+                      livros
+                      </span>
+                    </>
+                  )}
                 </button>
               )}
             </>
@@ -228,7 +271,10 @@ export default function VisualizarUsuario() {
           <section className={styles.cartao}>
             <div className={styles.cabecalhoSecao}>
               <h3 className={styles.subtitulo}>Revisões realizadas</h3>
-              <span className={styles.contador}>{revisoes.length}</span>
+              <span className={styles.totalTexto}>
+                <span className={styles.numero}>{revisoes.length}</span>{" "}
+                {revisoes.length === 1 ? "revisão" : "revisões"}
+              </span>
             </div>
 
             {revisoes.length === 0 ? (
@@ -241,7 +287,8 @@ export default function VisualizarUsuario() {
                   {revisoesVisiveis.map((revisao) => (
                     <li key={revisao.id} className={styles.item}>
                       <span className={styles.itemTitulo}>
-                        Revisão #{revisao.id}
+                        Revisão{" "}
+                        <span className={styles.numero}>#{revisao.id}</span>
                       </span>
                       <span
                         className={`${styles.tag} ${styles[revisao.status] || styles.finalizado}`}
@@ -264,9 +311,15 @@ export default function VisualizarUsuario() {
                     className={styles.btnVerTodos}
                     onClick={() => setVerTodasRevisoes(!verTodasRevisoes)}
                   >
-                    {verTodasRevisoes
-                      ? "Mostrar menos"
-                      : `Ver todas as ${revisoes.length} revisões`}
+                    {verTodasRevisoes ? (
+                      "Mostrar menos"
+                    ) : (
+                      <>
+                        Ver todas as{" "}
+                        <span className={styles.numero}>{revisoes.length}</span>{" "}
+                        revisões
+                      </>
+                    )}
                   </button>
                 )}
               </>

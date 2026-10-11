@@ -643,11 +643,23 @@ export class LojaModel {
   }
 
   static async dispararEmailcomLivroDigital(dadosMail) {
+    const porta = Number(process.env.SMTP_PORT || 465);
+
+    if (
+      !process.env.SMTP_HOST ||
+      !process.env.SMTP_USER ||
+      !process.env.SMTP_PASS
+    ) {
+      const erro = new Error("Configuração SMTP incompleta no backend.");
+      erro.statusCode = 500;
+      throw erro;
+    }
+
     try {
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || "465", 10),
-        secure: true,
+        port: porta,
+        secure: porta === 465,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
@@ -655,10 +667,21 @@ export class LojaModel {
         family: 4,
       });
 
-      return await transporter.sendMail(dadosMail);
-    } catch (error) {
-      error.statusCode = 500;
-      throw error;
+      return await transporter.sendMail({
+        ...dadosMail,
+        from: `"Tropa Livresca" <${process.env.SMTP_USER}>`,
+      });
+    } catch (erro) {
+      console.error("[LojaModel] Falha no envio SMTP:", {
+        message: erro?.message,
+        code: erro?.code,
+        command: erro?.command,
+        responseCode: erro?.responseCode,
+        response: erro?.response,
+      });
+
+      erro.statusCode = 500;
+      throw erro;
     }
   }
 

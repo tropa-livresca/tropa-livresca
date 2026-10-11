@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
       return null;
     } catch (err) {
       console.error("Erro de rede no método signin:", err);
-      return "Erro de conexão com o servidor.";
+      return "E-mail ou senha incorretos.";
     }
   };
 

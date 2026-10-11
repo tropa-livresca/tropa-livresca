@@ -14,6 +14,16 @@ export default function NavBarLateral() {
 
   return (
     <div className={styles.menu}>
+      <div className={styles.blocoConfiguracoes}>
+        <div className={styles.titulo}>Configurações de Conta</div>
+
+        <Link
+          to="/admin/configuracoes/alterarsenha"
+          className={styles.linkMenu}
+        >
+          <div className={styles.itemMenu}>Alterar Senha</div>
+        </Link>
+      </div>
       <div className={styles.titulo}>Geral</div>
 
       {isMaster && (
