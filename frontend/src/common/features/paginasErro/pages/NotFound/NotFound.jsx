@@ -6,7 +6,6 @@ export default function NotFound() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  // No painel do admin, "início" é o painel; no resto, a página inicial.
   const noAdmin = pathname.startsWith("/admin/") || pathname === "/admin";
   const inicio = noAdmin ? "/admin" : "/";
 
