@@ -13,7 +13,7 @@ export default function EsqueceuSenha() {
     <main className={styles.container}>
       <img src={logo} alt="Tropa Livresca" className={styles.imagemFundo} />
       <div className={styles.corFundo}></div>
-      
+
       <div className={styles.card}>
         <button
           type="button"

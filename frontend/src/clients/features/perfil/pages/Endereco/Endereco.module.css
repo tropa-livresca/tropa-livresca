@@ -7,7 +7,7 @@
 
 .topo {
   width: 100%;
-   padding: 3rem 6%;
+  padding: 3rem 6%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
 }
@@ -19,12 +19,11 @@
 }
 
 .titulo {
-   margin: 0;
+  margin: 0;
   color: #67170c;
   font-size: clamp(2rem, 4vw, 4rem);
   font-family: "Jacques Francois", serif;
 }
-
 
 .titulo::after {
   content: "";
@@ -66,7 +65,6 @@
   min-width: 300px;
 }
 
-
 .formularioGrid {
   background: #fffdf7;
   border-radius: 1.5rem;
@@ -96,7 +94,7 @@
   color: #67170c;
   font-size: 2rem;
   font-weight: 600;
-  padding-left:2%;
+  padding-left: 2%;
 }
 
 .subtitulo::after {
@@ -269,7 +267,7 @@
   text-align: center;
   color: var(--cor-texto-muted);
   font-style: italic;
-  font-size:0.95rem;
+  font-size: 0.95rem;
 }
 
 .acoesTabela {
@@ -392,37 +390,37 @@
 }
 
 @media (min-width: 600px) and (max-width: 768px) {
-  .subtitulo{
+  .subtitulo {
     font-size: 1.5rem;
-    width:65%;
+    width: 65%;
   }
 
   .btnAtualizar {
-  width: 30%;
-  padding: 0.5rem;
-  font-size: 1rem;
-}
+    width: 30%;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
 }
 
 @media (min-width: 200px) and (max-width: 599px) {
-  .subtitulo{
+  .subtitulo {
     font-size: 1.3rem;
-    width:65%;
+    width: 65%;
   }
 
   .btnAtualizar {
-  width: 30%;
-  padding: 0.5rem;
-  font-size: .8rem;
-}
+    width: 30%;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
 
-.btnSalvar {
-  width: 60%;
-  font-size: .9rem;
-}
+  .btnSalvar {
+    width: 60%;
+    font-size: 0.9rem;
+  }
 
-.btnLimpar {
-  width: 40%;
-  font-size: .9rem;
-}
+  .btnLimpar {
+    width: 40%;
+    font-size: 0.9rem;
+  }
 }

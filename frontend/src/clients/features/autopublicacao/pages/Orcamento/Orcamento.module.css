@@ -24,7 +24,6 @@
   border-radius: 999px;
 }
 
-
 .form label {
   color: #67170c;
   margin-left: 2.5%;
@@ -55,9 +54,9 @@
   margin-bottom: 2%;
 }
 
-.card p{
-     color: #67170c;
-     font-size: 1.1rem;
+.card p {
+  color: #67170c;
+  font-size: 1.1rem;
 }
 
 .inputmodificado input {
@@ -101,21 +100,20 @@
   margin: 0;
 }
 
-.numero{
-    font-family: none;
+.numero {
+  font-family: none;
 }
 
-.strong{
-    color: #67170c;
+.strong {
+  color: #67170c;
   margin-left: 1rem;
-   font-weight: bold;
-   font-size: 1.1rem;
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
-.div2{
-    margin-bottom: 1%;
+.div2 {
+  margin-bottom: 1%;
 }
-
 
 .botao {
   display: flex;

@@ -3,18 +3,19 @@ import SubmitButton from "../../../../components/Submit/SubmitButton";
 import BotaoGoogle from "../../components/BotaoGoogle/BotaoGoogle";
 import styles from "./Login.module.css";
 
-import {useLogin} from "../../hooks/useLogin";
+import { useLogin } from "../../hooks/useLogin";
 
 import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEye, FaEyeSlash} from "react-icons/fa";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
 export default function Login() {
-  const {senha, setSenha, error, email, setEmail, handleSignin, navigate} = useLogin();
+  const { senha, setSenha, error, email, setEmail, handleSignin, navigate } =
+    useLogin();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
@@ -63,8 +64,6 @@ export default function Login() {
               </button>
             </div>
 
-            
-
             <SubmitButton text="Entrar" id={styles.btn} />
 
             <div className={styles.divisor}>
@@ -73,7 +72,7 @@ export default function Login() {
               <span></span>
             </div>
 
-            <BotaoGoogle/>
+            <BotaoGoogle />
 
             <div className={styles.errinho}>
               {error.length > 0 && <p>{error}</p>}

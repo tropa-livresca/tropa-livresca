@@ -161,8 +161,8 @@
   width: 100%;
 }
 
-.opcoesParcelamento svg{
-    color: #67170c;
+.opcoesParcelamento svg {
+  color: #67170c;
 }
 
 .opcaoSelecionada {
@@ -218,7 +218,7 @@
   z-index: 100;
   max-height: 350px;
   animation: abrir 0.2s ease;
-  color:#67170c;
+  color: #67170c;
 }
 
 @keyframes abrir {
@@ -250,12 +250,12 @@
 }
 
 .listaParcelamento button:hover {
-   background: #fff8d767;
+  background: #fff8d767;
   color: #ffbb33;
 }
 
-.numero{
-    font-family: none;
+.numero {
+  font-family: none;
 }
 
 .seguro {
@@ -267,20 +267,20 @@
 
 .botao {
   width: 100%;
-    padding: 0.7rem;
-    font-family: inherit;
-    font-size: 1rem;
-    font-weight: normal;
-    background-color: #67170c;
-    color: #ede6b3;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: .3s;
+  padding: 0.7rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  background-color: #67170c;
+  color: #ede6b3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.botao:hover{
-    background-color: #ffbb33;
+.botao:hover {
+  background-color: #ffbb33;
   transition: 0.3s;
 }
 @media (max-width: 600px) {

@@ -1,4 +1,3 @@
-
 import { jest } from "@jest/globals";
 
 class SupabaseQueryBuilder {
@@ -56,7 +55,15 @@ export const supabaseAdminMock = {
 
 export const supabaseMock = {
   from: jest.fn(() => builder),
-  auth: {signInWithPassword: jest.fn(() => builder), updateUser: jest.fn(() => builder), resetPasswordForEmail: jest.fn(() => builder), signInWithOAuth: jest.fn(() => builder), exchangeCodeForSession: jest.fn(() => builder), signUp: jest.fn(() => builder), signOut: jest.fn(() => builder)}, 
+  auth: {
+    signInWithPassword: jest.fn(() => builder),
+    updateUser: jest.fn(() => builder),
+    resetPasswordForEmail: jest.fn(() => builder),
+    signInWithOAuth: jest.fn(() => builder),
+    exchangeCodeForSession: jest.fn(() => builder),
+    signUp: jest.fn(() => builder),
+    signOut: jest.fn(() => builder),
+  },
 };
 
 export function resetSupabaseMock() {

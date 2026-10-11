@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&display=swap");
 
 .mainContainer {
   margin-top: 0rem;
@@ -33,7 +33,7 @@
   color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
-   margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .container {
@@ -225,7 +225,7 @@
 }
 
 .entregaPendente {
-  color:var(--cor-texto-muted)
+  color: var(--cor-texto-muted);
 }
 
 .etiquetaMini {
@@ -308,7 +308,7 @@
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   box-sizing: border-box;
-  font-family: 'Cormorant Garamond', serif !important;
+  font-family: "Cormorant Garamond", serif !important;
   font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.4;

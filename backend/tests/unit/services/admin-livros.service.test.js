@@ -20,9 +20,10 @@ describe("LivrosService.AlterarAtivoLivro", () => {
   it("tira o livro da loja", async () => {
     modelMock.alterarAtivoLivro.mockResolvedValue({ id: 7, ativo: false });
 
-    await expect(LivrosService.AlterarAtivoLivro("7", false)).resolves.toEqual(
-      { id: 7, ativo: false },
-    );
+    await expect(LivrosService.AlterarAtivoLivro("7", false)).resolves.toEqual({
+      id: 7,
+      ativo: false,
+    });
     expect(modelMock.alterarAtivoLivro).toHaveBeenCalledWith("7", false);
   });
 

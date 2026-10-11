@@ -69,189 +69,208 @@ export default function Endereco() {
 
   return (
     <div>
-    <div className={styles.topo}>
-      <h1 className={styles.titulo}>Gerenciamento de Endereços</h1>
-      <p>
-          Gerencie, adicione, edite e remova seus endereços de forma rápida e prática.
+      <div className={styles.topo}>
+        <h1 className={styles.titulo}>Gerenciamento de Endereços</h1>
+        <p>
+          Gerencie, adicione, edite e remova seus endereços de forma rápida e
+          prática.
         </p>
       </div>
 
       <div className={styles.container}>
+        {carregando && (
+          <Carregando mensagem="Aguarde... Processando requisição..." />
+        )}
 
-      {carregando && (
-        <Carregando mensagem="Aguarde... Processando requisição..."/>
-      )}
+        <div className={styles.conteudoLayout}>
+          <div className={styles.colunaFormulario}>
+            <h2 className={styles.subtitulo2}>
+              {idSelecionado ? "Editar Endereço" : "Novo Endereço"}
+            </h2>
 
-      <div className={styles.conteudoLayout}>
-        <div className={styles.colunaFormulario}>
-          <h2 className={styles.subtitulo2}>{idSelecionado ? "Editar Endereço" : "Novo Endereço"}</h2>
+            <form onSubmit={executarSalvar} className={styles.formularioGrid}>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>CEP:</label>
+                <input
+                  type="text"
+                  className={`${styles.input} ${styles.fontnumero}`}
+                  value={CEP}
+                  onChange={(e) => AplicarMascaraCEP(e.target.value)}
+                  placeholder="00000-000"
+                />
+              </div>
 
-          <form onSubmit={executarSalvar} className={styles.formularioGrid}>
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>CEP:</label>
-              <input
-                type="text"
-                className={`${styles.input} ${styles.fontnumero}`}
-                value={CEP}
-                onChange={(e) => AplicarMascaraCEP(e.target.value)}
-                placeholder="00000-000"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>Rua:</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={rua}
+                  onChange={(e) => setRua(e.target.value)}
+                  placeholder="Inserir rua"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>Rua:</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={rua}
-                onChange={(e) => setRua(e.target.value)}
-                placeholder="Inserir rua"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>Número:</label>
+                <input
+                  type="text"
+                  className={`${styles.input} ${styles.fontnumero2}`}
+                  value={numero}
+                  onChange={(e) => setNumero(e.target.value)}
+                  placeholder="Inserir numero"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>Número:</label>
-              <input
-                type="text"
-                className={`${styles.input} ${styles.fontnumero2}`}
-                value={numero}
-                onChange={(e) => setNumero(e.target.value)}
-                placeholder="Inserir numero"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>Bairro:</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={bairro}
+                  onChange={(e) => setBairro(e.target.value)}
+                  placeholder="Inserir bairro"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>Bairro:</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={bairro}
-                onChange={(e) => setBairro(e.target.value)}
-                placeholder="Inserir bairro"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>Cidade:</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={cidade}
+                  onChange={(e) => setCidade(e.target.value)}
+                  placeholder="Inserir cidade"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>Cidade:</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={cidade}
-                onChange={(e) => setCidade(e.target.value)}
-                placeholder="Inserir cidade"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>Estado:</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={estado}
+                  onChange={(e) => setEstado(e.target.value)}
+                  placeholder="Inserir estado"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>Estado:</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={estado}
-                onChange={(e) => setEstado(e.target.value)}
-                placeholder="Inserir estado"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>Complemento:</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={complemento}
+                  onChange={(e) => setComplemento(e.target.value)}
+                  placeholder="Inserir complemento"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>Complemento:</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={complemento}
-                onChange={(e) => setComplemento(e.target.value)}
-                placeholder="Inserir complemento"
-              />
-            </div>
+              <div className={styles.formGrupo}>
+                <label className={styles.label}>País:</label>
+                <input
+                  type="text"
+                  className={styles.input}
+                  value={pais}
+                  onChange={(e) => setPais(e.target.value)}
+                  placeholder="Inserir país"
+                />
+              </div>
 
-            <div className={styles.formGrupo}>
-              <label className={styles.label}>País:</label>
-              <input
-                type="text"
-                className={styles.input}
-                value={pais}
-                onChange={(e) => setPais(e.target.value)}
-                placeholder="Inserir país"
-              />
-            </div>
+              <div className={styles.areaAcoesForm}>
+                <button type="submit" className={styles.btnSalvar}>
+                  {idSelecionado ? "Atualizar" : "Salvar"}
+                </button>
 
-            <div className={styles.areaAcoesForm}>
-              <button type="submit" className={styles.btnSalvar}>
-                {idSelecionado ? "Atualizar" : "Salvar"}
-              </button>
-
-              <button type="button" onClick={executarLimpar} className={styles.btnLimpar}>
-                Limpar
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div className={styles.colunaListagem}>
-          <div className={styles.listagemTopo}>
-            <h2 className={styles.subtitulo}>Endereços Cadastrados</h2>
-            <button onClick={BuscarEnderecos} className={styles.btnAtualizar}>
-              Atualizar
-            </button>
+                <button
+                  type="button"
+                  onClick={executarLimpar}
+                  className={styles.btnLimpar}
+                >
+                  Limpar
+                </button>
+              </div>
+            </form>
           </div>
 
-          <div className={styles.containerTabela}>
-            <table className={styles.tabelaEnderecos}>
-              <thead className={styles.tabelaCabecalho}>
-                <tr>
-                  <th className={styles.tabelaTh}>CEP</th>
-                  <th className={styles.tabelaTh}>Logradouro</th>
-                  <th className={styles.tabelaTh}>Cidade/UF</th>
-                  <th className={styles.tabelaTh}>Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {enderecos.length === 0 ? (
-                  <tr>
-                    <td colSpan="4" className={styles.tabelaVazia}>
-                      Nenhum endereço encontrado.
-                    </td>
-                  </tr>
-                ) : (
-                  enderecos.map((end) => (
-                    <tr key={end.id} className={styles.tabelaLinha}>
-                      <td className={styles.tabelaTd}>
-                        <span className={styles.fontnumero}>
-                        {end.CEP || end.cep}
-                        {end.principal && (
-                          <span className={styles.badgePrincipal}>Principal</span>
-                        )}</span>
-                      </td>
-                      <td className={styles.tabelaTd}>{`${end.rua || ""}, ${end.num || end.numero || "S/N"}`}</td>
-                      <td className={styles.tabelaTd}>{`${end.cidade} - ${end.estado}`}</td>
-                      <td className={styles.tabelaTd}>
-                        <div className={styles.acoesTabela}>
-                          <button onClick={() => selecionarParaEditar(end)} className={styles.btnEditar}>
-                            Editar
-                          </button>
-                          
-                          {!end.principal && (
-                            <button 
-                              onClick={() => DefinirEnderecoPrincipal(end.id)} 
-                              className={styles.btnPrincipalAction}
-                            >
-                              Principal
-                            </button>
-                          )}
+          <div className={styles.colunaListagem}>
+            <div className={styles.listagemTopo}>
+              <h2 className={styles.subtitulo}>Endereços Cadastrados</h2>
+              <button onClick={BuscarEnderecos} className={styles.btnAtualizar}>
+                Atualizar
+              </button>
+            </div>
 
-                          <button onClick={() => InativarEndereco(end.id)} className={styles.btnStatus}>
-                            Remover
-                          </button>
-                        </div>
+            <div className={styles.containerTabela}>
+              <table className={styles.tabelaEnderecos}>
+                <thead className={styles.tabelaCabecalho}>
+                  <tr>
+                    <th className={styles.tabelaTh}>CEP</th>
+                    <th className={styles.tabelaTh}>Logradouro</th>
+                    <th className={styles.tabelaTh}>Cidade/UF</th>
+                    <th className={styles.tabelaTh}>Ações</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {enderecos.length === 0 ? (
+                    <tr>
+                      <td colSpan="4" className={styles.tabelaVazia}>
+                        Nenhum endereço encontrado.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    enderecos.map((end) => (
+                      <tr key={end.id} className={styles.tabelaLinha}>
+                        <td className={styles.tabelaTd}>
+                          <span className={styles.fontnumero}>
+                            {end.CEP || end.cep}
+                            {end.principal && (
+                              <span className={styles.badgePrincipal}>
+                                Principal
+                              </span>
+                            )}
+                          </span>
+                        </td>
+                        <td
+                          className={styles.tabelaTd}
+                        >{`${end.rua || ""}, ${end.num || end.numero || "S/N"}`}</td>
+                        <td
+                          className={styles.tabelaTd}
+                        >{`${end.cidade} - ${end.estado}`}</td>
+                        <td className={styles.tabelaTd}>
+                          <div className={styles.acoesTabela}>
+                            <button
+                              onClick={() => selecionarParaEditar(end)}
+                              className={styles.btnEditar}
+                            >
+                              Editar
+                            </button>
+
+                            {!end.principal && (
+                              <button
+                                onClick={() => DefinirEnderecoPrincipal(end.id)}
+                                className={styles.btnPrincipalAction}
+                              >
+                                Principal
+                              </button>
+                            )}
+
+                            <button
+                              onClick={() => InativarEndereco(end.id)}
+                              className={styles.btnStatus}
+                            >
+                              Remover
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
       </div>
       {popup && (
         <Popup

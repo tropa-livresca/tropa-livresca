@@ -51,34 +51,37 @@ export const useAutores = () => {
     }
   }, []);
 
-  const buscarAutores = useCallback(async (page = 1, limit = 12, busca = "") => {
-    setCarregando(true);
-    setErro(null);
+  const buscarAutores = useCallback(
+    async (page = 1, limit = 12, busca = "") => {
+      setCarregando(true);
+      setErro(null);
 
-    try {
-      const response = await apiFetch(
-        `/api/v1/clients/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
-        {
-          skipAuthRedirect: true,
-          method: "GET",
-        },
-      );
+      try {
+        const response = await apiFetch(
+          `/api/v1/clients/autores/?page=${page}&limit=${limit}&busca=${encodeURIComponent(busca)}`,
+          {
+            skipAuthRedirect: true,
+            method: "GET",
+          },
+        );
 
-      const result = await response.json();
+        const result = await response.json();
 
-      if (response.ok) {
-        setAutores(result.data);
-        setMeta(result.meta);
-      } else {
-        throw new Error(result.error || "Erro ao carregar lista");
+        if (response.ok) {
+          setAutores(result.data);
+          setMeta(result.meta);
+        } else {
+          throw new Error(result.error || "Erro ao carregar lista");
+        }
+      } catch (error) {
+        console.error("Erro ao buscar autores", error);
+        setErro("Erro ao buscar autores");
+      } finally {
+        setCarregando(false);
       }
-    } catch (error) {
-      console.error("Erro ao buscar autores", error);
-      setErro("Erro ao buscar autores");
-    } finally {
-      setCarregando(false);
-    }
-  }, []);
+    },
+    [],
+  );
 
   return {
     autores,

@@ -9,15 +9,15 @@ import LoginAdmin from "../autenticacao/pages/LoginAdmin/LoginAdmin";
 import Callback from "../autenticacao/pages/Callback/Callback";
 
 export default function RoutesAutenticacao() {
-    return (
-        <Routes>
-            <Route path="login" element={<Login />} />
-            <Route path = "admin" element={<LoginAdmin />} />
-            <Route path="cadastro" element={<Cadastro />} />
-            <Route path="callback" element={<Callback />} />
-            <Route path="esqueceu-senha" element={<EsqueceuSenha />} />
-            <Route path="redefinir-senha" element={<RedefinirSenha />} />
-            <Route path = "*" element = {<NotFound/>}/>
-        </Routes>
-    );
+  return (
+    <Routes>
+      <Route path="login" element={<Login />} />
+      <Route path="admin" element={<LoginAdmin />} />
+      <Route path="cadastro" element={<Cadastro />} />
+      <Route path="callback" element={<Callback />} />
+      <Route path="esqueceu-senha" element={<EsqueceuSenha />} />
+      <Route path="redefinir-senha" element={<RedefinirSenha />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 }

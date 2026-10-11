@@ -1,5 +1,6 @@
 import js from "@eslint/js";
 import globals from "globals";
+import prettier from "eslint-config-prettier";
 
 export default [
   js.configs.recommended,
@@ -22,6 +23,14 @@ export default [
           args: "all",
           ignoreRestSiblings: false,
           argsIgnorePattern: "^_",
+        },
+      ],
+
+      "no-warning-comments": [
+        "error",
+        {
+          terms: ["todo", "fixme", "xxx", "all"],
+          location: "start",
         },
       ],
 
@@ -61,4 +70,6 @@ export default [
       },
     },
   },
+
+  prettier,
 ];

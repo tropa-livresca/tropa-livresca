@@ -10,13 +10,13 @@
 
 .topo {
   width: 100%;
-   padding: 3rem 6%;
+  padding: 3rem 6%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
 }
 
 .titulo {
-   margin: 0;
+  margin: 0;
   color: #67170c;
   font-size: clamp(2rem, 4vw, 4rem);
   font-family: "Jacques Francois", serif;
@@ -72,13 +72,13 @@
 }
 
 .campo_grupo label {
- color: #67170c;
+  color: #67170c;
   font-size: 1rem;
   font-family: "Jacques Francois", serif;
 }
 
 .formulario input {
- width: 100% !important;
+  width: 100% !important;
   background: #fff8d7 !important;
   border: 1px solid #e2c77c !important;
   border-radius: 1rem !important;
@@ -95,7 +95,7 @@
 }
 
 .formulario input::placeholder {
-   color: var(--cor-texto-muted) !important;
+  color: var(--cor-texto-muted) !important;
 }
 
 .btn_submit {
@@ -109,12 +109,12 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
   margin-top: 1rem;
 }
 
 .btn_submit:hover:not(:disabled) {
-    background-color: #ffbb33;
+  background-color: #ffbb33;
   transition: 0.3s;
 }
 
@@ -132,7 +132,7 @@
   font-size: 0.95rem;
   line-height: 1.5;
   text-align: center;
-  color:#67170c;
+  color: #67170c;
 }
 
 .erro {
@@ -175,7 +175,6 @@
   z-index: 10;
 }
 
-
 .olho:hover {
   color: #67170c;
 }
@@ -209,4 +208,3 @@
     padding: 1.5rem;
   }
 }
-

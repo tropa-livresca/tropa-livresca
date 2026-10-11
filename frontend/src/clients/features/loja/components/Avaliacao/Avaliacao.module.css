@@ -21,7 +21,7 @@
 }
 
 .estrelasVazias {
- color: var(--cor-texto-muted);
+  color: var(--cor-texto-muted);
 }
 
 .media {
@@ -31,7 +31,7 @@
 
 .total,
 .semAvaliacao {
- color: var(--cor-texto-muted);
+  color: var(--cor-texto-muted);
 }
 
 .avaliar {
@@ -60,7 +60,7 @@
   padding: 0 0.1rem;
   border: none;
   background: none;
- color: var(--cor-texto-muted);
+  color: var(--cor-texto-muted);
   font-size: 2rem;
   line-height: 1;
   cursor: pointer;
@@ -91,7 +91,7 @@
   margin: 0;
   color: var(--cor-texto-muted);
   text-align: center;
-  font-size:1.02rem;
+  font-size: 1.02rem;
 }
 
 .aviso a {
@@ -99,7 +99,7 @@
   font-weight: 600;
 }
 
-.aviso a:hover{
+.aviso a:hover {
   text-decoration: underline;
 }
 

@@ -175,7 +175,15 @@ export const usePerfil = () => {
       mostrarPopup("erro", "Erro ao atualizar informações");
       return { success: false, error: error.message };
     }
-  }, [nome, telefone, descricao, redesSociais, setPerfil, setEditando, mostrarPopup]);
+  }, [
+    nome,
+    telefone,
+    descricao,
+    redesSociais,
+    setPerfil,
+    setEditando,
+    mostrarPopup,
+  ]);
 
   return {
     perfil,

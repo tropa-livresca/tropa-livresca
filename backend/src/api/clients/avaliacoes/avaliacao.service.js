@@ -33,8 +33,7 @@ export class AvaliacaoService {
       error(400, "A avaliação deve ter de 1 a 5 estrelas.");
 
     const comprou = await AvaliacaoModel.usuarioComprouLivro(usuarioId, id);
-    if (!comprou)
-      error(403, "Só quem comprou este livro pode avaliá-lo.");
+    if (!comprou) error(403, "Só quem comprou este livro pode avaliá-lo.");
 
     return AvaliacaoModel.salvarAvaliacao(usuarioId, id, estrelas);
   }

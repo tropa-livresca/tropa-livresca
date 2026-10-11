@@ -19,8 +19,8 @@
   font-family: "Jacques Francois", serif;
 }
 
-.numero{
-  font-family:none;
+.numero {
+  font-family: none;
 }
 
 .titulo::after {
@@ -48,33 +48,31 @@
 
 .listaProdutos {
   width: 100%;
-    box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
-    border-top-left-radius: 1.5rem;
+  border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
-    border-bottom-left-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
 }
-
 
 .listaProdutos2 {
   background-color: #fffdf7;
   width: 100%;
-    box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
-    border-top-left-radius: 1.5rem;
+  border-top-left-radius: 1.5rem;
   border-top-right-radius: 1.5rem;
-    border-bottom-left-radius: 1.5rem;
+  border-bottom-left-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
 }
 
-
-.listaProdutos2 p{
+.listaProdutos2 p {
   margin-top: 0;
   font-size: 1.1rem;
-  color:#67170c;
+  color: #67170c;
 }
 
 .cabecalhoProdutos {
@@ -102,7 +100,7 @@
   padding-bottom: 0;
   padding-top: 0;
   background-color: #fffdf7;
-    border-bottom: 1px solid #e3d5ad;
+  border-bottom: 1px solid #e3d5ad;
 }
 
 .capa {
@@ -113,7 +111,7 @@
   overflow: hidden;
 }
 
-.produto:last-child{
+.produto:last-child {
   border-bottom-left-radius: 1.5rem;
   border-bottom-right-radius: 1.5rem;
 }
@@ -171,7 +169,7 @@
   line-height: 1.35;
   text-decoration: none;
   margin-bottom: 0.5rem;
-   margin-top: 0;
+  margin-top: 0;
 }
 
 .nome:hover {
@@ -240,34 +238,32 @@
   transform: translateX(-1rem);
   border: none;
   border-radius: 0.5rem;
-    background-color: #f7f0cf58;
-        border: 1px solid #e2c77c;
+  background-color: #f7f0cf58;
+  border: 1px solid #e2c77c;
   color: #67170c;
   cursor: pointer;
   font-size: 1.1rem;
 }
 
-.redondo{
+.redondo {
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 0.2rem;
   border-radius: 1rem;
   background-color: #f7f0cf58;
-    border: 1px solid #e2c77c;
+  border: 1px solid #e2c77c;
 }
-
 
 .excluir:hover {
   color: #ffbb33;
   transition: 0.3s;
 }
 
-
 .resumo {
   padding: 1.5rem 1.3rem;
   background-color: #fffdf7;
-    box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   border-radius: 1.5rem;
@@ -310,7 +306,7 @@
   background-color: #fffdf7;
   display: flex;
   justify-content: flex-end;
-  align-items: center; 
+  align-items: center;
 }
 
 .limpar {
@@ -326,7 +322,7 @@
   font-size: 0.9rem;
 }
 
-.limpar:hover{
+.limpar:hover {
   background-color: #ffbb33;
   transition: 0.3s;
 }
@@ -353,7 +349,7 @@
   outline: none;
   background: #fff;
   color: #67170c;
-   border: 1px solid #e2c77c;
+  border: 1px solid #e2c77c;
 }
 
 .cep input::placeholder {
@@ -384,7 +380,7 @@
   grid-template-columns: 3rem 1fr;
   gap: 0 1rem;
   padding-top: 0.7rem;
-   padding-bottom: 0.7rem;
+  padding-bottom: 0.7rem;
   border-top: 1px solid #e3d5ad;
   border-bottom: 1px solid #e3d5ad;
   color: #67170c;
@@ -403,7 +399,7 @@
   outline: none;
   background: #fff;
   color: #67170c;
-   border: 1px solid #e2c77c;
+  border: 1px solid #e2c77c;
 }
 
 .cupom input::placeholder {
@@ -417,7 +413,7 @@
   padding: 0.7rem;
   border: none;
   border-radius: 0.7rem;
-    border: 1px solid #e2c77c;
+  border: 1px solid #e2c77c;
   color: #67170c;
   background: rgb(255, 248, 215);
   cursor: pointer;
@@ -466,7 +462,7 @@
 }
 
 .continuar2:hover {
-   background-color: #ffbb33;
+  background-color: #ffbb33;
   color: #ede6b3;
   transition: 0.3s;
 }
@@ -475,13 +471,13 @@
   font-size: 1rem;
 }
 
-.finalizar:hover{
-   background-color: #ffbb33;
+.finalizar:hover {
+  background-color: #ffbb33;
   transition: 0.3s;
 }
 .cupom button:hover,
 .continuar:hover {
-   background-color: #ffbb33;
+  background-color: #ffbb33;
   color: #ede6b3;
   transition: 0.3s;
 }
@@ -534,7 +530,6 @@
 }
 
 @media (max-width: 1300px) {
-
   .container {
     padding: 4rem 5%;
   }
@@ -644,7 +639,6 @@
 }
 
 @media (max-width: 1000px) {
-
   .container {
     padding: 3.5rem 5%;
   }
@@ -695,9 +689,7 @@
   }
 }
 
-
 @media (max-width: 650px) {
-
   .container {
     padding: 3rem 5%;
   }
@@ -868,9 +860,7 @@
   }
 }
 
-
 @media (max-width: 450px) {
-
   .container {
     padding: 2.5rem 4%;
   }

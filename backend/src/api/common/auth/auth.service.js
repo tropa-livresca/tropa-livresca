@@ -1,8 +1,6 @@
 import { AuthModel } from "../../common/models/auth.model.js";
 
-import {
-  SUPABASE_RESET_PASSWORD_CALLBACK_URL,
-} from "../../common/config/environment.js";
+import { SUPABASE_RESET_PASSWORD_CALLBACK_URL } from "../../common/config/environment.js";
 export class AuthService {
   static async signinComGoogle(redirectTo) {
     try {
