@@ -84,9 +84,9 @@ export class LojaController {
       }
 
       const resultado = await LojaService.reenviarEmailLivrosDigitais(
+        vendaId,
         usuarioId,
         usuarioEmail,
-        vendaId,
       );
 
       return res.status(200).json({ resultado });
