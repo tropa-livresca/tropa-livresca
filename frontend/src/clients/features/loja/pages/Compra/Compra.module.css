@@ -59,12 +59,10 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.vazio p{
-  color:#67170c;
+.vazio p {
+  color: #67170c;
   font-size: 1.2rem;
 }
-
-
 
 .cartao h2,
 .resumo h2 {
@@ -197,11 +195,11 @@
   text-decoration: none;
   background-color: #67170c;
   color: #ede6b3;
-  padding:0.8rem;
+  padding: 0.8rem;
   border-radius: 0.8rem;
 }
 
-.voltar:hover{
+.voltar:hover {
   background-color: #ffbb33;
   transition: 0.3s;
 }

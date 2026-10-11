@@ -9,7 +9,9 @@ const POR_PAGINA = 10;
 const PERCENTUAL_AUTOR = 0.3;
 
 const formatarPreco = (valor) =>
-  `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
+  `R$ ${Number(valor || 0)
+    .toFixed(2)
+    .replace(".", ",")}`;
 
 const formatarData = (data) =>
   data ? new Date(data).toLocaleDateString("pt-BR") : "";
@@ -105,7 +107,11 @@ export default function Vendas() {
       );
     }
 
-    return botoes.length > 0 ? botoes : <span className={styles.semAcao}>—</span>;
+    return botoes.length > 0 ? (
+      botoes
+    ) : (
+      <span className={styles.semAcao}>—</span>
+    );
   };
 
   return (
@@ -113,8 +119,9 @@ export default function Vendas() {
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Gerenciar Pedidos</h1>
         <p>
-          Acompanhe as vendas, o envio dos livros físicos e o repasse de<span className={styles.numero}>{" "}
-          {PERCENTUAL_AUTOR * 100}%</span> aos autores.
+          Acompanhe as vendas, o envio dos livros físicos e o repasse de
+          <span className={styles.numero}> {PERCENTUAL_AUTOR * 100}%</span> aos
+          autores.
         </p>
       </div>
 

@@ -3,7 +3,9 @@ import { EnderecoModel } from "../../common/models/endereco.model.js";
 export class EnderecoService {
   static async BuscarEnderecos(userId) {
     if (!userId) {
-      const erroUserId = new Error("Id do usuário não informado na requisição.");
+      const erroUserId = new Error(
+        "Id do usuário não informado na requisição.",
+      );
       erroUserId.statusCode = 500;
       throw erroUserId;
     }
@@ -45,46 +47,54 @@ export class EnderecoService {
       return data;
     } catch (error) {
       if (error.statusCode) throw error;
-      const erroBanco = new Error("Erro ao buscar pelo endereço em específico.");
+      const erroBanco = new Error(
+        "Erro ao buscar pelo endereço em específico.",
+      );
       erroBanco.statusCode = 500;
       throw erroBanco;
     }
   }
 
-  static async BuscarEnderecoPrincipal(userId){
-    if(!userId){
+  static async BuscarEnderecoPrincipal(userId) {
+    if (!userId) {
       const erroDados = new Error("Sessão expirada. Logue novamente.");
       erroDados.statusCode = 401;
       throw erroDados;
     }
 
-    try{
-      const {data} = await EnderecoModel.BuscarEnderecoPrincipal(userId);
+    try {
+      const { data } = await EnderecoModel.BuscarEnderecoPrincipal(userId);
 
-      if(!data){
+      if (!data) {
         const erroEndereco = new Error("Endereço não encontrado.");
         erroEndereco.statusCode = 404;
         throw erroEndereco;
       }
 
       return data;
-    }catch(error){
-      if(error.statusCode) throw error;
-      const erroBanco = new Error("Erro ao buscar pelo endereço em específico.");
+    } catch (error) {
+      if (error.statusCode) throw error;
+      const erroBanco = new Error(
+        "Erro ao buscar pelo endereço em específico.",
+      );
       erroBanco.statusCode = 500;
       throw erroBanco;
     }
   }
-  
+
   static async AtualizarEnderecoById(id, dadosAtualizados, userId) {
     if (!id || !dadosAtualizados) {
-      const erroDados = new Error("Dados para atualização do endereço não informados.");
+      const erroDados = new Error(
+        "Dados para atualização do endereço não informados.",
+      );
       erroDados.statusCode = 500;
       throw erroDados;
     }
 
     if (!userId) {
-      const erroUserId = new Error("Sessão expirada. Por favor, logue-se novamente.");
+      const erroUserId = new Error(
+        "Sessão expirada. Por favor, logue-se novamente.",
+      );
       erroUserId.statusCode = 401;
       throw erroUserId;
     }
@@ -98,7 +108,7 @@ export class EnderecoService {
         cep: dadosAtualizados.cep || dadosAtualizados.CEP || null,
         cidade: dadosAtualizados.cidade || null,
         complemento: dadosAtualizados.complemento || null,
-        pais: dadosAtualizados.pais || null
+        pais: dadosAtualizados.pais || null,
       };
 
       const { data } = await EnderecoModel.AtualizarEnderecoById(
@@ -155,7 +165,9 @@ export class EnderecoService {
 
   static async CriarEndereco({ userId, dadosEndereco = {} }) {
     if (!userId) {
-      const erroDados = new Error("Sessão expirada. Autentique-se novamente para publicar.");
+      const erroDados = new Error(
+        "Sessão expirada. Autentique-se novamente para publicar.",
+      );
       erroDados.statusCode = 401;
       throw erroDados;
     }
@@ -171,7 +183,7 @@ export class EnderecoService {
         cidade: dadosEndereco.cidade || null,
         complemento: dadosEndereco.complemento || null,
         pais: dadosEndereco.pais || null,
-        fk_user_profile_id: userId
+        fk_user_profile_id: userId,
       };
 
       const { data } = await EnderecoModel.CriarEndereco(dadosParaInserir);
@@ -208,7 +220,9 @@ export class EnderecoService {
       const { data } = await EnderecoModel.DefinirPrincipal(id, userId);
 
       if (!data) {
-        const erroPrincipal = new Error("Erro ao definir endereço como principal.");
+        const erroPrincipal = new Error(
+          "Erro ao definir endereço como principal.",
+        );
         erroPrincipal.statusCode = 500;
         throw erroPrincipal;
       }

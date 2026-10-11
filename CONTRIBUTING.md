@@ -7,11 +7,12 @@ Agradecemos pelo seu interesse em colaborar com o desenvolvimento da plataforma 
 ## Tipos de Contribuição
 
 As colaborações aceitas no projeto englobam os seguintes escopos:
-* Correções de bugs na interface ou em endpoints da API.
-* Implementação de novas funcionalidades acordadas no escopo do TCC.
-* Melhorias na documentação técnica, diagramas e comentários.
-* Refatorações de código voltadas para legibilidade e desempenho.
-* Inclusão de novos cenários na suíte de testes automatizados.
+
+- Correções de bugs na interface ou em endpoints da API.
+- Implementação de novas funcionalidades acordadas no escopo do TCC.
+- Melhorias na documentação técnica, diagramas e comentários.
+- Refatorações de código voltadas para legibilidade e desempenho.
+- Inclusão de novos cenários na suíte de testes automatizados.
 
 ---
 
@@ -38,12 +39,12 @@ flowchart TD
 
 Utilize nomenclaturas explícitas baseadas em prefixos para segmentar o histórico de ramificações:
 
-* `feature/`: Desenvolvimento de novas funcionalidades (ex: `feature/cadastro-livro`).
-* `fix/`: Correções de falhas ou bugs operacionais (ex: `fix/upload-capa`).
-* `docs/`: Atualizações e melhorias na documentação (ex: `docs/guia-contribuicao`).
-* `refactor/`: Alterações de código estrutural sem impacto no comportamento final (ex: `refactor/auth-controller`).
-* `test/`: Escrita ou ajustes na suíte de testes (ex: `test/integracao-livros`).
-* `chore/`: Alterações de manutenção geral de pacotes e build (ex: `chore/atualiza-dependencias`).
+- `feature/`: Desenvolvimento de novas funcionalidades (ex: `feature/cadastro-livro`).
+- `fix/`: Correções de falhas ou bugs operacionais (ex: `fix/upload-capa`).
+- `docs/`: Atualizações e melhorias na documentação (ex: `docs/guia-contribuicao`).
+- `refactor/`: Alterações de código estrutural sem impacto no comportamento final (ex: `refactor/auth-controller`).
+- `test/`: Escrita ou ajustes na suíte de testes (ex: `test/integracao-livros`).
+- `chore/`: Alterações de manutenção geral de pacotes e build (ex: `chore/atualiza-dependencias`).
 
 ---
 
@@ -56,15 +57,17 @@ tipo(escopo): descrição curta em letras minúsculas
 ```
 
 Mapeamento de tipos comuns:
-* `feat`: Introdução de uma nova funcionalidade no sistema.
-* `fix`: Resolução de um bug ou comportamento incorreto.
-* `docs`: Modificações exclusivas em arquivos de documentação Markdown.
-* `refactor`: Alterações em código que não corrigem bugs nem adicionam recursos.
-* `test`: Adição ou correção de blocos de teste utilizando o node:test.
-* `chore`: Alterações em ferramentas, arquivos de build ou dependências do package.json.
-* `perf`: Mudanças de código focadas puramente em otimização de performance.
+
+- `feat`: Introdução de uma nova funcionalidade no sistema.
+- `fix`: Resolução de um bug ou comportamento incorreto.
+- `docs`: Modificações exclusivas em arquivos de documentação Markdown.
+- `refactor`: Alterações em código que não corrigem bugs nem adicionam recursos.
+- `test`: Adição ou correção de blocos de teste utilizando o node:test.
+- `chore`: Alterações em ferramentas, arquivos de build ou dependências do package.json.
+- `perf`: Mudanças de código focadas puramente em otimização de performance.
 
 Exemplos práticos:
+
 ```text
 feat(clients): adiciona fluxo de cadastro de livros
 fix(perfil): corrige upload de capa no formulário de usuário
@@ -78,11 +81,11 @@ chore(raiz): atualiza dependências e scripts do ecossistema
 
 ## Checklist Antes de Abrir um Pull Request
 
-* [ ] A alteração foi devidamente executada e validada em ambiente local.
-* [ ] A suíte de testes (`npm test`) roda com sucesso sem quebras ou regressões.
-* [ ] Os arquivos de documentação correspondentes foram atualizados.
-* [ ] Arquivos sensíveis de credenciais locais (`.env`) foram totalmente omitidos.
-* [ ] O pull request detalha de forma concisa o problema resolvido e a abordagem adotada.
+- [ ] A alteração foi devidamente executada e validada em ambiente local.
+- [ ] A suíte de testes (`npm test`) roda com sucesso sem quebras ou regressões.
+- [ ] Os arquivos de documentação correspondentes foram atualizados.
+- [ ] Arquivos sensíveis de credenciais locais (`.env`) foram totalmente omitidos.
+- [ ] O pull request detalha de forma concisa o problema resolvido e a abordagem adotada.
 
 ---
 

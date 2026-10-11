@@ -18,7 +18,7 @@ main {
   align-items: center;
   gap: 5rem;
   margin-bottom: 8%;
-  margin:0 auto;
+  margin: 0 auto;
 }
 
 .foto,
@@ -82,7 +82,7 @@ main {
   margin-top: 8rem;
 }
 
-.secao:last-child{
+.secao:last-child {
   margin-bottom: 0;
 }
 
@@ -157,10 +157,10 @@ main {
   align-content: start;
   gap: 0.8rem;
   padding: 2rem;
-   background-color: #fffcf4;
+  background-color: #fffcf4;
   border-radius: 1.5rem;
   text-align: center;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   transition: 0.3s;

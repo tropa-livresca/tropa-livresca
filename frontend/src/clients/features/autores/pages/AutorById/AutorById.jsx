@@ -2,13 +2,19 @@
 import { useAutores } from "../../../../hooks/useAutores";
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaEnvelope } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaLinkedinIn,
+  FaEnvelope,
+} from "react-icons/fa";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function AutorById() {
   const { id } = useParams();
-  const { autor, redesSociais, livros, carregando, meta, buscarAutorById } = useAutores();
+  const { autor, redesSociais, livros, carregando, meta, buscarAutorById } =
+    useAutores();
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   useEffect(() => {
@@ -41,17 +47,32 @@ export default function AutorById() {
         {temRedesSociais ? (
           <div className={styles.redes}>
             {facebook && (
-              <a className={styles.rede} href={facebook} target="_blank" rel="noopener noreferrer">
+              <a
+                className={styles.rede}
+                href={facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <FaFacebookF aria-hidden="true" /> Facebook
               </a>
             )}
             {instagram && (
-              <a className={styles.rede} href={instagram} target="_blank" rel="noopener noreferrer">
+              <a
+                className={styles.rede}
+                href={instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <FaInstagram aria-hidden="true" /> Instagram
               </a>
             )}
             {linkedin && (
-              <a className={styles.rede} href={linkedin} target="_blank" rel="noopener noreferrer">
+              <a
+                className={styles.rede}
+                href={linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <FaLinkedinIn aria-hidden="true" /> LinkedIn
               </a>
             )}
@@ -68,9 +89,9 @@ export default function AutorById() {
 
       <section className={styles.secao}>
         <h2 className={styles.subtitulo}>Livros</h2>
-        
+
         {carregando ? (
-          <Carregando mensagem="Carregando perfil do autor..."/>
+          <Carregando mensagem="Carregando perfil do autor..." />
         ) : !livros || livros.length === 0 ? (
           <p className={styles.vazio}>Nenhum livro encontrado</p>
         ) : (
@@ -78,7 +99,11 @@ export default function AutorById() {
             {livros.map((livro) => (
               <article className={styles.livro} key={livro.id}>
                 {livro.capa?.frente ? (
-                  <img className={styles.capa} src={livro.capa.frente} alt={livro.titulo} />
+                  <img
+                    className={styles.capa}
+                    src={livro.capa.frente}
+                    alt={livro.titulo}
+                  />
                 ) : (
                   <div className={styles.semcapa}>Sem foto da capa</div>
                 )}

@@ -11,13 +11,11 @@
   background: #fffdf7;
   border-radius: 1rem;
   overflow: hidden;
-   box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   margin-bottom: 2rem;
 }
-
-
 
 .tituloSecao {
   padding: 1.3rem 1.5rem;
@@ -66,30 +64,30 @@
   min-width: 0;
 }
 
-.numero{
+.numero {
   font-family: none;
   font-size: 1.2rem;
-  font-weight:600;
+  font-weight: 600;
 }
 
-.numero2{
+.numero2 {
   font-family: none;
 }
 
 .capa {
-     width: 6.5rem;
-    height: 8.5rem;
-    flex-shrink: 0;
-    display: block;
-    overflow: hidden;
+  width: 6.5rem;
+  height: 8.5rem;
+  flex-shrink: 0;
+  display: block;
+  overflow: hidden;
 }
 
-.capa img{
+.capa img {
   width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
 }
 
 .capa:hover img {
@@ -118,8 +116,8 @@
   height: 2.2rem;
   margin: auto;
   display: flex;
-   font-family: none;
-   color: #67170c;
+  font-family: none;
+  color: #67170c;
   align-items: center;
   justify-content: center;
   border: 1px solid #e2c77c;
@@ -147,7 +145,7 @@
   width: 100%;
   box-sizing: border-box;
   background: #fffdf7;
-     box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   border-radius: 1rem;
@@ -190,8 +188,8 @@
   border-radius: 0.5rem;
   font-size: 0.95rem;
   cursor: pointer;
-   text-decoration: none;
-   margin-top: 0;
+  text-decoration: none;
+  margin-top: 0;
 }
 
 .button:hover {
@@ -238,25 +236,25 @@
   gap: 0.2rem;
 }
 
-.voltar{
+.voltar {
   background-color: #67170c;
-  color:#ede6b3;
-  padding:0.5rem;
-  border-radius:0.5rem;
-      font-size: 0.95rem;
-      width:100%;
+  color: #ede6b3;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  width: 100%;
 }
 
-.voltar:hover{
-   background-color:#ffbb33;
-   transition:0.3s;
+.voltar:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
-.dvd{
-    display: flex;
-    justify-content: center; 
-    align-items: center;    
-    height:2.3rem;
+.dvd {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2.3rem;
 }
 
 .dadosEndereco strong {
@@ -277,21 +275,21 @@
   gap: 0.7rem;
 }
 
-.aviso{
-  color:var(--cor-texto-muted);
-  font-size:0.95rem;
-  margin-bottom:0;
-  text-align:center;
-      font-style: italic;
+.aviso {
+  color: var(--cor-texto-muted);
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  text-align: center;
+  font-style: italic;
 }
 
-.aviso a{
+.aviso a {
   color: #67170c;
-  font-weight:bold;
+  font-weight: bold;
 }
 
-.aviso a:hover{
-  text-decoration:underline;
+.aviso a:hover {
+  text-decoration: underline;
 }
 
 .frete {
@@ -331,8 +329,8 @@
   min-height: 130px !important;
   padding: 1rem !important;
   box-sizing: border-box !important;
- /* resize: vertical !important;*/
-  border: 1px solid #e3d5ad!important;
+  /* resize: vertical !important;*/
+  border: 1px solid #e3d5ad !important;
   border-radius: 0.7rem !important;
   outline: none !important;
   background: #fffdf7 !important;
@@ -554,7 +552,7 @@
 }
 
 .botaoFinalizar:hover {
- background-color:#ffbb33;
+  background-color: #ffbb33;
 }
 
 .seguro {
@@ -566,13 +564,13 @@
   font-size: 0.9rem;
 }
 
-.email{
-    color: #67170c;
-    font-size: 0.92rem;
-    margin-right: 1%;
+.email {
+  color: #67170c;
+  font-size: 0.92rem;
+  margin-right: 1%;
 }
 
-.inputemail{
+.inputemail {
   width: 91%;
   height: 2.8rem;
   padding: 0 0.85rem;

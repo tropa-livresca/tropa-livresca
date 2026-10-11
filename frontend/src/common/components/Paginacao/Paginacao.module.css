@@ -28,7 +28,7 @@
 
 .btnpagina:hover:not(:disabled) {
   background: #ffbb33;
-  transition:0.3s;
+  transition: 0.3s;
 }
 
 .btnpagina:disabled {
@@ -49,7 +49,7 @@
   display: block;
   color: var(--cor-texto);
   font-weight: 600;
-  font-size:1rem;
+  font-size: 1rem;
 }
 
 .total {
@@ -59,8 +59,8 @@
   color: var(--cor-texto-muted);
 }
 
-.numero{
-  font-family:none;
+.numero {
+  font-family: none;
 }
 @media (max-width: 480px) {
   .paginacao {

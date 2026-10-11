@@ -6,7 +6,7 @@ export const useAutopublicacao = () => {
 
   if (!context) {
     throw new Error(
-      "Erro de Escopo: useAutopublicacao() foi chamado em um componente fora do <AutopublicacaoProvider> ou há uma divergência nos caminhos de importação no projeto."
+      "Erro de Escopo: useAutopublicacao() foi chamado em um componente fora do <AutopublicacaoProvider> ou há uma divergência nos caminhos de importação no projeto.",
     );
   }
 

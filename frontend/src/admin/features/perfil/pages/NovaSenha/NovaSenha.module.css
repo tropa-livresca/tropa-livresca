@@ -65,7 +65,7 @@
 }
 
 .formulario input::placeholder {
-   color: var(--cor-texto-muted) !important;
+  color: var(--cor-texto-muted) !important;
 }
 
 .inputGrupo {
@@ -80,13 +80,13 @@
 }
 
 .campo {
-   display: flex;
+  display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.campo label{
-     color: #67170c;
+.campo label {
+  color: #67170c;
   font-size: 1rem;
   font-family: "Jacques Francois", serif;
 }
@@ -108,11 +108,9 @@
   z-index: 10;
 }
 
-
 .botaoOlho:hover {
   color: #67170c;
 }
-
 
 .erro {
   margin: 0;
@@ -124,7 +122,7 @@
 }
 
 .botaoSalvar {
- width: 100%;
+  width: 100%;
   padding: 0.7rem;
   font-family: inherit;
   font-size: 1rem;
@@ -134,7 +132,7 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
   margin-top: 1rem;
 }
 

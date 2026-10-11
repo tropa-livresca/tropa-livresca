@@ -8,10 +8,14 @@
   "scripts": {
     "server": "npm run dev -w backend",
     "client": "npm run dev -w frontend",
-    "dev": "concurrently \"npm:server\" \"npm:client\""
+    "dev": "concurrently \"npm:server\" \"npm:client\"",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.10"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3"

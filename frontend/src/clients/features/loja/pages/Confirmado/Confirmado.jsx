@@ -13,14 +13,12 @@ export default function Confirmado() {
           <h3>Pagamento confirmado!</h3>
 
           <p>
-            Obrigado pela sua compra, David Balls. <br/>O pagamento do pedido  
+            Obrigado pela sua compra, David Balls. <br />O pagamento do pedido
             <span className={styles.numero}> #6767</span> foi aprovado com
             sucesso.
           </p>
 
-          <p>
-            
-          </p>
+          <p></p>
 
           <button className={styles.btn} type="button">
             Voltar a pagina inicial

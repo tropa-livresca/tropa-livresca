@@ -11,11 +11,9 @@ jest.mock("../../../../src/api/common/config/supabase.js", () => {
           upload: jest
             .fn()
             .mockImplementation(() => Promise.resolve({ error: null })),
-          getPublicUrl: jest
-            .fn()
-            .mockImplementation(() => ({
-              data: { publicUrl: "https://supabase.co" },
-            })),
+          getPublicUrl: jest.fn().mockImplementation(() => ({
+            data: { publicUrl: "https://supabase.co" },
+          })),
         })),
       },
     },

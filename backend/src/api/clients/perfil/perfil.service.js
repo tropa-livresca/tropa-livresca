@@ -2,7 +2,6 @@ import { supabaseAdmin } from "../../common/config/supabase.js";
 import { PerfilModel } from "../../common/models/perfil.model.js";
 
 export class PerfilService {
-  
   static _extrairPathDaUrl(url) {
     if (!url) return null;
     const urlSemQuery = url.split("?")[0];
@@ -49,9 +48,10 @@ export class PerfilService {
       };
 
       if (redes_sociais) {
-        updates.redes_sociais = typeof redes_sociais === "string" 
-          ? JSON.parse(redes_sociais) 
-          : redes_sociais;
+        updates.redes_sociais =
+          typeof redes_sociais === "string"
+            ? JSON.parse(redes_sociais)
+            : redes_sociais;
       }
 
       return await PerfilModel.atualizarPerfil(userId, updates);
@@ -71,7 +71,9 @@ export class PerfilService {
     }
 
     if (!file || !file.buffer || !file.originalname) {
-      const erroArquivo = new Error("Arquivo de mídia corrompido ou inválido no servidor.");
+      const erroArquivo = new Error(
+        "Arquivo de mídia corrompido ou inválido no servidor.",
+      );
       erroArquivo.statusCode = 400;
       throw erroArquivo;
     }
@@ -99,21 +101,30 @@ export class PerfilService {
       const responseUrl = supabaseAdmin.storage
         .from("public_box")
         .getPublicUrl(filePath);
-      
-      const novaPublicUrl = responseUrl?.data?.publicUrl || responseUrl?.publicUrl;
+
+      const novaPublicUrl =
+        responseUrl?.data?.publicUrl || responseUrl?.publicUrl;
 
       if (!novaPublicUrl) {
-        const erroUrl = new Error("Não foi possível gerar a URL pública da imagem.");
+        const erroUrl = new Error(
+          "Não foi possível gerar a URL pública da imagem.",
+        );
         erroUrl.statusCode = 500;
         throw erroUrl;
       }
 
-      const perfilData = await PerfilModel.atualizarApenasImagem(userId, novaPublicUrl);
+      const perfilData = await PerfilModel.atualizarApenasImagem(
+        userId,
+        novaPublicUrl,
+      );
 
       if (urlImagemAntiga) {
         const antigoPath = this._extrairPathDaUrl(urlImagemAntiga);
         if (antigoPath) {
-          supabaseAdmin.storage.from("public_box").remove([antigoPath]).catch(() => {});
+          supabaseAdmin.storage
+            .from("public_box")
+            .remove([antigoPath])
+            .catch(() => {});
         }
       }
 
@@ -142,7 +153,10 @@ export class PerfilService {
       if (urlImagemAntiga) {
         const antigoPath = this._extrairPathDaUrl(urlImagemAntiga);
         if (antigoPath) {
-          supabaseAdmin.storage.from("public_box").remove([antigoPath]).catch(() => {});
+          supabaseAdmin.storage
+            .from("public_box")
+            .remove([antigoPath])
+            .catch(() => {});
         }
       }
 

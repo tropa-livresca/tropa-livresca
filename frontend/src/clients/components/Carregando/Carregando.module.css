@@ -25,9 +25,8 @@
   animation: girar 0.8s linear infinite;
 }
 
-
 .carregando p {
-  margin:0 auto;
+  margin: 0 auto;
   color: #67170c;
   font-size: 1.1rem;
   font-weight: 600;

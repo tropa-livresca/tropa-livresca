@@ -21,7 +21,9 @@ jest.mock("../../../src/api/common/models/endereco.model.js", () => ({
   EnderecoModel: enderecoModelMock,
 }));
 
-const { LojaService } = require("../../../src/api/clients/loja/loja.service.js");
+const {
+  LojaService,
+} = require("../../../src/api/clients/loja/loja.service.js");
 
 const LIVROS = [
   { id: 1, titulo: "Livro A", preco_fisico: 50, preco_digital: 20 },
@@ -76,10 +78,9 @@ describe("LojaService.realizarVenda", () => {
     });
 
     expect(venda).toEqual({ id: 10, total: 129.3, frete: 14.3 });
-    expect(lojaModelMock.calcularFretePrazo).toHaveBeenCalledWith(
-      "17010-000",
-      [{ tipo: "fisico", quantidade: 2 }],
-    );
+    expect(lojaModelMock.calcularFretePrazo).toHaveBeenCalledWith("17010-000", [
+      { tipo: "fisico", quantidade: 2 },
+    ]);
 
     const [dadosVenda] = lojaModelMock.realizarVenda.mock.calls[0];
     expect(dadosVenda).toMatchObject({

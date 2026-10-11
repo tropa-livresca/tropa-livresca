@@ -15,9 +15,24 @@ import {
 
 const ORDENACOES = [
   { chave: "az", rotulo: "Título (A–Z)", filtro: "", ordem: "" },
-  { chave: "za", rotulo: "Título (Z–A)", filtro: "alfabetico", ordem: "descendente" },
-  { chave: "recentes", rotulo: "Mais recentes", filtro: "data", ordem: "descendente" },
-  { chave: "antigos", rotulo: "Mais antigos", filtro: "data", ordem: "ascendente" },
+  {
+    chave: "za",
+    rotulo: "Título (Z–A)",
+    filtro: "alfabetico",
+    ordem: "descendente",
+  },
+  {
+    chave: "recentes",
+    rotulo: "Mais recentes",
+    filtro: "data",
+    ordem: "descendente",
+  },
+  {
+    chave: "antigos",
+    rotulo: "Mais antigos",
+    filtro: "data",
+    ordem: "ascendente",
+  },
 ];
 
 const FILTROS_ESTADO = [
@@ -152,7 +167,11 @@ export default function MeusLivros() {
             </div>
           </div>
 
-          <div className={styles.estados} role="group" aria-label="Filtrar por estado">
+          <div
+            className={styles.estados}
+            role="group"
+            aria-label="Filtrar por estado"
+          >
             {FILTROS_ESTADO.map(([valor, rotulo]) => (
               <button
                 key={rotulo}

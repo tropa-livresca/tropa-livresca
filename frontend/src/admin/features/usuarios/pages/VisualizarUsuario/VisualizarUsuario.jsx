@@ -254,10 +254,11 @@ export default function VisualizarUsuario() {
                   {verTodosLivros ? (
                     "Mostrar menos"
                   ) : (
-                    <><span>
-                      Ver todos os{" "}
-                      <span className={styles.numero}>{livros.length}</span>{" "}
-                      livros
+                    <>
+                      <span>
+                        Ver todos os{" "}
+                        <span className={styles.numero}>{livros.length}</span>{" "}
+                        livros
                       </span>
                     </>
                   )}

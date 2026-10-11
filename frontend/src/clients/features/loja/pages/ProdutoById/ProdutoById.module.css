@@ -248,7 +248,6 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-
 .compra {
   width: 100%;
   box-sizing: border-box;
@@ -302,12 +301,11 @@
   margin-bottom: 1.2rem;
   color: #67170c;
   font-weight: 600;
-  
 }
 
-.numero{
-font-family: none;
-text-align: center;
+.numero {
+  font-family: none;
+  text-align: center;
 }
 
 .numero::-webkit-inner-spin-button,
@@ -317,8 +315,8 @@ text-align: center;
 }
 
 .numero:focus {
-  border: 1px solid #67170c; 
-  outline: none;        
+  border: 1px solid #67170c;
+  outline: none;
 }
 
 .quantidade input {
@@ -336,11 +334,10 @@ text-align: center;
 
 .adicionado a {
   color: #67170c;
- 
 }
 
-.adicionado a:hover{
- text-decoration: underline;
+.adicionado a:hover {
+  text-decoration: underline;
 }
 .indisponivel {
   margin: 0;

@@ -1,4 +1,4 @@
-﻿﻿import { useEffect, useMemo } from "react";
+﻿import { useEffect, useMemo } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";

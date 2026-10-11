@@ -8,7 +8,7 @@ export class SuporteController {
       return res.status(200).json({
         status: "success",
         message: "Sua mensagem de suporte foi enviada com sucesso!",
-        responseId: response.messageId
+        responseId: response.messageId,
       });
     } catch (err) {
       next(err);

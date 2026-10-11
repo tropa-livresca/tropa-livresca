@@ -257,14 +257,13 @@
   font-size: 0.9rem;
   font-weight: 400;
   text-align: center;
-  border-left:1px solid #fffdf7;
+  border-left: 1px solid #fffdf7;
   white-space: nowrap;
 }
 
-
 .tabela th:first-child {
   text-align: left;
-  border-left:none;
+  border-left: none;
   padding-left: 1.5rem;
 }
 
@@ -345,20 +344,17 @@
   color: #67170c;
 }
 
-
 .badgeNao {
   background: transparent;
   border-color: #e3d5ad;
   color: var(--cor-texto-muted);
 }
 
-.badgeCliente{
- background: transparent;
+.badgeCliente {
+  background: transparent;
   border-color: #e3d5ad;
   color: #67170c;
 }
-
-
 
 .acoesHeader {
   text-align: center;
@@ -382,13 +378,13 @@
   font-size: 0.78rem;
   font-weight: 500;
   text-decoration: none;
-  transition:0.3s !important;
+  transition: 0.3s !important;
 }
 
 .colunaAcoes a:hover {
   background-color: #67170c !important;
- color:#fffdf7;
- border:#67170c;
+  color: #fffdf7;
+  border: #67170c;
 }
 
 .carregando {
@@ -410,15 +406,15 @@
 }
 
 @media (min-width: 1440px) and (max-width: 1921px) {
-.tabela td:first-child {
-  text-align: left;
-  padding-left: 4rem;
-}
+  .tabela td:first-child {
+    text-align: left;
+    padding-left: 4rem;
+  }
 
-.tabela th:first-child {
-  text-align: left;
-  padding-left: 4rem;
-}
+  .tabela th:first-child {
+    text-align: left;
+    padding-left: 4rem;
+  }
 }
 
 @media (max-width: 1300px) {

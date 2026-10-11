@@ -23,7 +23,7 @@ export default function LoginAdmin() {
     handleLoginAdmin,
     navigate,
   } = useLoginAdmin();
-  
+
   const [mostrarSenha, setMostrarSenha] = useState(false);
 
   const handleEmailChange = (e) => {
@@ -54,7 +54,7 @@ export default function LoginAdmin() {
             <h1>LOGIN ADMINISTRADOR</h1>
             <h2>Bem-vindo de volta</h2>
             <h3>Insira seus dados para acessar sua conta</h3>
-            
+
             <label htmlFor="email">E-mail de funcionário</label>
             <Input
               id="email"
@@ -64,7 +64,7 @@ export default function LoginAdmin() {
               value={email}
               disabled={loading}
             />
-            
+
             <label htmlFor="password">Senha</label>
             <div className={styles.inputSenha}>
               <Input
@@ -85,11 +85,11 @@ export default function LoginAdmin() {
                 {mostrarSenha ? <FaEyeSlash /> : <FaEye />}
               </button>
             </div>
-              
-            <SubmitButton 
-              text={loading ? "CARREGANDO..." : "ENTRAR"} 
-              id={styles.btn} 
-              disabled={loading} 
+
+            <SubmitButton
+              text={loading ? "CARREGANDO..." : "ENTRAR"}
+              id={styles.btn}
+              disabled={loading}
             />
 
             <div className={styles.errinho}>

@@ -12,8 +12,8 @@
   align-items: start;
 }
 
-.oi{
-  width:7rem;
+.oi {
+  width: 7rem;
 }
 
 .capaContainer {
@@ -69,14 +69,14 @@
 .infoTopo {
   display: grid;
   grid-template-columns: 1fr 1fr;
-   gap: 1rem;
+  gap: 1rem;
   margin-top: 1rem;
   align-items: center;
 }
 
-.numero{
-  font-family:none;
-  color:#67170c;
+.numero {
+  font-family: none;
+  color: #67170c;
 }
 
 .infoEsquerda {
@@ -127,7 +127,7 @@
   background: #fffdf79f;
   color: #67170c;
   font-size: 0.8rem;
-    border: 1px solid #e3d5ad;
+  border: 1px solid #e3d5ad;
 }
 
 .autorCard {
@@ -154,7 +154,7 @@
   justify-content: center;
   background: #fff8c9;
   color: #67170c;
-  border:1px solid #67170c;
+  border: 1px solid #67170c;
   font-size: 0.65rem;
 }
 
@@ -179,14 +179,14 @@
   color: #ede6b3;
   font-size: 0.85rem;
   background-color: #67170c;
-  padding:0.3rem;
+  padding: 0.3rem;
   border-radius: 0.3rem;
   text-decoration: none;
 }
 
 .btnAutor:hover {
-  background-color:#ffbb33;
-  transition:0.3s;
+  background-color: #ffbb33;
+  transition: 0.3s;
 }
 
 .linha {
@@ -243,12 +243,11 @@
   padding: 1.8rem;
   border-radius: 1.5rem;
   background: #fffdf7;
-  min-height:19.8rem;
+  min-height: 19.8rem;
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
-
 
 .compra {
   width: 100%;
@@ -276,7 +275,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border:none;
+  border: none;
   gap: 0.7rem;
   border-radius: 10px;
   font-size: 0.95rem;

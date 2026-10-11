@@ -57,7 +57,9 @@
   cursor: pointer;
   border-radius: 0.45rem;
   border: 1px solid transparent;
-  transition: background-color 0.3s, border-color 0.3s ;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
 }
 
 .itemMenu:hover {
@@ -97,7 +99,9 @@
   font-size: 0.82rem;
   font-weight: 400;
   border-radius: 0.4rem;
-  transition: background-color 0.2s ease, color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .subItem:hover {

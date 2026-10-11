@@ -222,4 +222,6 @@ WHERE id = user_id;
 
 RETURN COALESCE(senha_valida, false);
 END;
-$$;
+
+$$ ;
+$$

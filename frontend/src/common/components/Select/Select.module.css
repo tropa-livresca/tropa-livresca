@@ -1,17 +1,17 @@
 .form_control {
-    display: grid;
-    gap: 0.8rem;
-    margin-bottom: 1rem;
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
 }
 
 .form_control label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .form_control select {
-    width: 90%;
-    justify-self: center;
-    padding: 0.7em;
-    border-radius: 0;
-    border: none;
+  width: 90%;
+  justify-self: center;
+  padding: 0.7em;
+  border-radius: 0;
+  border: none;
 }
