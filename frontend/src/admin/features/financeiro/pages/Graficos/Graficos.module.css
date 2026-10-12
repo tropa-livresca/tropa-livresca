@@ -1,32 +1,120 @@
 .container {
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 3rem 6%;
+}
+
+.numero {
+  font-family: none;
+}
+
+.cabecalho {
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-bottom: 32px;
-  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.8px solid #e3d5ad;
+}
+
+.secaoTitulo {
+  margin: 0;
+  color: #67170c;
+  font-size: 1.3rem;
+  font-weight: normal;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
 }
 
 .filtros {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
-.filtros label {
-  font-size: 14px;
-  font-weight: 600;
+.selectCustom {
+  position: relative;
+  width: 14rem;
+  min-width: 0;
 }
 
-.filtros select {
-  min-width: 180px;
-  padding: 10px 12px;
-  border: 1px solid #d6d3e0;
-  border-radius: 8px;
-  background: white;
-  color: #292533;
-  font: inherit;
+.selectBotao {
+  width: 100%;
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #e3d5ad;
+  border-radius: 0.75rem;
+  background: #fffdf7;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+}
+
+.selectBotao:hover {
+  border-color: #67170c;
+  transition: 0.2s;
+}
+
+.selectBotao:focus {
+  border-color: #67170c;
+}
+
+.selectBotao svg {
+  flex-shrink: 0;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+  color: #67170c;
+}
+
+.iconeAberto {
+  transform: rotate(180deg);
+}
+
+.opcoes {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  width: 100%;
+  min-width: 100%;
+  padding: 0.2rem;
+  background: #fffdf7;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 10px 25px rgba(103, 23, 12, 0.13),
+    0 3px 8px rgba(103, 23, 12, 0.07);
+}
+
+.opcao {
+  display: block;
+  width: 100%;
+  padding: 0.7rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.opcao:hover {
+  background-color: #ffecc9;
+  color: #ffbb33;
+  transition: 0.25s;
 }
 
 .grade {
@@ -38,23 +126,32 @@
 .card {
   min-width: 0;
   padding: 20px;
-  border: 1px solid #e5e1ed;
-  border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgb(30 20 60 / 4%);
+  border-radius: 1.25rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .card h2 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 18px;
-  color: #292533;
+  margin-bottom: 0.3rem;
+  color: #67170c;
+}
+
+.card :global(.recharts-wrapper),
+.card :global(.recharts-wrapper *) {
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .descricao {
-  margin: 0 0 20px;
-  color: #716b7d;
+  margin: 0;
+  text-align: left;
+  margin-bottom: 1rem;
+  color: var(--cor-texto-muted);
   font-size: 14px;
-  line-height: 1.5;
 }
 
 .cardLargo {
@@ -66,29 +163,57 @@
   min-height: 240px;
   place-items: center;
   padding: 20px;
-  color: #716b7d;
+  border-radius: 1rem;
+  color: #806f5d;
   text-align: center;
   font-size: 14px;
 }
 
+.legenda {
+  color: #67170c;
+  font-size: 13px;
+}
+
 .tooltip {
   padding: 12px 14px;
-  border: 1px solid #e5e1ed;
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 4px 12px rgb(30 20 60 / 10%);
+  border-radius: 0.75rem;
+  background: #fffdf7;
+  box-shadow:
+    0 10px 25px rgba(103, 23, 12, 0.13),
+    0 3px 8px rgba(103, 23, 12, 0.07);
 }
 
 .tooltip strong {
   display: block;
   margin-bottom: 6px;
-  color: #292533;
+  color: #67170c;
 }
 
 .tooltip p {
   margin: 0;
-  color: #6d4aff;
+  color: var(--cor-texto-muted);
   font-size: 13px;
+}
+
+.rodape {
+  margin-top: 3rem;
+  margin-bottom: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+}
+
+.link {
+  color: #67170c;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 2.5rem 4%;
+  }
 }
 
 @media (max-width: 800px) {
@@ -101,17 +226,33 @@
   }
 }
 
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 4%;
+  }
+}
+
 @media (max-width: 480px) {
+  .container {
+    padding: 1.5rem 1rem;
+  }
+
   .card {
     padding: 14px;
+  }
+
+  .cabecalho {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .filtros {
     align-items: stretch;
     flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .filtros select {
+  .selectCustom {
     width: 100%;
   }
 }
