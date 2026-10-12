@@ -402,10 +402,9 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         return;
       }
-     
     }
 
-     console.log(dadosLivro);
+    console.log(dadosLivro);
 
     setDadosLivro((estadoAnterior) => {
       if (chave === "conteudo") {
@@ -444,8 +443,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         throw new Error("Este livro está travado para alterações no momento.");
       }
 
-      
-
       setCarregando(true);
 
       try {
@@ -460,15 +457,20 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         const arquivosEnviados = [];
 
-        const uploadArquivo = async (arquivo, tipo, pathExistente, tipoDeArquivo) => {
+        const uploadArquivo = async (
+          arquivo,
+          tipo,
+          pathExistente,
+          tipoDeArquivo,
+        ) => {
           if (!arquivo) return null;
           if (typeof arquivo === "string") return pathExistente || arquivo;
 
-          let arquivoFormatado = new File([arquivo], "arquivo", {type:tipoDeArquivo})
+          let arquivoFormatado = new File([arquivo], "arquivo", {
+            type: tipoDeArquivo,
+          });
 
-          const extensao =
-            arquivoFormatado?.type.split("/").pop() ||
-            "bin";
+          const extensao = arquivoFormatado?.type.split("/").pop() || "bin";
 
           const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",

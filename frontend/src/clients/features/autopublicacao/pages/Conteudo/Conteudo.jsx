@@ -15,8 +15,6 @@ const FORMATOS_CAPA = ["image/jpeg", "image/png"];
 const LARGURA_MINIMA_A5_PX = 1748;
 const ALTURA_MINIMA_A5_PX = 2480;
 
-
-
 const formatarMB = (bytes) => `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 
 const validarCapa = (arquivo) => {
@@ -35,13 +33,14 @@ const validarCapa = (arquivo) => {
   return null;
 };
 
-const fileToDataUri = (file) => new Promise((resolve, reject) => {
+const fileToDataUri = (file) =>
+  new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
-      resolve(event.target.result)
+      resolve(event.target.result);
     };
     reader.readAsDataURL(file);
-    })
+  });
 
 const obterDimensoesImagem = (arquivo) =>
   new Promise((resolve, reject) => {
@@ -112,8 +111,6 @@ export default function Conteudo({
   irParaProximaEtapa,
   voltarEtapa,
 }) {
-
-
   const atualizarCampo = async (chave, e) => {
     const input = e.target;
     const arquivo = input.files?.[0];
@@ -150,7 +147,6 @@ export default function Conteudo({
         const pdfDocument = await loadingTask.promise;
         const numeroPaginas = pdfDocument.numPages;
 
-        
         if (!numeroPaginas || numeroPaginas < 1) {
           throw new Error("O PDF não possui páginas válidas.");
         }
