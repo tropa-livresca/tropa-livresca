@@ -414,12 +414,7 @@ export default function Graficos() {
           </article>
         </section>
 
-        <p className={styles.rodape}>
-          Esqueceu sua senha de administrador?{" "}
-          <Link to="/admin/configuracoes/novasenha" className={styles.link}>
-            Alterar minha senha
-          </Link>
-        </p>
+        
       </div>
     </main>
   );

@@ -1,14 +1,45 @@
 .container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-  font-family:
-    system-ui,
-    -apple-system,
-    sans-serif;
-  color: #333333;
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 3rem 6%;
 }
 
+.topo {
+  width: 100%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+  padding: 3rem 6%;
+}
+
+.titulo {
+  margin: 0 !important;
+  color: #67170c !important;
+  font-size: clamp(2rem, 3.5vw, 3.5rem) !important;
+  font-family: "Jacques Francois", serif !important;
+}
+
+.titulo::after {
+  content: "" !important;
+  display: block !important;
+  width: 8rem !important;
+  height: 4px !important;
+  margin-top: 1rem !important;
+  margin-bottom: 2rem !important;
+  background: #d4b46a !important;
+  border-radius: 999px !important;
+}
+
+.topo p {
+  color: var(--cor-texto-muted) !important;
+  text-align: left !important;
+  font-size: 1.2rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.numero{
+  font-family: none;
+}
 /* Barra Superior */
 .topBar {
   display: flex;
@@ -67,10 +98,12 @@
 
 /* Bloco de Conteúdo */
 .conteudoCard {
-  background-color: #ffffff;
-  border-radius: 8px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  background: #fffdf7 !important;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
   padding: 2rem;
 }
 
@@ -80,9 +113,9 @@
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 1rem;
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1px solid #e3d5ad;
   padding-bottom: 1.25rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1.25rem;
 }
 
 .titulo {
@@ -96,18 +129,21 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: #ebf8ff;
-  color: #2b6cb0;
+   border:1px solid #e3d5ad;
+  color: #67170c;
   padding: 0.5rem 1rem;
-  border-radius: 20px;
+  background-color: transparent;
+  border-radius: 0.7rem;
   font-size: 0.85rem;
-  font-weight: 600;
+  margin: 0;
   text-decoration: none;
-  transition: background-color 0.2s;
 }
 
 .linkLivro:hover {
-  background-color: #cee8ff;
+  transition: 0.3s;
+  border: 1px solid #67170c;
+  background-color: #67170c;
+  color:#fffdf7;
 }
 
 /* Formulário e Inputs */
@@ -124,21 +160,21 @@
 }
 
 .label {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #4a5568;
+     color: #67170c;
+    font-size: 1rem;
+    font-family: "Jacques Francois", serif;
 }
 
 .input,
 .textarea {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  font-family: inherit;
-  background-color: #ffffff;
-  color: #2d3748;
+      background: #fff8d7 !important;
+    border: 1px solid #e2c77c !important;
+    border-radius: 1rem !important;
+    padding: 0.8rem !important;
+    justify-self: stretch !important;
+    font-size: 1rem !important;
+    color: #67170c !important;
   outline: none;
   transition:
     border-color 0.2s,

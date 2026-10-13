@@ -36,11 +36,13 @@ export default function VisualizarLivro() {
 
   if (!livro) {
     return (
-      <main className={styles.container}>
-        <p className={styles.vazio}>Livro não encontrado.</p>
-        <Link to="/admin/livros/painel" className={styles.btnVoltar}>
-          <FiArrowLeft /> Voltar ao painel
-        </Link>
+      <main className={styles.mainContainer}>
+        <div className={styles.container}>
+          <p className={styles.semDados}>Livro não encontrado.</p>
+          <Link to="/admin/livros/painel" className={styles.btnVoltar}>
+            <FiArrowLeft /> Voltar ao painel
+          </Link>
+        </div>
       </main>
     );
   }
@@ -82,62 +84,85 @@ export default function VisualizarLivro() {
   } catch (e) {
     console.error("Erro ao converter capa JSONB:", e);
   }
+
+  const temCapa = Boolean(capaObjeto?.frente || capaObjeto?.verso);
+
   return (
-    <main className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.headerInfo}>
-          <div className={styles.badges}>
-            <span className={`${styles.badge} ${styles[estado] || ""}`}>
-              {ROTULO_ESTADO[estado] || estado}
-            </span>
-            {!ativo && (
-              <span className={`${styles.badge} ${styles.inativo}`}>
-                Fora da loja
-              </span>
-            )}
+    <main className={styles.mainContainer}>
+      <header className={styles.topo}>
+        <div className={styles.topoConteudo}>
+          <div className={styles.topoTexto}>
+            <h1 className={styles.titulo}>{titulo}</h1>
+            {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
           </div>
-          <h1 className={styles.titulo}>{titulo}</h1>
-          {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
-          <p className={styles.autor}>
-            Por:{" "}
-            <strong>
-              {autor_nome} {autor_sobrenome}
-            </strong>
-          </p>
-        </div>
-        <div className={styles.headerActions}>
-          <Link to="/admin/livros/painel" className={styles.btnVoltar}>
-            <FiArrowLeft /> Voltar ao painel
-          </Link>
-          <button
-            type="button"
-            onClick={handleAlterarAtivo}
-            disabled={salvando}
-            className={ativo ? styles.btnInativar : styles.btnAtivar}
-          >
-            {salvando
-              ? "Salvando..."
-              : ativo
-                ? "Tirar da loja"
-                : "Colocar de volta na loja"}
-          </button>
-          {erroAtivo && <p className={styles.erroAtivo}>{erroAtivo}</p>}
+
+          <div className={styles.acoes}>
+            <Link to="/admin/livros/painel" className={styles.btnVoltar}>
+              <FiArrowLeft /> Voltar ao painel
+            </Link>
+
+            <button
+              type="button"
+              onClick={handleAlterarAtivo}
+              disabled={salvando}
+              className={ativo ? styles.btnInativar : styles.btnAtivar}
+            >
+              {salvando
+                ? "Salvando..."
+                : ativo
+                  ? "Tirar da loja"
+                  : "Colocar de volta na loja"}
+            </button>
+            {erroAtivo && <p className={styles.erroAtivo}>{erroAtivo}</p>}
+          </div>
         </div>
       </header>
 
-      <section className={styles.layoutGrid}>
+      <section className={`${styles.container} ${styles.layoutGrid}`}>
         <div className={styles.mainContent}>
-          <div className={styles.card}>
-            <h2>Sinopse / Descrição</h2>
+          <div className={styles.cartao}>
+            <h2 className={styles.secaoTitulo}>Sinopse / Descrição</h2>
+            <p className={styles.desc1}>
+              Conheça a história e o universo da obra.
+            </p>
             <p className={styles.descricao}>
               {descricao || "Nenhuma descrição informada."}
             </p>
           </div>
 
+          <div className={styles.cartao}>
+            <h2 className={styles.secaoTitulo}>Capas</h2>
+            <p className={styles.desc}>
+              Confira as capas do livro, incluindo a frente e o verso.
+            </p>
+            {temCapa ? (
+              <div className={styles.capasContainer}>
+                {capaObjeto.frente && (
+                  <div className={styles.capaBox}>
+                    <img src={capaObjeto.frente} alt="Capa Frente" />
+                  </div>
+                )}
+                {capaObjeto.verso && (
+                  <div className={styles.capaBox}>
+                    <img src={capaObjeto.verso} alt="Capa Verso" />
+                  </div>
+                )}
+              </div>
+            ) : (
+              <p className={styles.capasVazio}>Nenhuma capa enviada.</p>
+            )}
+          </div>
+
           {manuscrito && (
-            <div className={styles.card}>
-              <div className={styles.cardTopo}>
-                <h2>Manuscrito</h2>
+            <div className={styles.cartao}>
+              <div className={styles.cabecalhoSecao}>
+                <div className={styles.manusInfo}>
+                  <h2 className={styles.manus}>Manuscrito</h2>
+                  <p className={styles.manup}>
+                    Visualize o arquivo enviado pelo autor.
+                  </p>
+                </div>
+
                 <a
                   href={manuscrito}
                   target="_blank"
@@ -173,28 +198,31 @@ export default function VisualizarLivro() {
         </div>
 
         <aside className={styles.sidebar}>
-          <div className={styles.card}>
-            <h2>Preços de venda</h2>
-            <div className={styles.precosGrid}>
-              <div className={styles.precoItem}>
-                <span>Físico</span>
-                <strong>{formatarPreco(preco_fisico)}</strong>
-              </div>
-              <div className={styles.precoItem}>
-                <span>E-book</span>
-                <strong>{formatarPreco(preco_digital)}</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.card}>
-            <h2>Informações</h2>
+          <div className={styles.cartao}>
+            <h2 className={styles.inf}>Informações</h2>
+            <p className={styles.infp}>Analise as informações do livro.</p>
             <ul className={styles.metaList}>
+              <li>
+                <span>Autor</span>
+                <strong>
+                  {autor_nome} {autor_sobrenome}
+                </strong>
+              </li>
+              <li>
+                <span>Status</span>
+                <div>
+                  <strong>{ROTULO_ESTADO[estado] || estado}</strong>
+                  {!ativo && <strong>Fora da loja</strong>}
+                </div>
+              </li>
               <li>
                 <span>Idioma</span> <strong>{idioma || "Não informado"}</strong>
               </li>
               <li>
-                <span>Edição</span> <strong>{numero_edicao || "1"}</strong>
+                <span>Edição</span>{" "}
+                <strong className={styles.numero}>
+                  {numero_edicao || "1"}
+                </strong>
               </li>
               <li>
                 <span>Público-alvo</span>{" "}
@@ -208,7 +236,7 @@ export default function VisualizarLivro() {
                 <span>Direitos de autopublicação</span>{" "}
                 <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong>
               </li>
-              <li className={styles.metaColaboradores}>
+              <li>
                 <span>Colaboradores</span>
                 <div>
                   {Array.isArray(colaboradores) && colaboradores.length > 0 ? (
@@ -225,25 +253,26 @@ export default function VisualizarLivro() {
             </ul>
           </div>
 
-          {capaObjeto && (
-            <div className={styles.card}>
-              <h2>Capas</h2>
-              <div className={styles.capasContainer}>
-                {capaObjeto.frente && (
-                  <div className={styles.capaBox}>
-                    <span>Frente</span>
-                    <img src={capaObjeto.frente} alt="Capa Frente" />
-                  </div>
-                )}
-                {capaObjeto.verso && (
-                  <div className={styles.capaBox}>
-                    <span>Verso</span>
-                    <img src={capaObjeto.verso} alt="Capa Verso" />
-                  </div>
-                )}
+          <div className={styles.cartao}>
+            <h2 className={styles.secaoTitulo}>Preços de venda</h2>
+            <p className={styles.desc}>
+              Consulte os preços de venda dos livros.
+            </p>
+            <div className={styles.precosGrid}>
+              <div className={styles.precoItem}>
+                <span>Físico</span>
+                <strong className={styles.numero}>
+                  {formatarPreco(preco_fisico)}
+                </strong>
+              </div>
+              <div className={styles.precoItem}>
+                <span>E-book</span>
+                <strong className={styles.numero}>
+                  {formatarPreco(preco_digital)}
+                </strong>
               </div>
             </div>
-          )}
+          </div>
         </aside>
       </section>
     </main>
