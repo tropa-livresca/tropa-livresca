@@ -49,16 +49,30 @@ export default function RevisaoById() {
   };
 
   return (
-    <main className={styles.container}>
+    <main>
+      <div className={styles.topo}>
+        <h2 className={styles.titulo}>Detalhes da Revisão <span className={styles.numero}>#{id}</span></h2>
+        <p>Verifique e altere a revisão caso necessário.</p>
+
+      </div>
       {/* Barra de Ações Superior */}
+      {/** 
       <div className={styles.topBar}>
         <Link to="/admin/livros/revisoes" className={styles.linkVoltar}>
           <FaArrowLeft /> Voltar às Revisões
         </Link>
 
-        <button
+        
+      </div>
+      */}
+      <div className={styles.container}>
+
+      {revisaoAtual ? (
+        <div className={styles.conteudoCard}>
+          <div className={styles.headerRevisao}>
+            <button
           onClick={() => setIsEdicao(!isEdicao)}
-          className={isEdicao ? styles.botaoCancelar : styles.botaoEditar}
+          className={isEdicao ? styles.linkLivro : styles.linkLivro}
         >
           {isEdicao ? (
             <>
@@ -70,12 +84,6 @@ export default function RevisaoById() {
             </>
           )}
         </button>
-      </div>
-
-      {revisaoAtual ? (
-        <div className={styles.conteudoCard}>
-          <div className={styles.headerRevisao}>
-            <h1 className={styles.titulo}>Detalhes da Revisão #{id}</h1>
 
             {livroRevisado?.id && (
               <Link
@@ -167,6 +175,7 @@ export default function RevisaoById() {
           informado.
         </div>
       )}
+      </div>
     </main>
   );
 }

@@ -409,7 +409,6 @@ export class AutopublicacaoService {
       error.statusCode = 400;
       throw error;
     }
-    
 
     console.log("a");
 
