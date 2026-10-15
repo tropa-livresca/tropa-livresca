@@ -23,14 +23,6 @@ Table itens_venda {
   preco_unitario numeric [not null]
 }
 
-Table comentarios {
-  id bigint [pk, increment, not null]
-  data timestamptz [not null]
-  texto text [not null]
-  fk_user_profile_id uuid [not null]
-  fk_livros_id bigint [not null]
-}
-
 Table livros {
   id bigint [pk, increment, not null]
   direitos_de_publicacao boolean [not null]
@@ -116,8 +108,6 @@ Table revisoes {
 
 Ref: movimentacoes_financeiras.fk_vendas_id > vendas.id
 Ref: movimentacoes_financeiras.fk_user_profile_id > users_profile.id
-
-Ref: comentarios.fk_user_profile_id > users_profile.id
 
 Ref: itens_venda.fk_livros_itens_id > livros.id
 Ref: itens_venda.fk_vendas_id > vendas.id

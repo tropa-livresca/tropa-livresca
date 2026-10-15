@@ -1,0 +1,120 @@
+@startuml
+
+title <size:18><b>Casos de Uso — Administração e Operações</b></size>
+
+left to right direction
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 18
+skinparam dpi 150
+
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam defaultTextAlignment center
+
+skinparam titleFontName "Segoe UI"
+skinparam titleFontSize 18
+skinparam titleFontColor #172033
+
+skinparam packageStyle rectangle
+skinparam packageBorderThickness 2
+skinparam packageFontName "Segoe UI Semibold"
+skinparam packageFontSize 15
+skinparam packageFontColor #172033
+skinparam packageBackgroundColor white
+
+skinparam usecase {
+    BackgroundColor white
+    BorderColor #64748B
+    BorderThickness 1.5
+    FontColor #172033
+    FontName "Segoe UI"
+    FontSize 12
+    Padding 10
+}
+
+skinparam actor {
+    BackgroundColor white
+    BorderColor #334155
+    BorderThickness 2
+    FontColor #172033
+    FontName "Segoe UI Semibold"
+    FontSize 13
+}
+
+skinparam arrow {
+    Color #64748B
+    Thickness 1.5
+}
+
+actor "Funcionário" as Funcionario
+actor "Administrador\nMaster" as Master
+
+' ============================================================
+' HERANÇA DO ATOR
+' Administrador Master herda todas as funcionalidades
+' do Funcionário.
+' ============================================================
+
+Master --|> Funcionario
+
+package "ADMINISTRAÇÃO E OPERAÇÕES" {
+
+    usecase "Efetuar Login" as UC_Login
+
+    package "OPERAÇÕES DA LOJA" {
+
+        usecase "Alterar status do pedido\npara \"a caminho\"" as UC_Entrega
+        usecase "Inativar Pedidos" as UC_InativarPedido
+        usecase "Alterar Senha do Painel" as UC_SenhaPainel
+        usecase "Autorizar Repasse para Autor" as UC_Repasse
+    }
+
+    package "MODERAÇÃO E CONTEÚDO" {
+
+        usecase "Inativar Livros" as UC_InativarLivro
+        usecase "Visualizar Relatórios Gerais" as UC_Relatorios
+    }
+
+    package "RECURSOS HUMANOS\n(RESTRITO)" {
+
+        usecase "Promover Usuário" as UC_Promover
+        usecase "Remover Funcionário" as UC_Remover
+    }
+
+    ' ========================================================
+    ' AUTENTICAÇÃO
+    ' ========================================================
+
+    UC_Entrega ..> UC_Login : <<include>>
+    UC_InativarPedido ..> UC_Login : <<include>>
+    UC_SenhaPainel ..> UC_Login : <<include>>
+    UC_Repasse ..> UC_Login : <<include>>
+
+    UC_InativarLivro ..> UC_Login : <<include>>
+    UC_Relatorios ..> UC_Login : <<include>>
+
+    UC_Promover ..> UC_Login : <<include>>
+    UC_Remover ..> UC_Login : <<include>>
+
+    ' ========================================================
+    ' FUNCIONALIDADES DO FUNCIONÁRIO
+    ' ========================================================
+
+    Funcionario --> UC_Entrega
+    Funcionario --> UC_InativarPedido
+    Funcionario --> UC_SenhaPainel
+    Funcionario --> UC_Repasse
+    Funcionario --> UC_InativarLivro
+    Funcionario --> UC_Relatorios
+
+    ' ========================================================
+    ' FUNCIONALIDADES EXCLUSIVAS DO ADMINISTRADOR MASTER
+    ' ========================================================
+
+    Master --> UC_Promover
+    Master --> UC_Remover
+}
+
+@enduml
