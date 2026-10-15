@@ -451,12 +451,31 @@ export const AutopublicacaoProvider = ({ children }) => {
         if (!userId || typeof userId !== "string")
           throw new Error("ID do usuário inválido");
 
+        const dataURItoBlob = (dataURI) => {
+
+    let byteString = atob(dataURI.split(',')[1]);
+
+
+    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ab], {type: mimeString});
+
+  }
+
         const conteudo = dadosDoLivro.conteudo;
-        const capa = new File([conteudo?.capa], "png");
-        const manuscrito = new File([conteudo?.manuscrito], "pdf");
+        const capa = conteudo.capa;
+        const manuscrito = conteudo?.manuscrito;
 
         const arquivosEnviados = [];
 
+<<<<<<< HEAD
         const uploadArquivo = async (
           arquivo,
           tipo,
@@ -471,6 +490,32 @@ export const AutopublicacaoProvider = ({ children }) => {
           });
 
           const extensao = arquivoFormatado?.type.split("/").pop() || "bin";
+=======
+        console.log(manuscrito);
+
+        const file = new File([manuscrito], "1");
+
+        console.log(file);
+        console.log(file.path);
+
+        
+        const uploadArquivo = async (arquivo, tipo, tipoDeArquivo, ) => {
+          if (!arquivo) return null;
+
+          console.log(arquivo);
+
+          let blob = dataURItoBlob(arquivo);
+          let file = new File([blob], "arquivo", {type:tipoDeArquivo})
+
+          console.log(file);
+
+          const extensao =
+            file?.type.split("/").pop() ||
+            "bin";
+>>>>>>> origin/1
+
+            console.log(extensao);
+            
 
           const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",
@@ -482,8 +527,8 @@ export const AutopublicacaoProvider = ({ children }) => {
                 tipo,
 
                 extensao,
-                mimeType: arquivoFormatado.type,
-                tamanho: arquivoFormatado.size,
+                mimeType: file.type,
+                tamanho: file.size,
               }),
             },
           );
@@ -500,17 +545,17 @@ export const AutopublicacaoProvider = ({ children }) => {
             );
           }
 
-          const { error } = await supabase.storage
+         const { error } = await supabase.storage
 
-            .from(bucket)
+           .from(bucket)
 
-            .uploadToSignedUrl(path, token, arquivo, {
-              contentType: arquivo.type,
-            });
+           .uploadToSignedUrl(path, token, blob);
 
-          if (error)
+         if(error){
+           console.log(error);
             throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
-
+         }
+         
           arquivosEnviados.push({ tipo, path });
           return path;
         };
@@ -518,6 +563,8 @@ export const AutopublicacaoProvider = ({ children }) => {
         let caminhosArquivos;
 
         try {
+          
+
           const [capaFrentePath, capaVersoPath, manuscritoPath] =
             await Promise.all([
               uploadArquivo(
@@ -525,8 +572,8 @@ export const AutopublicacaoProvider = ({ children }) => {
 
                 "capa_frente",
 
-                conteudo?.capaPaths?.frente,
                 "image/png",
+
               ),
 
               uploadArquivo(
@@ -534,7 +581,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
                 "capa_verso",
 
-                conteudo?.capaPaths?.verso,
                 "image/png",
               ),
 
@@ -542,10 +588,11 @@ export const AutopublicacaoProvider = ({ children }) => {
                 manuscrito,
                 "manuscrito",
 
-                conteudo?.manuscritoPath,
                 "application/pdf",
               ),
             ]);
+
+          
 
           caminhosArquivos = {
             capa: {
@@ -556,6 +603,8 @@ export const AutopublicacaoProvider = ({ children }) => {
 
             manuscritoPath,
           };
+
+
         } catch (uploadError) {
           if (arquivosEnviados.length) {
             await apiFetch("/api/v1/clients/autopublicacao/upload-url", {
@@ -573,6 +622,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
           throw uploadError;
         }
+
 
         const payload = {
           dadosLivro: {
@@ -609,6 +659,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
 
         return json;
+
       } catch (error) {
         console.error("Erro em salvar livro:", error);
 
@@ -616,15 +667,16 @@ export const AutopublicacaoProvider = ({ children }) => {
       } finally {
         setCarregando(false);
       }
+       
     },
 
     [user, isEdicao, estadoAtualLivro],
   );
 
   const publicarLivroNoContexto = async (
-    estadoDesejado = LIVRO_ESTADO.RASCUNHO,
+    estadoDesejado = LIVRO_ESTADO.RASCUNHO, arquivo
   ) => {
-    await inserirLivro(dadosLivro, estadoDesejado);
+    await inserirLivro(dadosLivro, estadoDesejado,arquivo);
 
     localStorage.removeItem(chaveRascunho("dados"));
 

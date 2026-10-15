@@ -563,11 +563,17 @@ export class AutopublicacaoService {
   }
 
   static async criarUploadLivro({ userId, tipo, extensao, mimeType, tamanho }) {
+
+    console.log(tipo);
+    console.log(extensao);
+
     if (!userId) {
       const error = new Error("Usuário não autenticado.");
       error.statusCode = 401;
       throw error;
     }
+
+    console.log(tipo)
 
     const { extensao: extensaoNormalizada } = validarMetadadosUpload({
       tipo,
@@ -576,6 +582,8 @@ export class AutopublicacaoService {
       tamanho,
     });
     const { bucket, path } = criarPathUpload(userId, tipo, extensaoNormalizada);
+
+    console.log(path);
 
     const { data, error } = await supabaseAdmin.storage
       .from(bucket)
