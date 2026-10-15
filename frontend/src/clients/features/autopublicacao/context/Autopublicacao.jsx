@@ -475,22 +475,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         const arquivosEnviados = [];
 
-<<<<<<< HEAD
-        const uploadArquivo = async (
-          arquivo,
-          tipo,
-          pathExistente,
-          tipoDeArquivo,
-        ) => {
-          if (!arquivo) return null;
-          if (typeof arquivo === "string") return pathExistente || arquivo;
-
-          let arquivoFormatado = new File([arquivo], "arquivo", {
-            type: tipoDeArquivo,
-          });
-
-          const extensao = arquivoFormatado?.type.split("/").pop() || "bin";
-=======
         console.log(manuscrito);
 
         const file = new File([manuscrito], "1");
@@ -512,7 +496,6 @@ export const AutopublicacaoProvider = ({ children }) => {
           const extensao =
             file?.type.split("/").pop() ||
             "bin";
->>>>>>> origin/1
 
             console.log(extensao);
             
