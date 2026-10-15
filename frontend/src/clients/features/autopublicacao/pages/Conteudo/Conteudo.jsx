@@ -17,6 +17,24 @@ const ALTURA_MINIMA_A5_PX = 2480;
 
 
 
+    const dataURItoBlob = (dataURI) => {
+
+    let byteString = atob(dataURI.split(',')[1]);
+
+
+    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    return new Blob([ab], {type: mimeString});
+
+  }
+
 const formatarMB = (bytes) => `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 
 const validarCapa = (arquivo) => {
@@ -66,35 +84,6 @@ const obterDimensoesImagem = (arquivo) =>
     imagem.src = url;
   });
 
-function PreviewArquivo({ arquivo, children }) {
-  const [url, setUrl] = useState(null);
-  const urlRef = useRef(null);
-
-  useEffect(() => {
-    if (!(arquivo instanceof Blob)) {
-      return undefined;
-    }
-
-    const urlCriada = URL.createObjectURL(arquivo);
-    urlRef.current = urlCriada;
-
-    setUrl(urlCriada);
-
-    return () => {
-      URL.revokeObjectURL(urlCriada);
-
-      if (urlRef.current === urlCriada) {
-        urlRef.current = null;
-      }
-    };
-  }, [arquivo]);
-
-  const src = typeof arquivo === "string" ? arquivo : url;
-
-  if (!src) return null;
-
-  return children(src);
-}
 
 function DimensoesCapa({ dimensoes }) {
   if (!dimensoes) return null;
@@ -112,6 +101,18 @@ export default function Conteudo({
   irParaProximaEtapa,
   voltarEtapa,
 }) {
+
+
+  const [manuscritoFile, setmanuscritoFile] = useState("");
+
+useEffect(() => {
+
+     if(dados.manuscrito != null){
+      const file = dataURItoBlob(dados.manuscrito);
+      setmanuscritoFile(file);
+    }
+
+}, [])
 
 
   const atualizarCampo = async (chave, e) => {
@@ -155,6 +156,9 @@ export default function Conteudo({
           throw new Error("O PDF não possui páginas válidas.");
         }
 
+        const file = dataURItoBlob(blob);
+        setmanuscritoFile(file);
+
         onChange({
           ...dados,
           manuscrito: blob,
@@ -175,13 +179,15 @@ export default function Conteudo({
       return;
     }
 
-    console.log(blob);
+    
 
     onChange({
       ...dados,
       [chave]: blob,
     });
   };
+
+  console.log(dados);
 
   const atualizarCapa = async (parte, e) => {
     const input = e.target;
@@ -233,6 +239,8 @@ export default function Conteudo({
     }
   };
 
+  console.log(manuscritoFile);
+
   return (
     <main>
       <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
@@ -260,8 +268,7 @@ export default function Conteudo({
           </label>
 
           {dados?.manuscrito && (
-            <PreviewArquivo arquivo={dados.manuscrito} tipo="pdf">
-              {(preview) => (
+
                 <div className={styles.manuscrito}>
                   <p className={styles.pmanuscrito}>
                     ✓ Manuscrito carregado{" "}
@@ -270,7 +277,7 @@ export default function Conteudo({
                   </p>
 
                   <a
-                    href={preview}
+                    href={dados.manuscrito}
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.btnmanus}
@@ -279,11 +286,9 @@ export default function Conteudo({
                   </a>
 
                   <div className={styles.embed}>
-                    <embed src={preview} type="application/pdf" />
+                    <embed src={dados.manuscrito} type="application/pdf" />
                   </div>
                 </div>
-              )}
-            </PreviewArquivo>
           )}
         </div>
 

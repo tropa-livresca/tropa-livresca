@@ -83,6 +83,8 @@ export function validarPathDoUsuario(path, userId, bucket) {
     throw erroStorage("Path de arquivo inválido.", 400);
   }
 
+  console.log(path);
+
   if (
     path.includes("..") ||
     path.includes("\\") ||
@@ -131,6 +133,11 @@ export function normalizarCaminhoPersistido(value, bucket) {
 }
 
 export function criarPathUpload(userId, tipo, extensao) {
+
+  console.log(userId);
+  console.log(tipo);
+  console.log(extensao);
+
   const regra = obterRegraArquivo(tipo);
   const extensaoNormalizada = normalizarExtensao(extensao);
 
