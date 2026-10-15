@@ -3,16 +3,26 @@
   max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
+  box-sizing: border-box;
 }
 
 .containerlivros {
   display: grid;
-  grid-template-columns: 18rem auto 3rem;
+  grid-template-columns: 18rem minmax(0, 1fr) 3rem;
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "filtros busca carrinho"
+    "filtros livros livros"
+    ". paginacao paginacao";
+  align-content: start;
+  align-items: start;
   gap: 1rem;
+  min-width: 0;
 }
 
 .busca {
   width: 100%;
+  min-width: 0;
   display: grid;
   grid-template-columns:
     3rem
@@ -43,6 +53,7 @@
   outline: none;
   background: transparent;
   width: 100%;
+  min-width: 0;
   font-size: 1rem;
 }
 
@@ -135,6 +146,7 @@
 }
 
 .carrinho {
+  grid-area: carrinho;
   width: 3rem;
   height: 4.5rem;
   display: flex;
@@ -154,13 +166,16 @@
 }
 
 .form {
+  grid-area: busca;
   height: 4rem;
+  min-width: 0;
 }
 
 .filtros {
-  grid-row: 1 / 3;
+  grid-area: filtros;
   border-right: 1px solid #e3d5ad;
   width: 90%;
+  min-width: 0;
 }
 
 .filtros h1 {
@@ -173,17 +188,65 @@
   cursor: pointer;
   color: #67170c;
   font-size: 1.1rem;
+  font-weight: normal;
+}
+
+.filtros li.categoriaAtiva {
+  font-weight: bold;
+}
+
+.filtros li:last-child {
+  padding-bottom: 1rem;
 }
 
 .filtros ul {
   line-height: 2.2;
 }
 
+.filtros ul:first-child {
+  border-bottom: 1px solid #e3d5ad;
+}
+
 .filtros li:hover {
   text-decoration: underline;
 }
 
+.btnLimpar {
+  width: calc(100% - 1.5rem);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  background-color: transparent;
+  color: #67170c;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: 0.25s;
+}
+
+.btnLimpar:hover {
+  background-color: #67170c;
+  color: #ede6b3;
+}
+
+.btnLimpar:active {
+  transform: scale(0.98);
+}
+
 .oi {
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  height: 3.5rem;
+  margin-bottom: 1rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid #e3d5ad;
+}
+
+.oi2 {
+  box-sizing: content-box;
   display: flex;
   align-items: center;
   height: 3.5rem;
@@ -191,11 +254,23 @@
 }
 
 .livros {
+  grid-area: livros;
   width: 100%;
+  min-width: 0;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  align-items: start;
   gap: 1rem;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
+}
+
+.semResultados {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #67170c;
+  font-size: 1.1rem;
+  padding: 3rem 0;
 }
 
 .cardLivro {
@@ -206,11 +281,6 @@
   flex-direction: column;
   overflow: hidden;
   margin-bottom: 2rem;
-  /*
-  background-color: #fffcf4;
-  border-radius: 1rem;
-   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  transition: 0.3s;*/
 }
 
 .cardLivro:last-child {
@@ -220,8 +290,6 @@
 .capaContainer {
   width: 100%;
   overflow: hidden;
-  /*
-  padding: 0.7rem;*/
 }
 
 .linkLivro {
@@ -254,12 +322,14 @@
   place-items: center;
   color: var(--cor-texto-muted);
   font-size: 0.9rem;
+  border: 1px solid var(--cor-texto-muted);
 }
 
 .infoLivro {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .infoLivro h3 {
@@ -291,23 +361,17 @@
   margin-top: 0.5rem;
 }
 
-.semImagem {
-  width: 100%;
-  aspect-ratio: 2 / 3;
-  display: grid;
-  place-items: center;
-  color: var(--cor-texto-muted);
-  font-size: 0.9rem;
-  border: 1px solid var(--cor-texto-muted);
-}
-
 .paginacao {
+  grid-area: paginacao;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 1.5rem;
-  margin-top: 4rem;
-  margin-left: 12rem;
+  width: 100%;
+  min-width: 0;
+  margin-top: 1rem;
+  margin-left: 0;
 }
 
 .paginacao button {
@@ -336,4 +400,204 @@
   font-size: 1.1rem;
   text-align: center;
   font-family: none;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 4rem 4%;
+  }
+
+  .containerlivros {
+    grid-template-columns: 15rem minmax(0, 1fr) 3rem;
+  }
+
+  .livros {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .cardLivro {
+    width: 85%;
+  }
+}
+
+@media (max-width: 992px) {
+  .containerlivros {
+    grid-template-columns: 13rem minmax(0, 1fr) 3rem;
+  }
+
+  .busca {
+    grid-template-columns: 3rem minmax(100px, 1fr) 170px 5.5rem;
+  }
+
+  .livros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .cardLivro {
+    width: 80%;
+  }
+
+  .carrinho {
+    font-size: 1.7rem;
+  }
+
+  .paginacao {
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 3rem 5%;
+  }
+
+   .containerlivros {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "busca"
+      "filtros"
+      "livros"
+      "paginacao";
+    gap: 1rem;
+  }
+
+  .form {
+    width: 100%;
+    height: auto;
+  }
+
+  .filtros {
+    width: 100%;
+    border-right: none;
+    padding-bottom: 1rem;
+  }
+
+  .filtros ul {
+    line-height: 2;
+  }
+
+  .livros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 1rem;
+  }
+
+  .cardLivro {
+    width: 85%;
+  }
+
+  .btnLimpar {
+    width: 100%;
+  }
+
+  .paginacao {
+    gap: 0.75rem;
+    margin-top: 1rem;
+  }
+
+  .carrinho {
+    position: fixed;
+    right: 1.2rem;
+    bottom: 1.2rem;
+    z-index: 200;
+    width: 3.5rem;
+    height: 3.5rem;
+    min-width: 3.5rem;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: #67170c;
+    box-sizing: border-box;
+    font-size: 1.6rem;
+    line-height: 1;
+    box-shadow: 0 6px 16px rgba(103, 23, 12, 0.3);
+  }
+
+  .carrinho svg {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    color: #ede6b3;
+  }
+
+  .carrinho svg:hover {
+    color: #ffbb33;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 2rem 4%;
+  }
+
+  .carrinho {
+    right: 1rem;
+    bottom: 1rem;
+    width: 3.2rem;
+    height: 3.2rem;
+    min-width: 3.2rem;
+    font-size: 1.4rem;
+  }
+
+  .busca {
+    grid-template-columns: 3rem 1fr;
+    row-gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 1.2rem;
+  }
+
+  .selectContainer {
+    grid-column: 1 / -1;
+  }
+
+  .select {
+    margin: 0;
+  }
+
+  .selectContainer:nth-of-type(1) .options {
+    left: 0;
+    width: 100%;
+  }
+
+  .btnbuscar {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .livros {
+    gap: 0.5rem;
+  }
+
+  .cardLivro {
+    width: 92%;
+    margin-bottom: 1rem;
+  }
+
+  .infoLivro h2,
+  .infoLivro h3 {
+    font-size: 1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .numero {
+    font-size: 1.1rem;
+  }
+
+  .autor {
+    font-size: 0.8rem;
+  }
+
+  .paginacao {
+    gap: 0.5rem;
+  }
+
+  .paginacao button {
+    min-width: 4.5rem;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .paginacao span {
+    font-size: 1rem;
+  }
 }

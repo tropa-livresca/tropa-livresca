@@ -66,9 +66,19 @@
 
 .cartao h2,
 .resumo h2 {
-  margin: 0 0 1rem;
-  color: #67170c;
-  font-size: 1.3rem;
+  margin: 0 0 0rem;
+    
+    color: #67170c;
+    font-size: 1.3rem;
+}
+
+.cartao p,
+.resumo p{
+  color: var(--cor-texto-muted);
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: left;
+    margin-top: 0.4rem;
 }
 
 .itens {

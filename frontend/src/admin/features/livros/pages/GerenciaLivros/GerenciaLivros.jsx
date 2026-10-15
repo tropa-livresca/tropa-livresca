@@ -388,7 +388,7 @@ export default function GerenciaLivros() {
                           {livro.estado === "em_revisao" && (
                             <Link
                               to={`/admin/livros/revisoes/nova-revisao/${livro.id}`}
-                              className={styles.inativar}
+                              className={styles.revisar}
                             >
                               Revisar
                             </Link>

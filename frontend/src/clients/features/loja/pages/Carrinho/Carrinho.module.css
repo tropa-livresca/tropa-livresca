@@ -41,7 +41,7 @@
 
 .conteudo {
   display: grid;
-  grid-template-columns: minmax(0, 75%) 25%;
+  grid-template-columns: minmax(0,70%) 30%;
   gap: 2rem;
   align-items: start;
 }
@@ -96,7 +96,7 @@
   align-items: center;
   gap: 1.5rem;
   border-top: none;
-  padding: 1.3rem;
+  padding: 1.5rem;
   padding-bottom: 0;
   padding-top: 0;
   background-color: #fffdf7;
@@ -231,19 +231,30 @@
 .excluir {
   width: 2rem;
   height: 2rem;
+  min-width: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-left: auto;
-  transform: translateX(-1rem);
-  border: none;
-  border-radius: 0.5rem;
-  background-color: #f7f0cf58;
-  border: 1px solid #e2c77c;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
   color: #67170c;
+  background: #f7f0cf58;
+  border: 1px solid #e2c77c;
+  border-radius: 0.5rem;
   cursor: pointer;
   font-size: 1.1rem;
+  box-sizing: border-box;
+  transition: background-color 0.3s, color 0.3s;
 }
+
+.excluir svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  display: block;
+  flex-shrink: 0;
+}
+
 
 .redondo {
   display: flex;
@@ -298,6 +309,7 @@
 .Total strong {
   font-weight: 600;
   font-family: none;
+  font-size: 1rem;
 }
 
 .lim {
@@ -329,32 +341,94 @@
 
 .cep {
   display: flex;
-  align-items: center;
-  margin-bottom: 0.7rem;
-  padding-bottom: 0.7rem;
-  border-bottom: 1px solid #e3d5ad;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom:1px solid #e3d5ad;
 }
 
-.cep span {
-  flex-shrink: 0;
-}
-
-.cep input {
-  width: 80%;
-  margin-left: auto;
-  box-sizing: border-box;
-  padding: 0.6rem;
-  border: none;
-  border-radius: 0.7rem;
-  outline: none;
-  background: #fff;
+.sub {
+  display: block;
+  margin-bottom: 0.2rem;
   color: #67170c;
-  border: 1px solid #e2c77c;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
-.cep input::placeholder {
-  color: var(--cor-texto-muted);
+.cep > div {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.7rem;
 }
+
+
+.cep input[type="radio"] {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 0.9rem;
+  min-height: 0.9rem;
+  border: 1.5px solid #e2c77c;
+  border-radius: 50%;
+  background: #fff8d7;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  accent-color: transparent;
+  transition: 0.2s ease;
+}
+
+.cep input[type="radio"]:hover {
+  border-color: #ffbb33;
+  background: #fff3b5;
+}
+
+.cep input[type="radio"]:checked {
+  border-color: #67170c;
+  background: #67170c;
+  box-shadow: inset 0 0 0 0.2rem #fff8d7;
+}
+
+.cep input[type="radio"]:checked:hover {
+  border-color: #b32512;
+  background: #b32512;
+}
+
+
+.cep h5 {
+  margin: 0;
+  color: #67170c;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cep strong {
+  color: #67170c;
+      font-weight: 600;
+      font-size: 1rem;
+    font-family: none;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cep > div:not(:has(input)) {
+  display: block;
+  padding: 0.85rem;
+  color: #67170c;
+  font-size: 0.9rem;
+  background-color: #fff8d7;
+  border: 1px dashed #d4b46a;
+  border-radius: 0.8rem;
+}
+
+.cep input[type="radio"]:focus-visible {
+  outline: 2px solid #d4b46a;
+  outline-offset: 3px;
+}
+
 
 .Total {
   display: flex;
@@ -425,7 +499,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  margin-top: 1.3rem;
+  margin-top: 1rem;
   margin-bottom: 0.1rem;
   margin-left: auto;
   margin-right: auto;
@@ -539,7 +613,7 @@
   }
 
   .conteudo {
-    grid-template-columns: minmax(0, 1fr) 18rem;
+    grid-template-columns: minmax(0, 1fr) 22rem;
     gap: 1.5rem;
   }
 
@@ -556,7 +630,7 @@
 
   .produto {
     min-height: 10rem;
-    padding: 0.7rem;
+    padding: 1.4rem;
     padding-top: 0;
     padding-bottom: 0;
   }

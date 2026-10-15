@@ -206,7 +206,7 @@ export default function Carrinho() {
                     ></input>
                     <h5>Sedex</h5>
                     <strong>
-                      Preço base Pac R${" "}
+                      R${" "}
                       {Number(frete.precoSedex).toFixed(2).replace(".", ",")}
                     </strong>
                   </div>
@@ -223,7 +223,7 @@ export default function Carrinho() {
                     ></input>
                     <h5>Pac</h5>
                     <strong>
-                      Preço base Sedex R${" "}
+                      R${" "}
                       {Number(frete.precoPac).toFixed(2).replace(".", ",")}
                     </strong>
                   </div>

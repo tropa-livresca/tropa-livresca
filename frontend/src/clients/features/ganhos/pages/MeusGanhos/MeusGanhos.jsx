@@ -131,11 +131,13 @@ export default function MeusGanhos() {
               <div className={`${styles.cartaoResumo} ${styles.destaque}`}>
                 <span>Saldo disponível</span>
                 <strong>{formatarPreco(saldoDisponivel)}</strong>
+                <small>Verifique seu saldo</small>
               </div>
 
               <div className={styles.cartaoResumo}>
                 <span>Total recebido</span>
                 <strong>{formatarPreco(totalRecebido)}</strong>
+                <small>Valor retirado</small>
               </div>
             </div>
 
@@ -158,10 +160,10 @@ export default function MeusGanhos() {
               )}
 
               <form onSubmit={handleSolicitarSaque}>
-                <label htmlFor="valorSaque">Valor do saque (R$)</label>
+                <label htmlFor="valorSaque" className={styles.label}>Valor do saque (R$)</label>
 
                 <input
-                  id="valorSaque"
+                  className={styles.input}
                   name="valorSaque"
                   type="number"
                   min="0.01"
@@ -180,7 +182,7 @@ export default function MeusGanhos() {
                   }
                 />
 
-                <p>Saldo disponível: {formatarPreco(saldoDisponivel)}</p>
+                <p className={styles.saldo}>Saldo disponível: <span className={styles.numero}>{formatarPreco(saldoDisponivel)}</span></p>
 
                 {erroSaque && (
                   <p role="alert" className={base.erro}>
