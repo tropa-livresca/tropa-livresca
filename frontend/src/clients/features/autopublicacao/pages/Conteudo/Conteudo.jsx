@@ -336,17 +336,13 @@ useEffect(() => {
             </label>
 
             {dados?.capa?.frente && (
-              <PreviewArquivo arquivo={dados.capa.frente} tipo="imagem">
-                {(preview) => (
                   <div className={styles.preview}>
                     <img
-                      src={preview}
+                      src={dados?.capa?.frente}
                       alt="Prévia da frente da capa"
                       width="150"
                     />
                   </div>
-                )}
-              </PreviewArquivo>
             )}
 
             <DimensoesCapa dimensoes={dados.dimensoesCapa?.frente} />
@@ -372,17 +368,13 @@ useEffect(() => {
             </label>
 
             {dados?.capa?.verso && (
-              <PreviewArquivo arquivo={dados.capa.verso} tipo="imagem">
-                {(preview) => (
                   <div className={styles.preview}>
                     <img
-                      src={preview}
+                      src={dados?.capa?.verso}
                       alt="Prévia do verso da capa"
                       width="150"
                     />
                   </div>
-                )}
-              </PreviewArquivo>
             )}
 
             <DimensoesCapa dimensoes={dados.dimensoesCapa?.verso} />
