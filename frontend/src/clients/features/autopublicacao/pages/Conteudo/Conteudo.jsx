@@ -1,4 +1,5 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿
+import { useEffect, useRef, useState } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -53,14 +54,13 @@ const validarCapa = (arquivo) => {
   return null;
 };
 
-const fileToDataUri = (file) =>
-  new Promise((resolve, reject) => {
+const fileToDataUri = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
-      resolve(event.target.result);
+      resolve(event.target.result)
     };
     reader.readAsDataURL(file);
-  });
+    })
 
 const obterDimensoesImagem = (arquivo) =>
   new Promise((resolve, reject) => {
@@ -152,6 +152,7 @@ useEffect(() => {
         const pdfDocument = await loadingTask.promise;
         const numeroPaginas = pdfDocument.numPages;
 
+        
         if (!numeroPaginas || numeroPaginas < 1) {
           throw new Error("O PDF não possui páginas válidas.");
         }
@@ -336,17 +337,13 @@ useEffect(() => {
             </label>
 
             {dados?.capa?.frente && (
-              <PreviewArquivo arquivo={dados.capa.frente} tipo="imagem">
-                {(preview) => (
                   <div className={styles.preview}>
                     <img
-                      src={preview}
+                      src={dados?.capa?.frente}
                       alt="Prévia da frente da capa"
                       width="150"
                     />
                   </div>
-                )}
-              </PreviewArquivo>
             )}
 
             <DimensoesCapa dimensoes={dados.dimensoesCapa?.frente} />
@@ -372,17 +369,13 @@ useEffect(() => {
             </label>
 
             {dados?.capa?.verso && (
-              <PreviewArquivo arquivo={dados.capa.verso} tipo="imagem">
-                {(preview) => (
                   <div className={styles.preview}>
                     <img
-                      src={preview}
+                      src={dados?.capa?.verso}
                       alt="Prévia do verso da capa"
                       width="150"
                     />
                   </div>
-                )}
-              </PreviewArquivo>
             )}
 
             <DimensoesCapa dimensoes={dados.dimensoesCapa?.verso} />
@@ -416,3 +409,11 @@ useEffect(() => {
     </main>
   );
 }
+
+
+
+
+
+
+
+

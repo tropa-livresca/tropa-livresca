@@ -33,7 +33,7 @@ export default function Confirmacao({
   const salvarLivroERedirecionar = async (estado,) => {
     try {
       await publicarLivro(estado);
-      //navigate("/meuslivros");
+      navigate("/meuslivros");
     } catch (erro) {
       console.error("Erro ao salvar o livro:", erro);
     }

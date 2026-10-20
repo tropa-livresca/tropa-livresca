@@ -402,9 +402,10 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         return;
       }
+     
     }
 
-    console.log(dadosLivro);
+     console.log(dadosLivro);
 
     setDadosLivro((estadoAnterior) => {
       if (chave === "conteudo") {
@@ -442,6 +443,8 @@ export const AutopublicacaoProvider = ({ children }) => {
       ) {
         throw new Error("Este livro está travado para alterações no momento.");
       }
+
+      
 
       setCarregando(true);
 
@@ -714,3 +717,7 @@ export const AutopublicacaoProvider = ({ children }) => {
     </AutopublicacaoContext.Provider>
   );
 };
+
+
+
+
