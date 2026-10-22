@@ -410,17 +410,17 @@ export default function PagamentoBoleto() {
 
           <div>
             <span>Frete</span>
-            <strong>{formatarMoeda(frete)}</strong>
+            <strong className={styles.numero}>{formatarMoeda(frete)}</strong>
           </div>
 
           <div>
             <span>Vencimento demonstrativo</span>
-            <strong>{formatarData(vencimento)}</strong>
+            <strong className={styles.numero}>{formatarData(vencimento)}</strong>
           </div>
 
           <div>
             <span>Status</span>
-            <strong>
+            <strong  className={styles.numero}>
               {pagamentoConfirmado
                 ? "Pago (simulação)"
                 : "Aguardando confirmação"}
@@ -430,7 +430,7 @@ export default function PagamentoBoleto() {
 
         <div className={styles.codigo}>
           <div>
-            <span>Referência demonstrativa</span>
+            <span>Referência demonstrativa:</span>
             <strong className={styles.numero}>
               {referencia || "Indisponível"}
             </strong>
@@ -444,7 +444,7 @@ export default function PagamentoBoleto() {
           disabled={!pedidoValido || gerandoPdf}
         >
           <FiDownload />
-          {gerandoPdf ? "Gerando PDF..." : "Baixar boleto demonstrativo (PDF)"}
+          {gerandoPdf ? "Gerando PDF..." : " Baixar boleto demonstrativo (PDF)"}
         </button>
 
         {mensagem && (
