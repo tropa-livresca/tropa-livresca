@@ -6,8 +6,8 @@ export default function CardProduto({ livro, aoAdicionar }) {
   const livroId = livro.id || livro.ISBN;
   const nomeAutor =
     livro.autor ||
-    (livro.autor_nome
-      ? `${livro.autor_nome} ${livro.autor_sobrenome || ""}`.trim()
+    (livro.users_profile
+      ? `${livro.users_profile.nome} ${livro.users_profile.sobrenome || ""}`.trim()
       : "Autor Desconhecido");
   const precoFisico = livro.precoFisico ?? livro.preco_fisico;
   const precoDigital = livro.precoDigital ?? livro.preco_digital;

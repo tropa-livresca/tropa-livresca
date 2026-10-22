@@ -348,13 +348,10 @@ export class AutopublicacaoService {
         : null,
       idioma: dadosLivro.detalhes.idioma,
       categoria: dadosLivro.detalhes.categoria,
-      autor_nome: dadosLivro.detalhes?.autor?.nome || null,
-      autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome || null,
       colaboradores: dadosLivro.detalhes?.colaboradores || [],
       direitos_de_publicacao:
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
-      imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
       data_de_publicacao: new Date().toISOString().split("T")[0],
       preco_digital: dadosLivro.orcamento?.valorLivroDigital
         ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
@@ -410,14 +407,10 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    console.log("a");
-
     const livroAtual = await AutopublicacaoModel.buscarDetalhesPorId(
       livroId,
       userId,
     );
-
-    console.log("b");
 
     if (!livroAtual) {
       const error = new Error(
@@ -426,8 +419,6 @@ export class AutopublicacaoService {
       error.statusCode = 404;
       throw error;
     }
-
-    console.log(livroAtual);
 
     if (
       ![
@@ -500,9 +491,6 @@ export class AutopublicacaoService {
       numero_edicao: dadosLivro.detalhes?.numeroEdicao
         ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
         : livroAtual.numero_edicao,
-      autor_nome: dadosLivro.detalhes?.autor?.nome || livroAtual.autor_nome,
-      autor_sobrenome:
-        dadosLivro.detalhes?.autor?.sobrenome || livroAtual.autor_sobrenome,
       numero_paginas: dadosLivro.orcamento?.numeroPaginas
         ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
         : livroAtual.numero_paginas,
@@ -512,10 +500,7 @@ export class AutopublicacaoService {
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true ||
         livroAtual.direitos_de_publicacao,
-      imagens_explicitas:
-        dadosLivro.detalhes?.imagensExplicitas === true ||
-        livroAtual.imagens_explicitas,
-      preco_digital: dadosLivro.orcamento?.valorLivroDigital
+       preco_digital: dadosLivro.orcamento?.valorLivroDigital
         ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
         : livroAtual.preco_digital,
       preco_fisico: dadosLivro.orcamento?.valorLivroFisico
@@ -563,17 +548,11 @@ export class AutopublicacaoService {
   }
 
   static async criarUploadLivro({ userId, tipo, extensao, mimeType, tamanho }) {
-
-    console.log(tipo);
-    console.log(extensao);
-
     if (!userId) {
       const error = new Error("Usuário não autenticado.");
       error.statusCode = 401;
       throw error;
     }
-
-    console.log(tipo)
 
     const { extensao: extensaoNormalizada } = validarMetadadosUpload({
       tipo,
@@ -582,8 +561,6 @@ export class AutopublicacaoService {
       tamanho,
     });
     const { bucket, path } = criarPathUpload(userId, tipo, extensaoNormalizada);
-
-    console.log(path);
 
     const { data, error } = await supabaseAdmin.storage
       .from(bucket)

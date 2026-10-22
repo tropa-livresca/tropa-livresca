@@ -196,7 +196,7 @@ export class AuthModel {
     return data;
   }
 
-  static async signup(email, password, nome, telefone) {
+  static async signup(email, password, nome, sobrenome, telefone) {
     if (!email || !password || !nome || !telefone) {
       const erroCampos = new Error(
         "Todos os campos são obrigatórios para o cadastro.",
@@ -212,7 +212,7 @@ export class AuthModel {
       password,
       options: {
         emailRedirectTo: redirectUrl,
-        data: { nome, telefone },
+        data: { nome, sobrenome, telefone },
       },
     });
 

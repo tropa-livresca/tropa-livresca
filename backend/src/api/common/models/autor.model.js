@@ -38,7 +38,7 @@ export class AutorModel {
     const { data, error } = await supabase
       .from("users_profile")
       .select(
-        "id, nome, telefone, imagem, descricao, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)",
+        "id, nome, telefone, sobrenome, imagem, descricao, livros(id, titulo, ativo, capa, preco_digital, preco_fisico, idioma)",
       )
       .in("id", idsParaBuscar)
       .eq("livros.ativo", true)

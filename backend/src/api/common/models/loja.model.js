@@ -4,12 +4,9 @@ import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 const COLUNAS_LIVRO = `
   id,
-  imagens_explicitas,
   data_de_publicacao,
   preco_digital,
   preco_fisico,
-  autor_nome,
-  autor_sobrenome,
   idioma,
   titulo,
   subtitulo,
@@ -70,7 +67,9 @@ export class LojaModel {
 
     let query = supabase
       .from("livros")
-      .select(COLUNAS_LIVRO, { count: "exact" })
+      .select(`${COLUNAS_LIVRO}, users_profile(nome, sobrenome)`, {
+        count: "exact",
+      })
       .eq("ativo", true)
       .eq("estado", LIVRO_ESTADO.PUBLICADO);
 
@@ -137,7 +136,7 @@ export class LojaModel {
     let query = supabaseAdmin.from("vendas").select(
       `
         id, data, total, status_pagamento, status_entrega, endereco_entrega,
-        users_profile(nome),
+        users_profile(nome, sobrenome),
         itens_venda(qtd, fisico, subtotal, livros(titulo)),
         movimentacoes_financeiras(id)
       `,

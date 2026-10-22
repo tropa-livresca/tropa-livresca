@@ -23,6 +23,8 @@ export default function Cadastro() {
     error,
     nome,
     setNome,
+    sobrenome,
+    setSobrenome,
     confSenha,
     setConfSenha,
     telefone,
@@ -57,13 +59,22 @@ export default function Cadastro() {
             <h1>CADASTRO</h1>
             <h3>Insira seus dados para criar sua conta</h3>
 
-            <label>Nome de Usuário</label>
+            <label>Nome</label>
             <Input
               type="text"
               name="nome"
-              placeholder="Digite o usuário"
+              placeholder="Digite o primeiro nome"
               handleOnChange={(e) => setNome(e.target.value)}
               value={nome}
+            />
+
+            <label>Sobrenome</label>
+            <Input
+              type="text"
+              name="sobrenome"
+              placeholder="Digite o último sobrenome"
+              handleOnChange={(e) => setSobrenome(e.target.value)}
+              value={sobrenome}
             />
 
             <label>E-mail</label>
@@ -161,6 +172,7 @@ export default function Cadastro() {
           </form>
         </div>
       </div>
+
       {popup && (
         <Popup
           tipo={popup.tipo}

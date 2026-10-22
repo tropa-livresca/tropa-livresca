@@ -150,7 +150,19 @@ export default function Carrinho() {
                         </div>
                       </div>
                     ) : (
-                      <></>
+                      <div className={styles.quantidade}>
+                        <div className={styles.redondo}>
+                          <button type="button" disabled>
+                            <FiMinus />
+                          </button>
+
+                          <span>1</span>
+
+                          <button type="button" disabled>
+                            <FiPlus />
+                          </button>
+                        </div>
+                      </div>
                     )}
 
                     <strong className={styles.totalProduto}>
@@ -206,8 +218,7 @@ export default function Carrinho() {
                     ></input>
                     <h5>Sedex</h5>
                     <strong>
-                      R${" "}
-                      {Number(frete.precoSedex).toFixed(2).replace(".", ",")}
+                      R$ {Number(frete.precoSedex).toFixed(2).replace(".", ",")}
                     </strong>
                   </div>
 
@@ -223,8 +234,7 @@ export default function Carrinho() {
                     ></input>
                     <h5>Pac</h5>
                     <strong>
-                      R${" "}
-                      {Number(frete.precoPac).toFixed(2).replace(".", ",")}
+                      R$ {Number(frete.precoPac).toFixed(2).replace(".", ",")}
                     </strong>
                   </div>
                 </>

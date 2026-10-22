@@ -107,7 +107,7 @@ export class RevisaoService {
   }
 
   static async BuscarLivroRevisao(busca) {
-    const livros = await RevisaoModel.BuscarLivraoRevisao(busca);
+    const livros = await RevisaoModel.BuscarLivroRevisao(busca);
 
     if (livros.error) throw livros.error;
 

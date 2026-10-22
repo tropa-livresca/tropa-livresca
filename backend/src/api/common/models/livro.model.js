@@ -2,7 +2,7 @@ import supabase, { supabaseAdmin } from "../config/supabase.js";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 const COLUNAS_LIVRO =
-  "id, ISBN, imagens_explicitas, data_de_publicacao, autor_nome, autor_sobrenome, idioma, titulo, subtitulo, descricao, capa, numero_edicao, direitos_de_publicacao";
+  "id, ISBN, data_de_publicacao, idioma, titulo, subtitulo, descricao, capa, numero_edicao, direitos_de_publicacao";
 
 export class LivroModel {
   static async buscarLivrosAdmin({
@@ -18,7 +18,7 @@ export class LivroModel {
 
     let query = supabaseAdmin
       .from("livros")
-      .select("*", { count: "exact" })
+      .select("*, users_profile(nome, sobrenome)", { count: "exact" })
       .neq("estado", LIVRO_ESTADO.RASCUNHO);
 
     if (busca) {
@@ -113,7 +113,9 @@ export class LivroModel {
 
     let query = supabase
       .from("livros")
-      .select(COLUNAS_LIVRO, { count: "exact" })
+      .select(`${COLUNAS_LIVRO}, users_profile(nome, sobrenome)`, {
+        count: "exact",
+      })
       .eq("ativo", true)
       .eq("estado", LIVRO_ESTADO.PUBLICADO);
 
@@ -147,7 +149,7 @@ export class LivroModel {
 
     const { data, error } = await supabase
       .from("livros")
-      .select(`${COLUNAS_LIVRO}, users_profile(id, nome, imagem)`)
+      .select(`${COLUNAS_LIVRO}, users_profile(id, nome, sobrenome, imagem)`)
       .eq("id", id)
       .eq("ativo", true)
       .maybeSingle();

@@ -8,9 +8,7 @@ export class RevisaoModel {
   static async BuscarLivroRevisao(busca) {
     const { data, error } = await supabase
       .from("livros")
-      .select(
-        "id, titulo, subtitulo, capa, autor_nome, autor_sobrenome, estado",
-      )
+      .select("id, titulo, subtitulo, capa, estado, users_profile(nome, sobrenome)")
       .ilike("titulo", `%${busca}%`);
 
     if (error) {
@@ -35,7 +33,7 @@ export class RevisaoModel {
     let query = supabase
       .from("revisoes")
       .select(
-        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome, fk_user_profile_id)",
+        "*, livros!inner(id, titulo, subtitulo, capa, users_profile(nome, sobrenome))",
         { count: "exact" },
       );
 
@@ -91,7 +89,7 @@ export class RevisaoModel {
     const { data, error } = await supabase
       .from("revisoes")
       .select(
-        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome, fk_user_profile_id)",
+        "*, livros!inner(id, titulo, subtitulo, capa, users_profile(nome, sobrenome))",
       )
       .eq("fk_user_profile_id", userId);
 
@@ -109,7 +107,7 @@ export class RevisaoModel {
     const { data, error } = await supabase
       .from("revisoes")
       .select(
-        "*, livros!inner(id, titulo, subtitulo, capa, autor_nome, autor_sobrenome, fk_user_profile_id)",
+        "*, livros!inner(id, titulo, subtitulo, capa, users_profile(nome, sobrenome))",
       )
       .eq("fk_livro_id", livroId);
 

@@ -13,14 +13,9 @@ const ESTADO_INICIAL_LIVRO = {
     subtitulo: "",
     ISBN: "",
     numeroEdicao: "",
-    autor: {
-      nome: "",
-      sobrenome: "",
-    },
     colaboradores: [],
     descricao: "",
     direitoPublicacao: "",
-    imagensExplicitas: "",
     categoria: "",
   },
 
@@ -249,8 +244,6 @@ export const AutopublicacaoProvider = ({ children }) => {
     const direitoPublicacao =
       direitoNorm === true ? "sim" : direitoNorm === false ? "nao" : "";
 
-    const imagensExplicitasNorm = normalizeBool(dadosBanco.imagens_explicitas);
-
     setDadosLivro({
       id: dadosBanco.id,
 
@@ -265,19 +258,12 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         ISBN: dadosBanco.ISBN || "",
 
-        autor: {
-          nome: dadosBanco.autor_nome || "",
-
-          sobrenome: dadosBanco.autor_sobrenome || "",
-        },
 
         colaboradores: dadosBanco.colaboradores || [],
 
         descricao: dadosBanco.descricao || "",
 
         direitoPublicacao,
-
-        imagensExplicitas: imagensExplicitasNorm ?? "",
 
         categoria: dadosBanco.categoria || "",
       },
@@ -327,10 +313,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       !detalhes.numeroEdicao ||
       imagemExplicitaNaoInformada
     ) {
-      return false;
-    }
-
-    if (!detalhes.autor?.nome || !detalhes.autor?.sobrenome) {
       return false;
     }
 
@@ -390,9 +372,7 @@ export const AutopublicacaoProvider = ({ children }) => {
       const dadosAntigos = dadosLivro.detalhes;
 
       if (
-        novosDados.titulo !== dadosAntigos.titulo ||
-        novosDados.autor?.nome !== dadosAntigos.autor?.nome ||
-        novosDados.autor?.sobrenome !== dadosAntigos.autor?.sobrenome
+        novosDados.titulo !== dadosAntigos.titulo
       ) {
         mostrarPopup(
           "erro",
@@ -404,8 +384,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       }
      
     }
-
-     console.log(dadosLivro);
 
     setDadosLivro((estadoAnterior) => {
       if (chave === "conteudo") {
@@ -477,33 +455,18 @@ export const AutopublicacaoProvider = ({ children }) => {
         const manuscrito = conteudo?.manuscrito;
 
         const arquivosEnviados = [];
-
-        console.log(manuscrito);
-
-        const file = new File([manuscrito], "1");
-
-        console.log(file);
-        console.log(file.path);
-
         
         const uploadArquivo = async (arquivo, tipo, tipoDeArquivo, ) => {
           if (!arquivo) return null;
 
-          console.log(arquivo);
-
           let blob = dataURItoBlob(arquivo);
           let file = new File([blob], "arquivo", {type:tipoDeArquivo})
-
-          console.log(file);
 
           const extensao =
             file?.type.split("/").pop() ||
             "bin";
 
-            console.log(extensao);
-            
-
-          const res = await apiFetch(
+            const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",
 
             {
@@ -538,7 +501,6 @@ export const AutopublicacaoProvider = ({ children }) => {
            .uploadToSignedUrl(path, token, blob);
 
          if(error){
-           console.log(error);
             throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
          }
          

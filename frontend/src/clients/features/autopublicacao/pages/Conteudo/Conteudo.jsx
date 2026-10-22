@@ -1,5 +1,4 @@
-﻿
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -16,25 +15,19 @@ const FORMATOS_CAPA = ["image/jpeg", "image/png"];
 const LARGURA_MINIMA_A5_PX = 1748;
 const ALTURA_MINIMA_A5_PX = 2480;
 
+const dataURItoBlob = (dataURI) => {
+  let byteString = atob(dataURI.split(",")[1]);
 
+  let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
-    const dataURItoBlob = (dataURI) => {
-
-    let byteString = atob(dataURI.split(',')[1]);
-
-
-    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-
-    let ab = new ArrayBuffer(byteString.length);
-    let ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], {type: mimeString});
-
+  let ab = new ArrayBuffer(byteString.length);
+  let ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
   }
+
+  return new Blob([ab], { type: mimeString });
+};
 
 const formatarMB = (bytes) => `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 
@@ -54,13 +47,14 @@ const validarCapa = (arquivo) => {
   return null;
 };
 
-const fileToDataUri = (file) => new Promise((resolve, reject) => {
+const fileToDataUri = (file) =>
+  new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (event) => {
-      resolve(event.target.result)
+      resolve(event.target.result);
     };
     reader.readAsDataURL(file);
-    })
+  });
 
 const obterDimensoesImagem = (arquivo) =>
   new Promise((resolve, reject) => {
@@ -85,7 +79,6 @@ const obterDimensoesImagem = (arquivo) =>
     imagem.src = url;
   });
 
-
 function DimensoesCapa({ dimensoes }) {
   if (!dimensoes) return null;
 
@@ -102,19 +95,14 @@ export default function Conteudo({
   irParaProximaEtapa,
   voltarEtapa,
 }) {
+  const [setmanuscritoFile] = useState("");
 
-
-  const [manuscritoFile, setmanuscritoFile] = useState("");
-
-useEffect(() => {
-
-     if(dados.manuscrito != null){
+  useEffect(() => {
+    if (dados.manuscrito != null) {
       const file = dataURItoBlob(dados.manuscrito);
       setmanuscritoFile(file);
     }
-
-}, [])
-
+  }, []);
 
   const atualizarCampo = async (chave, e) => {
     const input = e.target;
@@ -152,7 +140,6 @@ useEffect(() => {
         const pdfDocument = await loadingTask.promise;
         const numeroPaginas = pdfDocument.numPages;
 
-        
         if (!numeroPaginas || numeroPaginas < 1) {
           throw new Error("O PDF não possui páginas válidas.");
         }
@@ -180,15 +167,11 @@ useEffect(() => {
       return;
     }
 
-    
-
     onChange({
       ...dados,
       [chave]: blob,
     });
   };
-
-  console.log(dados);
 
   const atualizarCapa = async (parte, e) => {
     const input = e.target;
@@ -221,8 +204,6 @@ useEffect(() => {
         return;
       }
 
-      console.log(blob);
-
       onChange({
         ...dados,
         capa: {
@@ -239,8 +220,6 @@ useEffect(() => {
       input.value = "";
     }
   };
-
-  console.log(manuscritoFile);
 
   return (
     <main>
@@ -269,27 +248,26 @@ useEffect(() => {
           </label>
 
           {dados?.manuscrito && (
+            <div className={styles.manuscrito}>
+              <p className={styles.pmanuscrito}>
+                ✓ Manuscrito carregado{" "}
+                {dados.orcamento?.numeroPaginas &&
+                  `(${dados.orcamento.numeroPaginas} páginas)`}
+              </p>
 
-                <div className={styles.manuscrito}>
-                  <p className={styles.pmanuscrito}>
-                    ✓ Manuscrito carregado{" "}
-                    {dados.orcamento?.numeroPaginas &&
-                      `(${dados.orcamento.numeroPaginas} páginas)`}
-                  </p>
+              <a
+                href={dados.manuscrito}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.btnmanus}
+              >
+                Abrir manuscrito (PDF)
+              </a>
 
-                  <a
-                    href={dados.manuscrito}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={styles.btnmanus}
-                  >
-                    Abrir manuscrito (PDF)
-                  </a>
-
-                  <div className={styles.embed}>
-                    <embed src={dados.manuscrito} type="application/pdf" />
-                  </div>
-                </div>
+              <div className={styles.embed}>
+                <embed src={dados.manuscrito} type="application/pdf" />
+              </div>
+            </div>
           )}
         </div>
 
@@ -337,13 +315,13 @@ useEffect(() => {
             </label>
 
             {dados?.capa?.frente && (
-                  <div className={styles.preview}>
-                    <img
-                      src={dados?.capa?.frente}
-                      alt="Prévia da frente da capa"
-                      width="150"
-                    />
-                  </div>
+              <div className={styles.preview}>
+                <img
+                  src={dados?.capa?.frente}
+                  alt="Prévia da frente da capa"
+                  width="150"
+                />
+              </div>
             )}
 
             <DimensoesCapa dimensoes={dados.dimensoesCapa?.frente} />
@@ -369,13 +347,13 @@ useEffect(() => {
             </label>
 
             {dados?.capa?.verso && (
-                  <div className={styles.preview}>
-                    <img
-                      src={dados?.capa?.verso}
-                      alt="Prévia do verso da capa"
-                      width="150"
-                    />
-                  </div>
+              <div className={styles.preview}>
+                <img
+                  src={dados?.capa?.verso}
+                  alt="Prévia do verso da capa"
+                  width="150"
+                />
+              </div>
             )}
 
             <DimensoesCapa dimensoes={dados.dimensoesCapa?.verso} />
@@ -409,11 +387,3 @@ useEffect(() => {
     </main>
   );
 }
-
-
-
-
-
-
-
-

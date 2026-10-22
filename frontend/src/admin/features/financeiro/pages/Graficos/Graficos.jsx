@@ -12,7 +12,6 @@ import {
   Cell,
   Text,
 } from "recharts";
-import { Link } from "react-router-dom";
 import { FiChevronDown } from "react-icons/fi";
 
 import { useEffect, useState } from "react";
@@ -178,7 +177,7 @@ export default function Graficos() {
     .sort((a, b) => Number(b.total_vendido) - Number(a.total_vendido))
     .map((autor) => ({
       ...autor,
-      nomeCompleto: `${autor.autor_nome} ${autor.autor_sobrenome}`.trim(),
+      nomeCompleto: `${autor.nome} ${autor.sobrenome}`.trim(),
       totalVendido: Number(autor.total_vendido),
     }));
 
@@ -413,8 +412,6 @@ export default function Graficos() {
             )}
           </article>
         </section>
-
-        
       </div>
     </main>
   );

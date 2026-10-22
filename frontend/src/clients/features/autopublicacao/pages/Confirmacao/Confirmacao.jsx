@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
@@ -6,22 +6,18 @@ import { Link, useNavigate } from "react-router-dom";
 import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados";
 
 const dataURItoBlob = (dataURI) => {
+  let byteString = atob(dataURI.split(",")[1]);
 
-    let byteString = atob(dataURI.split(',')[1]);
+  let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
-
-    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-
-    let ab = new ArrayBuffer(byteString.length);
-    let ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], {type: mimeString});
-
+  let ab = new ArrayBuffer(byteString.length);
+  let ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
   }
+
+  return new Blob([ab], { type: mimeString });
+};
 
 export default function Confirmacao({
   dados,
@@ -30,7 +26,7 @@ export default function Confirmacao({
 }) {
   const navigate = useNavigate();
 
-  const salvarLivroERedirecionar = async (estado,) => {
+  const salvarLivroERedirecionar = async (estado) => {
     try {
       await publicarLivro(estado);
       navigate("/meuslivros");
@@ -39,43 +35,35 @@ export default function Confirmacao({
     }
   };
 
-  const extrairArquivo = (dado) => {
-    if (!dado) return null;
-    if (dado instanceof File) return dado;
-    if (dado instanceof FileList && dado.length > 0) return dado[0];
-    if (Array.isArray(dado) && dado.length > 0) return dado[0];
-    return null;
-  };
-
   const [manuscritoFile, setManuscritoFile] = useState(null);
 
-  console.log(manuscritoFile);
-  
   useEffect(() => {
-    console.log(dados);
-  
-       if(dados.conteudo.manuscrito != null){
-        const file = dataURItoBlob(dados.conteudo.manuscrito);
-        setManuscritoFile(file);
-      }
-  
-  }, [])
+    if (dados.conteudo.manuscrito != null) {
+      const file = dataURItoBlob(dados.conteudo.manuscrito);
+      setManuscritoFile(file);
+    }
+  }, []);
 
   return (
-    
     <main>
-      {manuscritoFile != null ?<><div className={styles.embed}>
-        
-                    <embed src={manuscritoFile} type="application/pdf" />
-                  </div><a
-                                      href={manuscritoFile}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className={styles.btnmanus}
-                                    >
-                                      Abrir manuscrito (PDF)
-                                    </a></>  : <></>}
-      
+      {manuscritoFile != null ? (
+        <>
+          <div className={styles.embed}>
+            <embed src={manuscritoFile} type="application/pdf" />
+          </div>
+          <a
+            href={manuscritoFile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.btnmanus}
+          >
+            Abrir manuscrito (PDF)
+          </a>
+        </>
+      ) : (
+        <></>
+      )}
+
       <div className={styles.form}>
         <div className={styles.tituloContainer}>
           <h1 className={styles.titulo}>Confirmação</h1>
@@ -143,21 +131,6 @@ export default function Confirmacao({
                   <label>Direitos de Publicação e Uso de IA:</label>
                   <div className={styles.liinput}>
                     {dados.detalhes.direitoPublicacao}
-                  </div>
-                </div>
-
-                <div>
-                  <label>Autor:</label>
-                  <div className={styles.liinput}>
-                    {dados.detalhes.autor?.nome}{" "}
-                    {dados.detalhes.autor?.sobrenome}
-                  </div>
-                </div>
-
-                <div>
-                  <label>Imagem explícitas?</label>
-                  <div className={styles.liinput}>
-                    {dados.detalhes.imagensExplicitas ? <>Sim</> : <>Não</>}
                   </div>
                 </div>
 

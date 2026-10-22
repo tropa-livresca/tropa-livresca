@@ -169,8 +169,8 @@ export default function Livros() {
                     >
                       <h3>{livro.titulo || "Sem título"}</h3>
                       <p className={styles.autor}>
-                        {livro.autor_nome || "Sem autor"}{" "}
-                        {livro.autor_sobrenome || ""}
+                        {livro.users_profile.nome || "Sem autor"}{" "}
+                        {livro.users_profile.sobrenome || ""}
                       </p>
                     </Link>
                   </div>
