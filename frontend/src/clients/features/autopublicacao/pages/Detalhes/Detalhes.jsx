@@ -58,13 +58,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
     onChange({ ...dados, [chave]: valor });
   };
 
-  const atualizarAutor = (chave, valor) => {
-    onChange({
-      ...dados,
-      autor: { ...dados.autor, [chave]: valor },
-    });
-  };
-
   const atualizarColaborador = (index, chave, valor) => {
     const novosColaboradores = [...listaColaboradores];
     novosColaboradores[index] = {
@@ -145,29 +138,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
             value={dados.ISBN || ""}
             onChange={(e) => atualizarCampo("ISBN", e.target.value)}
             handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
-            className={styles.inputmodificado}
-          />
-        </div>
-
-        <div className={styles.card}>
-          <legend>Identificação do Autor no Livro</legend>
-          <label>Nome:</label>
-          <Input
-            placeholder="Inserir nome do autor"
-            type="text"
-            value={dados.autor?.nome || ""}
-            onChange={(e) => atualizarAutor("nome", e.target.value)}
-            handleOnChange={(e) => atualizarAutor("nome", e.target.value)}
-            className={styles.inputmodificado}
-          />
-
-          <label>Sobrenome: </label>
-          <Input
-            placeholder="Inserir sobrenome do autor"
-            type="text"
-            value={dados.autor?.sobrenome || ""}
-            onChange={(e) => atualizarAutor("sobrenome", e.target.value)}
-            handleOnChange={(e) => atualizarAutor("sobrenome", e.target.value)}
             className={styles.inputmodificado}
           />
         </div>

@@ -1,9 +1,23 @@
-﻿import { useEffect, useMemo } from "react";
+﻿import { useEffect, useState } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados";
+
+const dataURItoBlob = (dataURI) => {
+  let byteString = atob(dataURI.split(",")[1]);
+
+  let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+
+  let ab = new ArrayBuffer(byteString.length);
+  let ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+
+  return new Blob([ab], { type: mimeString });
+};
 
 export default function Confirmacao({
   dados,
@@ -21,44 +35,35 @@ export default function Confirmacao({
     }
   };
 
-  const extrairArquivo = (dado) => {
-    if (!dado) return null;
-    if (dado instanceof File) return dado;
-    if (dado instanceof FileList && dado.length > 0) return dado[0];
-    if (Array.isArray(dado) && dado.length > 0) return dado[0];
-    return null;
-  };
-
-  const previews = useMemo(() => {
-    const urlsCriadas = [];
-
-    const obterUrl = (campo) => {
-      const arquivo = extrairArquivo(campo);
-      if (arquivo) {
-        const url = URL.createObjectURL(arquivo);
-        urlsCriadas.push(url);
-        return url;
-      }
-      if (typeof campo === "string") return campo;
-      return null;
-    };
-
-    return {
-      manga: obterUrl(dados?.conteudo?.manuscrito),
-      frente: obterUrl(dados?.conteudo?.capa?.frente),
-      verso: obterUrl(dados?.conteudo?.capa?.verso),
-      _urlsCriadas: urlsCriadas,
-    };
-  }, [dados?.conteudo]);
+  const [manuscritoFile, setManuscritoFile] = useState(null);
 
   useEffect(() => {
-    return () => {
-      previews._urlsCriadas.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [previews]);
+    if (dados.conteudo.manuscrito != null) {
+      const file = dataURItoBlob(dados.conteudo.manuscrito);
+      setManuscritoFile(file);
+    }
+  }, []);
 
   return (
     <main>
+      {manuscritoFile != null ? (
+        <>
+          <div className={styles.embed}>
+            <embed src={manuscritoFile} type="application/pdf" />
+          </div>
+          <a
+            href={manuscritoFile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.btnmanus}
+          >
+            Abrir manuscrito (PDF)
+          </a>
+        </>
+      ) : (
+        <></>
+      )}
+
       <div className={styles.form}>
         <div className={styles.tituloContainer}>
           <h1 className={styles.titulo}>Confirmação</h1>
@@ -130,21 +135,6 @@ export default function Confirmacao({
                 </div>
 
                 <div>
-                  <label>Autor:</label>
-                  <div className={styles.liinput}>
-                    {dados.detalhes.autor?.nome}{" "}
-                    {dados.detalhes.autor?.sobrenome}
-                  </div>
-                </div>
-
-                <div>
-                  <label>Imagem explícitas?</label>
-                  <div className={styles.liinput}>
-                    {dados.detalhes.imagensExplicitas ? <>Sim</> : <>Não</>}
-                  </div>
-                </div>
-
-                <div>
                   <label>Categoria:</label>
                   <div className={styles.liinput}>
                     {dados.detalhes.categoria}
@@ -206,14 +196,14 @@ export default function Confirmacao({
                   </div>
                 </div>
 
-                {previews.manga ? (
+                {dados.conteudo.manuscrito ? (
                   <div className={styles.previewContainer}>
                     <div className={styles.previewspan}>
                       <span>Documento PDF</span>
                     </div>
 
                     <iframe
-                      src={previews.manga}
+                      src={dados.conteudo.manuscrito}
                       title="Pré-visualização do Manuscrito"
                       type="application/pdf"
                       className={styles.iframe}
@@ -245,14 +235,14 @@ export default function Confirmacao({
               </button>
             </div>
             <div className={styles.capa}>
-              {previews.frente ? (
+              {dados.conteudo.capa.frente ? (
                 <div className={`${styles.capas} ${styles.card2}`}>
                   <p className={styles.fvo}>
                     <small>Frente:</small>
                   </p>
                   <div className={styles.imagemContainer}>
                     <img
-                      src={previews.frente}
+                      src={dados.conteudo.capa.frente}
                       alt="Frente da Capa"
                       className={styles.fvoimg}
                     />
@@ -271,14 +261,14 @@ export default function Confirmacao({
                 </div>
               )}
 
-              {previews.verso ? (
+              {dados.conteudo.capa.verso ? (
                 <div className={`${styles.capas} ${styles.card2}`}>
                   <p className={styles.fvo}>
                     <small>Verso:</small>
                   </p>
                   <div className={styles.imagemContainer}>
                     <img
-                      src={previews.verso}
+                      src={dados.conteudo.capa.verso}
                       alt="Verso da Capa"
                       className={styles.fvoimg}
                     />

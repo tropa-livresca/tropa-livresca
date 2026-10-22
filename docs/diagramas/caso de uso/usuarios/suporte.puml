@@ -1,0 +1,62 @@
+@startuml
+
+title <size:18><b>Casos de Uso — Comunidade e Suporte</b></size>
+
+left to right direction
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 18
+skinparam dpi 150
+
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam defaultTextAlignment center
+
+skinparam titleFontName "Segoe UI"
+skinparam titleFontSize 18
+skinparam titleFontColor #172033
+
+skinparam packageStyle rectangle
+skinparam packageBorderThickness 2
+skinparam packageFontName "Segoe UI Semibold"
+skinparam packageFontSize 15
+skinparam packageFontColor #172033
+skinparam packageBackgroundColor white
+
+skinparam usecase {
+    BackgroundColor white
+    BorderColor #64748B
+    BorderThickness 1.5
+    FontColor #172033
+    FontName "Segoe UI"
+    FontSize 12
+    Padding 10
+}
+
+skinparam actor {
+    BackgroundColor white
+    BorderColor #334155
+    BorderThickness 2
+    FontColor #172033
+    FontName "Segoe UI Semibold"
+    FontSize 13
+}
+
+skinparam arrow {
+    Color #64748B
+    Thickness 1.5
+}
+
+actor "Autor / Leitor" as Usuario
+
+package "COMUNIDADE E SUPORTE" {
+
+    usecase "Fazer Contato via Formulário" as UC_Contato
+    usecase "Interagir com FAQ" as UC_FAQ
+
+    Usuario --> UC_Contato
+    Usuario --> UC_FAQ
+}
+
+@enduml

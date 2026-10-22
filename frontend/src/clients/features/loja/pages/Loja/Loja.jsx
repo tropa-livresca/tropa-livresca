@@ -36,6 +36,12 @@ export default function Loja() {
     "Adulto",
   ];
 
+  const idiomas = [
+    { valor: "português", rotulo: "Português" },
+    { valor: "inglês", rotulo: "Inglês" },
+    { valor: "espanhol", rotulo: "Espanhol" },
+  ];
+
   useEffect(() => {
     buscarLivros(
       paginaAtual,
@@ -90,14 +96,13 @@ export default function Loja() {
       <div className={styles.container}>
         <div className={styles.containerlivros}>
           <div className={styles.filtros}>
-            <div className={styles.oi}>
+            <div className={styles.oi2}>
               <h1>Gênero</h1>
             </div>
             <ul>
               <li
                 onClick={() => handleCategoria("")}
                 className={categoria === "" ? styles.categoriaAtiva : ""}
-                style={{ cursor: "pointer" }}
               >
                 Todos
               </li>
@@ -106,63 +111,37 @@ export default function Loja() {
                   key={gen}
                   onClick={() => handleCategoria(gen)}
                   className={categoria === gen ? styles.categoriaAtiva : ""}
-                  style={{
-                    cursor: "pointer",
-                    fontWeight: categoria === gen ? "bold" : "normal",
-                  }}
                 >
                   {gen}
                 </li>
               ))}
             </ul>
 
-            <hr />
             <div className={styles.oi}>
               <h1>Idioma</h1>
             </div>
+
             <ul>
               <li
                 onClick={() => handleIdioma("")}
                 className={idioma === "" ? styles.categoriaAtiva : ""}
-                style={{
-                  cursor: "pointer",
-                  fontWeight: idioma === "" ? "bold" : "normal",
-                }}
               >
                 Todos
               </li>
-              <li
-                onClick={() => handleIdioma("português")}
-                className={idioma === "português" ? styles.categoriaAtiva : ""}
-                style={{
-                  cursor: "pointer",
-                  fontWeight: idioma === "português" ? "bold" : "normal",
-                }}
-              >
-                Português
-              </li>
-              <li
-                onClick={() => handleIdioma("inglês")}
-                className={idioma === "inglês" ? styles.categoriaAtiva : ""}
-                style={{
-                  cursor: "pointer",
-                  fontWeight: idioma === "inglês" ? "bold" : "normal",
-                }}
-              >
-                Inglês
-              </li>
-              <li
-                onClick={() => handleIdioma("espanhol")}
-                className={idioma === "espanhol" ? styles.categoriaAtiva : ""}
-                style={{
-                  cursor: "pointer",
-                  fontWeight: idioma === "espanhol" ? "bold" : "normal",
-                }}
-              >
-                Espanhol
-              </li>
+              {idiomas.map((idi) => (
+                <li
+                  key={idi.valor}
+                  onClick={() => handleIdioma(idi.valor)}
+                  className={idioma === idi.valor ? styles.categoriaAtiva : ""}
+                >
+                  {idi.rotulo}
+                </li>
+              ))}
             </ul>
+
             <button
+              type="button"
+              className={styles.btnLimpar}
               onClick={() => {
                 handleCategoria("");
                 handleIdioma("");
@@ -245,7 +224,7 @@ export default function Loja() {
             {carregando ? (
               <Carregando mensagem="Carregando loja..." />
             ) : livros.length === 0 ? (
-              <p>Nenhum livro encontrado.</p>
+              <p className={styles.semResultados}>Nenhum livro encontrado.</p>
             ) : (
               livros.map((livro) => (
                 <CardProduto
@@ -257,14 +236,18 @@ export default function Loja() {
             )}
           </div>
 
-          {!carregando && meta && meta.totalPages > 1 && (
-            <Paginacao
-              paginaAtual={paginaAtual}
-              totalPaginas={meta.totalPages}
-              totalItems={meta.totalItems}
-              onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
-            />
-          )}
+         
+{!carregando && meta && meta.totalPages > 1 && (
+  <div className={styles.paginacao}>
+    <Paginacao
+      paginaAtual={paginaAtual}
+      totalPaginas={meta.totalPages}
+      totalItems={meta.totalItems}
+      onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+    />
+  </div>
+)}
+
         </div>
       </div>
     </main>

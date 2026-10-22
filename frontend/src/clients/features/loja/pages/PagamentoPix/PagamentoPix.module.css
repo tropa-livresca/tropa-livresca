@@ -5,6 +5,16 @@
   box-sizing: border-box;
 }
 
+.formPagamento{
+   padding: 1.5rem;
+  background: #fffdf7;
+ box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+     border-radius: 1.5rem;
+
+}
+
 .topo {
   margin-bottom: 2rem;
 }
@@ -143,10 +153,7 @@
 .instrucoes {
   width: 100%;
   margin: 0 auto 2.5rem;
-  padding: 1.5rem;
-  background: #fff8d7;
-  border: 1px solid #e2c77c;
-
+ 
   border-radius: 1rem;
   box-sizing: border-box;
 }
@@ -235,6 +242,33 @@
   text-align: center;
 }
 
+.resumoPedido {
+  width: 50%; 
+  padding: 0.7rem 1rem;
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 0.8rem;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1rem; 
+}
+
+
+.pedido{
+  font-family: none;
+  margin: 0;
+  color:#67170c;
+  font-size:1.5rem;
+  font-weight: 600;
+}
+
+.pedido1{
+  font-family: none;
+  color:#67170c;
+    margin: 0;
+  font-size:1.5rem;
+  font-weight: 600;
+}
 @media (max-width: 800px) {
   .container {
     width: 90%;

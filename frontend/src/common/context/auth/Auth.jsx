@@ -110,13 +110,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (email, password, telefone, nome) => {
+  const signup = async (email, password, telefone, nome, sobrenome) => {
     try {
       const res = await apiFetch("/api/v1/auth/signup", {
         skipAuthRedirect: true,
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, telefone, nome }),
+        body: JSON.stringify({ email, password, telefone, nome, sobrenome }),
       });
 
       const data = await res.json();

@@ -2,7 +2,7 @@ import styles from "./Inicio.module.css";
 import { Link } from "react-router-dom";
 import { useAutores } from "../../../../hooks/useAutores";
 import { useLivros } from "../../../../hooks/useLivros";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaUserCircle, FaArrowRight } from "react-icons/fa";
 
 export default function Inicio() {
@@ -10,13 +10,50 @@ export default function Inicio() {
     autores,
     buscarAutores,
     carregando: carregandoAutores,
+    meta: metaAutores,
   } = useAutores();
-  const { Livros, BuscarLivros, carregando: carregandoLivros } = useLivros();
+
+  const {
+    Livros,
+    BuscarLivros,
+    carregando: carregandoLivros,
+    meta,
+  } = useLivros();
+
+  const [paginaAtualAutor, setPaginaAtualAutor] = useState(1);
+  const [paginaAtual, setPaginaAtual] = useState(1);
 
   useEffect(() => {
-    buscarAutores(1, 4);
-    BuscarLivros(1, 4);
-  }, [buscarAutores, BuscarLivros]);
+    buscarAutores(paginaAtualAutor, 4);
+  }, [buscarAutores]);
+
+  useEffect(() => {
+    BuscarLivros(paginaAtual, 4);
+  }, [BuscarLivros, paginaAtual]);
+
+  const avancarPaginaAutor = () => {
+    if (metaAutores && paginaAtualAutor < metaAutores.totalPages) {
+      setPaginaAtualAutor((prev) => prev + 1);
+    }
+  };
+
+  const voltarPaginaAutor = () => {
+    if (paginaAtualAutor > 1) {
+      setPaginaAtualAutor((prev) => prev - 1);
+    }
+  };
+
+  const avancarPagina = () => {
+    if (meta && paginaAtual < meta.totalPages) {
+      setPaginaAtual((prev) => prev + 1);
+    }
+  };
+
+  const voltarPagina = () => {
+    if (paginaAtual > 1) {
+      setPaginaAtual((prev) => prev - 1);
+    }
+  };
 
   return (
     <div>
@@ -62,6 +99,19 @@ export default function Inicio() {
             </div>
 
             <div className={styles.editorial_grid_livros}>
+              <div className={styles.paginacao_controles}>
+                <button onClick={voltarPagina} disabled={paginaAtual === 1}>
+                  Voltar
+                </button>
+
+                <button
+                  onClick={avancarPagina}
+                  disabled={!meta || paginaAtual >= meta.totalPages}
+                >
+                  Avançar
+                </button>
+              </div>
+
               {carregandoLivros ? (
                 <p className={styles.loading_text}>Carregando destaques...</p>
               ) : !Livros || Livros.length === 0 ? (
@@ -69,7 +119,7 @@ export default function Inicio() {
                   Nenhum livro em destaque no momento.
                 </p>
               ) : (
-                Livros.slice(0, 4).map((livro, index) => (
+                Livros.map((livro, index) => (
                   <article
                     key={livro.id ? `livro-${livro.id}` : `livro-idx-${index}`}
                     className={styles.card_livro_editorial}
@@ -92,9 +142,9 @@ export default function Inicio() {
                         {livro.idioma || "Português"}
                       </span>
                       <h3>{livro.titulo || "Sem título"}</h3>
-                      <p className={styles.autor_nome_livro}>
-                        {livro.autor_nome
-                          ? `${livro.autor_nome} ${livro.autor_sobrenome || ""}`
+                      <p className={styles.autorLivro}>
+                        {livro.users_profile
+                          ? `${livro.users_profile.nome} ${livro.users_profile.sobrenome || ""}`
                           : "Autor Independente"}
                       </p>
                       <Link
@@ -124,12 +174,30 @@ export default function Inicio() {
             </div>
 
             <div className={styles.editorial_grid_autores}>
+              <div className={styles.paginacao_controles}>
+                <button
+                  onClick={voltarPaginaAutor}
+                  disabled={paginaAtualAutor === 1}
+                >
+                  Voltar
+                </button>
+
+                <button
+                  onClick={avancarPaginaAutor}
+                  disabled={
+                    !metaAutores || paginaAtualAutor >= metaAutores.totalPages
+                  }
+                >
+                  Avançar
+                </button>
+              </div>
+
               {carregandoAutores ? (
                 <p className={styles.loading_text}>Carregando autores...</p>
               ) : !autores || autores.length === 0 ? (
                 <p className={styles.empty_text}>Nenhum autor registrado.</p>
               ) : (
-                autores.slice(0, 4).map((autor, index) => (
+                autores.map((autor, index) => (
                   <article
                     key={autor.id ? `autor-${autor.id}` : `autor-idx-${index}`}
                     className={styles.card_autor_editorial}

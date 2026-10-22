@@ -1,0 +1,117 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
+}
+
+.topo {
+  width: 100%;
+  padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.form{
+ background: #fffdf7;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.input{
+     width: 100% !important;
+    background: #fff8d7 !important;
+    border: 1px solid #e2c77c !important;
+    border-radius: 1rem !important;
+    padding: 0.8rem !important;
+    justify-self: stretch !important;
+    font-size: 1rem !important;
+    color: #67170c !important;
+    margin-bottom: 1rem;
+
+}
+
+.label{
+          color: #67170c;
+    font-size: 1rem;
+    font-family: "Jacques Francois", serif;
+    margin-bottom: 0.3rem;
+}
+
+
+
+.input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.input1{
+    width: 100% !important;
+    background: #fff8d7 !important;
+    border: 1px solid #e2c77c !important;
+    border-radius: 1rem !important;
+    padding: 0.8rem !important;
+    justify-self: stretch !important;
+    font-size: 1rem !important;
+    color: #67170c !important;
+    margin-bottom: 1rem;
+    font-family: none;
+}
+
+.input1:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.input1::placeholder {
+  color: var(--cor-texto-muted) !important;
+  font-family: "Jacques Francois", serif;
+}
+
+
+.legend {
+  color: #67170c;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 2%;
+}
+
+.legend::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}

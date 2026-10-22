@@ -19,6 +19,7 @@ export const useCadastro = () => {
   }, [navigate]);
 
   const [nome, setNome] = useState("");
+  const [sobrenome, setSobrenome] = useState("");
   const [senha, setSenha] = useState("");
   const [confSenha, setConfSenha] = useState("");
   const [email, setEmail] = useState("");
@@ -32,7 +33,7 @@ export const useCadastro = () => {
     e.preventDefault();
     setError("");
 
-    if (!email || !senha || !confSenha || !telefone || !nome) {
+    if (!email || !senha || !confSenha || !telefone || !nome || !sobrenome) {
       setError("Preencha todos os campos.");
       return;
     }
@@ -68,7 +69,7 @@ export const useCadastro = () => {
       return;
     }
 
-    const resError = await signup(email, senha, telefone, nome);
+    const resError = await signup(email, senha, telefone, nome, sobrenome);
 
     if (resError) {
       setError(resError);
@@ -87,6 +88,8 @@ export const useCadastro = () => {
     setPrivacidade,
     error,
     setError,
+    sobrenome,
+    setSobrenome,
     nome,
     setNome,
     confSenha,

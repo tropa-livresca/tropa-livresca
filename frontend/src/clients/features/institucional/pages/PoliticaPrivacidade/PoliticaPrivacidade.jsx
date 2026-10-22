@@ -1,4 +1,5 @@
 import styles from "../../../suporte/pages/FAQ/FAQ.module.css";
+import stylesoutro from "./PoliticaPrivacidade.module.css";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import { useState } from "react";
 import { FiChevronDown } from "react-icons/fi";
@@ -279,16 +280,19 @@ export default function PoliticaPrivacidade() {
         descricao="Encontre respostas para as dúvidas mais comuns."
       />
 
-      <VoltarHistorico />
+      
+
+      <div className={styles.container}>
+        <div className={stylesoutro.btn}>
+      <VoltarHistorico/>
       <a
         href={politicaPrivacidadePdf}
         download="Politica-de-Privacidade-Tropa-Livresca.pdf"
-        className={styles.botaoDownload}
       >
         Baixar Política
       </a>
+      </div>
 
-      <div className={styles.container}>
         {Object.entries(faqData).map(([categoria, itens]) => (
           <div key={categoria} className={styles.categoriaCard}>
             <h2 className={styles.categoriaTitulo}>{categoria}</h2>

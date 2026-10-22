@@ -338,7 +338,8 @@ export default function GerenciaLivros() {
                           </h3>
 
                           <span className={styles.sub}>
-                            {livro.autor_nome} {livro.autor_sobrenome}
+                            {livro.users_profile?.nome}{" "}
+                            {livro.users_profile?.sobrenome}
                           </span>
                         </div>
                       </td>
@@ -388,7 +389,7 @@ export default function GerenciaLivros() {
                           {livro.estado === "em_revisao" && (
                             <Link
                               to={`/admin/livros/revisoes/nova-revisao/${livro.id}`}
-                              className={styles.inativar}
+                              className={styles.revisar}
                             >
                               Revisar
                             </Link>

@@ -153,9 +153,15 @@ export class AuthController {
 
   static async signup(req, res, next) {
     try {
-      const { email, password, telefone, nome } = req.body;
+      const { email, password, telefone, nome, sobrenome } = req.body;
 
-      const data = await AuthService.signup(email, password, nome, telefone);
+      const data = await AuthService.signup(
+        email,
+        password,
+        nome,
+        sobrenome,
+        telefone,
+      );
 
       return res.status(201).json({
         data: data,

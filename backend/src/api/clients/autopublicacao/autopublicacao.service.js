@@ -18,6 +18,26 @@ import {
 } from "../../common/config/storage.js";
 
 export class AutopublicacaoService {
+  static _converterPreco(valor, nomeCampo) {
+    if (valor === null || valor === undefined || valor === "") return 0;
+
+    const texto = String(valor).trim();
+    if (!texto) return 0;
+
+    const normalizado = texto.includes(",")
+      ? texto.replace(/\./g, "").replace(",", ".")
+      : texto;
+    const preco = Number(normalizado);
+
+    if (!Number.isFinite(preco) || preco < 0) {
+      const error = new Error(`Preço inválido para ${nomeCampo}.`);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return preco;
+  }
+
   static _parseCapa(capa) {
     if (!capa) return {};
     if (typeof capa === "object") return capa;
@@ -348,20 +368,19 @@ export class AutopublicacaoService {
         : null,
       idioma: dadosLivro.detalhes.idioma,
       categoria: dadosLivro.detalhes.categoria,
-      autor_nome: dadosLivro.detalhes?.autor?.nome || null,
-      autor_sobrenome: dadosLivro.detalhes?.autor?.sobrenome || null,
       colaboradores: dadosLivro.detalhes?.colaboradores || [],
       direitos_de_publicacao:
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true,
-      imagens_explicitas: dadosLivro.detalhes?.imagensExplicitas === true,
       data_de_publicacao: new Date().toISOString().split("T")[0],
-      preco_digital: dadosLivro.orcamento?.valorLivroDigital
-        ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
-        : 0.0,
-      preco_fisico: dadosLivro.orcamento?.valorLivroFisico
-        ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
-        : 0.0,
+      preco_digital: this._converterPreco(
+        dadosLivro.orcamento?.valorLivroDigital,
+        "livro digital",
+      ),
+      preco_fisico: this._converterPreco(
+        dadosLivro.orcamento?.valorLivroFisico,
+        "livro físico",
+      ),
       capa: capaParaPersistir,
       manuscrito: manuscritoParaPersistir,
     };
@@ -494,9 +513,6 @@ export class AutopublicacaoService {
       numero_edicao: dadosLivro.detalhes?.numeroEdicao
         ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
         : livroAtual.numero_edicao,
-      autor_nome: dadosLivro.detalhes?.autor?.nome || livroAtual.autor_nome,
-      autor_sobrenome:
-        dadosLivro.detalhes?.autor?.sobrenome || livroAtual.autor_sobrenome,
       numero_paginas: dadosLivro.orcamento?.numeroPaginas
         ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
         : livroAtual.numero_paginas,
@@ -506,15 +522,24 @@ export class AutopublicacaoService {
         dadosLivro.detalhes?.direitoPublicacao === "sim" ||
         dadosLivro.detalhes?.direitoPublicacao === true ||
         livroAtual.direitos_de_publicacao,
-      imagens_explicitas:
-        dadosLivro.detalhes?.imagensExplicitas === true ||
-        livroAtual.imagens_explicitas,
-      preco_digital: dadosLivro.orcamento?.valorLivroDigital
-        ? parseFloat(dadosLivro.orcamento.valorLivroDigital)
-        : livroAtual.preco_digital,
-      preco_fisico: dadosLivro.orcamento?.valorLivroFisico
-        ? parseFloat(dadosLivro.orcamento.valorLivroFisico)
-        : livroAtual.preco_fisico,
+      preco_digital:
+        dadosLivro.orcamento?.valorLivroDigital !== undefined &&
+        dadosLivro.orcamento?.valorLivroDigital !== null &&
+        dadosLivro.orcamento?.valorLivroDigital !== ""
+          ? this._converterPreco(
+              dadosLivro.orcamento.valorLivroDigital,
+              "livro digital",
+            )
+          : livroAtual.preco_digital,
+      preco_fisico:
+        dadosLivro.orcamento?.valorLivroFisico !== undefined &&
+        dadosLivro.orcamento?.valorLivroFisico !== null &&
+        dadosLivro.orcamento?.valorLivroFisico !== ""
+          ? this._converterPreco(
+              dadosLivro.orcamento.valorLivroFisico,
+              "livro físico",
+            )
+          : livroAtual.preco_fisico,
       capa: capaParaPersistir,
       manuscrito: manuscritoParaPersistir,
     };

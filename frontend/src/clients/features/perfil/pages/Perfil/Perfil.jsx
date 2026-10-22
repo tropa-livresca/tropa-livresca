@@ -274,6 +274,19 @@ export default function Perfil() {
             </section>
 
             <section>
+              <h3>Dados Bancários</h3>
+
+              <p className={styles.subtitulo}>Insira seus dados bancários.</p>
+
+        
+                  <Link to="/perfil/dadosbancarios" className={styles.linkDados}>
+                    Alterar dados
+                  </Link>
+
+              
+            </section>
+
+            <section>
               <h3>Foto de perfil</h3>
 
               <p className={styles.subtitulo}>PNG ou JPG, até 5MB.</p>

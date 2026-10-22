@@ -104,35 +104,10 @@ export default function PagamentoPix() {
           </div>
         </div>
 
-        <div className={styles.resumoPedido}>
-          <span>Pedido #{pedido.id}</span>
-          <strong>{formatarPreco(total)}</strong>
-
-          {frete > 0 && <span>Frete incluído no total do pedido.</span>}
-        </div>
+        
 
         <div className={styles.formulario}>
-          <label>
-            Chave Pix
-            <div className={styles.chavePix}>
-              <input
-                type="text"
-                value={CHAVE_PIX}
-                readOnly
-                aria-label="Chave Pix"
-              />
-
-              <button
-                type="button"
-                className={styles.botaoCopiar}
-                onClick={handleCopiarChave}
-                aria-label="Copiar chave Pix"
-                title="Copiar chave Pix"
-              >
-                <FiCopy />
-              </button>
-            </div>
-          </label>
+         
 
           {copiado && (
             <p role="status" aria-live="polite">
@@ -151,8 +126,39 @@ export default function PagamentoPix() {
             <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
           </div>
 
+          <div className={styles.resumoPedido}>
+          <p className={styles.pedido}>Pedido #{pedido.id}</p>
+          <p className={styles.pedido1}>{formatarPreco(total)}</p>
+
+          {frete > 0 && <span>Frete incluído no total do pedido.</span>}
+        
+
+         <label>
+            Chave Pix
+            <div className={styles.chavePix}>
+              <input
+                type="text"
+                value={CHAVE_PIX}
+                readOnly
+                aria-label="Chave Pix"
+                className={styles.ola}
+              />
+
+              <button
+                type="button"
+                className={styles.botaoCopiar}
+                onClick={handleCopiarChave}
+                aria-label="Copiar chave Pix"
+                title="Copiar chave Pix"
+              >
+                <FiCopy />
+              </button>
+            </div>
+          </label>
+
+          </div>
+
           <div className={styles.instrucoes}>
-            <strong>Como pagar</strong>
 
             <div>
               <span className={styles.numero}>1</span>
