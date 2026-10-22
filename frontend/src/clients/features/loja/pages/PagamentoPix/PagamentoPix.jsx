@@ -123,10 +123,7 @@ export default function PagamentoPix() {
               alt="QR Code contendo a chave Pix"
             />
 
-            <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
-          </div>
-
-          <div className={styles.resumoPedido}>
+            <div className={styles.resumoPedido}>
           <p className={styles.pedido}>Pedido #{pedido.id}</p>
           <p className={styles.pedido1}>{formatarPreco(total)}</p>
 
@@ -157,6 +154,11 @@ export default function PagamentoPix() {
           </label>
 
           </div>
+          
+            <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
+          </div>
+
+          
 
           <div className={styles.instrucoes}>
 
