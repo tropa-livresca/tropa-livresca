@@ -147,26 +147,6 @@ export class RevisaoModel {
     return data;
   }
 
-  static async VerificarAutorLivro(livroId, funcionarioId) {
-    const { data, error } = await supabase
-      .from("livros")
-      .select()
-      .eq("id", livroId)
-      .eq("fk_user_profile_id", funcionarioId)
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    if (data) {
-      return false;
-    }
-
-    return true;
-  }
-
   static async VerificarRevisor(livroId, funcionarioId) {
     const { data, error } = await supabase
       .from("revisoes")
@@ -405,22 +385,6 @@ export class RevisaoModel {
       );
       updateError.statusCode = 409;
       throw updateError;
-    }
-
-    return data;
-  }
-
-  static async ExcluirRevisao(id) {
-    const { data, error } = await supabase
-      .from("revisoes")
-      .delete()
-      .eq("id", id)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
     }
 
     return data;

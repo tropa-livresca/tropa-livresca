@@ -53,11 +53,9 @@ export default function VisualizarLivro() {
     subtitulo,
     capa,
     manuscrito,
-    autor_nome,
-    autor_sobrenome,
+    users_profile,
     descricao,
     idioma,
-    imagens_explicitas,
     publico_alvo,
     numero_edicao,
     preco_digital,
@@ -205,7 +203,7 @@ export default function VisualizarLivro() {
               <li>
                 <span>Autor</span>
                 <strong>
-                  {autor_nome} {autor_sobrenome}
+                  {users_profile?.nome} {users_profile?.sobrenome}
                 </strong>
               </li>
               <li>
@@ -227,10 +225,6 @@ export default function VisualizarLivro() {
               <li>
                 <span>Público-alvo</span>{" "}
                 <strong>{publico_alvo || "Não informado"}</strong>
-              </li>
-              <li>
-                <span>Imagens explícitas</span>{" "}
-                <strong>{imagens_explicitas ? "Sim" : "Não"}</strong>
               </li>
               <li>
                 <span>Direitos de autopublicação</span>{" "}

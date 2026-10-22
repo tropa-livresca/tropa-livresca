@@ -142,7 +142,7 @@ export default function Inicio() {
                         {livro.idioma || "Português"}
                       </span>
                       <h3>{livro.titulo || "Sem título"}</h3>
-                      <p className={styles.autor_nome_livro}>
+                      <p className={styles.autorLivro}>
                         {livro.users_profile
                           ? `${livro.users_profile.nome} ${livro.users_profile.sobrenome || ""}`
                           : "Autor Independente"}
