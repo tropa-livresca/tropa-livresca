@@ -2,7 +2,6 @@ export const livroCompletoMock = {
   id: 1,
   ISBN: "123",
   direitos_de_publicacao: true,
-  imagens_explicitas: false,
   numero_edicao: 2,
   data_de_publicacao: "2026-07-26",
   preco_digital: 29.9,
@@ -11,9 +10,7 @@ export const livroCompletoMock = {
   subtitulo: "A Arquitetura Oculta do Código",
   descricao:
     "Uma jornada técnica sobre engenharia de software e testes robustos.",
-  autor_nome: "Carlos",
-  autor_sobrenome: "Silva",
-  fk_user_profile_id: "user-integration-123",
+ fk_user_profile_id: "user-integration-123",
   ativo: true,
   estado: "rascunho",
   idioma: "Português",

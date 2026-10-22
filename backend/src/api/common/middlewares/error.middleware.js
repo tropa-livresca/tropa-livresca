@@ -1,9 +1,5 @@
-export const errorHandler = (err, res) => {
-  console.error(
-    "Erro detectado no servidor (Detalhado):",
-    JSON.stringify(err, null, 2),
-  );
-  console.error("Stack do Erro:", err.stack || err);
+export const errorHandler = (err, _req, res, _next) => {
+  console.error("Erro detectado no servidor:", err);
 
   const statusCode = err.statusCode || 500;
   let mensagem =

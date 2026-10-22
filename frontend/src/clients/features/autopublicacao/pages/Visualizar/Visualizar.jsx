@@ -29,11 +29,8 @@ export default function Visualizar() {
     subtitulo,
     capa,
     manuscrito,
-    autor_nome,
-    autor_sobrenome,
     descricao,
     idioma,
-    imagens_explicitas,
     numero_edicao,
     preco_digital,
     preco_fisico,
@@ -54,7 +51,7 @@ export default function Visualizar() {
           <p className={styles.autor}>
             Por:{" "}
             <strong>
-              {autor_nome} {autor_sobrenome}
+              Autor
             </strong>
           </p>
         </div>
@@ -155,11 +152,6 @@ export default function Visualizar() {
 
               <li>
                 <span>Público-alvo:</span> <strong>Não informado</strong>
-              </li>
-
-              <li>
-                <span>Imagens Explícitas:</span>{" "}
-                <strong>{imagens_explicitas ? "Sim" : "Não"}</strong>
               </li>
 
               <li>

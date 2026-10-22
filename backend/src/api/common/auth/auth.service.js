@@ -123,8 +123,8 @@ export class AuthService {
     return data;
   }
 
-  static async signup(email, password, nome, telefone) {
-    if (!email || !password || !nome || !telefone) {
+  static async signup(email, password, nome, sobrenome, telefone) {
+    if (!email || !password || !nome || !telefone || !sobrenome) {
       const erroCampos = new Error(
         "Todos os campos são obrigatórios para o cadastro.",
       );
@@ -136,6 +136,7 @@ export class AuthService {
       email,
       password,
       nome,
+      sobrenome,
       telefone,
     );
 

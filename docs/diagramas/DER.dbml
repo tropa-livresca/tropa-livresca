@@ -1,6 +1,7 @@
 Table users_profile {
   id uuid [pk, not null]
   nome text [not null]
+  sobrenome text [not null]
   telefone varchar [not null]
   imagem text
   descricao text
@@ -26,7 +27,6 @@ Table itens_venda {
 Table livros {
   id bigint [pk, increment, not null]
   direitos_de_publicacao boolean [not null]
-  imagens_explicitas boolean [not null]
   numero_edicao smallint
   data_de_publicacao date [not null]
   preco_digital numeric [not null]
@@ -34,8 +34,6 @@ Table livros {
   titulo text [not null]
   subtitulo text [not null]
   descricao text [not null]
-  autor_nome text [not null]
-  autor_sobrenome text [not null]
   fk_user_profile_id uuid [not null]
   ativo boolean [not null]
   estado varchar [not null]
