@@ -258,7 +258,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         ISBN: dadosBanco.ISBN || "",
 
-
         colaboradores: dadosBanco.colaboradores || [],
 
         descricao: dadosBanco.descricao || "",
@@ -299,10 +298,6 @@ export const AutopublicacaoProvider = ({ children }) => {
   const orcamento = dadosLivro.orcamento;
 
   const validarDetalhes = () => {
-    const imagemExplicitaNaoInformada =
-      detalhes.imagensExplicitas === undefined ||
-      detalhes.imagensExplicitas === "";
-
     if (
       !detalhes.titulo ||
       !detalhes.idioma ||
@@ -310,8 +305,7 @@ export const AutopublicacaoProvider = ({ children }) => {
       !detalhes.direitoPublicacao ||
       !detalhes.categoria ||
       !detalhes.subtitulo ||
-      !detalhes.numeroEdicao ||
-      imagemExplicitaNaoInformada
+      !detalhes.numeroEdicao
     ) {
       return false;
     }
@@ -371,9 +365,7 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (chave === "detalhes" && estadoAtualLivro === LIVRO_ESTADO.PUBLICADO) {
       const dadosAntigos = dadosLivro.detalhes;
 
-      if (
-        novosDados.titulo !== dadosAntigos.titulo
-      ) {
+      if (novosDados.titulo !== dadosAntigos.titulo) {
         mostrarPopup(
           "erro",
 
@@ -382,7 +374,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         return;
       }
-     
     }
 
     setDadosLivro((estadoAnterior) => {
@@ -422,8 +413,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         throw new Error("Este livro está travado para alterações no momento.");
       }
 
-      
-
       setCarregando(true);
 
       try {
@@ -433,40 +422,34 @@ export const AutopublicacaoProvider = ({ children }) => {
           throw new Error("ID do usuário inválido");
 
         const dataURItoBlob = (dataURI) => {
+          let byteString = atob(dataURI.split(",")[1]);
 
-    let byteString = atob(dataURI.split(',')[1]);
+          let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
+          let ab = new ArrayBuffer(byteString.length);
+          let ia = new Uint8Array(ab);
+          for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+          }
 
-    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-
-    let ab = new ArrayBuffer(byteString.length);
-    let ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], {type: mimeString});
-
-  }
+          return new Blob([ab], { type: mimeString });
+        };
 
         const conteudo = dadosDoLivro.conteudo;
         const capa = conteudo.capa;
         const manuscrito = conteudo?.manuscrito;
 
         const arquivosEnviados = [];
-        
-        const uploadArquivo = async (arquivo, tipo, tipoDeArquivo, ) => {
+
+        const uploadArquivo = async (arquivo, tipo, tipoDeArquivo) => {
           if (!arquivo) return null;
 
           let blob = dataURItoBlob(arquivo);
-          let file = new File([blob], "arquivo", {type:tipoDeArquivo})
+          let file = new File([blob], "arquivo", { type: tipoDeArquivo });
 
-          const extensao =
-            file?.type.split("/").pop() ||
-            "bin";
+          const extensao = file?.type.split("/").pop() || "bin";
 
-            const res = await apiFetch(
+          const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",
 
             {
@@ -494,16 +477,16 @@ export const AutopublicacaoProvider = ({ children }) => {
             );
           }
 
-         const { error } = await supabase.storage
+          const { error } = await supabase.storage
 
-           .from(bucket)
+            .from(bucket)
 
-           .uploadToSignedUrl(path, token, blob);
+            .uploadToSignedUrl(path, token, blob);
 
-         if(error){
+          if (error) {
             throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
-         }
-         
+          }
+
           arquivosEnviados.push({ tipo, path });
           return path;
         };
@@ -511,8 +494,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         let caminhosArquivos;
 
         try {
-          
-
           const [capaFrentePath, capaVersoPath, manuscritoPath] =
             await Promise.all([
               uploadArquivo(
@@ -521,7 +502,6 @@ export const AutopublicacaoProvider = ({ children }) => {
                 "capa_frente",
 
                 "image/png",
-
               ),
 
               uploadArquivo(
@@ -540,8 +520,6 @@ export const AutopublicacaoProvider = ({ children }) => {
               ),
             ]);
 
-          
-
           caminhosArquivos = {
             capa: {
               frente: capaFrentePath,
@@ -551,8 +529,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
             manuscritoPath,
           };
-
-
         } catch (uploadError) {
           if (arquivosEnviados.length) {
             await apiFetch("/api/v1/clients/autopublicacao/upload-url", {
@@ -570,7 +546,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
           throw uploadError;
         }
-
 
         const payload = {
           dadosLivro: {
@@ -607,7 +582,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
 
         return json;
-
       } catch (error) {
         console.error("Erro em salvar livro:", error);
 
@@ -615,16 +589,16 @@ export const AutopublicacaoProvider = ({ children }) => {
       } finally {
         setCarregando(false);
       }
-       
     },
 
     [user, isEdicao, estadoAtualLivro],
   );
 
   const publicarLivroNoContexto = async (
-    estadoDesejado = LIVRO_ESTADO.RASCUNHO, arquivo
+    estadoDesejado = LIVRO_ESTADO.RASCUNHO,
+    arquivo,
   ) => {
-    await inserirLivro(dadosLivro, estadoDesejado,arquivo);
+    await inserirLivro(dadosLivro, estadoDesejado, arquivo);
 
     localStorage.removeItem(chaveRascunho("dados"));
 
@@ -679,7 +653,3 @@ export const AutopublicacaoProvider = ({ children }) => {
     </AutopublicacaoContext.Provider>
   );
 };
-
-
-
-
