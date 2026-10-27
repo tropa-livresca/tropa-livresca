@@ -35,6 +35,21 @@ export default function Confirmacao({
     }
   };
 
+  const mapearIdioma = (idioma) => {
+    if (!idioma) return "Não informado";
+
+    const dicionario = {
+      ingles: "Inglês",
+      portugues: "Português",
+      espanhol: "Espanhol",
+    };
+
+    return (
+      dicionario[idioma.toLowerCase()] ||
+      idioma.charAt(0).toUpperCase() + idioma.slice(1)
+    );
+  };
+
   const [manuscritoFile, setManuscritoFile] = useState(null);
 
   useEffect(() => {
@@ -108,13 +123,6 @@ export default function Confirmacao({
                   <label>ISBN do livro:</label>
                   <div className={styles.liinput}>{dados.detalhes.ISBN}</div>
                 </div>
-
-                <div>
-                  <label>Número da edição:</label>
-                  <div className={styles.liinput}>
-                    {dados.detalhes.numeroEdicao}
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -124,7 +132,9 @@ export default function Confirmacao({
               <div className={styles.containergrid}>
                 <div>
                   <label>Idioma:</label>
-                  <div className={styles.liinput}>{dados.detalhes.idioma}</div>
+                  <div className={styles.liinput}>
+                    {mapearIdioma(dados.detalhes.idioma)}
+                  </div>
                 </div>
 
                 <div>

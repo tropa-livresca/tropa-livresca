@@ -18,6 +18,21 @@ const formatarPreco = (valor) =>
     ? `R$ ${Number(valor).toFixed(2).replace(".", ",")}`
     : "Não vendido";
 
+const mapearIdioma = (idioma) => {
+  if (!idioma) return "Não informado";
+
+  const dicionario = {
+    ingles: "Inglês",
+    portugues: "Português",
+    espanhol: "Espanhol",
+  };
+
+  return (
+    dicionario[idioma.toLowerCase()] ||
+    idioma.charAt(0).toUpperCase() + idioma.slice(1)
+  );
+};
+
 export default function VisualizarLivro() {
   const { id } = useParams();
   const { buscarLivroById, carregando, livro, alterarAtivo } = useLivros();
@@ -53,13 +68,10 @@ export default function VisualizarLivro() {
     subtitulo,
     capa,
     manuscrito,
-    autor_nome,
-    autor_sobrenome,
+    users_profile,
     descricao,
     idioma,
-    imagens_explicitas,
-    publico_alvo,
-    numero_edicao,
+    categoria,
     preco_digital,
     preco_fisico,
     colaboradores,
@@ -205,7 +217,7 @@ export default function VisualizarLivro() {
               <li>
                 <span>Autor</span>
                 <strong>
-                  {autor_nome} {autor_sobrenome}
+                  {users_profile?.nome} {users_profile?.sobrenome}
                 </strong>
               </li>
               <li>
@@ -216,21 +228,13 @@ export default function VisualizarLivro() {
                 </div>
               </li>
               <li>
-                <span>Idioma</span> <strong>{idioma || "Não informado"}</strong>
+                <span>Idioma</span>{" "}
+                <strong>{mapearIdioma(idioma) || "Não informado"}</strong>
               </li>
+
               <li>
-                <span>Edição</span>{" "}
-                <strong className={styles.numero}>
-                  {numero_edicao || "1"}
-                </strong>
-              </li>
-              <li>
-                <span>Público-alvo</span>{" "}
-                <strong>{publico_alvo || "Não informado"}</strong>
-              </li>
-              <li>
-                <span>Imagens explícitas</span>{" "}
-                <strong>{imagens_explicitas ? "Sim" : "Não"}</strong>
+                <span>Categoria</span>{" "}
+                <strong>{categoria || "Não informado"}</strong>
               </li>
               <li>
                 <span>Direitos de autopublicação</span>{" "}

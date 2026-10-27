@@ -12,8 +12,8 @@ const TAMANHO_MAXIMO_CAPA = 10 * 1024 * 1024;
 const TAMANHO_MAXIMO_MANUSCRITO = 50 * 1024 * 1024;
 const FORMATOS_CAPA = ["image/jpeg", "image/png"];
 
-const LARGURA_MINIMA_A5_PX = 1748;
-const ALTURA_MINIMA_A5_PX = 2480;
+const LARGURA_MINIMA_A5_PX = 0;
+const ALTURA_MINIMA_A5_PX = 0;
 
 const dataURItoBlob = (dataURI) => {
   let byteString = atob(dataURI.split(",")[1]);
@@ -95,7 +95,7 @@ export default function Conteudo({
   irParaProximaEtapa,
   voltarEtapa,
 }) {
-  const [setmanuscritoFile] = useState("");
+  const [_manuscrito, setmanuscritoFile] = useState("");
 
   useEffect(() => {
     if (dados.manuscrito != null) {

@@ -27,7 +27,6 @@ Table itens_venda {
 Table livros {
   id bigint [pk, increment, not null]
   direitos_de_publicacao boolean [not null]
-  numero_edicao smallint
   data_de_publicacao date [not null]
   preco_digital numeric [not null]
   preco_fisico numeric [not null]

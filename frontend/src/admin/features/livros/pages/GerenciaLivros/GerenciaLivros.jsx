@@ -338,7 +338,8 @@ export default function GerenciaLivros() {
                           </h3>
 
                           <span className={styles.sub}>
-                            {livro.autor_nome} {livro.autor_sobrenome}
+                            {livro.users_profile?.nome}{" "}
+                            {livro.users_profile?.sobrenome}
                           </span>
                         </div>
                       </td>

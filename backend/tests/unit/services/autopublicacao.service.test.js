@@ -84,7 +84,6 @@ const dadosLivro = {
     categoria: "Fantasia",
     titulo: "Livro",
     subtitulo: "Subtitulo",
-    autor: { nome: "Autor", sobrenome: "Teste" },
   },
   orcamento: {
     numeroPaginas: "10",
@@ -139,6 +138,26 @@ describe("AutopublicacaoService - Storage", () => {
     expect(dadosPersistidos.capa.frente).toBe("user-1/capa-frente.png");
   });
 
+  it("converte preços formatados no padrão brasileiro ao criar", async () => {
+    modelMock.criarLivro.mockResolvedValue(livroBase);
+
+    await AutopublicacaoService.criarLivro({
+      userId: "user-1",
+      dadosLivro: {
+        ...dadosLivro,
+        orcamento: {
+          ...dadosLivro.orcamento,
+          valorLivroDigital: "1.234,56",
+          valorLivroFisico: "2.345,67",
+        },
+      },
+    });
+
+    const [dadosPersistidos] = modelMock.criarLivro.mock.calls[0];
+    expect(dadosPersistidos.preco_digital).toBe(1234.56);
+    expect(dadosPersistidos.preco_fisico).toBe(2345.67);
+  });
+
   it("serializa palavras-chave no tipo text definido pelo schema", async () => {
     modelMock.criarLivro.mockResolvedValue(livroBase);
 
@@ -171,6 +190,28 @@ describe("AutopublicacaoService - Storage", () => {
     expect(dadosPersistidos.manuscrito).toBe("user-1/manuscrito.pdf");
     expect(dadosPersistidos.capa.frente).toBe("user-1/capa-frente.png");
     expect(storageMock.removerArquivos).not.toHaveBeenCalled();
+  });
+
+  it("converte preços formatados no padrão brasileiro ao editar", async () => {
+    modelMock.buscarDetalhesPorId.mockResolvedValue(livroBase);
+    modelMock.atualizarLivro.mockResolvedValue(livroBase);
+
+    await AutopublicacaoService.atualizarLivro({
+      userId: "user-1",
+      livroId: 10,
+      dadosLivro: {
+        ...dadosLivro,
+        orcamento: {
+          ...dadosLivro.orcamento,
+          valorLivroDigital: "1.234,56",
+          valorLivroFisico: "2.345,67",
+        },
+      },
+    });
+
+    const [, , , dadosPersistidos] = modelMock.atualizarLivro.mock.calls[0];
+    expect(dadosPersistidos.preco_digital).toBe(1234.56);
+    expect(dadosPersistidos.preco_fisico).toBe(2345.67);
   });
 
   it("remove o arquivo antigo quando um manuscrito é substituído", async () => {
