@@ -35,6 +35,7 @@ export default function NovaSenha() {
 
       <div className={styles.container}>
         <form onSubmit={criarNovaSenha} className={styles.formulario}>
+           <legend className={styles.legend}>Preencha os campos abaixo</legend>
           <div className={styles.campo}>
             <label htmlFor="novaSenha" className={styles.rotulo}>
               Nova senha

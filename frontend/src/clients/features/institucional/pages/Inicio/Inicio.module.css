@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
 }
-/* 1. HERO BANNER */
+
 .hero_section {
   width: 100%;
   display: flex;
@@ -102,37 +102,41 @@
   text-align: left;
 }
 
-.descubra {
-  text-align: right;
+.catalogo {
+  padding-left: 1rem;
 }
 
-/* 2. ESTRUTURA GERAL DAS SEÇÕES (LIVROS E AUTORES) */
+.descubra {
+  text-align: right;
+  padding-right: 1rem;
+}
+
 .secao_livros,
 .secao_autores {
+  position: relative;
   width: 100%;
   max-width: 1800px;
   display: flex;
   flex-direction: column;
+  padding: 1.5rem 3rem;
+  margin-bottom: 1rem;
+  border-radius: 1.5rem;
+  background-color: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .container_header {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
   margin-bottom: 2.5em;
-  border-bottom: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e3d5ad;
   padding-bottom: 1em;
 }
 
 .subtitulo_secao {
-  font-size: 0.8em;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--cor-texto-muted);
-}
-
-.container_header h2 {
   font-size: 2em;
   margin-top: 0.2em;
   margin-bottom: 0;
@@ -154,21 +158,20 @@
   transition: 0.3s;
 }
 
-/* 3. GRIDS EDITORIAIS */
 .editorial_grid_livros,
 .editorial_grid_autores {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2.5em;
+  gap: 1rem;
 }
 
-/* 4. CARD EDITORIAL DE LIVROS */
 .card_livro_editorial {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  width: 100%;
 }
 
 .capa_wrapper {
@@ -179,8 +182,9 @@
 }
 
 .card_livro_editorial img {
-  width: 200px;
-  height: 300px;
+  width: 100%;
+  max-width: 250px;
+  height: 350px;
   object-fit: cover;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
@@ -191,8 +195,9 @@
 }
 
 .sem_capa_placeholder {
-  width: 200px;
-  height: 300px;
+  width: 100%;
+  max-width: 250px;
+  height: 350px;
   background-color: #f0f0f0;
   display: flex;
   align-items: center;
@@ -243,7 +248,6 @@
   border-color: #ffbb33;
 }
 
-/* 5. CARD EDITORIAL DE AUTORES */
 .card_autor_editorial {
   display: flex;
   flex-direction: column;
@@ -311,4 +315,48 @@
     #ffbb33 0 8px,
     transparent 8px 14px
   );
+}
+
+.btn_navegacao_esquerda,
+.btn_navegacao_direita {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #e2c77c;
+  color: #67170c;
+  background: rgb(255, 248, 215);
+  border-radius: 50%;
+  padding: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn_navegacao_esquerda {
+  left: 1rem;
+}
+
+.btn_navegacao_direita {
+  right: 1rem;
+}
+
+.btn_navegacao_esquerda:hover,
+.btn_navegacao_direita:hover {
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.btn_navegacao_esquerda:disabled,
+.btn_navegacao_direita:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.paginacao_controles {
+  display: flex;
+  gap: 1rem;
 }

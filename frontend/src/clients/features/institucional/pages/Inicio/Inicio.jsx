@@ -4,6 +4,7 @@ import { useAutores } from "../../../../hooks/useAutores";
 import { useLivros } from "../../../../hooks/useLivros";
 import { useEffect, useState } from "react";
 import { FaUserCircle, FaArrowRight } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 
 export default function Inicio() {
   const {
@@ -28,7 +29,7 @@ export default function Inicio() {
   }, [buscarAutores]);
 
   useEffect(() => {
-    BuscarLivros(paginaAtual, 4);
+    BuscarLivros(paginaAtual, 5);
   }, [BuscarLivros, paginaAtual]);
 
   const avancarPaginaAutor = () => {
@@ -86,32 +87,22 @@ export default function Inicio() {
       <div className={styles.container}>
         <div className={styles.subcontainer}>
           <section className={styles.secao_livros}>
+            <button
+              onClick={voltarPagina}
+              disabled={paginaAtual === 1}
+              className={styles.btn_navegacao_esquerda}
+            >
+              <FaArrowLeft />
+            </button>
+
             <div className={styles.container_header}>
               <div className={styles.catalogo}>
-                <span className={styles.subtitulo_secao}>Catálogo</span>
-                <h2>Livros em Destaque</h2>
+                <h2 className={styles.subtitulo_secao}>Livros Publicados</h2>
               </div>
-              <div className={styles.descubra}>
-                <Link to="/livros" className={styles.link_ver_todos}>
-                  Descubra mais livros <FaArrowRight />
-                </Link>
-              </div>
+              <div className={styles.descubra}></div>
             </div>
 
             <div className={styles.editorial_grid_livros}>
-              <div className={styles.paginacao_controles}>
-                <button onClick={voltarPagina} disabled={paginaAtual === 1}>
-                  Voltar
-                </button>
-
-                <button
-                  onClick={avancarPagina}
-                  disabled={!meta || paginaAtual >= meta.totalPages}
-                >
-                  Avançar
-                </button>
-              </div>
-
               {carregandoLivros ? (
                 <p className={styles.loading_text}>Carregando destaques...</p>
               ) : !Livros || Livros.length === 0 ? (
@@ -147,51 +138,38 @@ export default function Inicio() {
                           ? `${livro.users_profile.nome} ${livro.users_profile.sobrenome || ""}`
                           : "Autor Independente"}
                       </p>
-                      <Link
-                        to={`/livros/${livro.id}`}
-                        className={styles.link_detalhe_obra}
-                      >
-                        Ver detalhes
-                      </Link>
                     </div>
                   </article>
                 ))
               )}
             </div>
+
+            <button
+              onClick={avancarPagina}
+              disabled={!meta || paginaAtual >= meta.totalPages}
+              className={styles.btn_navegacao_direita}
+            >
+              <FaArrowRight />
+            </button>
           </section>
 
           <section className={styles.secao_autores}>
+            <button
+              onClick={voltarPaginaAutor}
+              disabled={paginaAtualAutor === 1}
+              className={styles.btn_navegacao_esquerda}
+            >
+              <FaArrowLeft />
+            </button>
+
             <div className={styles.container_header}>
               <div className={styles.comunidade}>
-                <span className={styles.subtitulo_secao}>Comunidade</span>
-                <h2>Nossos Autores</h2>
+                <h2 className={styles.subtitulo_secao}>Autores</h2>
               </div>
-              <div className={styles.descubra}>
-                <Link to="/autores" className={styles.link_ver_todos}>
-                  Descubra mais autores <FaArrowRight />
-                </Link>
-              </div>
+              <div className={styles.descubra}></div>
             </div>
 
             <div className={styles.editorial_grid_autores}>
-              <div className={styles.paginacao_controles}>
-                <button
-                  onClick={voltarPaginaAutor}
-                  disabled={paginaAtualAutor === 1}
-                >
-                  Voltar
-                </button>
-
-                <button
-                  onClick={avancarPaginaAutor}
-                  disabled={
-                    !metaAutores || paginaAtualAutor >= metaAutores.totalPages
-                  }
-                >
-                  Avançar
-                </button>
-              </div>
-
               {carregandoAutores ? (
                 <p className={styles.loading_text}>Carregando autores...</p>
               ) : !autores || autores.length === 0 ? (
@@ -233,6 +211,16 @@ export default function Inicio() {
                 ))
               )}
             </div>
+
+            <button
+              onClick={avancarPaginaAutor}
+              disabled={
+                !metaAutores || paginaAtualAutor >= metaAutores.totalPages
+              }
+              className={styles.btn_navegacao_direita}
+            >
+              <FaArrowRight />
+            </button>
           </section>
         </div>
       </div>
