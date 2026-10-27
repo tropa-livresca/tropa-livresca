@@ -15,7 +15,6 @@ import {
   FaShieldAlt,
   FaTruck,
   FaUndo,
-  FaFileAlt,
 } from "react-icons/fa";
 
 export default function LivroById() {
@@ -152,18 +151,6 @@ export default function LivroById() {
                 <strong>Categoria</strong>
 
                 <p>{livro.categoria || "Não informado"}</p>
-              </div>
-            </div>
-
-            <div className={styles.informacao}>
-              <FaFileAlt />
-
-              <div>
-                <strong>Número da edição</strong>
-
-                <p className={styles.numero}>
-                  {livro.numero_edicao || "Não informado"}
-                </p>
               </div>
             </div>
 

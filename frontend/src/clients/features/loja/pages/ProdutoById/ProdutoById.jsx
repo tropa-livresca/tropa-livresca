@@ -6,10 +6,9 @@ import {
   FaUsers,
   FaLanguage,
   FaShoppingCart,
-  FaShieldAlt,
   FaTruck,
   FaUndo,
-  FaFileAlt,
+  FaShieldAlt,
 } from "react-icons/fa";
 
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
@@ -41,6 +40,21 @@ export default function ProdutoById() {
   useEffect(() => {
     buscarResumo(id);
   }, [id, buscarResumo]);
+
+  const mapearIdioma = (idioma) => {
+    if (!idioma) return "Não informado";
+
+    const dicionario = {
+      ingles: "Inglês",
+      portugues: "Português",
+      espanhol: "Espanhol",
+    };
+
+    return (
+      dicionario[idioma.toLowerCase()] ||
+      idioma.charAt(0).toUpperCase() + idioma.slice(1)
+    );
+  };
 
   useEffect(() => {
     if (id) {
@@ -198,24 +212,12 @@ export default function ProdutoById() {
             </div>
 
             <div className={styles.informacao}>
-              <FaFileAlt />
-
-              <div>
-                <strong>Número da edição</strong>
-
-                <p className={styles.numero}>
-                  {livro.numero_edicao || "Não informado"}
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.informacao}>
               <FaLanguage />
 
               <div className={styles.oi}>
                 <strong>Idioma</strong>
 
-                <p>{livro.idioma || "Não informado"}</p>
+                <p>{mapearIdioma(livro.idioma) || "Não informado"}</p>
               </div>
             </div>
           </div>

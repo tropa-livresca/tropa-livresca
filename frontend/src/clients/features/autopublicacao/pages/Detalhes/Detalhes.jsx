@@ -118,21 +118,6 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
         </div>
 
         <div className={styles.card}>
-          <legend>Edição</legend>
-          <label>Número da edição:</label>
-          <Input
-            placeholder="Inserir numero da edição"
-            type="text"
-            value={dados.numeroEdicao || ""}
-            onChange={(e) => atualizarCampo("numeroEdicao", e.target.value)}
-            handleOnChange={(e) =>
-              atualizarCampo("numeroEdicao", e.target.value)
-            }
-            className={styles.inputmodificado}
-          />
-        </div>
-
-        <div className={styles.card}>
           <legend>ISBN do livro</legend>
           <label>ISBN: </label>
           <Input

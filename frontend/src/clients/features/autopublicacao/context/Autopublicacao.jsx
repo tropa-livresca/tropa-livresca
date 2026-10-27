@@ -12,7 +12,6 @@ const ESTADO_INICIAL_LIVRO = {
     titulo: "",
     subtitulo: "",
     ISBN: "",
-    numeroEdicao: "",
     colaboradores: [],
     descricao: "",
     direitoPublicacao: "",
@@ -249,8 +248,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         subtitulo: dadosBanco.subtitulo || "",
 
-        numeroEdicao: dadosBanco.numero_edicao || "",
-
         ISBN: dadosBanco.ISBN || "",
 
         colaboradores: dadosBanco.colaboradores || [],
@@ -299,8 +296,7 @@ export const AutopublicacaoProvider = ({ children }) => {
       !detalhes.descricao ||
       !detalhes.direitoPublicacao ||
       !detalhes.categoria ||
-      !detalhes.subtitulo ||
-      !detalhes.numeroEdicao
+      !detalhes.subtitulo
     ) {
       return false;
     }
