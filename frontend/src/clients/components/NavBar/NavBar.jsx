@@ -113,7 +113,9 @@ export default function NavBar() {
                     className={styles.imagemPerfil}
                   />
                 ) : (
-                  <FaUserCircle className={styles.avatar} />
+                  <div className={styles.avatar} aria-hidden="true">
+                    {perfil?.nome?.charAt(0).toUpperCase() || "?"}
+                  </div>
                 )}
               </button>
 

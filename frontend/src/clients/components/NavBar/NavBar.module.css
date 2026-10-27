@@ -210,9 +210,17 @@ body {
 }
 
 .avatar {
-  font-size: 42px;
-  color: #67170c;
-  transition: 0.2s;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: #67170c;
+  color: #fffdf7;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.8rem;
 }
 
 .avatar:hover {
