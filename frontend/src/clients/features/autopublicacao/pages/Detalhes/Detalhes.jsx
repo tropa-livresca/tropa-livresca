@@ -10,16 +10,19 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
     { id: "portugues", label: "Português" },
     { id: "ingles", label: "Inglês" },
     { id: "espanhol", label: "Espanhol" },
-    {
-      id: "bilingue-portugues-ingles",
-      label: "Bilíngue: Português e Inglês",
-    },
-    {
-      id: "bilingue-portugues-espanhol",
-      label: "Bilíngue: Português e Espanhol",
-    },
     { id: "outro", label: "Outro" },
   ];
+
+  const maskISBN = (value) => {
+    const cleanValue = value.replace(/[^0-9X]/gi, "");
+
+    return cleanValue
+      .replace(/^(\d{3})(\d)/, "$1-$2")
+      .replace(/^(\d{3}-\d{2})(\d)/, "$1-$2")
+      .replace(/^(\d{3}-\d{2}-\d{5})(\d)/, "$1-$2")
+      .replace(/^(\d{3}-\d{2}-\d{5}-\d{2})(\d)/, "$1-$2")
+      .substring(0, 17);
+  };
 
   const funcaoOpcoes = [
     "Selecione a função",
@@ -133,11 +136,13 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
           <legend>ISBN do livro</legend>
           <label>ISBN: </label>
           <Input
-            placeholder="Inserir numero da edição"
+            placeholder="978-00-00000-00-0"
             type="text"
             value={dados.ISBN || ""}
-            onChange={(e) => atualizarCampo("ISBN", e.target.value)}
-            handleOnChange={(e) => atualizarCampo("ISBN", e.target.value)}
+            onChange={(e) => atualizarCampo("ISBN", maskISBN(e.target.value))}
+            handleOnChange={(e) =>
+              atualizarCampo("ISBN", maskISBN(e.target.value))
+            }
             className={styles.inputmodificado}
           />
         </div>

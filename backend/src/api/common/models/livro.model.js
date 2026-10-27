@@ -2,7 +2,7 @@ import supabase, { supabaseAdmin } from "../config/supabase.js";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
 
 const COLUNAS_LIVRO =
-  "id, ISBN, data_de_publicacao, idioma, titulo, subtitulo, descricao, capa, numero_edicao, direitos_de_publicacao";
+  "id, ISBN, data_de_publicacao, categoria, idioma, titulo, subtitulo, descricao, capa, numero_edicao, direitos_de_publicacao";
 
 export class LivroModel {
   static async buscarLivrosAdmin({

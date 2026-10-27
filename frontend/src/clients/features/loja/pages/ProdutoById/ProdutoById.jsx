@@ -180,7 +180,9 @@ export default function ProdutoById() {
                 <strong>Data de publicação</strong>
 
                 <p className={styles.numero}>
-                  {livro.data_de_publicacao || "Não informado"}
+                  {livro.data_de_publicacao
+                    ? livro.data_de_publicacao.split("-").reverse().join("/")
+                    : "Não informado"}
                 </p>
               </div>
             </div>

@@ -27,6 +27,21 @@ export default function LivroById() {
     buscarResumo(id);
   }, [id, buscarResumo]);
 
+  const mapearIdioma = (idioma) => {
+    if (!idioma) return "Não informado";
+
+    const dicionario = {
+      ingles: "Inglês",
+      portugues: "Português",
+      espanhol: "Espanhol",
+    };
+
+    return (
+      dicionario[idioma.toLowerCase()] ||
+      idioma.charAt(0).toUpperCase() + idioma.slice(1)
+    );
+  };
+
   const { autor, colaboradores, livro, BuscarDetalhesLivro, carregando } =
     useLivros();
 
@@ -123,7 +138,9 @@ export default function LivroById() {
                 <strong>Data de publicação</strong>
 
                 <p className={styles.numero}>
-                  {livro.data_de_publicacao || "Não informado"}
+                  {livro.data_de_publicacao
+                    ? livro.data_de_publicacao.split("-").reverse().join("/")
+                    : "Não informado"}
                 </p>
               </div>
             </div>
@@ -132,9 +149,9 @@ export default function LivroById() {
               <FaUsers />
 
               <div>
-                <strong>Público-alvo</strong>
+                <strong>Categoria</strong>
 
-                <p>{livro.publico_alvo || "Não informado"}</p>
+                <p>{livro.categoria || "Não informado"}</p>
               </div>
             </div>
 
@@ -156,7 +173,7 @@ export default function LivroById() {
               <div className={styles.oi}>
                 <strong>Idioma</strong>
 
-                <p>{livro.idioma || "Não informado"}</p>
+                <p>{mapearIdioma(livro.idioma) || "Não informado"}</p>
               </div>
             </div>
           </div>

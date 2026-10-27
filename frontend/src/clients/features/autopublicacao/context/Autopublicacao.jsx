@@ -89,8 +89,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       try {
         const dadosRecuperados = JSON.parse(dadosSalvos);
 
-        // File/Blob não é restaurado por JSON.stringify/JSON.parse.
-        // Descarta objetos serializados como {} e mantém caminhos persistidos.
         if (dadosRecuperados?.conteudo) {
           const conteudoRecuperado = dadosRecuperados.conteudo;
 
@@ -151,9 +149,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
     const conteudoAtual = dadosLivro.conteudo || {};
 
-    // Arquivos locais não sobrevivem ao JSON. Para rascunhos, persistimos
-    // somente strings/caminhos; arquivos ainda não enviados precisam ser
-    // selecionados novamente após recarregar a página.
     const dadosParaSalvar = {
       ...dadosLivro,
       conteudo: {
