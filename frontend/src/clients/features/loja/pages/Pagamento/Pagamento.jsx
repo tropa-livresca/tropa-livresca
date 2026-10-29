@@ -96,6 +96,7 @@ export default function Pagamento() {
           <div className={styles.cabecalhoProdutos}>
             <span>Produto</span>
             <span>Preço</span>
+            <span>Frete</span>
             <span>Quantidade</span>
             <span>Total</span>
           </div>

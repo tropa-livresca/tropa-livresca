@@ -28,7 +28,7 @@
 
 .cabecalhoProdutos {
   display: grid;
-  grid-template-columns: minmax(18rem, 1fr) 7rem 7rem 7rem;
+  grid-template-columns: minmax(18rem, 1fr) 7rem 7rem 7rem 7rem;
   gap: 1rem;
   align-items: center;
   padding: 1rem 1.5rem;
@@ -43,7 +43,7 @@
 
 .itemProduto {
   display: grid;
-  grid-template-columns: minmax(18rem, 1fr) 7rem 7rem 7rem;
+  grid-template-columns: minmax(18rem, 1fr) 7rem 7rem 7rem 7rem;
   gap: 1rem;
   align-items: center;
   padding: 1.2rem 1.5rem;
