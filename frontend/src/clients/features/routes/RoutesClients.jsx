@@ -1,6 +1,8 @@
-﻿import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
+import Modal from "../../../common/components/Modal/Modal";
+import modalStyles from "../../../common/components/Modal/Modal.module.css";
 import { PerfilProvider } from "../../context/Perfil.jsx";
 import { CarrinhoProvider } from "../loja/context/Carrinho.jsx";
 
@@ -34,16 +36,61 @@ import PagamentoCartao from "../loja/pages/PagamentoCartao/PagamentoCartao.jsx";
 import PagamentoPix from "../loja/pages/PagamentoPix/PagamentoPix.jsx";
 import PagamentoBoleto from "../loja/pages/PagamentoBoleto/PagamentoBoleto.jsx";
 
-const Private = ({ Item, redirectTo = "/auth/login" }) => {
+const Private = ({ Item }) => {
   const { signed, loading } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   if (loading) return null;
 
-  return signed ? (
-    <Item />
-  ) : (
-    <Navigate to={redirectTo} state={{ from: location }} replace />
+  if (signed) return <Item />;
+
+  const voltar = () => {
+    if (location.key === "default") {
+      navigate("/", { replace: true });
+    } else {
+      navigate(-1);
+    }
+  };
+
+  return (
+    <Modal
+      title="Acesse sua conta"
+      description="Entre ou crie uma conta para continuar. Se preferir, você pode voltar à página anterior."
+      onClose={voltar}
+    >
+      <div className={modalStyles.acoes}>
+        <button
+          type="button"
+          className={modalStyles.botao}
+          onClick={() =>
+            navigate("/auth/login", {
+              state: { from: location },
+            })
+          }
+        >
+          Login
+        </button>
+        <button
+          type="button"
+          className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+          onClick={() =>
+            navigate("/auth/cadastro", {
+              state: { from: location },
+            })
+          }
+        >
+          Cadastre-se
+        </button>
+        <button
+          type="button"
+          className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+          onClick={voltar}
+        >
+          Agora não
+        </button>
+      </div>
+    </Modal>
   );
 };
 

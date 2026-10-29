@@ -15,15 +15,18 @@ export const useAutores = () => {
   const [erro, setErro] = useState(null);
   const [meta, setMeta] = useState(null);
 
-  const buscarAutorById = useCallback(async (id) => {
+  const buscarAutorById = useCallback(async (id, page = 1, limit = 12) => {
     setCarregando(true);
     setErro(null);
 
     try {
-      const response = await apiFetch(`/api/v1/clients/autores/${id}`, {
-        skipAuthRedirect: true,
-        method: "GET",
-      });
+      const response = await apiFetch(
+        `/api/v1/clients/autores/${id}?page=${page}&limit=${limit}`,
+        {
+          skipAuthRedirect: true,
+          method: "GET",
+        },
+      );
 
       const json = await response.json();
 
