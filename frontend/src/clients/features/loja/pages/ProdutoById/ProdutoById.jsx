@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   FaBookOpen,
   FaCalendarAlt,
@@ -18,21 +18,28 @@ import ResumoAvaliacao from "../../components/Avaliacao/ResumoAvaliacao";
 import AbasLivro from "../../components/AbasLivro/AbasLivro";
 import { useEndereco } from "../../../perfil/hooks/useEndereco";
 import Carregando from "../../../../components/Carregando/Carregando";
+import useAuth from "../../../../../common/hooks/useAuth";
+import Modal from "../../../../../common/components/Modal/Modal";
+import modalStyles from "../../../../../common/components/Modal/Modal.module.css";
 import styles from "./ProdutoById.module.css";
 
 export default function ProdutoById() {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { signed, loading: authCarregando } = useAuth();
 
   const { autor, colaboradores, livro, buscarLivroById, carregando } =
     useLivrosLoja();
 
   const { BuscarEnderecoPrincipal } = useEndereco();
 
-  const { adicionarItem, calcularFrete } = useCarrinho();
+  const { adicionarItem } = useCarrinho();
 
   const [formatoEscolhido, setFormato] = useState(null);
   const [qtd, setQtd] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
+  const [solicitandoLogin, setSolicitandoLogin] = useState(false);
 
   const avaliacoes = useAvaliacoes();
   const { resumo, buscarResumo } = avaliacoes;
@@ -63,12 +70,10 @@ export default function ProdutoById() {
   }, [id, buscarLivroById]);
 
   useEffect(() => {
-    BuscarEnderecoPrincipal();
-  }, [BuscarEnderecoPrincipal]);
-
-  useEffect(() => {
-    calcularFrete([{ tipo: "fisico", qtd: qtd }]);
-  }, [qtd]);
+    if (signed && !authCarregando) {
+      BuscarEnderecoPrincipal();
+    }
+  }, [signed, authCarregando, BuscarEnderecoPrincipal]);
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -99,6 +104,11 @@ export default function ProdutoById() {
   };
 
   const handleAdicionarCarrinho = () => {
+    if (authCarregando) return;
+    if (!signed) {
+      setSolicitandoLogin(true);
+      return;
+    }
     if (!formato) return;
 
     adicionarItem({
@@ -360,6 +370,42 @@ export default function ProdutoById() {
             ))}
           </ul>
         </section>
+      )}
+
+      {solicitandoLogin && (
+        <Modal
+          title="Acesse sua conta"
+          description="Entre ou crie uma conta para adicionar este livro ao carrinho."
+          onClose={() => setSolicitandoLogin(false)}
+        >
+          <div className={modalStyles.acoes}>
+            <button
+              type="button"
+              className={modalStyles.botao}
+              onClick={() =>
+                navigate("/auth/login", { state: { from: location } })
+              }
+            >
+              Login
+            </button>
+            <button
+              type="button"
+              className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+              onClick={() =>
+                navigate("/auth/cadastro", { state: { from: location } })
+              }
+            >
+              Cadastre-se
+            </button>
+            <button
+              type="button"
+              className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+              onClick={() => setSolicitandoLogin(false)}
+            >
+              Agora não
+            </button>
+          </div>
+        </Modal>
       )}
     </main>
   );
