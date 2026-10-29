@@ -9,7 +9,6 @@
   padding: 3rem 6%;
 }
 
-
 .topo {
   width: 100%;
   background: #f7f0cfb1;
@@ -43,13 +42,13 @@
   margin-bottom: 0.5rem;
 }
 
-.manuscrito{
-    background-color: yellow;
-    margin-bottom: 1rem;
+.manuscrito {
+  background-color: yellow;
+  margin-bottom: 1rem;
 }
 
-.form{
-    background: #fffdf7 !important;
+.form {
+  background: #fffdf7 !important;
   border-radius: 1.5rem;
   overflow: hidden;
   box-shadow:
@@ -58,38 +57,38 @@
   padding: 2rem;
 }
 
-.input, .textarea{
- width: 100%;
-      background: #fff8d7 !important;
-    border: 1px solid #e2c77c !important;
-    border-radius: 1rem !important;
-    padding: 0.8rem !important;
-    justify-self: stretch !important;
-    font-size: 1rem !important;
-    color: #67170c !important;
-    margin-bottom: 1rem;
+.input,
+.textarea {
+  width: 100%;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-bottom: 1rem;
   outline: none;
   transition:
     border-color 0.2s,
     background-color 0.2s;
 }
 
-.carregar{
-        width: 100%;
-    border: 1px dashed #d4b46a;
-    color: #67170c;
-    border-radius: 1rem;
-    padding: 1rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    cursor: pointer;
-    background: #fffdf7;
-    margin: 0 auto;
-    transition: 0.3s ease;
-    margin-bottom: 1.4rem;
+.carregar {
+  width: 100%;
+  border: 1px dashed #d4b46a;
+  color: #67170c;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
+  background: #fffdf7;
+  margin: 0 auto;
+  transition: 0.3s ease;
+  margin-bottom: 1.4rem;
 }
-
 
 .carregarsvg {
   font-size: 2rem;
@@ -114,26 +113,26 @@
   color: #67170c;
 }
 
-.btn{
-        display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 38px;
-    padding: 1rem;
-    border: 1px solid #c9998d;
-    border-radius: 0.65rem;
-    background: transparent !important;
-    color: #67170c;
-    font-size: 0.9rem;
-    font-weight: 500;
-    text-decoration: none;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 1rem;
+  border: 1px solid #c9998d;
+  border-radius: 0.65rem;
+  background: transparent !important;
+  color: #67170c;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
 }
 
-.btn:hover{
-    background-color: #67170c !important;
-    border: 1px solid #67170c !important;
-    color:#fffdf7 !important;
-    transition: 0.3s !important;
+.btn:hover {
+  background-color: #67170c !important;
+  border: 1px solid #67170c !important;
+  color: #fffdf7 !important;
+  transition: 0.3s !important;
 }
 
 .gridBotoes {

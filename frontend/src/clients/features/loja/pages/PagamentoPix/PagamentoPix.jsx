@@ -104,11 +104,7 @@ export default function PagamentoPix() {
           </div>
         </div>
 
-        
-
         <div className={styles.formulario}>
-         
-
           {copiado && (
             <p role="status" aria-live="polite">
               Chave Pix copiada com sucesso!
@@ -127,39 +123,36 @@ export default function PagamentoPix() {
           </div>
 
           <div className={styles.resumoPedido}>
-          <p className={styles.pedido}>Pedido #{pedido.id}</p>
-          <p className={styles.pedido1}>{formatarPreco(total)}</p>
+            <p className={styles.pedido}>Pedido #{pedido.id}</p>
+            <p className={styles.pedido1}>{formatarPreco(total)}</p>
 
-          {frete > 0 && <span>Frete incluído no total do pedido.</span>}
-        
+            {frete > 0 && <span>Frete incluído no total do pedido.</span>}
 
-         <label>
-            Chave Pix
-            <div className={styles.chavePix}>
-              <input
-                type="text"
-                value={CHAVE_PIX}
-                readOnly
-                aria-label="Chave Pix"
-                className={styles.ola}
-              />
+            <label>
+              Chave Pix
+              <div className={styles.chavePix}>
+                <input
+                  type="text"
+                  value={CHAVE_PIX}
+                  readOnly
+                  aria-label="Chave Pix"
+                  className={styles.ola}
+                />
 
-              <button
-                type="button"
-                className={styles.botaoCopiar}
-                onClick={handleCopiarChave}
-                aria-label="Copiar chave Pix"
-                title="Copiar chave Pix"
-              >
-                <FiCopy />
-              </button>
-            </div>
-          </label>
-
+                <button
+                  type="button"
+                  className={styles.botaoCopiar}
+                  onClick={handleCopiarChave}
+                  aria-label="Copiar chave Pix"
+                  title="Copiar chave Pix"
+                >
+                  <FiCopy />
+                </button>
+              </div>
+            </label>
           </div>
 
           <div className={styles.instrucoes}>
-
             <div>
               <span className={styles.numero}>1</span>
               <p>Abra o aplicativo do seu banco.</p>

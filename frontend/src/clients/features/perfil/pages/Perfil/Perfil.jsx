@@ -278,12 +278,9 @@ export default function Perfil() {
 
               <p className={styles.subtitulo}>Insira seus dados bancários.</p>
 
-        
-                  <Link to="/perfil/dadosbancarios" className={styles.linkDados}>
-                    Alterar dados
-                  </Link>
-
-              
+              <Link to="/perfil/dadosbancarios" className={styles.linkDados}>
+                Alterar dados
+              </Link>
             </section>
 
             <section>

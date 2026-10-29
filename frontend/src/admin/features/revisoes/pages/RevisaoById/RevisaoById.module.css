@@ -37,7 +37,7 @@
   margin-bottom: 0.5rem !important;
 }
 
-.numero{
+.numero {
   font-family: none;
 }
 /* Barra Superior */
@@ -129,7 +129,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-   border:1px solid #e3d5ad;
+  border: 1px solid #e3d5ad;
   color: #67170c;
   padding: 0.5rem 1rem;
   background-color: transparent;
@@ -143,7 +143,7 @@
   transition: 0.3s;
   border: 1px solid #67170c;
   background-color: #67170c;
-  color:#fffdf7;
+  color: #fffdf7;
 }
 
 /* Formulário e Inputs */
@@ -160,21 +160,21 @@
 }
 
 .label {
-     color: #67170c;
-    font-size: 1rem;
-    font-family: "Jacques Francois", serif;
+  color: #67170c;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
 }
 
 .input,
 .textarea {
   width: 100%;
-      background: #fff8d7 !important;
-    border: 1px solid #e2c77c !important;
-    border-radius: 1rem !important;
-    padding: 0.8rem !important;
-    justify-self: stretch !important;
-    font-size: 1rem !important;
-    color: #67170c !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
   outline: none;
   transition:
     border-color 0.2s,
