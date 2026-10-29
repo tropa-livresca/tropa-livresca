@@ -120,10 +120,17 @@ export default function PagamentoCartao() {
         </div>
 
         <div className={styles.resumoPedido}>
-          <p className={styles.pezin}>Pedido <span className={styles.numero4}>#{pedido.id}</span></p>
+          <p className={styles.pezin}>
+            Pedido <span className={styles.numero4}>#{pedido.id}</span>
+          </p>
           <strong className={styles.strongtotal}>{formatarPreco(total)}</strong>
 
-          {frete >0 && <span className={styles.strongtotal}> Frete incluído no total do pedido.</span>}
+          {frete > 0 && (
+            <span className={styles.strongtotal}>
+              {" "}
+              Frete incluído no total do pedido.
+            </span>
+          )}
         </div>
 
         <form

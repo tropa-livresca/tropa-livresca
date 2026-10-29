@@ -280,18 +280,16 @@ export default function PoliticaPrivacidade() {
         descricao="Encontre respostas para as dúvidas mais comuns."
       />
 
-      
-
       <div className={styles.container}>
         <div className={stylesoutro.btn}>
-      <VoltarHistorico/>
-      <a
-        href={politicaPrivacidadePdf}
-        download="Politica-de-Privacidade-Tropa-Livresca.pdf"
-      >
-        Baixar Política
-      </a>
-      </div>
+          <VoltarHistorico />
+          <a
+            href={politicaPrivacidadePdf}
+            download="Politica-de-Privacidade-Tropa-Livresca.pdf"
+          >
+            Baixar Política
+          </a>
+        </div>
 
         {Object.entries(faqData).map(([categoria, itens]) => (
           <div key={categoria} className={styles.categoriaCard}>

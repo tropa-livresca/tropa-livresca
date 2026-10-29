@@ -133,7 +133,6 @@ export function normalizarCaminhoPersistido(value, bucket) {
 }
 
 export function criarPathUpload(userId, tipo, extensao) {
-
   console.log(userId);
   console.log(tipo);
   console.log(extensao);

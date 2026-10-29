@@ -24,20 +24,20 @@
 
 .cartaoResumo span {
   color: var(--cor-texto-muted);
-    font-size: 1rem;
-    font-weight: 600;
+  font-size: 1rem;
+  font-weight: 600;
 }
 
 .cartaoResumo strong {
-      color: #67170c;
-    font-size: 2rem;
-    font-family: none;
+  color: #67170c;
+  font-size: 2rem;
+  font-family: none;
 }
 
-.cartaoResumo small{
-      color: var(--cor-texto-muted);
-    font-size: 1rem;
-    font-weight: 500;
+.cartaoResumo small {
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .destaque {
@@ -46,20 +46,20 @@
 
 .destaque span {
   color: var(--cor-texto-muted);
-    font-size: 0.9rem;
-    font-weight: 600;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .destaque strong {
-      color: #67170c;
-    font-size: 2rem;
-    font-family: none;
+  color: #67170c;
+  font-size: 2rem;
+  font-family: none;
 }
 
-.destaque small{
-      color: var(--cor-texto-muted);
-    font-size: 1rem;
-    font-weight: 500;
+.destaque small {
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  font-weight: 500;
 }
 
 .numero {
@@ -138,17 +138,17 @@
   font-size: 1.3rem;
 }
 
-.input{
-     width: 100% !important;
-    background: #fff8d7 !important;
-    border: 1px solid #e2c77c !important;
-    border-radius: 1rem !important;
-    padding: 0.8rem !important;
-    justify-self: stretch !important;
-    font-size: 1rem !important;
-    color: #67170c !important;
-    margin-bottom: 1rem;
-    font-family: none;
+.input {
+  width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-bottom: 1rem;
+  font-family: none;
 }
 
 .input:focus {
@@ -160,20 +160,20 @@
   color: var(--cor-texto-muted) !important;
 }
 
-.label{
+.label {
   color: #67170c;
-    font-size: 1rem;
-    font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
 }
 
-.numero{
+.numero {
   font-family: none;
 }
 
-.saldo{
-   color: #67170c !important;
-    font-size: 2rem !important;
-    font-family: none !important;
+.saldo {
+  color: #67170c !important;
+  font-size: 2rem !important;
+  font-family: none !important;
 }
 
 @media (max-width: 700px) {
