@@ -8,7 +8,9 @@ export class RevisaoModel {
   static async BuscarLivroRevisao(busca) {
     const { data, error } = await supabase
       .from("livros")
-      .select("id, titulo, subtitulo, capa, estado, users_profile(nome, sobrenome)")
+      .select(
+        "id, titulo, subtitulo, capa, estado, users_profile(nome, sobrenome)",
+      )
       .ilike("titulo", `%${busca}%`);
 
     if (error) {
