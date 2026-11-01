@@ -180,6 +180,8 @@
 }
 /* 3. FOOTER DE SUPORTE */
 .contato {
+  width: 100%;
+  max-width: 1200px;
   margin-top: 5rem;
   padding: 2rem;
   text-align: center;
@@ -201,7 +203,7 @@
 .contatoTexto {
   max-width: 42rem;
   margin: 1.3rem auto 2rem;
-  color: #7a6a5b;
+  color: var(--cor-texto-muted);
   line-height: 1.8;
   font-size: 1em;
 }
@@ -216,6 +218,8 @@
   color: #ede6b3;
   text-decoration: none;
   font-size: 1em;
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .contatoBotao:hover {

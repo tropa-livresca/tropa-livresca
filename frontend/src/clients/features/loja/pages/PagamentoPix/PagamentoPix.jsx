@@ -133,7 +133,7 @@ export default function PagamentoPix() {
               </span>
 
               <p className={styles.pedido}>
-                Pedido #{pedido.id}
+                Pedido <span className={styles.numero}>#{pedido.id}</span>
               </p>
 
               <p className={styles.pedido1}>
