@@ -99,7 +99,11 @@ export default function Inicio() {
               <div className={styles.catalogo}>
                 <h2 className={styles.subtitulo_secao}>Livros Publicados</h2>
               </div>
-              <div className={styles.descubra}></div>
+              <div className={styles.descubra}>
+                <Link to="/loja" className={styles.btntchau}>
+                  Ver todos
+                </Link>
+              </div>
             </div>
 
             <div className={styles.editorial_grid_livros}>

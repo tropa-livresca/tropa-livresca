@@ -102,13 +102,8 @@
   text-align: left;
 }
 
-.catalogo {
-  padding-left: 1rem;
-}
-
 .descubra {
   text-align: right;
-  padding-right: 1rem;
 }
 
 .secao_livros,
@@ -127,6 +122,12 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
+.btntchau{
+  background:#67170c;
+  color:#ede6b3;
+  padding:0.7rem;
+  border-radius:0.7rem;
+}
 .container_header {
   width: 100%;
   display: flex;
@@ -138,7 +139,6 @@
 
 .subtitulo_secao {
   font-size: 2em;
-  margin-top: 0.2em;
   margin-bottom: 0;
   color: #67170c;
 }
@@ -163,7 +163,7 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  gap: 0.5rem;
 }
 
 .card_livro_editorial {
@@ -178,15 +178,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  margin-bottom: 1.5em;
+  margin-bottom:0.7rem;
 }
 
 .card_livro_editorial img {
   width: 100%;
-  max-width: 250px;
-  height: 350px;
+  max-width: 225px;
+  height: 325px;
   object-fit: cover;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
 }
 
@@ -217,19 +216,22 @@
   font-size: 0.75em;
   text-transform: uppercase;
   color: #7b7b7b;
-  margin-bottom: 0.5em;
+    text-align:left;
 }
 
 .card_livro_editorial h3 {
-  font-size: 1.2em;
-  margin: 0 0 0.4em 0;
-  line-height: 1.3;
+      color: #67170c;
+    font-family: "Jacques Francois", serif;
+    font-size: 1.2rem;
+    margin-top:0.2rem;
+      text-align:left;
 }
 
 .autorLivro {
-  margin-bottom: 1em;
-  color: #7b7b7b;
-  font-size: 0.9em;
+  margin: 0.2rem;
+    color: var(--cor-texto-muted);
+    font-size: 0.9rem;
+      text-align:left;
 }
 
 .link_detalhe_obra,
@@ -336,11 +338,11 @@
 }
 
 .btn_navegacao_esquerda {
-  left: 1rem;
+  left: 2rem;
 }
 
 .btn_navegacao_direita {
-  right: 1rem;
+  right: 2rem;
 }
 
 .btn_navegacao_esquerda:hover,
