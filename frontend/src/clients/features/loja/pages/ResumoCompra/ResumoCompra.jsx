@@ -5,7 +5,6 @@ import { FaCheckCircle } from "react-icons/fa";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import base from "../Compra/Compra.module.css";
 import styles from "./ResumoCompra.module.css";
-import confirmadoStyles from "../Confirmado/Confirmado.module.css";
 
 import { useCompra } from "../../hooks/useCompra";
 import Carregando from "../../../../components/Carregando/Carregando";
@@ -65,17 +64,18 @@ export default function ResumoCompra() {
   const endereco = pedido.endereco_entrega;
 
   return (
-    <main>
+    <main className={styles.main}>
       <DescricaoTela
         titulo={
           <>
-            Pedido #<span className={styles.numero}>{pedido.id}</span>
+            Resumo do pedido #<span className={styles.numero}>{pedido.id}</span>
           </>
         }
         descricao={
           <>
             Feito em{" "}
-            <span className={styles.numero}>{formatarData(pedido.data)}</span>
+            <span className={styles.numero}>{formatarData(pedido.data)}</span> ·
+            acompanhe o pagamento e a entrega por aqui.
           </>
         }
       />
@@ -84,42 +84,40 @@ export default function ResumoCompra() {
         <div className={base.conteudo}>
           <div className={base.colunaPrincipal}>
             {pago && (
-              <section className={confirmadoStyles.container}>
-                <div className={confirmadoStyles.popup}>
-                  <div className={confirmadoStyles.containerconf}>
-                    <div className={confirmadoStyles.icone}>
-                      <FaCheckCircle />
-                    </div>
+              <section className={styles.confirmacao}>
+                <div className={styles.confirmacaoIcone}>
+                  <FaCheckCircle />
+                </div>
 
-                    <h3>Pagamento confirmado!</h3>
+                <div className={styles.confirmacaoTexto}>
+                  <h3>Pagamento confirmado!</h3>
 
+                  <p>
+                    O pagamento do pedido
+                    <span className={styles.numero}> #{pedido.id}</span> foi
+                    aprovado com sucesso.
+                  </p>
+
+                  {temDigital && (
                     <p>
-                      Obrigado pela sua compra.
-                      <br />O pagamento do pedido
-                      <span className={confirmadoStyles.numero}>
-                        {" "}
-                        #{pedido.id}
-                      </span>{" "}
-                      foi aprovado com sucesso.
+                      Seu e-book será enviado para o e-mail da sua conta. Caso o
+                      e-mail não tenha chegado, clique no botão abaixo:
                     </p>
+                  )}
 
+                  <div className={styles.acoes}>
                     {temDigital && (
-                      <>
-                        <p>
-                          Seu e-book será enviado para o e-mail da sua conta.
-                          Caso o e-mail não tenha chegado, clique no botão
-                          abaixo:
-                        </p>
-                        <button
-                          onClick={() => reenviarEmailLivrosDigitais(pedido.id)}
-                        >
-                          Reenviar Email
-                        </button>
-                      </>
+                      <button
+                        className={styles.botaoSecundario}
+                        type="button"
+                        onClick={() => reenviarEmailLivrosDigitais(pedido.id)}
+                      >
+                        Reenviar Email
+                      </button>
                     )}
 
                     <button
-                      className={confirmadoStyles.btn}
+                      className={styles.botaoPrimario}
                       type="button"
                       onClick={() => navigate("/")}
                     >
@@ -135,11 +133,11 @@ export default function ResumoCompra() {
                 <h2>Entrega</h2>
 
                 <p className={base.aviso}>
-                  {endereco.rua}, {endereco.num}
+                  {endereco.rua}, <span className={styles.numero}>{endereco.num}</span>
                   {endereco.complemento ? ` - ${endereco.complemento}` : ""}
                   <br />
-                  {endereco.bairro} · {endereco.cidade}/{endereco.estado} · CEP{" "}
-                  {endereco.cep}
+                  {endereco.bairro} · {endereco.cidade}/{endereco.estado} · <span className={styles.numero}>CEP{" "}
+                  {endereco.cep}</span>
                 </p>
 
                 <p className={styles.status}>
@@ -149,28 +147,28 @@ export default function ResumoCompra() {
             )}
           </div>
 
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
-          >
+          <div className={styles.colunaLateral}>
             <aside className={base.resumo}>
               <h2>Resumo</h2>
 
               <div className={base.linha}>
                 <span>Livros</span>
-                <strong>{formatarPreco(totalItens)}</strong>
+                <strong className={styles.numero}>{formatarPreco(totalItens)}</strong>
               </div>
 
               <div className={base.linha}>
                 <span>Frete</span>
-                <strong>{frete > 0 ? formatarPreco(frete) : "Grátis"}</strong>
+                <strong className={styles.numero}>{frete > 0 ? formatarPreco(frete) : "Grátis"}</strong>
               </div>
 
               <div className={`${base.linha} ${base.total}`}>
                 <span>Total</span>
-                <strong>{formatarPreco(pedido.total)}</strong>
+                <strong className={styles.numero}>{formatarPreco(pedido.total)}</strong>
               </div>
 
-              <p className={styles.status}>
+              <p
+                className={`${styles.status2} ${pago ? styles.pago : styles.pendente}`}
+              >
                 Pagamento: <strong>{pago ? "Pago" : "Pendente"}</strong>
               </p>
 
@@ -189,12 +187,12 @@ export default function ResumoCompra() {
                       <strong>{item.livros?.titulo || "Livro"}</strong>
 
                       <small>
-                        {item.fisico ? "Físico" : "Digital"} · {item.qtd}x{" "}
-                        {formatarPreco(item.preco_unitario)}
+                        {item.fisico ? "Físico" : "Digital"} · <span className={styles.numero}>{item.qtd}x{" "}
+                        {formatarPreco(item.preco_unitario)}</span>
                       </small>
                     </div>
 
-                    <span>{formatarPreco(item.subtotal)}</span>
+                    <span className={styles.numero}>{formatarPreco(item.subtotal)}</span>
                   </li>
                 ))}
               </ul>

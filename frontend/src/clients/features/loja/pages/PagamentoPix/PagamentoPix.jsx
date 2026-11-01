@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiCopy } from "react-icons/fi";
+import { FiArrowLeft, FiCopy, FiTruck } from "react-icons/fi";
 import { FaPix } from "react-icons/fa6";
 
 import styles from "./PagamentoPix.module.css";
@@ -71,12 +71,16 @@ export default function PagamentoPix() {
   if (!pedido?.id) {
     return (
       <main className={styles.container}>
-        <p>Não foi possível localizar seu pedido.</p>
-
-        <Link to="/pagamento" className={styles.voltar}>
+        
+        <Link to="/pagamento" className={styles.voltar2}>
           <FiArrowLeft />
           Voltar para o pagamento
         </Link>
+
+        <div className={styles.erro}>
+        <p>Não foi possível localizar seu pedido.</p>
+        </div>
+
       </main>
     );
   }
@@ -106,50 +110,58 @@ export default function PagamentoPix() {
 
         <div className={styles.formulario}>
           {copiado && (
-            <p role="status" aria-live="polite">
+            <p className={styles.copiado} role="status" aria-live="polite">
               Chave Pix copiada com sucesso!
             </p>
           )}
 
-          <div className={styles.qrCode}>
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
-                CHAVE_PIX,
-              )}`}
-              alt="QR Code contendo a chave Pix"
-            />
+          <div className={styles.gridPix}>
+            <div className={styles.qrCode}>
+              <img
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
+                  CHAVE_PIX,
+                )}`}
+                alt="QR Code contendo a chave Pix"
+              />
 
-            <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
-          </div>
+              <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
+            </div>
 
-          <div className={styles.resumoPedido}>
-            <p className={styles.pedido}>Pedido #{pedido.id}</p>
-            <p className={styles.pedido1}>{formatarPreco(total)}</p>
+            <div className={styles.resumoPedido}>
+              <span className={styles.pedidoRotulo}>Resumo do pedido</span>
+              <p className={styles.pedido}>Pedido #{pedido.id}</p>
+              <p className={styles.pedido1}><span className={styles.numero}>{formatarPreco(total)}</span></p>
 
-            {frete > 0 && <span>Frete incluído no total do pedido.</span>}
+              {frete > 0 && (
+                <span className={styles.pedidoFrete}>
+                  <FiTruck />
+                  Frete incluído no total do pedido.
+                </span>
+              )}
 
-            <label>
-              Chave Pix
-              <div className={styles.chavePix}>
-                <input
-                  type="text"
-                  value={CHAVE_PIX}
-                  readOnly
-                  aria-label="Chave Pix"
-                  className={styles.ola}
-                />
+              <label>
+                Chave Pix
+                <div className={styles.chavePix}>
+                  <input
+                    type="text"
+                    value={CHAVE_PIX}
+                    readOnly
+                    aria-label="Chave Pix"
+                    className={styles.ola}
+                  />
 
-                <button
-                  type="button"
-                  className={styles.botaoCopiar}
-                  onClick={handleCopiarChave}
-                  aria-label="Copiar chave Pix"
-                  title="Copiar chave Pix"
-                >
-                  <FiCopy />
-                </button>
-              </div>
-            </label>
+                  <button
+                    type="button"
+                    className={styles.botaoCopiar}
+                    onClick={handleCopiarChave}
+                    aria-label="Copiar chave Pix"
+                    title="Copiar chave Pix"
+                  >
+                    <FiCopy />
+                  </button>
+                </div>
+              </label>
+            </div>
           </div>
 
           <div className={styles.instrucoes}>

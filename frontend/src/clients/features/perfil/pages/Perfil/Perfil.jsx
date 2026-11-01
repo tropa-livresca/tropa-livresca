@@ -274,6 +274,7 @@ export default function Perfil() {
             </section>
 
             <section>
+              
               <h3>Dados Bancários</h3>
 
               <p className={styles.subtitulo}>Insira seus dados bancários.</p>

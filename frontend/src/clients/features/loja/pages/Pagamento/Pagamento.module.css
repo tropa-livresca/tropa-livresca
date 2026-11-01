@@ -160,6 +160,31 @@
   margin-bottom: 1.4rem;
 }
 
+.tituloCard1 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.tituloCard1 > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tituloCard1 strong {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.1rem;
+}
+
+.tituloCard1 span {
+  color: var(--cor-texto-muted);
+  font-size: 1.02rem;
+  line-height: 1.4;
+}
+
 .tituloCard > div {
   display: flex;
   flex-direction: column;
@@ -280,7 +305,6 @@
   font-size: 0.95rem;
   margin-bottom: 0;
   text-align: center;
-  font-style: italic;
 }
 
 .aviso a {

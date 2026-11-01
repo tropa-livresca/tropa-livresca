@@ -210,7 +210,8 @@ body {
 }
 
 .avatar {
-  font-size: 42px;
+   width:60px;
+  height: 60px;
   color: #67170c;
   transition: 0.2s;
 }

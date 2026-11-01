@@ -480,6 +480,9 @@ textarea {
   opacity: 0.6;
 }
 
+.enderecoDesabilitado .linkDados {
+  opacity: 0.6;
+}
 @media (max-width: 900px) {
   .containerperfil {
     grid-template-columns: 1fr;

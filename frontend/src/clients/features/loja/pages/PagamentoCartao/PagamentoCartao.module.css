@@ -69,6 +69,113 @@
   font-size: 1.4rem;
 }
 
+.resumoPedido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #e2c77c;
+  border-radius: 1.2rem;
+  background: #fff8d7 !important;
+}
+
+.pedidoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pedidoRotulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cor-texto-muted);
+  text-align: left;
+}
+
+.pedidoNumero {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #67170c;
+  text-align: left;
+}
+
+.pedidoId {
+  font-family: inherit;
+  font-variant-numeric: lining-nums;
+}
+
+
+.erro{
+   width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.erro p{
+  font-size: 1rem;
+  color: var(--cor-texto-muted);
+}
+
+.voltar2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #67170c;
+  text-decoration: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.voltar2:hover {
+  text-decoration: underline;
+}
+
+.pedidoFrete {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  margin-top: 0.2rem;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.85rem;
+  color: #67170c;
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 999px;
+}
+
+.pedidoTotal {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.totalRotulo {
+  font-size: 0.8rem;
+  color: var(--cor-texto-muted);
+}
+
+.totalValor {
+  font-size: 1.9rem;
+  line-height: 1;
+  color: #67170c;
+  font-variant-numeric: lining-nums;
+}
+
 .formulario {
   display: flex;
   flex-direction: column;
@@ -221,6 +328,9 @@
   color: #67170c;
 }
 
+.listaParcelamento button .numero {
+  font-family: none !important;
+}
 @keyframes abrir {
   from {
     opacity: 0;
@@ -284,28 +394,6 @@
   transition: 0.3s;
 }
 
-.resumoPedido {
-  padding-bottom: 1.2rem;
-}
-
-.numero4 {
-  font-family: none;
-}
-
-.strongtotal {
-  font-family: none;
-  margin-top: 0.5rem;
-  font-size: 1.1rem;
-  color: #67170c;
-}
-
-.pezin {
-  margin: 0;
-  text-align: left;
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #67170c;
-}
 @media (max-width: 600px) {
   .container {
     width: 90%;
@@ -322,5 +410,14 @@
 
   .topo h1 {
     font-size: 1.6rem;
+  }
+
+  .resumoPedido {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pedidoTotal {
+    align-items: flex-start;
   }
 }

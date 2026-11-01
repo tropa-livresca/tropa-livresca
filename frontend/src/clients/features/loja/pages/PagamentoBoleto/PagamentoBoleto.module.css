@@ -162,6 +162,7 @@
 
 .numero {
   font-family: none;
+  color: #67170c;
 }
 
 .numero2 {
@@ -221,8 +222,12 @@
 
 .erro {
   font-size: 1rem;
-  color: #67170c;
+  color: var(--cor-texto-muted);
   text-align: center;
+  padding: 1rem;
+   background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
 }
 
 @media (max-width: 600px) {
