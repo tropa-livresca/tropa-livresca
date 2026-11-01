@@ -96,6 +96,7 @@ export default function Pagamento() {
           <div className={styles.cabecalhoProdutos}>
             <span>Produto</span>
             <span>Preço</span>
+            <span>Frete</span>
             <span>Quantidade</span>
             <span>Total</span>
           </div>
@@ -138,7 +139,7 @@ export default function Pagamento() {
           <div className={styles.colunaEsquerda}>
             {itens.some((item) => item.tipo !== "fisico") && (
               <section className={styles.card}>
-                <div className={styles.tituloCard}>
+                <div className={styles.tituloCard1}>
                   <div>
                     <strong>Entrega digital</strong>
                     <span>

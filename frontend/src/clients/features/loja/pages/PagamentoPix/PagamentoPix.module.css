@@ -5,14 +5,13 @@
   box-sizing: border-box;
 }
 
-.formPagamento{
-   padding: 1.5rem;
+.formPagamento {
+  padding: 2rem;
   background: #fffdf7;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
-     border-radius: 1.5rem;
-
+  border-radius: 1.5rem;
 }
 
 .topo {
@@ -43,6 +42,38 @@
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.erro{
+   width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.erro p{
+  font-size: 1rem;
+  color: var(--cor-texto-muted);
+}
+
+.voltar2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #67170c;
+  text-decoration: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+.voltar2:hover {
+  text-decoration: underline;
 }
 
 .formTitulo {
@@ -82,6 +113,31 @@
   font-size: 1.4rem;
 }
 
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.copiado {
+  margin: 0;
+  padding: 0.6rem 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ede6b3;
+  background-color: #67170c;
+  border-radius: 0.5rem;
+}
+
+.gridPix {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: stretch;
+  width: 100%;
+}
+
 .chave {
   display: flex;
   align-items: center;
@@ -91,7 +147,6 @@
   padding: 0.7rem;
   background: #fff8d7;
   border: 1px solid #e2c77c;
-
   border-radius: 1rem;
   box-sizing: border-box;
 }
@@ -125,15 +180,20 @@
 }
 
 .qrCode {
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  margin-left: 15rem;
-  margin-right: 15rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  text-align: center;
+  border-radius: 1.2rem;
 }
 
 .qrCode img {
-  width: 190px;
-  height: 190px;
+  width: 160px;
+  height: 160px;
+  max-width: 100%;
   padding: 0.7rem;
   background: #fff;
   border: 1px solid #e2c77c;
@@ -148,10 +208,120 @@
   font-size: 0.9rem;
 }
 
+.resumoPedido {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+  padding: 1.5rem;
+  box-sizing: border-box;
+
+}
+
+.pedidoRotulo {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cor-texto-muted);
+  text-align: left;
+}
+
+.pedido {
+ margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #67170c;
+  text-align: left;
+}
+
+.pedido1 {
+  margin: 0;
+  color: #67170c;
+  font-size: 2rem;
+  line-height: 1.1;
+  font-weight: 600;
+  font-variant-numeric: lining-nums;
+  text-align: left;
+}
+
+.pedidoFrete {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: fit-content;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.85rem;
+  color: #67170c;
+  background: #fffdf4;
+  border: 1px solid #e2c77c;
+  border-radius: 999px;
+}
+
+.resumoPedido label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e3d5ad;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-family: "Jacques Francois", serif;
+  font-weight: 500;
+}
+
+.chavePix {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.ola {
+  flex: 1;
+  min-width: 0;
+  height: 2.8rem;
+  box-sizing: border-box;
+  padding: 0.6rem 0.8rem;
+  background: #fffdf4;
+  border: 1px solid #e2c77c;
+  border-radius: 0.8rem;
+  color: #67170c;
+  font-size: 0.95rem;
+  text-overflow: ellipsis;
+}
+
+.ola:focus {
+  outline: none;
+  border: 2px solid #67170c;
+}
+
+.botaoCopiar {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.8rem;
+  background: #67170c;
+  color: #ede6b3;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botaoCopiar:hover {
+  background-color: #ffbb33;
+}
+
 .instrucoes {
   width: 100%;
-  margin: 0 auto 2.5rem;
- 
+  margin: 0 auto;
   border-radius: 1rem;
   box-sizing: border-box;
 }
@@ -213,6 +383,13 @@
   font-size: 0.9rem;
 }
 
+.erro {
+  margin: 0;
+  color: #b3261e;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .botao {
   width: 100%;
   padding: 0.7rem;
@@ -233,43 +410,20 @@
 
 .seguro {
   display: block;
-  margin-top: 1rem;
+  margin-top: -0.5rem;
   color: var(--cor-texto-muted);
   font-size: 0.9rem;
   line-height: 1.5;
   text-align: center;
 }
 
-.resumoPedido {
-  width: 100%; 
-  padding: 0.7rem 1rem;
-  background: #fffdf7;
-  border: 1px solid #e2c77c;
-  border-radius: 0.8rem;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1rem; 
-}
-
-
-.pedido{
-  font-family: none;
-  margin: 0;
-  color:#67170c;
-  font-size:1.5rem;
-  font-weight: 600;
-}
-
-.pedido1{
-  font-family: none;
-  color:#67170c;
-    margin: 0;
-  font-size:1.5rem;
-  font-weight: 600;
-}
 @media (max-width: 800px) {
   .container {
     width: 90%;
+  }
+
+  .gridPix {
+    grid-template-columns: 1fr;
   }
 
   .chave,
@@ -281,6 +435,10 @@
 @media (max-width: 600px) {
   .container {
     padding: 2rem 5%;
+  }
+
+  .formPagamento {
+    padding: 1.3rem;
   }
 
   .card {
@@ -305,16 +463,17 @@
     font-size: 1.2rem;
   }
 
-  .instrucoes {
-    padding: 1rem;
-  }
-
-  .instrucoes div {
-    padding: 0.7rem;
+  .qrCode,
+  .resumoPedido {
+    padding: 1.1rem;
   }
 
   .qrCode img {
     width: 160px;
     height: 160px;
+  }
+
+  .instrucoes div {
+    padding: 0.7rem;
   }
 }

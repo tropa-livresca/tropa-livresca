@@ -7,8 +7,9 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaEnvelope,
+  FaChevronLeft,
+  FaChevronRight,
 } from "react-icons/fa";
-import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function AutorById() {
@@ -18,8 +19,12 @@ export default function AutorById() {
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   useEffect(() => {
+    setPaginaAtual(1);
+  }, [id]);
+
+  useEffect(() => {
     if (id) {
-      buscarAutorById(id, paginaAtual, 3);
+      buscarAutorById(id, paginaAtual, 6);
     }
   }, [id, paginaAtual, buscarAutorById]);
 
@@ -88,7 +93,7 @@ export default function AutorById() {
       </section>
 
       <section className={styles.secao}>
-        <h2 className={styles.subtitulo}>Livros</h2>
+        <h2 className={styles.subtitulo}>Alguns Livros do Autor</h2>
 
         {carregando ? (
           <Carregando mensagem="Carregando perfil do autor..." />
@@ -117,13 +122,40 @@ export default function AutorById() {
           </div>
         )}
 
-        {meta && (
-          <Paginacao
-            paginaAtual={paginaAtual}
-            totalPaginas={meta.totalPages}
-            totalItems={meta.totalItems}
-            onMudarPagina={setPaginaAtual}
-          />
+        {meta?.totalPages > 1 && (
+          <nav
+            className={styles.paginacaoLivros}
+            aria-label="Paginação dos livros"
+          >
+            <button
+              className={styles.btnSeta}
+              type="button"
+              onClick={() =>
+                setPaginaAtual((pagina) => Math.max(pagina - 1, 1))
+              }
+              disabled={paginaAtual === 1}
+              aria-label="Ver livros anteriores"
+              title="Ver livros anteriores"
+            >
+              <FaChevronLeft aria-hidden="true" />
+            </button>
+            <span className={styles.indicadorPagina} aria-live="polite">
+              {paginaAtual} / {meta.totalPages}
+            </span>
+            <button
+              className={styles.btnMais}
+              type="button"
+              onClick={() =>
+                setPaginaAtual((pagina) =>
+                  Math.min(pagina + 1, meta.totalPages),
+                )
+              }
+              disabled={paginaAtual === meta.totalPages}
+            >
+              Ver mais livros
+              <FaChevronRight aria-hidden="true" />
+            </button>
+          </nav>
         )}
       </section>
     </main>

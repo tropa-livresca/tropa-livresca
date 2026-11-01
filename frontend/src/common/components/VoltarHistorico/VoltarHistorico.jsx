@@ -1,4 +1,8 @@
 import { useNavigate } from "react-router-dom";
+import styles from "./VoltarHistorico.module.css";
+import { FaArrowLeft } from 'react-icons/fa';
+
+
 
 function VoltarHistorico() {
   const navigate = useNavigate();
@@ -11,7 +15,7 @@ function VoltarHistorico() {
     }
   };
 
-  return <button onClick={handleVoltar}>Voltar</button>;
+  return <button onClick={handleVoltar} className={styles.btnvoltar}><FaArrowLeft/>Voltar</button>;
 }
 
 export default VoltarHistorico;

@@ -9,7 +9,7 @@ import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
@@ -18,6 +18,7 @@ export default function Login() {
     useLogin();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const location = useLocation();
 
   return (
     <div className={styles.container}>
@@ -26,7 +27,7 @@ export default function Login() {
           <button
             type="button"
             className={styles.voltar}
-            onClick={() => navigate("/")}
+            onClick={() => navigate(location.state?.from?.pathname || "/")}
           >
             <IoChevronBack size={28} />
           </button>
@@ -85,7 +86,10 @@ export default function Login() {
             <div className={styles.informacoes}>
               <div className={styles.para}>
                 <p>
-                  Não tem uma conta? <Link to="/auth/cadastro">Crie uma.</Link>
+                  Não tem uma conta?{" "}
+                  <Link to="/auth/cadastro" state={location.state}>
+                    Crie uma.
+                  </Link>
                 </p>
                 <p>
                   É funcionário? <Link to="/auth/admin">Clique aqui.</Link>

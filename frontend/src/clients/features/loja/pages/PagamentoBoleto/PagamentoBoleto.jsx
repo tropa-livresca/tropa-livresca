@@ -415,12 +415,14 @@ export default function PagamentoBoleto() {
 
           <div>
             <span>Vencimento demonstrativo</span>
-            <strong className={styles.numero}>{formatarData(vencimento)}</strong>
+            <strong className={styles.numero}>
+              {formatarData(vencimento)}
+            </strong>
           </div>
 
           <div>
             <span>Status</span>
-            <strong  className={styles.numero}>
+            <strong className={styles.numero}>
               {pagamentoConfirmado
                 ? "Pago (simulação)"
                 : "Aguardando confirmação"}

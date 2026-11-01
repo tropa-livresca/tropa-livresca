@@ -128,6 +128,9 @@
   border: none;
   color: #fffdf7;
   transition: 0.3s;
+  border: 1px solid #67170c;
+  background-color: #67170c;
+  color: #fffdf7;
 }
 
 /* Formulário e Inputs */

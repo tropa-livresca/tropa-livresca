@@ -452,7 +452,7 @@
     padding: 3rem 5%;
   }
 
-   .containerlivros {
+  .containerlivros {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "busca"

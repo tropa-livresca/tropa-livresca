@@ -157,11 +157,12 @@
   border: 1px solid #e2c77c;
   border-radius: 1rem;
   text-align: left;
-    margin-top: 1rem;
+  margin-top: 1rem;
 }
 
 .numero {
   font-family: none;
+  color: #67170c;
 }
 
 .numero2 {
@@ -173,7 +174,7 @@
   margin-bottom: 0.4rem;
   color: #67170c;
   text-align: center;
-  font-size:1.05rem;
+  font-size: 1.05rem;
   font-family: "Jacques Francois", serif;
 }
 
@@ -186,8 +187,8 @@
 
 .botao {
   display: flex;
-  align-items: center; 
-  justify-content: center; 
+  align-items: center;
+  justify-content: center;
   width: 100%;
   padding: 0.7rem;
   font-family: inherit;
@@ -206,11 +207,9 @@
   transition: 0.3s;
 }
 
-
-.botao svg{
-  margin-right:0.3rem;
+.botao svg {
+  margin-right: 0.3rem;
 }
-
 
 .seguro {
   display: block;
@@ -221,10 +220,14 @@
   text-align: center;
 }
 
-.erro{
+.erro {
   font-size: 1rem;
-  color: #67170c;
-  text-align:center;
+  color: var(--cor-texto-muted);
+  text-align: center;
+  padding: 1rem;
+   background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
 }
 
 @media (max-width: 600px) {

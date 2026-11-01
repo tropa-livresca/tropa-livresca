@@ -12,7 +12,9 @@ export const useLivrosLoja = () => {
   const buscarLivroById = useCallback(async (id) => {
     setCarregando(true);
     try {
-      const response = await apiFetch(`/api/v1/clients/loja/${id}`);
+      const response = await apiFetch(`/api/v1/clients/loja/${id}`, {
+        skipAuthRedirect: true,
+      });
       const data = await response.json();
       if (!response.ok) {
         console.error("Erro ao buscar livros:", data.error);
