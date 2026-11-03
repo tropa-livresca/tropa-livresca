@@ -1,5 +1,4 @@
 import styles from "./EsqueceuSenha.module.css";
-import logo from "../../../../images/logo.png";
 import { useNavigate, Link } from "react-router-dom";
 import { IoChevronBack } from "react-icons/io5";
 import { useEsqueceuSenha } from "../../hooks/useEsqueceuSenha";
@@ -11,17 +10,10 @@ export default function EsqueceuSenha() {
 
   return (
     <main className={styles.container}>
-      <img src={logo} alt="Tropa Livresca" className={styles.imagemFundo} />
       <div className={styles.corFundo}></div>
 
       <div className={styles.card}>
-        <button
-          type="button"
-          onClick={() => navigate("/auth/login")}
-          className={styles.botaoVoltarTopo}
-        >
-          <IoChevronBack /> Voltar
-        </button>
+        
 
         {sucesso ? (
           <div className={styles.sucessoContainer}>
@@ -58,7 +50,7 @@ export default function EsqueceuSenha() {
               disabled={carregando}
               className={styles.botaoEnviar}
             >
-              {carregando ? "ENVIANDO..." : "ENVIAR LINK"}
+              {carregando ? "Enviando..." : "Enviar link"}
             </button>
 
             <p className={styles.textoLembrou}>
