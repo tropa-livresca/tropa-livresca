@@ -1,14 +1,3 @@
-import { useEffect, useState } from "react";
-import styles from "./Formulario.module.css";
-
-import { Link } from "react-router-dom";
-import { useAutopublicacao } from "../../hooks/useAutopublicacao";
-import { useMeusLivros } from "../../hooks/useMeusLivros";
-
-import Detalhes from "../../pages/Detalhes/Detalhes";
-import Conteudo from "../../pages/Conteudo/Conteudo";
-import Orcamento from "../../pages/Orcamento/Orcamento";
-import Confirmacao from "../../pages/Confirmacao/Confirmacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function Formulario({ idLivroEdicao }) {
@@ -23,6 +12,8 @@ export default function Formulario({ idLivroEdicao }) {
     voltarEtapa,
     irParaEtapaEspecifica,
     publicarLivro,
+    uploadManuscrito,
+    erro,
   } = useAutopublicacao();
 
   const { buscarLivroById } = useMeusLivros();
@@ -102,6 +93,7 @@ export default function Formulario({ idLivroEdicao }) {
             onChange={atualizarEtapa("conteudo")}
             isEdicao={isEdicao}
             {...navegar}
+            uploadManuscrito={uploadManuscrito}
           />
         )}
 
@@ -121,6 +113,7 @@ export default function Formulario({ idLivroEdicao }) {
             estadoAtualLivro={estadoAtualLivro}
             irParaEtapaEspecifica={irParaEtapaEspecifica}
             publicarLivro={publicarLivro}
+            erro={erro}
           />
         )}
       </div>
