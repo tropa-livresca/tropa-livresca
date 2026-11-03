@@ -30,8 +30,7 @@ export default function Autores() {
       <main>
         <DescricaoTela
           titulo="Autores"
-          descricao="A editora Tropa Livresca reúne autores independentes de todo o
-          Brasil. Descubra escritores que compartilham histórias únicas,
+          descricao=" Descubra escritores que compartilham histórias únicas,
           cheias de emoção e originalidade em suas obras."
         />
 
@@ -69,7 +68,6 @@ export default function Autores() {
                       </div>
                     )}
                     <h3>{autor.nome || "Autor anônimo"}</h3>
-                    <p>{autor.descricao || "Sem descrição"}</p>
                     <Link
                       to={`/autores/${autor.id}`}
                       className={styles.btndetalhes}

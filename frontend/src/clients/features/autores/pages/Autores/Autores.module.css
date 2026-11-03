@@ -148,6 +148,7 @@ main {
   border-radius: 999px;
   font-size: 0.9rem;
   transition: 0.3s;
+  margin: 0;
 }
 
 .btndetalhes:hover {

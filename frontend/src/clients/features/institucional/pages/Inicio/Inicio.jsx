@@ -366,7 +366,7 @@ export default function Inicio() {
           </section>
 
           <section className={styles.secao_autores}>
-            <div className={styles.container_header}>
+            <div className={styles.container_headera}>
               <div className={styles.comunidade}>
                 <h2 className={styles.subtitulo_secao}>Autores</h2>
               </div>

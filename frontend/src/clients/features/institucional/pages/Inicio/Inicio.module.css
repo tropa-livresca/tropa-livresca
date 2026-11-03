@@ -104,7 +104,10 @@
   background: rgba(103, 23, 12, 0.55);
   border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    transform 0.3s;
 }
 
 .carrossel_seta:hover {
@@ -140,7 +143,9 @@
   border-radius: 999px;
   background: transparent;
   cursor: pointer;
-  transition: width 0.3s, background-color 0.3s;
+  transition:
+    width 0.3s,
+    background-color 0.3s;
 }
 
 .carrossel_ponto_ativo {
@@ -209,7 +214,9 @@
   text-align: center;
   border-radius: 1.5rem;
   padding: 2rem;
-  box-shadow: 0 8px 20px rgba(103, 23, 12, 0.08), 0 2px 6px rgba(103, 23, 12, 0.05);
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
   background-color: #fffdf7;
   transition: transform 0.3s;
 }
@@ -300,7 +307,9 @@
   margin-bottom: 4rem;
   border-radius: 1.5rem;
   background-color: #fffdf7;
-  box-shadow: 0 8px 20px rgba(103, 23, 12, 0.08), 0 2px 6px rgba(103, 23, 12, 0.05);
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .container_header {
@@ -314,6 +323,16 @@
   position: relative;
 }
 
+.container_headera {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 0 0 0.5rem;
+  padding: 0 0 1rem;
+  border-bottom: 1px solid #e3d5ad;
+  position: relative;
+}
 .subtitulo_secao {
   font-size: 2em;
   line-height: 1.1;
@@ -353,7 +372,10 @@
   background: #fff8d7;
   border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s,
+    border-color 0.3s;
 }
 
 .btn_navegacao:hover:not(:disabled) {
@@ -481,7 +503,9 @@
   aspect-ratio: 2 / 3;
   object-fit: cover;
   border-radius: 0.3rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card_livro_editorial:hover img {
@@ -555,7 +579,9 @@
   border-radius: 50%;
   object-fit: cover;
   border: 3px solid #ffe9a8;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card_autor_editorial:hover img {
@@ -646,7 +672,9 @@
   padding: 2rem;
   border-radius: 1.5rem;
   background: #fffdf7;
-  box-shadow: 0 8px 20px rgba(103, 23, 12, 0.08), 0 2px 6px rgba(103, 23, 12, 0.05);
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .cta_icone {
