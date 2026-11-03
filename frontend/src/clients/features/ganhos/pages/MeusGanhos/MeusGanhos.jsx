@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";
-import base from "../../../loja/pages/Compra/Compra.module.css";
 import styles from "./MeusGanhos.module.css";
 import { useGanhos } from "../../hooks/useGanhos";
 import Carregando from "../../../../components/Carregando/Carregando";
-import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 import { useDadosBancarios } from "../../../perfil/hooks/useDadosBancarios.js";
 
 const formatarPreco = (valor) =>
@@ -113,18 +111,23 @@ export default function MeusGanhos() {
       titular: conta.nome_completo || "Titular não informado",
     };
   };
+
   return (
     <main>
-      <DescricaoTela
-        titulo="Meus ganhos"
-        descricao="A cada livro seu vendido na loja, você recebe 30% do valor como direitos autorais."
-      />
+      <div className={styles.topo}>
+        <h1 className={styles.titulo}>Meus ganhos</h1>
+        <p>
+          A cada livro seu vendido na loja, você recebe{" "}
+          <span className={styles.numero2}>30%</span> do valor como direitos
+          autorais.
+        </p>
+      </div>
 
-      <div className={base.container}>
+      <div className={styles.container}>
         {carregando && !ganhos ? (
           <Carregando mensagem="Carregando seus ganhos..." />
         ) : erro ? (
-          <p className={base.erro}>{erro}</p>
+          <p className={styles.erro}>{erro}</p>
         ) : (
           <div className={styles.conteudo}>
             <div className={styles.cartoes}>
@@ -141,16 +144,28 @@ export default function MeusGanhos() {
               </div>
             </div>
 
-            <section className={base.cartao}>
-              <h2>Solicitar saque</h2>
+            <section className={styles.cartao}>
+              <h2
+                className={saldoDisponivel <= 0 ? styles.labelDesabilitado : ""}
+              >
+                Solicitar saque
+              </h2>
 
               {existeConta ? (
-                <p>
+                <span
+                  className={`${styles.des} ${
+                    saldoDisponivel <= 0 ? styles.labelDesabilitado : ""
+                  }`}
+                >
                   O valor solicitado será encaminhado para a conta bancária
                   cadastrada.
-                </p>
+                </span>
               ) : (
-                <p className={base.aviso}>
+                <p
+                  className={`${styles.aviso1} ${
+                    saldoDisponivel <= 0 ? styles.labelDesabilitado : ""
+                  }`}
+                >
                   Você precisa cadastrar seus dados bancários antes de solicitar
                   um saque.{" "}
                   <Link to="/perfil/dadosbancarios">
@@ -159,8 +174,20 @@ export default function MeusGanhos() {
                 </p>
               )}
 
-              <form onSubmit={handleSolicitarSaque}>
-                <label htmlFor="valorSaque" className={styles.label}>
+              <form
+                onSubmit={handleSolicitarSaque}
+                className={
+                  saldoDisponivel <= 0 ? styles.formularioDesabilitado : ""
+                }
+              >
+                <label
+                  htmlFor="valorSaque"
+                  className={`${styles.label} ${
+                    !existeConta || saldoDisponivel <= 0
+                      ? styles.labelDesabilitado
+                      : ""
+                  }`}
+                >
                   Valor do saque (R$)
                 </label>
 
@@ -184,7 +211,13 @@ export default function MeusGanhos() {
                   }
                 />
 
-                <p className={styles.saldo}>
+                <p
+                  className={`${styles.saldo} ${
+                    !existeConta || saldoDisponivel <= 0
+                      ? styles.labelDesabilitado
+                      : ""
+                  }`}
+                >
                   Saldo disponível:{" "}
                   <span className={styles.numero}>
                     {formatarPreco(saldoDisponivel)}
@@ -192,7 +225,7 @@ export default function MeusGanhos() {
                 </p>
 
                 {erroSaque && (
-                  <p role="alert" className={base.erro}>
+                  <p role="alert" className={styles.erro}>
                     {erroSaque}
                   </p>
                 )}
@@ -210,10 +243,11 @@ export default function MeusGanhos() {
               </form>
             </section>
 
-            <section className={base.cartao}>
+            <section className={styles.cartao}>
               <strong className={styles.ex}>Extrato</strong>
+
               {extrato.length === 0 ? (
-                <p className={base.aviso}>
+                <p className={styles.aviso}>
                   Você ainda não possui movimentações financeiras.{" "}
                   <Link to="/meuslivros">Ver meus livros</Link>
                 </p>
@@ -251,18 +285,28 @@ export default function MeusGanhos() {
                                 )}
                               </span>
 
-                              <strong className={styles.numero}>
-                                {entrada
-                                  ? `Direitos autorais${
-                                      mov.fk_vendas_id
-                                        ? ` · Pedido #${mov.fk_vendas_id}`
-                                        : ""
-                                    }`
-                                  : "Saque"}
+                              <strong>
+                                {entrada ? (
+                                  <>
+                                    Direitos autorais
+                                    {mov.fk_vendas_id && (
+                                      <>
+                                        {" · Pedido "}
+                                        <span className={styles.numero2}>
+                                          #{mov.fk_vendas_id}
+                                        </span>
+                                      </>
+                                    )}
+                                  </>
+                                ) : (
+                                  "Saque"
+                                )}
                               </strong>
                             </td>
 
-                            <td>{formatarData(mov.data)}</td>
+                            <td className={styles.numero2}>
+                              {formatarData(mov.data)}
+                            </td>
 
                             <td>
                               {typeof conta === "string" ? (
@@ -270,8 +314,18 @@ export default function MeusGanhos() {
                               ) : (
                                 <div className={styles.dadosConta}>
                                   <strong>{conta.banco}</strong>
-                                  <small>Agência: {conta.agencia}</small>
-                                  <small>Conta: {conta.conta}</small>
+                                  <small>
+                                    Agência:{" "}
+                                    <span className={styles.numero2}>
+                                      {conta.agencia}
+                                    </span>
+                                  </small>
+                                  <small>
+                                    Conta:{" "}
+                                    <span className={styles.numero2}>
+                                      {conta.conta}
+                                    </span>
+                                  </small>
                                   <small>Titular: {conta.titular}</small>
                                 </div>
                               )}
@@ -294,7 +348,7 @@ export default function MeusGanhos() {
                     </tbody>
                   </table>
                 </div>
-              )}{" "}
+              )}
             </section>
           </div>
         )}
