@@ -1,9 +1,10 @@
 import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 
 export const useCadastro = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [popup, setPopup] = useState(null);
 
   const mostrarPopup = useCallback((tipo, mensagem) => {
@@ -15,8 +16,8 @@ export const useCadastro = () => {
 
   const fecharPopup = useCallback(() => {
     setPopup(null);
-    navigate("/auth/login");
-  }, [navigate]);
+    navigate("/auth/login", { state: location.state });
+  }, [location.state, navigate]);
 
   const [nome, setNome] = useState("");
   const [sobrenome, setSobrenome] = useState("");

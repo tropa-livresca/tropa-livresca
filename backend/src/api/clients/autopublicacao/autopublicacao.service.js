@@ -360,9 +360,6 @@ export class AutopublicacaoService {
       titulo: dadosLivro.detalhes?.titulo || null,
       subtitulo: dadosLivro.detalhes?.subtitulo || null,
       descricao: dadosLivro.detalhes?.descricao || null,
-      numero_edicao: dadosLivro.detalhes?.numeroEdicao
-        ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
-        : null,
       numero_paginas: dadosLivro.orcamento?.numeroPaginas
         ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
         : null,
@@ -510,9 +507,6 @@ export class AutopublicacaoService {
       descricao: dadosLivro.detalhes?.descricao || livroAtual.descricao,
       idioma: dadosLivro.detalhes?.idioma || livroAtual.idioma,
       categoria: dadosLivro.detalhes?.categoria || livroAtual.categoria,
-      numero_edicao: dadosLivro.detalhes?.numeroEdicao
-        ? parseInt(dadosLivro.detalhes.numeroEdicao, 10)
-        : livroAtual.numero_edicao,
       numero_paginas: dadosLivro.orcamento?.numeroPaginas
         ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
         : livroAtual.numero_paginas,

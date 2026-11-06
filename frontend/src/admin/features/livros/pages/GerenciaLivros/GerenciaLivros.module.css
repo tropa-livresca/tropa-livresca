@@ -414,7 +414,7 @@
   align-items: center;
 }
 
-.btnAcao{
+.btnAcao {
   text-decoration: none;
   padding: 0.5rem 0.85rem;
   font-size: 0.85rem;
@@ -432,8 +432,8 @@
   transition: 0.3s;
 }
 
-.inativar{
-   text-decoration: none;
+.inativar {
+  text-decoration: none;
   padding: 0.5rem 0.85rem;
   font-size: 0.85rem;
   font-weight: 500;
@@ -441,8 +441,7 @@
   border-radius: 0.7rem;
   border: 1px solid #c9998d;
   color: #67170c;
-  background: rgb(172, 172, 136)
- !important;
+  background: rgb(172, 172, 136) !important;
   width: 100%;
   max-width: 120px;
   box-sizing: border-box;
@@ -451,8 +450,8 @@
   transition: 0.3s;
 }
 
-.revisar{
-   text-decoration: none;
+.revisar {
+  text-decoration: none;
   padding: 0.5rem 0.85rem;
   font-size: 0.85rem;
   font-weight: 500;
@@ -460,17 +459,14 @@
   border-radius: 0.7rem;
   border: 1px solid #c9998d;
   color: #67170c;
-  background: 
-#67170c6c
-
- !important;
+  background: #67170c6c !important;
   width: 100%;
   max-width: 120px;
   box-sizing: border-box;
   white-space: nowrap;
   cursor: pointer;
   transition: 0.3s;
-  margin:0;
+  margin: 0;
 }
 
 .btnAcao {

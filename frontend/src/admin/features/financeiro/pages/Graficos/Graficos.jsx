@@ -1,3 +1,91 @@
+/**
+ * BEGIN
+    PERFORM public.validar_periodo_relatorio(
+        p_inicio,
+        p_fim
+    );
+
+    RETURN QUERY
+    SELECT
+        COALESCE(up.nome, '') AS nome,
+        COALESCE(up.sobrenome, '') AS sobrenome,
+        SUM(iv.qtd)::numeric AS total_vendido
+    FROM public.vendas v
+    JOIN public.itens_venda iv
+        ON iv.fk_vendas_id = v.id
+    JOIN public.livros l
+        ON l.id = iv.fk_livros_itens_id
+    -- Novo JOIN para trazer os dados do autor a partir de users_profile
+    JOIN public.users_profile up
+        ON up.id = l.fk_user_profile_id
+    WHERE v.data >= p_inicio
+      AND v.data < p_fim
+      AND v.status_pagamento = 'pago'
+    GROUP BY
+        COALESCE(up.nome, ''),
+        COALESCE(up.sobrenome, '')
+    ORDER BY
+        SUM(iv.qtd) DESC,
+        COALESCE(up.nome, '') ASC,
+        COALESCE(up.sobrenome, '') ASC
+    LIMIT 10;
+END;
+
+
+DECLARE
+    v_top_livros jsonb;
+    v_generos jsonb;
+    v_autores jsonb;
+BEGIN
+    PERFORM public.validar_periodo_relatorio(
+        p_inicio,
+        p_fim
+    );
+
+    SELECT COALESCE(
+        jsonb_agg(to_jsonb(t)),
+        '[]'::jsonb
+    )
+    INTO v_top_livros
+    FROM public.relatorio_top_livros(
+        p_inicio,
+        p_fim
+    ) AS t;
+
+    SELECT COALESCE(
+        jsonb_agg(to_jsonb(g)),
+        '[]'::jsonb
+    )
+    INTO v_generos
+    FROM public.relatorio_vendas_genero(
+        p_inicio,
+        p_fim
+    ) AS g;
+
+    SELECT COALESCE(
+        jsonb_agg(to_jsonb(a)),
+        '[]'::jsonb
+    )
+    INTO v_autores
+    FROM public.relatorio_top_autores(
+        p_inicio,
+        p_fim
+    ) AS a;
+
+    RETURN jsonb_build_object(
+        'periodo',
+        jsonb_build_object(
+            'inicio', p_inicio,
+            'fim', p_fim
+        ),
+        'topLivros', v_top_livros,
+        'generos', v_generos,
+        'autores', v_autores
+    );
+END;
+
+ */
+
 import {
   ResponsiveContainer,
   BarChart,
@@ -159,12 +247,28 @@ export default function Graficos() {
   }
 
   const livrosOrdenados = [...topLivros]
-    .sort((a, b) => Number(b.total_vendido) - Number(a.total_vendido))
+    .sort(
+      (a, b) =>
+        Number(b.total_vendido ?? b.totalVendido ?? 0) -
+        Number(a.total_vendido ?? a.totalVendido ?? 0),
+    )
     .slice(0, 3)
-    .map((livro) => ({
-      ...livro,
-      totalVendido: Number(livro.total_vendido),
-    }));
+    .map((livro) => {
+      const totalVendido = Number(
+        livro.total_vendido ?? livro.totalVendido ?? 0,
+      );
+
+      return {
+        ...livro,
+        titulo:
+          livro.titulo ??
+          livro.nome_livro ??
+          livro.livro_titulo ??
+          livro.nome ??
+          "Livro sem título",
+        totalVendido: Number.isFinite(totalVendido) ? totalVendido : 0,
+      };
+    });
 
   const generosOrdenados = [...generos]
     .sort((a, b) => Number(b.total_vendido) - Number(a.total_vendido))
@@ -173,13 +277,13 @@ export default function Graficos() {
       totalVendido: Number(genero.total_vendido),
     }));
 
-  const autoresOrdenados = [...autores]
-    .sort((a, b) => Number(b.total_vendido) - Number(a.total_vendido))
-    .map((autor) => ({
-      ...autor,
-      nomeCompleto: `${autor.nome} ${autor.sobrenome}`.trim(),
-      totalVendido: Number(autor.total_vendido),
-    }));
+  const autoresOrdenados = autores.map((autor) => ({
+    ...autor,
+    nomeCompleto: `${autor.autor_nome ?? autor.nome ?? ""} ${
+      autor.autor_sobrenome ?? autor.sobrenome ?? ""
+    }`.trim(),
+    totalVendido: Number(autor.total_vendido),
+  }));
 
   return (
     <main>

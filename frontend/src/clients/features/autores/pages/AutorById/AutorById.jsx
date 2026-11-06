@@ -7,8 +7,10 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaEnvelope,
+  FaChevronLeft,
+  FaChevronRight,
+  FaUserCircle,
 } from "react-icons/fa";
-import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 import Carregando from "../../../../components/Carregando/Carregando";
 
 export default function AutorById() {
@@ -18,8 +20,12 @@ export default function AutorById() {
   const [paginaAtual, setPaginaAtual] = useState(1);
 
   useEffect(() => {
+    setPaginaAtual(1);
+  }, [id]);
+
+  useEffect(() => {
     if (id) {
-      buscarAutorById(id, paginaAtual, 3);
+      buscarAutorById(id, paginaAtual, 6);
     }
   }, [id, paginaAtual, buscarAutorById]);
 
@@ -29,101 +35,180 @@ export default function AutorById() {
   return (
     <main className={styles.container}>
       <section className={styles.hero}>
-        {autor?.imagem ? (
-          <img className={styles.foto} src={autor.imagem} alt={autor.nome} />
-        ) : (
-          <div className={styles.semfoto}>Sem foto</div>
-        )}
+        <div className={styles.fotoContainer}>
+          {autor?.imagem ? (
+            <img className={styles.foto} src={autor.imagem} alt={autor.nome} />
+          ) : (
+            <div className={styles.semfoto}>
+              <FaUserCircle aria-hidden="true" />
+            </div>
+          )}
+        </div>
+
         <div className={styles.heroinfo}>
-          <h1 className={styles.titulo}>{autor?.nome}</h1>
+          <h1 className={styles.titulo}>
+            {autor?.nome || "Autor anônimo"}
+          </h1>
+
           <p className={styles.descricao}>
             {autor?.descricao || "Sem descrição."}
           </p>
+
+          <div className={styles.divisor} />
+
+          <div className={styles.redesContainer}>
+            <h2 className={styles.tituloRedes}>Conecte-se com o autor</h2>
+
+            {temRedesSociais ? (
+              <div className={styles.redes}>
+                {facebook && (
+                  <a
+                    className={styles.rede}
+                    href={facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaFacebookF aria-hidden="true" />
+                    <span>Facebook</span>
+                  </a>
+                )}
+
+                {instagram && (
+                  <a
+                    className={styles.rede}
+                    href={instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaInstagram aria-hidden="true" />
+                    <span>Instagram</span>
+                  </a>
+                )}
+
+                {linkedin && (
+                  <a
+                    className={styles.rede}
+                    href={linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FaLinkedinIn aria-hidden="true" />
+                    <span>LinkedIn</span>
+                  </a>
+                )}
+
+                {email && (
+                  <a className={styles.rede} href={`mailto:${email}`}>
+                    <FaEnvelope aria-hidden="true" />
+                    <span>E-mail</span>
+                  </a>
+                )}
+              </div>
+            ) : (
+              <p className={styles.vazioRedes}>
+                Nenhuma rede social disponível no momento.
+              </p>
+            )}
+          </div>
         </div>
       </section>
 
       <section className={styles.secao}>
-        <h2 className={styles.subtitulo}>Redes Sociais</h2>
-        {temRedesSociais ? (
-          <div className={styles.redes}>
-            {facebook && (
-              <a
-                className={styles.rede}
-                href={facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaFacebookF aria-hidden="true" /> Facebook
-              </a>
-            )}
-            {instagram && (
-              <a
-                className={styles.rede}
-                href={instagram}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaInstagram aria-hidden="true" /> Instagram
-              </a>
-            )}
-            {linkedin && (
-              <a
-                className={styles.rede}
-                href={linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaLinkedinIn aria-hidden="true" /> LinkedIn
-              </a>
-            )}
-            {email && (
-              <a className={styles.rede} href={`mailto:${email}`}>
-                <FaEnvelope aria-hidden="true" /> E-mail
-              </a>
-            )}
+        <div className={styles.cabecalhoSecao}>
+          <div>
+            <h2 className={styles.subtitulo}>Livros publicados</h2>
+            <p className={styles.textoSecao}>
+              Explore as obras e descubra novas histórias.
+            </p>
           </div>
-        ) : (
-          <p className={styles.vazio}>Sem redes sociais disponíveis.</p>
-        )}
-      </section>
-
-      <section className={styles.secao}>
-        <h2 className={styles.subtitulo}>Livros</h2>
+        </div>
 
         {carregando ? (
-          <Carregando mensagem="Carregando perfil do autor..." />
+          <div className={styles.estado}>
+            <Carregando mensagem="Carregando livros..." />
+          </div>
         ) : !livros || livros.length === 0 ? (
-          <p className={styles.vazio}>Nenhum livro encontrado</p>
+          <p className={styles.vazio}>Nenhum livro encontrado.</p>
         ) : (
           <div className={styles.livros}>
             {livros.map((livro) => (
               <article className={styles.livro} key={livro.id}>
-                {livro.capa?.frente ? (
-                  <img
-                    className={styles.capa}
-                    src={livro.capa.frente}
-                    alt={livro.titulo}
-                  />
-                ) : (
-                  <div className={styles.semcapa}>Sem foto da capa</div>
-                )}
-                <h3 className={styles.livrotitulo}>{livro.titulo}</h3>
-                <p className={styles.livrosubtitulo}>{livro.subtitulo}</p>
-                <Link to={`/livros/${livro.id}`} className={styles.btnlivro}>
-                  Ver Livro
+                <Link
+                  to={`/livros/${livro.id}`}
+                  className={styles.linkCapa}
+                  aria-label={`Ver ${livro.titulo || "livro"}`}
+                >
+                  <div className={styles.capaContainer}>
+                    {livro.capa?.frente ? (
+                      <img
+                        className={styles.capa}
+                        src={livro.capa.frente}
+                        alt={livro.titulo || "Capa do livro"}
+                      />
+                    ) : (
+                      <div className={styles.semcapa}>Sem imagem</div>
+                    )}
+                  </div>
                 </Link>
+
+                <div className={styles.infoLivro}>
+                  <Link
+                    to={`/livros/${livro.id}`}
+                    className={styles.linkLivro}
+                  >
+                    <h3 className={styles.livrotitulo}>
+                      {livro.titulo || "Sem título"}
+                    </h3>
+                    
+                    <p className={styles.sub}>oi</p>
+                   {/*{livro.subtitulo && (
+                      <p className={styles.livrosubtitulo}>
+                        {livro.subtitulo}
+                      </p>
+                    )} */} 
+                  </Link>
+                </div>
               </article>
             ))}
           </div>
         )}
 
-        {meta && (
-          <Paginacao
-            paginaAtual={paginaAtual}
-            totalPaginas={meta.totalPages}
-            totalItems={meta.totalItems}
-            onMudarPagina={setPaginaAtual}
-          />
+        {!carregando && meta?.totalPages > 1 && (
+          <nav
+            className={styles.paginacaoLivros}
+            aria-label="Paginação dos livros"
+          >
+            <button
+              className={styles.btnSeta}
+              type="button"
+              onClick={() =>
+                setPaginaAtual((pagina) => Math.max(pagina - 1, 1))
+              }
+              disabled={paginaAtual === 1}
+              aria-label="Ver livros anteriores"
+              title="Ver livros anteriores"
+            >
+              <FaChevronLeft aria-hidden="true" />
+            </button>
+
+            <span className={styles.indicadorPagina} aria-live="polite">
+              {paginaAtual} / {meta.totalPages}
+            </span>
+
+            <button
+              className={styles.btnMais}
+              type="button"
+              onClick={() =>
+                setPaginaAtual((pagina) =>
+                  Math.min(pagina + 1, meta.totalPages),
+                )
+              }
+              disabled={paginaAtual === meta.totalPages}
+            >
+              Ver mais livros
+              <FaChevronRight aria-hidden="true" />
+            </button>
+          </nav>
         )}
       </section>
     </main>

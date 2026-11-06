@@ -3,7 +3,9 @@ import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 const express = require("express");
 const request = require("supertest");
-const { errorHandler } = require("../../../../src/api/common/middlewares/error.middleware.js");
+const {
+  errorHandler,
+} = require("../../../../src/api/common/middlewares/error.middleware.js");
 
 describe("Middleware global de erros", () => {
   afterEach(() => {

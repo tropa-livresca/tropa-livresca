@@ -41,7 +41,7 @@
 
 .conteudo {
   display: grid;
-  grid-template-columns: minmax(0,70%) 30%;
+  grid-template-columns: minmax(0, 70%) 30%;
   gap: 2rem;
   align-items: start;
 }
@@ -245,7 +245,9 @@
   cursor: pointer;
   font-size: 1.1rem;
   box-sizing: border-box;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
 }
 
 .excluir svg {
@@ -254,7 +256,6 @@
   display: block;
   flex-shrink: 0;
 }
-
 
 .redondo {
   display: flex;
@@ -346,7 +347,7 @@
   gap: 0.9rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
-  border-bottom:1px solid #e3d5ad;
+  border-bottom: 1px solid #e3d5ad;
 }
 
 .sub {
@@ -363,7 +364,6 @@
   align-items: center;
   gap: 0.7rem;
 }
-
 
 .cep input[type="radio"] {
   appearance: none;
@@ -397,7 +397,6 @@
   background: #b32512;
 }
 
-
 .cep h5 {
   margin: 0;
   color: #67170c;
@@ -407,9 +406,9 @@
 
 .cep strong {
   color: #67170c;
-      font-weight: 600;
-      font-size: 1rem;
-    font-family: none;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: none;
   text-align: right;
   white-space: nowrap;
 }
@@ -428,7 +427,6 @@
   outline: 2px solid #d4b46a;
   outline-offset: 3px;
 }
-
 
 .Total {
   display: flex;

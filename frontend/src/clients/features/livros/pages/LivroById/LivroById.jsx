@@ -15,7 +15,6 @@ import {
   FaShieldAlt,
   FaTruck,
   FaUndo,
-  FaFileAlt,
 } from "react-icons/fa";
 
 export default function LivroById() {
@@ -26,6 +25,21 @@ export default function LivroById() {
   useEffect(() => {
     buscarResumo(id);
   }, [id, buscarResumo]);
+
+  const mapearIdioma = (idioma) => {
+    if (!idioma) return "Não informado";
+
+    const dicionario = {
+      ingles: "Inglês",
+      portugues: "Português",
+      espanhol: "Espanhol",
+    };
+
+    return (
+      dicionario[idioma.toLowerCase()] ||
+      idioma.charAt(0).toUpperCase() + idioma.slice(1)
+    );
+  };
 
   const { autor, colaboradores, livro, BuscarDetalhesLivro, carregando } =
     useLivros();
@@ -65,98 +79,88 @@ export default function LivroById() {
           )}
 
           <div className={styles.infoTopo}>
-            <div className={styles.infoEsquerda}>
-              {livro.genero && (
-                <span className={styles.genero}>{livro.genero}</span>
-              )}
+            {livro.genero && (
+              <span className={styles.genero}>{livro.genero}</span>
+            )}
 
-              <ResumoAvaliacao media={resumo.media} total={resumo.total} />
+            <ResumoAvaliacao media={resumo.media} total={resumo.total} />
 
-              <div className={styles.tags}>
-                {livro.idioma && <span>{livro.idioma}</span>}
-                {livro.categoria && <span>{livro.categoria}</span>}
-              </div>
+            <div className={styles.tags}>
+              {livro.idioma && <span>{mapearIdioma(livro.idioma)}</span>}
+              {livro.categoria && <span>{livro.categoria}</span>}
             </div>
+          </div>
 
+          <div className={styles.informacoes}>
             {autor && (
-              <div className={styles.autorCard}>
+              <Link
+                to={`/autores/${autor.id}`}
+                className={`${styles.informacaoAutor} ${styles.linkAutor}`}
+              >
                 {autor.imagem ? (
                   <img
                     className={styles.fotoAutor}
                     src={autor.imagem}
-                    alt={autor.nome}
+                    alt={`Foto de ${autor.nome}`}
                   />
                 ) : (
                   <div className={styles.semFotoAutor}>Sem foto</div>
                 )}
 
                 <div className={styles.autorDados}>
-                  <span>Autor</span>
-
-                  <h3>{autor.nome}</h3>
-
-                  <Link to={`/autores/${autor.id}`} className={styles.btnAutor}>
-                    Ver perfil
-                  </Link>
+                  <strong>Autor</strong>
+                  <p>{autor.nome}</p>
                 </div>
-              </div>
+              </Link>
             )}
-          </div>
 
-          <span className={styles.linha}></span>
+            <div
+              className={`${styles.informacao} ${styles.informacaoPublicado}`}
+            >
+              <div className={styles.iconeInformacao}>
+                <FaBookOpen />
+              </div>
 
-          <div className={styles.informacoes}>
-            <div className={styles.informacao}>
-              <FaBookOpen />
-
-              <div className={styles.oi}>
+              <div>
                 <strong>Publicado por</strong>
-
                 <p>{autor?.nome || "Autor desconhecido"}</p>
               </div>
             </div>
 
-            <div className={styles.informacao}>
-              <FaCalendarAlt />
+            <div className={`${styles.informacao} ${styles.informacaoData}`}>
+              <div className={styles.iconeInformacao}>
+                <FaCalendarAlt />
+              </div>
 
               <div>
                 <strong>Data de publicação</strong>
-
                 <p className={styles.numero}>
-                  {livro.data_de_publicacao || "Não informado"}
+                  {livro.data_de_publicacao
+                    ? livro.data_de_publicacao.split("-").reverse().join("/")
+                    : "Não informado"}
                 </p>
               </div>
             </div>
 
-            <div className={styles.informacao}>
-              <FaUsers />
+            <div className={`${styles.informacao} ${styles.informacaoPublico}`}>
+              <div className={styles.iconeInformacao}>
+                <FaUsers />
+              </div>
 
               <div>
-                <strong>Público-alvo</strong>
-
-                <p>{livro.publico_alvo || "Não informado"}</p>
+                <strong>Categoria</strong>
+                <p>{livro.categoria || "Não informado"}</p>
               </div>
             </div>
 
-            <div className={styles.informacao}>
-              <FaFileAlt />
+            <div className={`${styles.informacao} ${styles.informacaoIdioma}`}>
+              <div className={styles.iconeInformacao}>
+                <FaLanguage />
+              </div>
 
               <div>
-                <strong>Número da edição</strong>
-
-                <p className={styles.numero}>
-                  {livro.numero_edicao || "Não informado"}
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.informacao}>
-              <FaLanguage />
-
-              <div className={styles.oi}>
                 <strong>Idioma</strong>
-
-                <p>{livro.idioma || "Não informado"}</p>
+                <p>{mapearIdioma(livro.idioma)}</p>
               </div>
             </div>
           </div>
@@ -187,13 +191,11 @@ export default function LivroById() {
 
           <div className={styles.beneficio}>
             <FaTruck />
-
             <span>Entrega para todo o Brasil</span>
           </div>
 
           <div className={styles.beneficio}>
             <FaShieldAlt />
-
             <span>
               Compra <span className={styles.numero}>100%</span> segura
             </span>
@@ -201,7 +203,6 @@ export default function LivroById() {
 
           <div className={styles.beneficio}>
             <FaUndo />
-
             <span>
               Troca e devolução em até <span className={styles.numero}>7</span>{" "}
               dias

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   FaBookOpen,
   FaCalendarAlt,
   FaUsers,
   FaLanguage,
   FaShoppingCart,
-  FaShieldAlt,
   FaTruck,
   FaUndo,
-  FaFileAlt,
+  FaShieldAlt,
 } from "react-icons/fa";
 
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
@@ -19,21 +18,27 @@ import ResumoAvaliacao from "../../components/Avaliacao/ResumoAvaliacao";
 import AbasLivro from "../../components/AbasLivro/AbasLivro";
 import { useEndereco } from "../../../perfil/hooks/useEndereco";
 import Carregando from "../../../../components/Carregando/Carregando";
+import useAuth from "../../../../../common/hooks/useAuth";
+import Modal from "../../../../../common/components/Modal/Modal";
+import modalStyles from "../../../../../common/components/Modal/Modal.module.css";
 import styles from "./ProdutoById.module.css";
 
 export default function ProdutoById() {
   const { id } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { signed, loading: authCarregando } = useAuth();
 
   const { autor, colaboradores, livro, buscarLivroById, carregando } =
     useLivrosLoja();
 
   const { BuscarEnderecoPrincipal } = useEndereco();
-
-  const { adicionarItem, calcularFrete } = useCarrinho();
+  const { adicionarItem } = useCarrinho();
 
   const [formatoEscolhido, setFormato] = useState(null);
   const [qtd, setQtd] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
+  const [solicitandoLogin, setSolicitandoLogin] = useState(false);
 
   const avaliacoes = useAvaliacoes();
   const { resumo, buscarResumo } = avaliacoes;
@@ -42,6 +47,21 @@ export default function ProdutoById() {
     buscarResumo(id);
   }, [id, buscarResumo]);
 
+  const mapearIdioma = (idioma) => {
+    if (!idioma) return "Não informado";
+
+    const dicionario = {
+      ingles: "Inglês",
+      portugues: "Português",
+      espanhol: "Espanhol",
+    };
+
+    return (
+      dicionario[idioma.toLowerCase()] ||
+      idioma.charAt(0).toUpperCase() + idioma.slice(1)
+    );
+  };
+
   useEffect(() => {
     if (id) {
       buscarLivroById(id);
@@ -49,12 +69,10 @@ export default function ProdutoById() {
   }, [id, buscarLivroById]);
 
   useEffect(() => {
-    BuscarEnderecoPrincipal();
-  }, [BuscarEnderecoPrincipal]);
-
-  useEffect(() => {
-    calcularFrete([{ tipo: "fisico", qtd: qtd }]);
-  }, [qtd]);
+    if (signed && !authCarregando) {
+      BuscarEnderecoPrincipal();
+    }
+  }, [signed, authCarregando, BuscarEnderecoPrincipal]);
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -74,8 +92,10 @@ export default function ProdutoById() {
 
   const temFisico = Number(livro.preco_fisico) > 0;
   const temDigital = Number(livro.preco_digital) > 0;
+
   const formato =
     formatoEscolhido || (temFisico ? "fisico" : temDigital ? "digital" : null);
+
   const precoAtual =
     formato === "fisico" ? livro.preco_fisico : livro.preco_digital;
 
@@ -85,6 +105,13 @@ export default function ProdutoById() {
   };
 
   const handleAdicionarCarrinho = () => {
+    if (authCarregando) return;
+
+    if (!signed) {
+      setSolicitandoLogin(true);
+      return;
+    }
+
     if (!formato) return;
 
     adicionarItem({
@@ -94,9 +121,9 @@ export default function ProdutoById() {
       capa: capaFrente,
       preco: Number(precoAtual),
       tipo: formato,
-      // Digital é sempre uma unidade.
       quantidade: formato === "fisico" ? qtd : 1,
     });
+
     setAdicionado(true);
   };
 
@@ -123,20 +150,25 @@ export default function ProdutoById() {
           )}
 
           <div className={styles.infoTopo}>
-            <div className={styles.infoEsquerda}>
-              {livro.genero && (
-                <span className={styles.genero}>{livro.genero}</span>
-              )}
+            {livro.genero && (
+              <span className={styles.genero}>{livro.genero}</span>
+            )}
 
-              <ResumoAvaliacao media={resumo.media} total={resumo.total} />
+            <ResumoAvaliacao media={resumo.media} total={resumo.total} />
 
+            {livro.idioma && (
               <div className={styles.tags}>
-                {livro.idioma && <span>{livro.idioma}</span>}
+                <span>{mapearIdioma(livro.idioma)}</span>
               </div>
-            </div>
+            )}
+          </div>
 
+          <div className={styles.informacoes}>
             {autor && (
-              <div className={styles.autorCard}>
+              <Link
+                to={`/autores/${autor.id}`}
+                className={`${styles.informacaoAutor} ${styles.linkAutor}`}
+              >
                 {autor.imagem ? (
                   <img
                     className={styles.fotoAutor}
@@ -148,72 +180,57 @@ export default function ProdutoById() {
                 )}
 
                 <div className={styles.autorDados}>
-                  <span>Autor</span>
-
-                  <h3>{autor.nome}</h3>
-
-                  <Link to={`/autores/${autor.id}`} className={styles.btnAutor}>
-                    Ver perfil
-                  </Link>
+                  <strong>Autor</strong>
+                  <p>{autor.nome}</p>
                 </div>
-              </div>
+              </Link>
             )}
-          </div>
 
-          <span className={styles.linha}></span>
-
-          <div className={styles.informacoes}>
             <div className={styles.informacao}>
-              <FaBookOpen />
+              <div className={styles.iconeInformacao}>
+                <FaBookOpen />
+              </div>
 
-              <div className={styles.oi}>
+              <div>
                 <strong>Publicado por</strong>
-
                 <p>{autor?.nome || "Autor desconhecido"}</p>
               </div>
             </div>
 
             <div className={styles.informacao}>
-              <FaCalendarAlt />
+              <div className={styles.iconeInformacao}>
+                <FaCalendarAlt />
+              </div>
 
               <div>
                 <strong>Data de publicação</strong>
-
                 <p className={styles.numero}>
-                  {livro.data_de_publicacao || "Não informado"}
+                  {livro.data_de_publicacao
+                    ? livro.data_de_publicacao.split("-").reverse().join("/")
+                    : "Não informado"}
                 </p>
               </div>
             </div>
 
             <div className={styles.informacao}>
-              <FaUsers />
+              <div className={styles.iconeInformacao}>
+                <FaUsers />
+              </div>
 
               <div>
                 <strong>Público-alvo</strong>
-
                 <p>{livro.publico_alvo || "Não informado"}</p>
               </div>
             </div>
 
             <div className={styles.informacao}>
-              <FaFileAlt />
+              <div className={styles.iconeInformacao}>
+                <FaLanguage />
+              </div>
 
               <div>
-                <strong>Número da edição</strong>
-
-                <p className={styles.numero}>
-                  {livro.numero_edicao || "Não informado"}
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.informacao}>
-              <FaLanguage />
-
-              <div className={styles.oi}>
                 <strong>Idioma</strong>
-
-                <p>{livro.idioma || "Não informado"}</p>
+                <p>{mapearIdioma(livro.idioma)}</p>
               </div>
             </div>
           </div>
@@ -246,6 +263,7 @@ export default function ProdutoById() {
                     </strong>
                   </button>
                 )}
+
                 {temDigital && (
                   <button
                     type="button"
@@ -311,14 +329,12 @@ export default function ProdutoById() {
 
           <div className={styles.beneficio}>
             <FaTruck />
-
             <span>Envio imediato via e-mail</span>
             <span>Entrega para todo o Brasil</span>
           </div>
 
           <div className={styles.beneficio}>
             <FaShieldAlt />
-
             <span>
               Compra <span className={styles.numero}>100%</span> segura
             </span>
@@ -326,7 +342,6 @@ export default function ProdutoById() {
 
           <div className={styles.beneficio}>
             <FaUndo />
-
             <span>
               Troca e devolução em até <span className={styles.numero}>7</span>{" "}
               dias
@@ -356,6 +371,44 @@ export default function ProdutoById() {
             ))}
           </ul>
         </section>
+      )}
+
+      {solicitandoLogin && (
+        <Modal
+          title="Acesse sua conta"
+          description="Entre ou crie uma conta para adicionar este livro ao carrinho."
+          onClose={() => setSolicitandoLogin(false)}
+        >
+          <div className={modalStyles.acoes}>
+            <button
+              type="button"
+              className={modalStyles.botao}
+              onClick={() =>
+                navigate("/auth/login", { state: { from: location } })
+              }
+            >
+              Login
+            </button>
+
+            <button
+              type="button"
+              className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+              onClick={() =>
+                navigate("/auth/cadastro", { state: { from: location } })
+              }
+            >
+              Cadastre-se
+            </button>
+
+            <button
+              type="button"
+              className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+              onClick={() => setSolicitandoLogin(false)}
+            >
+              Agora não
+            </button>
+          </div>
+        </Modal>
       )}
     </main>
   );

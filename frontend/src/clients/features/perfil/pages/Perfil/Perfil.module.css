@@ -32,9 +32,10 @@
 }
 
 .topo p {
-  color: #67170c;
+  color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .containerperfil {
@@ -274,6 +275,11 @@ textarea {
   color: #67170c !important;
 }
 
+.formulario textarea:focus {
+  outline: none;
+  border: 2px solid #67170c;
+}
+
 .carregarsvg {
   font-size: 2rem;
   color: #67170c;
@@ -389,7 +395,7 @@ textarea {
   transition: 0.3s;
 }
 
-.linkDados{
+.linkDados {
   width: 8rem;
   color: #fff8d7;
   background: #67170c;
@@ -398,12 +404,12 @@ textarea {
   padding: 0.7rem 0.7rem;
   cursor: pointer;
   font-size: 0.8rem;
-  margin:0;
+  margin: 0;
   margin-bottom: 1rem;
 }
 
-.linkDados:hover{
-   background: #ffbb33;
+.linkDados:hover {
+  background: #ffbb33;
   transition: 0.3s;
 }
 
@@ -480,6 +486,9 @@ textarea {
   opacity: 0.6;
 }
 
+.enderecoDesabilitado .linkDados {
+  opacity: 0.6;
+}
 @media (max-width: 900px) {
   .containerperfil {
     grid-template-columns: 1fr;
@@ -488,4 +497,38 @@ textarea {
   .inputs {
     grid-template-columns: 1fr;
   }
+}
+
+.linkDadosDesabilitado {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.formulario textarea {
+  scrollbar-width: thin;
+  scrollbar-color: #c8a45c #fff8d7;
+  height: 12rem;
+}
+
+.formulario textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.formulario textarea::-webkit-scrollbar-track {
+  background: #fff8d7;
+  border-radius: 1rem;
+}
+
+.formulario textarea::-webkit-scrollbar-thumb {
+  background: #c8a45c;
+  border-radius: 1rem;
+}
+
+.formulario textarea::-webkit-scrollbar-thumb:hover {
+  background: #67170c;
+}
+
+.formulario textarea {
+  scrollbar-color: #c8a45c transparent;
 }

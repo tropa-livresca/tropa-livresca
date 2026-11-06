@@ -177,6 +177,27 @@ a {
   font-size: 0.9rem;
 }
 
+.form input:not([type="checkbox"]) {
+  width: 90%;
+  box-sizing: border-box;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+  background: #fff8d7;
+  color: #67170c;
+  padding: 0.8rem 1rem;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+.form input:not([type="checkbox"]):focus {
+  border-color: #67170c;
+}
+
+.form input:not([type="checkbox"])::placeholder {
+  color: var(--cor-texto-muted);
+  opacity: 1;
+}
+
 @media (max-width: 1024px) {
   .container {
     grid-template-columns: 1fr;

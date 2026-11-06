@@ -6,97 +6,207 @@
   display: grid;
   place-items: center;
   position: relative;
-  overflow: hidden;
+  box-sizing: border-box;
   padding: 2rem;
-  background-color: #ede6b3;
-}
-
-.imagemFundo {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  inset: 0;
-  object-fit: cover;
+  background: #ede6b3;
 }
 
 .corFundo {
-  position: absolute;
-  inset: 0;
-  background: rgba(237, 230, 179, 0.78);
+  display: none;
 }
 
 .card {
   position: relative;
   z-index: 2;
   width: 100%;
-  max-width: 40rem;
-  background: white;
-  border-radius: 2rem;
-  padding: 3rem;
-  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.18);
+  max-width: 38rem;
+  box-sizing: border-box;
+  padding: 3.5rem 3.2rem;
+  background: #fffdf7;
+  border: 1px solid #e8dcb8;
+  border-radius: 1.8rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
   display: grid;
-  gap: 1.3rem;
+  gap: 2rem;
+}
+
+.card form {
+  display: grid;
+}
+
+.botaoVoltarTopo {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+  background: #fff8d7;
+  color: #67170c;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.botaoVoltarTopo svg {
+  font-size: 1.1rem;
+}
+
+.botaoVoltarTopo:hover {
+  background: #ffbb33;
+  border-color: #d4b46a;
+  color: #67170c;
 }
 
 .card h1 {
-  margin: 0;
   color: #67170c;
   font-family: "Jacques Francois", serif;
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 600;
   text-align: center;
+  line-height: 1.25;
+  margin-bottom: 0;
 }
 
 .card p {
-  margin: 0;
-  color: #67170c;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  color: var(--cor-texto-muted);
   text-align: center;
-  font-size: 1.05rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.7;
 }
 
+.card label {
+  display: block;
+  margin-top: 1rem;
+}
+
+.inputGroup {
+  display: grid;
+}
+
+.inputGroup label {
+  color: #67170c;
+  font-size: 0.95rem;
+}
+.inputGroup input {
+  width: 100%;
+  height: 3.3rem;
+  box-sizing: border-box;
+  padding: 0 1rem;
+  border-radius: 0.7rem;
+  outline: none;
+  color: #67170c;
+  font-size: 0.95rem;
+  transition: 0.25s ease;
+  margin-bottom: 1.5rem;
+  background-color: #fff8d7;
+  border: 1px solid #e2c77c;
+}
+
+.inputGroup input:focus {
+  border-color: #67170c;
+}
+
+.inputGroup input::placeholder {
+  color: var(--cor-texto-muted);
+  opacity: 1;
+}
+.erroMensagem {
+  padding: 0.8rem 1rem;
+  border: 1px solid red;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.botaoEnviar,
 .botao {
   width: 100%;
-  height: 3rem;
+  min-height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0.7em 1.2em;
   border: none;
+  outline: none;
+  appearance: none;
   border-radius: 0.7rem;
-  background-color: #67170c;
+  background: #67170c;
   color: #ede6b3;
   font-size: 1rem;
+  font-family: inherit;
+  letter-spacing: 0.04rem;
+  text-decoration: none;
   cursor: pointer;
+  margin-bottom: 0;
+  box-shadow: none;
   transition: 0.3s;
 }
 
+.botaoEnviar:hover:not(:disabled),
 .botao:hover {
-  background-color: #ffbb33;
-  transition: 0.3s;
+  background: #ffbb33;
 }
 
-.voltar {
-  margin-top: 0;
-  text-align: center;
+.botaoEnviar:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.textoLembrou {
+  padding-top: 0.5rem;
+}
+
+.textoLembrou a {
   color: #67170c;
+  font-weight: 600;
   text-decoration: underline;
-  font-size: 1rem;
+  text-underline-offset: 3px;
+}
+
+.textoLembrou a:hover {
+  color: #ffbb33;
   transition: 0.3s;
 }
 
-.voltar:hover {
-  color: #ffbb33;
+.sucessoContainer {
+  display: grid;
+}
+
+.sucessoContainer h2 {
+  margin: 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
   .card {
-    padding: 2rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    max-width: 34rem;
+    padding: 3.5rem 2rem 2.5rem;
+    gap: 1.5rem;
   }
 
   .card h1 {
-    font-size: 2rem;
-  }
-
-  .card p {
-    font-size: 1rem;
+    font-size: 2.1rem;
   }
 }
 
@@ -106,13 +216,33 @@
   }
 
   .card {
-    padding: 1.5rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    border-radius: 1.5rem;
+    padding: 3.5rem 1.3rem 2rem;
+    border-radius: 1.3rem;
+    gap: 1.3rem;
+  }
+
+  .botaoVoltarTopo {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .card form {
+    gap: 1.2rem;
   }
 
   .card h1 {
+    font-size: 1.8rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+  }
+
+  .inputGroup input {
+    height: 3.1rem;
+  }
+
+  .sucessoContainer h2 {
     font-size: 1.7rem;
   }
 }

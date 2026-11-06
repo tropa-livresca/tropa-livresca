@@ -176,6 +176,7 @@
   border-right: 1px solid #e3d5ad;
   width: 90%;
   min-width: 0;
+  align-self: stretch;
 }
 
 .filtros h1 {
@@ -332,6 +333,14 @@
   min-width: 0;
 }
 
+.select svg {
+  transition: transform 0.3s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
 .infoLivro h3 {
   color: #67170c;
   font-family: "Jacques Francois", serif;
@@ -452,7 +461,7 @@
     padding: 3rem 5%;
   }
 
-   .containerlivros {
+  .containerlivros {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "busca"

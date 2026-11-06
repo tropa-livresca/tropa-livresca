@@ -25,5 +25,6 @@
 .topo p {
   color: var(--cor-texto-muted);
   text-align: left;
-  font-size: 1.2rem; margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }

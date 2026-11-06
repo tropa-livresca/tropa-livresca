@@ -1,33 +1,24 @@
-﻿import { useEffect, useState } from "react";
+﻿
+import { useEffect, useState } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados";
 
-const dataURItoBlob = (dataURI) => {
-  let byteString = atob(dataURI.split(",")[1]);
-
-  let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-  let ab = new ArrayBuffer(byteString.length);
-  let ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  return new Blob([ab], { type: mimeString });
-};
-
 export default function Confirmacao({
   dados,
   irParaEtapaEspecifica,
   publicarLivro,
+  erro
 }) {
   const navigate = useNavigate();
 
   const salvarLivroERedirecionar = async (estado) => {
     try {
+      if(erro){
+        return
+      }
       await publicarLivro(estado);
       navigate("/meuslivros");
     } catch (erro) {
@@ -35,34 +26,23 @@ export default function Confirmacao({
     }
   };
 
-  const [manuscritoFile, setManuscritoFile] = useState(null);
+  const mapearIdioma = (idioma) => {
+    if (!idioma) return "Não informado";
 
-  useEffect(() => {
-    if (dados.conteudo.manuscrito != null) {
-      const file = dataURItoBlob(dados.conteudo.manuscrito);
-      setManuscritoFile(file);
-    }
-  }, []);
+    const dicionario = {
+      ingles: "Inglês",
+      portugues: "Português",
+      espanhol: "Espanhol",
+    };
+
+    return (
+      dicionario[idioma.toLowerCase()] ||
+      idioma.charAt(0).toUpperCase() + idioma.slice(1)
+    );
+  };
 
   return (
     <main>
-      {manuscritoFile != null ? (
-        <>
-          <div className={styles.embed}>
-            <embed src={manuscritoFile} type="application/pdf" />
-          </div>
-          <a
-            href={manuscritoFile}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.btnmanus}
-          >
-            Abrir manuscrito (PDF)
-          </a>
-        </>
-      ) : (
-        <></>
-      )}
 
       <div className={styles.form}>
         <div className={styles.tituloContainer}>
@@ -108,13 +88,6 @@ export default function Confirmacao({
                   <label>ISBN do livro:</label>
                   <div className={styles.liinput}>{dados.detalhes.ISBN}</div>
                 </div>
-
-                <div>
-                  <label>Número da edição:</label>
-                  <div className={styles.liinput}>
-                    {dados.detalhes.numeroEdicao}
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -124,7 +97,9 @@ export default function Confirmacao({
               <div className={styles.containergrid}>
                 <div>
                   <label>Idioma:</label>
-                  <div className={styles.liinput}>{dados.detalhes.idioma}</div>
+                  <div className={styles.liinput}>
+                    {mapearIdioma(dados.detalhes.idioma)}
+                  </div>
                 </div>
 
                 <div>
@@ -335,7 +310,16 @@ export default function Confirmacao({
             <div>Número de páginas: {dados.orcamento.numeroPaginas}</div>
           </div>
         )}
+
+
+{erro != null ? (
+                
+                <span >{erro}</span>
+              ) : (<></>)}
+
       </div>
+
+      
 
       <div className={styles.botoes}>
         <Link to="/meuslivros" className={styles.btn}>

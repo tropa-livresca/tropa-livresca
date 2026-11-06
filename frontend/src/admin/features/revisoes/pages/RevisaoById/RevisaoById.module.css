@@ -37,7 +37,7 @@
   margin-bottom: 0.5rem !important;
 }
 
-.numero{
+.numero {
   font-family: none;
 }
 /* Barra Superior */
@@ -78,23 +78,7 @@
   transition: background-color 0.2s;
 }
 
-.botaoEditar {
-  background-color: #3182ce;
-  color: #ffffff;
-}
 
-.botaoEditar:hover {
-  background-color: #2b6cb0;
-}
-
-.botaoCancelar {
-  background-color: #e2e8f0;
-  color: #4a5568;
-}
-
-.botaoCancelar:hover {
-  background-color: #cbd5e0;
-}
 
 /* Bloco de Conteúdo */
 .conteudoCard {
@@ -129,7 +113,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-   border:1px solid #e3d5ad;
+  border: 1px solid #e3d5ad;
   color: #67170c;
   padding: 0.5rem 1rem;
   background-color: transparent;
@@ -140,59 +124,57 @@
 }
 
 .linkLivro:hover {
+   background-color: #ffbb33;
+  border: none;
+  color: #fffdf7;
   transition: 0.3s;
   border: 1px solid #67170c;
   background-color: #67170c;
-  color:#fffdf7;
+  color: #fffdf7;
 }
 
 /* Formulário e Inputs */
 .formulario {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1rem;
 }
 
 .campoGrupo {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
 }
 
 .label {
-     color: #67170c;
-    font-size: 1rem;
-    font-family: "Jacques Francois", serif;
+  color: #67170c;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
 }
 
 .input,
 .textarea {
   width: 100%;
-      background: #fff8d7 !important;
-    border: 1px solid #e2c77c !important;
-    border-radius: 1rem !important;
-    padding: 0.8rem !important;
-    justify-self: stretch !important;
-    font-size: 1rem !important;
-    color: #67170c !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
   outline: none;
   transition:
     border-color 0.2s,
     background-color 0.2s;
 }
 
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
 .input:focus,
 .textarea:focus {
   border-color: #3182ce;
-}
-
-/* Estilo para quando os campos estão bloqueados (Modo Leitura) */
-.input:disabled,
-.textarea:disabled {
-  background-color: #f7fafc;
-  color: #4a5568;
-  border-color: #edf2f7;
-  cursor: not-allowed;
 }
 
 .textarea {
@@ -210,24 +192,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #f7fafc;
-  padding: 0.75rem 1rem;
-  border-radius: 6px;
-  border: 1px solid #e2e8f0;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
   font-size: 0.9rem;
-  margin-top: 0.25rem;
+  height: 3rem;
 }
 
 .arquivoBox span {
-  color: #718096;
+  color: var(--cor-texto-muted);
+  margin-left: 0.7rem;
 }
 
 .linkArquivo {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: #3182ce;
-  font-weight: 600;
+  padding: 0.5rem;
+  color: #67170c;
+  border-radius: 0.5rem;
+  margin-right: 0.7rem;
   text-decoration: none;
 }
 
@@ -240,7 +224,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
-  border-top: 1px solid #edf2f7;
+  border-top: 1px solid #e3d5ad;
   padding-top: 1.5rem;
   margin-top: 1rem;
 }
@@ -250,41 +234,173 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
   cursor: pointer;
   border: none;
   transition: background-color 0.2s;
 }
 
 .botaoLimpar {
-  background-color: #fff5f5;
-  color: #e53e3e;
-  border: 1px solid #fed7d7;
+  color: #67170c;
+  background-color: #fffdf7;
+  border: 1px solid #e2c77c;
 }
 
 .botaoLimpar:hover {
-  background-color: #fed7d7;
+  background-color: #ffbb33;
+  border: none;
+  color: #fffdf7;
+  transition: 0.3s;
 }
 
 .botaoSalvar {
-  background-color: #48bb78;
-  color: #ffffff;
+  color: #fffdf7;
+  background-color: #67170c;
+  border: 1px solid #67170c;
 }
 
 .botaoSalvar:hover {
-  background-color: #38a169;
+  background-color: #ffbb33;
+  border: none;
+  transition: 0.3s;
 }
 
 /* Feedback de Erro */
 .feedbackErro {
   text-align: center;
   padding: 3rem;
-  color: #e53e3e;
-  font-size: 1.1rem;
-  background: #fff5f5;
+  color: #67170c;
+  font-size: 1rem;
   border-radius: 8px;
-  border: 1px dashed #fed7d7;
+}
+
+.carregar {
+  width: 100%;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  cursor: pointer;
+  margin: 0 auto;
+  transition: 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.carregar:hover {
+  background: #fff8d792 !important;
+  transition: 0.3s;
+}
+
+.carregarsvg {
+  font-size: 2rem;
+  color: #67170c;
+  flex-shrink: 0;
+}
+
+.carregar span {
+  display: flex;
+  flex-direction: column;
+  font-family: "Jacques Francois", serif;
+  color: #67170c;
+  font-size: 1rem;
+}
+
+.carregar > span > .clique {
+  display: block;
+  margin-top: 0.3rem;
+  font-family: "Jacques Francois", serif;
+  font-size: 0.9rem;
+  font-weight: normal;
+  color: #67170c;
+}
+
+.arquivocarregado {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: green;
+  text-align: center;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.formularioBloqueado .input,
+.formularioBloqueado .textarea {
+  background: #eee8c8 !important;
+  cursor: default !important;
+  opacity: 0.7 !important;
+  color: #806f60 !important;
+  pointer-events: none;
+}
+
+.formularioBloqueado .input::placeholder,
+.formularioBloqueado .textarea::placeholder {
+  color: #806f60 !important;
+}
+
+.formularioBloqueado .label {
+  opacity: 0.6;
+  color: #806f60;
+}
+
+.formularioBloqueado .carregar {
+  background: #eee8c8 !important;
+  border-color: #d4c9a5 !important;
+  cursor: default;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.formularioBloqueado .carregarsvg,
+.formularioBloqueado .carregar span,
+.formularioBloqueado .arquivocarregado {
+  color: #806f60;
+}
+
+.formularioBloqueado .botaoLimpar,
+.formularioBloqueado .botaoSalvar {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.formularioBloqueado .botaoLimpar:hover,
+.formularioBloqueado .botaoSalvar:hover {
+  background: #67170c;
+  color: #ede6b3;
+  transform: none;
+}
+
+.formularioBloqueado .acoesFormulario {
+  opacity: 0.7;
+}
+
+
+
+@media (max-width: 480px) {
+  .carregar {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .carregarsvg {
+    font-size: 2.2rem;
+  }
+
+  .carregar > span {
+    font-size: 1.1rem;
+  }
+
+  .carregar .clique {
+    font-size: 0.9rem;
+  }
 }

@@ -1,4 +1,5 @@
-﻿import { apiFetch } from "../../../../common/services/api";
+﻿
+import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback, useContext, useEffect } from "react";
 import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
@@ -12,7 +13,6 @@ const ESTADO_INICIAL_LIVRO = {
     titulo: "",
     subtitulo: "",
     ISBN: "",
-    numeroEdicao: "",
     colaboradores: [],
     descricao: "",
     direitoPublicacao: "",
@@ -21,7 +21,6 @@ const ESTADO_INICIAL_LIVRO = {
 
   conteudo: {
     manuscrito: null,
-    manuscritoPath: null,
     capa: {
       frente: null,
       verso: null,
@@ -65,6 +64,7 @@ export const AutopublicacaoProvider = ({ children }) => {
   const [dadosLivro, setDadosLivro] = useState(ESTADO_INICIAL_LIVRO);
   const [etapa, setEtapa] = useState(1);
   const [rascunhoUsuarioId, setRascunhoUsuarioId] = useState(null);
+  const [erro, setErro] = useState(null);
 
   const chaveRascunho = useCallback(
     (nome) =>
@@ -89,8 +89,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       try {
         const dadosRecuperados = JSON.parse(dadosSalvos);
 
-        // File/Blob não é restaurado por JSON.stringify/JSON.parse.
-        // Descarta objetos serializados como {} e mantém caminhos persistidos.
         if (dadosRecuperados?.conteudo) {
           const conteudoRecuperado = dadosRecuperados.conteudo;
 
@@ -151,9 +149,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
     const conteudoAtual = dadosLivro.conteudo || {};
 
-    // Arquivos locais não sobrevivem ao JSON. Para rascunhos, persistimos
-    // somente strings/caminhos; arquivos ainda não enviados precisam ser
-    // selecionados novamente após recarregar a página.
     const dadosParaSalvar = {
       ...dadosLivro,
       conteudo: {
@@ -254,10 +249,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         subtitulo: dadosBanco.subtitulo || "",
 
-        numeroEdicao: dadosBanco.numero_edicao || "",
-
         ISBN: dadosBanco.ISBN || "",
-
 
         colaboradores: dadosBanco.colaboradores || [],
 
@@ -299,19 +291,13 @@ export const AutopublicacaoProvider = ({ children }) => {
   const orcamento = dadosLivro.orcamento;
 
   const validarDetalhes = () => {
-    const imagemExplicitaNaoInformada =
-      detalhes.imagensExplicitas === undefined ||
-      detalhes.imagensExplicitas === "";
-
     if (
       !detalhes.titulo ||
       !detalhes.idioma ||
       !detalhes.descricao ||
       !detalhes.direitoPublicacao ||
       !detalhes.categoria ||
-      !detalhes.subtitulo ||
-      !detalhes.numeroEdicao ||
-      imagemExplicitaNaoInformada
+      !detalhes.subtitulo
     ) {
       return false;
     }
@@ -371,9 +357,7 @@ export const AutopublicacaoProvider = ({ children }) => {
     if (chave === "detalhes" && estadoAtualLivro === LIVRO_ESTADO.PUBLICADO) {
       const dadosAntigos = dadosLivro.detalhes;
 
-      if (
-        novosDados.titulo !== dadosAntigos.titulo
-      ) {
+      if (novosDados.titulo !== dadosAntigos.titulo) {
         mostrarPopup(
           "erro",
 
@@ -382,7 +366,6 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         return;
       }
-     
     }
 
     setDadosLivro((estadoAnterior) => {
@@ -412,61 +395,31 @@ export const AutopublicacaoProvider = ({ children }) => {
       };
     });
   };
+  
 
-  const inserirLivro = useCallback(
-    async (dadosDoLivro, estadoDesejado = LIVRO_ESTADO.RASCUNHO) => {
-      if (
-        estadoAtualLivro === LIVRO_ESTADO.EM_REVISAO ||
-        estadoAtualLivro === LIVRO_ESTADO.PUBLICADO
-      ) {
-        throw new Error("Este livro está travado para alterações no momento.");
-      }
+  const dataURItoBlob = useCallback((dataURI) => {
+          let byteString = atob(dataURI.split(",")[1]);
 
-      
+          let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
-      setCarregando(true);
+          let ab = new ArrayBuffer(byteString.length);
+          let ia = new Uint8Array(ab);
+          for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+          }
 
-      try {
-        const userId = user?.id;
+          return new Blob([ab], { type: mimeString });
+        })
 
-        if (!userId || typeof userId !== "string")
-          throw new Error("ID do usuário inválido");
-
-        const dataURItoBlob = (dataURI) => {
-
-    let byteString = atob(dataURI.split(',')[1]);
-
-
-    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
-
-
-    let ab = new ArrayBuffer(byteString.length);
-    let ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-
-    return new Blob([ab], {type: mimeString});
-
-  }
-
-        const conteudo = dadosDoLivro.conteudo;
-        const capa = conteudo.capa;
-        const manuscrito = conteudo?.manuscrito;
-
-        const arquivosEnviados = [];
-        
-        const uploadArquivo = async (arquivo, tipo, tipoDeArquivo, ) => {
+  const uploadArquivo = useCallback(async (arquivo, tipo, tipoDeArquivo) => {
           if (!arquivo) return null;
 
           let blob = dataURItoBlob(arquivo);
-          let file = new File([blob], "arquivo", {type:tipoDeArquivo})
+          let file = new File([blob], "arquivo", { type: tipoDeArquivo });
 
-          const extensao =
-            file?.type.split("/").pop() ||
-            "bin";
+          const extensao = file?.type.split("/").pop() || "bin";
 
-            const res = await apiFetch(
+          const res = await apiFetch(
             "/api/v1/clients/autopublicacao/upload-url",
 
             {
@@ -494,53 +447,86 @@ export const AutopublicacaoProvider = ({ children }) => {
             );
           }
 
-         const { error } = await supabase.storage
+          const { error } = await supabase.storage
 
-           .from(bucket)
+            .from(bucket)
 
-           .uploadToSignedUrl(path, token, blob);
+            .uploadToSignedUrl(path, token, blob);
 
-         if(error){
+          if (error) {
             throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
-         }
-         
-          arquivosEnviados.push({ tipo, path });
+          }
+
           return path;
-        };
+        })
+
+        const uploadManuscrito = useCallback(async (arquivo) => {
+          const path = await uploadArquivo(arquivo, "manuscrito", "application/pdf");
+        
+          return "https://jeeurwhquycjssjgcjws.supabase.co/storage/v1/object/public/manuscrito-livro/"+path
+
+        })
+
+  const inserirLivro = useCallback(
+    async (dadosDoLivro, estadoDesejado = LIVRO_ESTADO.RASCUNHO) => {
+      if (
+        estadoAtualLivro === LIVRO_ESTADO.EM_REVISAO ||
+        estadoAtualLivro === LIVRO_ESTADO.PUBLICADO
+      ) {
+        throw new Error("Este livro está travado para alterações no momento.");
+      }
+
+      console.log(dadosDoLivro.conteudo.manuscrito.slice(120));
+      console.log(userId);
+      let manuscrito = await supabase.storage.from("manuscrito-livro").list(userId, {search:dadosDoLivro.conteudo.manuscrito.slice(120)});
+      console.log(manuscrito);
+
+      if(manuscrito.data.length == 0){
+        return "manuscrito removido"
+      }
+
+      setCarregando(true);
+
+      try {
+
+        const userId = user?.id;
+
+        if (!userId || typeof userId !== "string")
+          throw new Error("ID do usuário inválido");
+
+         
+
+        const conteudo = dadosDoLivro.conteudo;
+        const capa = conteudo.capa;
+
+        const arquivosEnviados = [];
 
         let caminhosArquivos;
 
         try {
-          
-
-          const [capaFrentePath, capaVersoPath, manuscritoPath] =
-            await Promise.all([
+          const capaFrentePath =
+            await
               uploadArquivo(
                 capa?.frente,
 
                 "capa_frente",
 
                 "image/png",
+              );
 
-              ),
+              arquivosEnviados.push({ tipo:"capa_frente", capaFrentePath });
 
-              uploadArquivo(
+             const capaVersoPath = await uploadArquivo(
                 capa?.verso,
 
                 "capa_verso",
 
                 "image/png",
-              ),
+              );
 
-              uploadArquivo(
-                manuscrito,
-                "manuscrito",
+              arquivosEnviados.push({ tipo:"capa_verso", capaVersoPath });
 
-                "application/pdf",
-              ),
-            ]);
-
-          
+           
 
           caminhosArquivos = {
             capa: {
@@ -548,11 +534,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
               verso: capaVersoPath,
             },
-
-            manuscritoPath,
           };
-
-
         } catch (uploadError) {
           if (arquivosEnviados.length) {
             await apiFetch("/api/v1/clients/autopublicacao/upload-url", {
@@ -571,7 +553,6 @@ export const AutopublicacaoProvider = ({ children }) => {
           throw uploadError;
         }
 
-
         const payload = {
           dadosLivro: {
             detalhes: dadosDoLivro.detalhes,
@@ -585,7 +566,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
           capaPaths: caminhosArquivos.capa,
 
-          manuscritoPath: caminhosArquivos.manuscritoPath,
+          manuscritoPath:  dadosDoLivro.conteudo.manuscrito,
         };
 
         const rota = isEdicao
@@ -606,8 +587,8 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
 
-        return json;
-
+        setErro(null);
+        return
       } catch (error) {
         console.error("Erro em salvar livro:", error);
 
@@ -615,16 +596,23 @@ export const AutopublicacaoProvider = ({ children }) => {
       } finally {
         setCarregando(false);
       }
-       
+      
     },
 
     [user, isEdicao, estadoAtualLivro],
   );
 
   const publicarLivroNoContexto = async (
-    estadoDesejado = LIVRO_ESTADO.RASCUNHO, arquivo
+    estadoDesejado = LIVRO_ESTADO.RASCUNHO,
+    arquivo,
   ) => {
-    await inserirLivro(dadosLivro, estadoDesejado,arquivo);
+
+    const error = await inserirLivro(dadosLivro, estadoDesejado, arquivo);
+
+    if(error != null){
+      setErro(error)
+      setDadosLivro({...dadosLivro, conteudo: {...dadosLivro.conteudo , manuscrito: null}})
+    }
 
     localStorage.removeItem(chaveRascunho("dados"));
 
@@ -665,6 +653,10 @@ export const AutopublicacaoProvider = ({ children }) => {
         irParaEtapaEspecifica,
 
         publicarLivro: publicarLivroNoContexto,
+
+        uploadManuscrito,
+
+        erro,
       }}
     >
       {children}
@@ -679,6 +671,22 @@ export const AutopublicacaoProvider = ({ children }) => {
     </AutopublicacaoContext.Provider>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

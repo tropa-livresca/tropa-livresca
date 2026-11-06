@@ -1,4 +1,30 @@
-.btn{
-    background-color: yellow;
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+     padding: 0.8em 2em;
+    border-radius: 0.5rem;
+    font-weight: normal;
+    text-decoration: none;
+    transition: 0.3s;
+    margin-bottom: 0;
+    margin-top: 0;
+        border: 1px solid #e2c77c;
+    color: #67170c;
+    background: rgb(255, 248, 215);
+    font-size: 1rem;
 }
 
+.btn:hover{
+    color:#ede6b3;
+     background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btn svg{
+  margin-right: 0.4rem;
+}
+
+.btngrupo {
+  margin-bottom: 5rem;     
+}

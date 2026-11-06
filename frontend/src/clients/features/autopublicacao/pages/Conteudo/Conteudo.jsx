@@ -1,4 +1,5 @@
-﻿import { useEffect, useState } from "react";
+﻿
+import { useEffect, useState } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -12,22 +13,8 @@ const TAMANHO_MAXIMO_CAPA = 10 * 1024 * 1024;
 const TAMANHO_MAXIMO_MANUSCRITO = 50 * 1024 * 1024;
 const FORMATOS_CAPA = ["image/jpeg", "image/png"];
 
-const LARGURA_MINIMA_A5_PX = 1748;
-const ALTURA_MINIMA_A5_PX = 2480;
-
-const dataURItoBlob = (dataURI) => {
-  let byteString = atob(dataURI.split(",")[1]);
-
-  let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-
-  let ab = new ArrayBuffer(byteString.length);
-  let ia = new Uint8Array(ab);
-  for (let i = 0; i < byteString.length; i++) {
-    ia[i] = byteString.charCodeAt(i);
-  }
-
-  return new Blob([ab], { type: mimeString });
-};
+const LARGURA_MINIMA_A5_PX = 0;
+const ALTURA_MINIMA_A5_PX = 0;
 
 const formatarMB = (bytes) => `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
 
@@ -94,15 +81,8 @@ export default function Conteudo({
   onChange,
   irParaProximaEtapa,
   voltarEtapa,
+  uploadManuscrito
 }) {
-  const [setmanuscritoFile] = useState("");
-
-  useEffect(() => {
-    if (dados.manuscrito != null) {
-      const file = dataURItoBlob(dados.manuscrito);
-      setmanuscritoFile(file);
-    }
-  }, []);
 
   const atualizarCampo = async (chave, e) => {
     const input = e.target;
@@ -144,13 +124,15 @@ export default function Conteudo({
           throw new Error("O PDF não possui páginas válidas.");
         }
 
-        const file = dataURItoBlob(blob);
-        setmanuscritoFile(file);
+        const path = await uploadManuscrito(blob);
+
+        console.log(numeroPaginas);
+        console.log(path);
 
         onChange({
           ...dados,
-          manuscrito: blob,
-          numeroPaginas,
+          manuscrito: path,
+          numeroPaginas:numeroPaginas,
         });
 
         await pdfDocument.destroy();

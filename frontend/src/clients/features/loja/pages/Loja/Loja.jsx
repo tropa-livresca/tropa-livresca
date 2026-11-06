@@ -236,18 +236,16 @@ export default function Loja() {
             )}
           </div>
 
-         
-{!carregando && meta && meta.totalPages > 1 && (
-  <div className={styles.paginacao}>
-    <Paginacao
-      paginaAtual={paginaAtual}
-      totalPaginas={meta.totalPages}
-      totalItems={meta.totalItems}
-      onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
-    />
-  </div>
-)}
-
+          {!carregando && meta && meta.totalPages > 1 && (
+            <div className={styles.paginacao}>
+              <Paginacao
+                paginaAtual={paginaAtual}
+                totalPaginas={meta.totalPages}
+                totalItems={meta.totalItems}
+                onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+              />
+            </div>
+          )}
         </div>
       </div>
     </main>

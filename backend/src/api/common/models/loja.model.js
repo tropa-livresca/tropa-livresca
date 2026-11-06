@@ -13,7 +13,6 @@ const COLUNAS_LIVRO = `
   descricao,
   capa,
   ISBN,
-  numero_edicao,
   direitos_de_publicacao
 `;
 

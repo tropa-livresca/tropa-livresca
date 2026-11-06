@@ -31,7 +31,7 @@ export default function Visualizar() {
     manuscrito,
     descricao,
     idioma,
-    numero_edicao,
+    categoria,
     preco_digital,
     preco_fisico,
     colaboradores,
@@ -49,10 +49,7 @@ export default function Visualizar() {
           {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
 
           <p className={styles.autor}>
-            Por:{" "}
-            <strong>
-              Autor
-            </strong>
+            Por: <strong>Autor</strong>
           </p>
         </div>
 
@@ -144,14 +141,7 @@ export default function Visualizar() {
               </li>
 
               <li>
-                <span>Edição:</span>{" "}
-                <strong className={styles.numero2}>
-                  {numero_edicao || "1"}
-                </strong>
-              </li>
-
-              <li>
-                <span>Público-alvo:</span> <strong>Não informado</strong>
+                <span>Categoria:</span> <strong>{categoria}</strong>
               </li>
 
               <li>

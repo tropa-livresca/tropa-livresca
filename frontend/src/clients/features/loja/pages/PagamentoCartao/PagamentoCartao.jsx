@@ -1,6 +1,11 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiArrowLeft, FiCreditCard, FiChevronDown } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiCreditCard,
+  FiChevronDown,
+  FiTruck,
+} from "react-icons/fi";
 
 import styles from "./PagamentoCartao.module.css";
 import BotaoComprar from "../../components/BotaoComprar/BotaoComprar";
@@ -88,12 +93,15 @@ export default function PagamentoCartao() {
   if (!pedido?.id) {
     return (
       <main className={styles.container}>
-        <p>Não foi possível localizar seu pedido.</p>
-
-        <Link to="/pagamento" className={styles.voltar}>
+        <Link to="/pagamento" className={styles.voltar2}>
           <FiArrowLeft />
           Voltar para o pagamento
         </Link>
+
+        <div className={styles.erro}>
+        <p>Não foi possível localizar seu pedido.</p>
+        </div>
+
       </main>
     );
   }
@@ -120,10 +128,34 @@ export default function PagamentoCartao() {
         </div>
 
         <div className={styles.resumoPedido}>
-          <p className={styles.pezin}>Pedido <span className={styles.numero4}>#{pedido.id}</span></p>
-          <strong className={styles.strongtotal}>{formatarPreco(total)}</strong>
+          <div className={styles.pedidoInfo}>
+            <span className={styles.pedidoRotulo}>Resumo do pedido</span>
+            <p className={styles.pedidoNumero}>
+              Pedido{" "}
+              <span className={styles.pedidoId}>
+                <span className={styles.numero}>#{pedido.id}</span>
+              </span>
+            </p>
 
-          {frete >0 && <span className={styles.strongtotal}> Frete incluído no total do pedido.</span>}
+            {frete > 0 && (
+              <span className={styles.pedidoFrete}>
+                <FiTruck />
+                Frete de{" "}
+                <span className={styles.numero}>
+                  {formatarPreco(frete)}
+                </span>{" "}
+                incluído
+              </span>
+            )}
+          </div>
+
+          <div className={styles.pedidoTotal}>
+            <span className={styles.totalRotulo}>Total a pagar</span>
+            <strong className={styles.totalValor}>
+              {" "}
+              <span className={styles.numero}>{formatarPreco(total)}</span>
+            </strong>
+          </div>
         </div>
 
         <form
@@ -224,7 +256,8 @@ export default function PagamentoCartao() {
                         setParcelamentoAberto(false);
                       }}
                     >
-                      {opcao.texto}
+                      <span className={styles.numero}>{opcao.valor}x</span>
+                      {" sem juros"}
                     </button>
                   ))}
                 </div>

@@ -26,7 +26,6 @@ export default function Compra() {
     if (temFisico) BuscarEnderecos();
   }, [temFisico, BuscarEnderecos]);
 
-  // Sem escolha do usuário, usa o endereço principal.
   const enderecoPadrao = enderecos.find((e) => e.principal) || enderecos[0];
   const enderecoId = enderecoEscolhido ?? enderecoPadrao?.id ?? null;
 
