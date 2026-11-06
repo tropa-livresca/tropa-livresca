@@ -8,11 +8,13 @@ import {
   FaTrash,
   FaExternalLinkAlt,
   FaBook,
+  FaFilePdf,
 } from "react-icons/fa";
-import styles from "./RevisaoById.module.css"; // Importando o CSS
+import styles from "./RevisaoById.module.css";
 
 export default function RevisaoById() {
   const { id } = useParams();
+
   const {
     buscarRevisaoById,
     revisaoAtual,
@@ -32,22 +34,46 @@ export default function RevisaoById() {
   useEffect(() => {
     if (!id) return;
 
-    const CarregarDados = async () => {
+    const carregarDados = async () => {
       await buscarRevisaoById(id);
     };
 
-    CarregarDados();
+    carregarDados();
   }, [id, buscarRevisaoById]);
+
+  const selecionarManuscrito = (e) => {
+    const arquivo = e.target.files?.[0];
+
+    if (!arquivo) return;
+
+    if (
+      arquivo.type !== "application/pdf" &&
+      !arquivo.name.toLowerCase().endsWith(".pdf")
+    ) {
+      alert("Selecione um arquivo PDF.");
+      e.target.value = "";
+      return;
+    }
+
+    if (arquivo.size > 50 * 1024 * 1024) {
+      alert("O arquivo deve ter no máximo 50 MB.");
+      e.target.value = "";
+      return;
+    }
+
+    setManuscrito(arquivo);
+  };
 
   const executarSalvar = async (e) => {
     e.preventDefault();
-    if (id) {
-      try {
-        await atualizarRevisao(id, livroRevisado?.id);
-        setIsEdicao(false);
-      } catch (err) {
-        alert(err.message || "Erro ao atualizar revisão.");
-      }
+
+    if (!id) return;
+
+    try {
+      await atualizarRevisao(id, livroRevisado?.id);
+      setIsEdicao(false);
+    } catch (err) {
+      alert(err.message || "Erro ao atualizar revisão.");
     }
   };
 
@@ -57,15 +83,18 @@ export default function RevisaoById() {
         <h2 className={styles.titulo}>
           Detalhes da Revisão <span className={styles.numero}>#{id}</span>
         </h2>
+
         <p>Verifique e altere a revisão caso necessário.</p>
       </div>
+
       <div className={styles.container}>
         {revisaoAtual ? (
           <div className={styles.conteudoCard}>
             <div className={styles.headerRevisao}>
               <button
+                type="button"
                 onClick={() => setIsEdicao(!isEdicao)}
-                className={isEdicao ? styles.linkLivro : styles.linkLivro}
+                className={styles.linkLivro}
               >
                 {isEdicao ? (
                   <>
@@ -88,10 +117,15 @@ export default function RevisaoById() {
               )}
             </div>
 
-            <form onSubmit={executarSalvar} className={styles.formulario}>
-              {/* Campo Nome */}
+            <form
+              onSubmit={executarSalvar}
+              className={`${styles.formulario} ${
+                !isEdicao ? styles.formularioBloqueado : ""
+              }`}
+            >
               <div className={styles.campoGrupo}>
                 <label className={styles.label}>Nome da revisão:</label>
+
                 <input
                   type="text"
                   name="nome"
@@ -103,13 +137,13 @@ export default function RevisaoById() {
                 />
               </div>
 
-              {/* Campo Apontamento */}
               <div className={styles.campoGrupo}>
                 <label className={styles.label}>Apontamento:</label>
+
                 <textarea
                   id="apontamento"
                   name="apontamento"
-                  rows="10"
+                  rows={10}
                   placeholder="Digite detalhadamente as notas da revisão..."
                   value={apontamento || ""}
                   disabled={!isEdicao}
@@ -118,34 +152,51 @@ export default function RevisaoById() {
                 />
               </div>
 
-              {/* Campo Manuscrito / Arquivo */}
               <div className={styles.campoGrupo}>
                 <label className={styles.label}>Manuscrito / Anexo:</label>
 
                 {isEdicao && (
-                  <input
-                    type="file"
-                    onChange={(e) => setManuscrito(e.target.files[0])}
-                    className={styles.inputFile}
-                  />
+                  <label className={styles.carregar}>
+                    <FaFilePdf className={styles.carregarsvg} />
+
+                    <span>
+                      Subir arquivo do livro
+                      <span className={styles.clique}>
+                        Aceitamos apenas arquivos .pdf 
+                      </span>
+                    </span>
+
+                    <input
+                      type="file"
+                      hidden
+                      accept=".pdf,application/pdf"
+                      onChange={selecionarManuscrito}
+                    />
+                  </label>
                 )}
 
-                {manuscrito && typeof manuscrito === "string" && (
+                {typeof manuscrito === "string" && manuscrito && (
                   <div className={styles.arquivoBox}>
                     <span>Arquivo atual anexado ao sistema</span>
+
                     <a
                       href={manuscrito}
                       target="_blank"
                       rel="noreferrer"
                       className={styles.linkArquivo}
                     >
-                      Visualizar Arquivo <FaExternalLinkAlt size={12} />
+                      Visualizar arquivo <FaExternalLinkAlt size={12} />
                     </a>
                   </div>
                 )}
+
+                {manuscrito instanceof File && (
+                  <p className={styles.arquivocarregado}>
+                    Arquivo selecionado: {manuscrito.name}
+                  </p>
+                )}
               </div>
 
-              {/* Botões Inferiores de Edição */}
               {isEdicao && (
                 <div className={styles.acoesFormulario}>
                   <button
@@ -155,6 +206,7 @@ export default function RevisaoById() {
                   >
                     <FaTrash /> Limpar Formulário
                   </button>
+
                   <button type="submit" className={styles.botaoSalvar}>
                     <FaSave /> Salvar Alterações
                   </button>

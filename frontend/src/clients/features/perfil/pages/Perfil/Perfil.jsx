@@ -274,12 +274,17 @@ export default function Perfil() {
             </section>
 
             <section>
-              
               <h3>Dados Bancários</h3>
 
               <p className={styles.subtitulo}>Insira seus dados bancários.</p>
 
-              <Link to="/perfil/dadosbancarios" className={styles.linkDados}>
+              <Link
+                to="/perfil/dadosbancarios"
+                className={`${styles.linkDados} ${!editando ? styles.linkDadosDesabilitado : ""}`}
+                onClick={(e) => {
+                  if (!editando) e.preventDefault();
+                }}
+              >
                 Alterar dados
               </Link>
             </section>

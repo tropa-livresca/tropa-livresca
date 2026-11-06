@@ -35,6 +35,7 @@ export default function AlterarSenha() {
 
       <div className={styles.container}>
         <form onSubmit={alterarSenhaAntiga} className={styles.formulario}>
+          <legend className={styles.legend}>Preencha os campos abaixo</legend>
           <div className={styles.campo}>
             <label htmlFor="email" className={styles.rotulo}>
               E-mail

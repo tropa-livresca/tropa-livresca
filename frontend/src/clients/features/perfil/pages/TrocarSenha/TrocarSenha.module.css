@@ -180,9 +180,10 @@
 }
 
 .topo p {
-  color: #67170c;
+  color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
 @media (max-width: 900px) {

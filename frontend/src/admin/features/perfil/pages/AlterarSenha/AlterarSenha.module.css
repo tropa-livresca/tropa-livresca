@@ -141,6 +141,23 @@
   transition: 0.3s;
 }
 
+.legend {
+  color: #67170c;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 2%;
+}
+
+.legend::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
 @media (max-width: 1200px) {
   .container {
     padding: 2.5rem 4%;

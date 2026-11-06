@@ -11,9 +11,7 @@ import { useCarrinho } from "../../hooks/useCarrinho";
 const CHAVE_PIX = "davidballsdocumentacao@gmail.com";
 
 const formatarPreco = (valor) =>
-  `R$ ${Number(valor || 0)
-    .toFixed(2)
-    .replace(".", ",")}`;
+  `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
 
 export default function PagamentoPix() {
   const { state } = useLocation();
@@ -71,16 +69,14 @@ export default function PagamentoPix() {
   if (!pedido?.id) {
     return (
       <main className={styles.container}>
-        
         <Link to="/pagamento" className={styles.voltar2}>
           <FiArrowLeft />
           Voltar para o pagamento
         </Link>
 
         <div className={styles.erro}>
-        <p>Não foi possível localizar seu pedido.</p>
+          <p>Não foi possível localizar seu pedido.</p>
         </div>
-
       </main>
     );
   }
@@ -110,7 +106,11 @@ export default function PagamentoPix() {
 
         <div className={styles.formulario}>
           {copiado && (
-            <p className={styles.copiado} role="status" aria-live="polite">
+            <p
+              className={styles.copiado}
+              role="status"
+              aria-live="polite"
+            >
               Chave Pix copiada com sucesso!
             </p>
           )}
@@ -118,19 +118,29 @@ export default function PagamentoPix() {
           <div className={styles.gridPix}>
             <div className={styles.qrCode}>
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(
-                  CHAVE_PIX,
-                )}`}
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(CHAVE_PIX)}`}
                 alt="QR Code contendo a chave Pix"
               />
 
-              <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
+              <span>
+                Escaneie o QR Code pelo aplicativo do seu banco.
+              </span>
             </div>
 
             <div className={styles.resumoPedido}>
-              <span className={styles.pedidoRotulo}>Resumo do pedido</span>
-              <p className={styles.pedido}>Pedido #{pedido.id}</p>
-              <p className={styles.pedido1}><span className={styles.numero}>{formatarPreco(total)}</span></p>
+              <span className={styles.pedidoRotulo}>
+                Resumo do pedido
+              </span>
+
+              <p className={styles.pedido}>
+                Pedido <span className={styles.numero}>#{pedido.id}</span>
+              </p>
+
+              <p className={styles.pedido1}>
+                <span className={styles.numero}>
+                  {formatarPreco(total)}
+                </span>
+              </p>
 
               {frete > 0 && (
                 <span className={styles.pedidoFrete}>
@@ -141,6 +151,7 @@ export default function PagamentoPix() {
 
               <label>
                 Chave Pix
+
                 <div className={styles.chavePix}>
                   <input
                     type="text"

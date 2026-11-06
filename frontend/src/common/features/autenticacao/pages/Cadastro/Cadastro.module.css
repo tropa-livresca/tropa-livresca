@@ -65,6 +65,101 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
+.privacidade {
+  width: 100%;
+  margin: 0.8rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.checkboxPrivacidade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0 !important;
+  color: #67170c;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+}
+
+.form input:not([type="checkbox"]) {
+  width: 90%;
+  box-sizing: border-box;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+  background: #fff8d7;
+  color: #67170c;
+  padding: 0.8rem 1rem;
+  outline: none;
+  transition: 0.25s ease;
+}
+
+.form input:not([type="checkbox"]):focus {
+  border-color: #67170c;
+}
+
+.form input:not([type="checkbox"])::placeholder {
+  color: var(--cor-texto-muted);
+  opacity: 1;
+}
+
+.checkboxPrivacidade input[type="checkbox"] {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 1.2rem;
+  min-height: 1.2rem;
+  border: 1.5px solid #e2c77c;
+  border-radius: 0.25rem;
+  background: #fff8d7;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  accent-color: transparent;
+  transition: 0.2s ease;
+}
+
+.checkboxPrivacidade input[type="checkbox"]:hover {
+  border-color: #ffbb33;
+  background: #fff3b5;
+}
+
+.checkboxPrivacidade input[type="checkbox"]:checked {
+  border-color: #67170c;
+  background: #67170c;
+  box-shadow: inset 0 0 0 0.2rem #fff8d7;
+}
+
+.checkboxPrivacidade input[type="checkbox"]:checked:hover {
+  border-color: #b32512;
+  background: #b32512;
+}
+
+.checkboxPrivacidade input[type="checkbox"]:focus-visible {
+  outline: 2px solid #d4b46a;
+  outline-offset: 3px;
+}
+
+.checkboxPrivacidade span {
+  color: #67170c;
+  font-size: 1rem;
+}
+
+.checkboxPrivacidade a {
+  color: #67170c;
+  font-weight: 600;
+ text-decoration: underline;
+
+}
+
+.checkboxPrivacidade a:hover {
+  color: #ffbb33;
+  transition: 0.3s;
+}
+
 .span {
   text-align: center;
   margin-top: 0.3rem;
@@ -80,6 +175,9 @@
   color: #67170c;
 }
 
+.span a{
+  text-decoration: underline !important;
+}
 .inputSenha {
   position: relative;
   width: 100%;
@@ -91,7 +189,7 @@
 
 .voltar {
   position: absolute;
-  top: 17%;
+  top: 14%;
   left: 5%;
   width: 3.3rem;
   height: 2.8rem;

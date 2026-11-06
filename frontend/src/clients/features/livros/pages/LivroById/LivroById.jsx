@@ -79,63 +79,61 @@ export default function LivroById() {
           )}
 
           <div className={styles.infoTopo}>
-            <div className={styles.infoEsquerda}>
-              {livro.genero && (
-                <span className={styles.genero}>{livro.genero}</span>
-              )}
+            {livro.genero && (
+              <span className={styles.genero}>{livro.genero}</span>
+            )}
 
-              <ResumoAvaliacao media={resumo.media} total={resumo.total} />
+            <ResumoAvaliacao media={resumo.media} total={resumo.total} />
 
-              <div className={styles.tags}>
-                {livro.idioma && <span>{livro.idioma}</span>}
-                {livro.categoria && <span>{livro.categoria}</span>}
-              </div>
+            <div className={styles.tags}>
+              {livro.idioma && <span>{mapearIdioma(livro.idioma)}</span>}
+              {livro.categoria && <span>{livro.categoria}</span>}
             </div>
+          </div>
 
+          <div className={styles.informacoes}>
             {autor && (
-              <div className={styles.autorCard}>
+              <Link
+                to={`/autores/${autor.id}`}
+                className={`${styles.informacaoAutor} ${styles.linkAutor}`}
+              >
                 {autor.imagem ? (
                   <img
                     className={styles.fotoAutor}
                     src={autor.imagem}
-                    alt={autor.nome}
+                    alt={`Foto de ${autor.nome}`}
                   />
                 ) : (
                   <div className={styles.semFotoAutor}>Sem foto</div>
                 )}
 
                 <div className={styles.autorDados}>
-                  <span>Autor</span>
-
-                  <h3>{autor.nome}</h3>
-
-                  <Link to={`/autores/${autor.id}`} className={styles.btnAutor}>
-                    Ver perfil
-                  </Link>
+                  <strong>Autor</strong>
+                  <p>{autor.nome}</p>
                 </div>
-              </div>
+              </Link>
             )}
-          </div>
 
-          <span className={styles.linha}></span>
+            <div
+              className={`${styles.informacao} ${styles.informacaoPublicado}`}
+            >
+              <div className={styles.iconeInformacao}>
+                <FaBookOpen />
+              </div>
 
-          <div className={styles.informacoes}>
-            <div className={styles.informacao}>
-              <FaBookOpen />
-
-              <div className={styles.oi}>
+              <div>
                 <strong>Publicado por</strong>
-
                 <p>{autor?.nome || "Autor desconhecido"}</p>
               </div>
             </div>
 
-            <div className={styles.informacao}>
-              <FaCalendarAlt />
+            <div className={`${styles.informacao} ${styles.informacaoData}`}>
+              <div className={styles.iconeInformacao}>
+                <FaCalendarAlt />
+              </div>
 
               <div>
                 <strong>Data de publicação</strong>
-
                 <p className={styles.numero}>
                   {livro.data_de_publicacao
                     ? livro.data_de_publicacao.split("-").reverse().join("/")
@@ -144,23 +142,25 @@ export default function LivroById() {
               </div>
             </div>
 
-            <div className={styles.informacao}>
-              <FaUsers />
+            <div className={`${styles.informacao} ${styles.informacaoPublico}`}>
+              <div className={styles.iconeInformacao}>
+                <FaUsers />
+              </div>
 
               <div>
                 <strong>Categoria</strong>
-
                 <p>{livro.categoria || "Não informado"}</p>
               </div>
             </div>
 
-            <div className={styles.informacao}>
-              <FaLanguage />
+            <div className={`${styles.informacao} ${styles.informacaoIdioma}`}>
+              <div className={styles.iconeInformacao}>
+                <FaLanguage />
+              </div>
 
-              <div className={styles.oi}>
+              <div>
                 <strong>Idioma</strong>
-
-                <p>{mapearIdioma(livro.idioma) || "Não informado"}</p>
+                <p>{mapearIdioma(livro.idioma)}</p>
               </div>
             </div>
           </div>
@@ -191,13 +191,11 @@ export default function LivroById() {
 
           <div className={styles.beneficio}>
             <FaTruck />
-
             <span>Entrega para todo o Brasil</span>
           </div>
 
           <div className={styles.beneficio}>
             <FaShieldAlt />
-
             <span>
               Compra <span className={styles.numero}>100%</span> segura
             </span>
@@ -205,7 +203,6 @@ export default function LivroById() {
 
           <div className={styles.beneficio}>
             <FaUndo />
-
             <span>
               Troca e devolução em até <span className={styles.numero}>7</span>{" "}
               dias

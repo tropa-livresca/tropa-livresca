@@ -8,7 +8,7 @@
 
 .pedido {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-columns: minmax(0, 1fr) 250px auto auto;
   align-items: center;
   gap: 1.5rem;
   padding: 1.3rem 1.8rem;
@@ -75,19 +75,21 @@
 
 .etiqueta {
   padding: 0.25rem 0.8rem;
-  border-radius: 999px;
   font-size: 1rem;
-  font-weight: 700;
 }
 
 .pago {
-  background: #e3f3e6;
-  color: #2f6f3e;
+  border: 1px solid #e2c77c;
+  border-radius: 0.5rem;
+  background: #fff8d7 !important;
+  color: #67170c;
 }
 
 .pendente {
-  background: #fff1d6;
-  color: #8a5a00;
+  border: 1px solid #e2c77c;
+  border-radius: 0.5rem;
+  background: #fff8d7 !important;
+  color: var(--cor-texto-muted);
 }
 
 .total {

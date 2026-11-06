@@ -14,8 +14,10 @@
   font-size: 1rem;
 }
 
-.btngoogle:hover {
+.btngoogle:hover,
+.btngoogle:hover svg {
   background-color: #ffbb33;
+  color: #ede6b3;
   transition: 0.3s;
 }
 

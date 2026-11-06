@@ -32,9 +32,10 @@
 }
 
 .topo p {
-  color: #67170c;
+  color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .containerperfil {
@@ -274,6 +275,11 @@ textarea {
   color: #67170c !important;
 }
 
+.formulario textarea:focus {
+  outline: none;
+  border: 2px solid #67170c;
+}
+
 .carregarsvg {
   font-size: 2rem;
   color: #67170c;
@@ -491,4 +497,38 @@ textarea {
   .inputs {
     grid-template-columns: 1fr;
   }
+}
+
+.linkDadosDesabilitado {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+}
+
+.formulario textarea {
+  scrollbar-width: thin;
+  scrollbar-color: #c8a45c #fff8d7;
+  height: 12rem;
+}
+
+.formulario textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.formulario textarea::-webkit-scrollbar-track {
+  background: #fff8d7;
+  border-radius: 1rem;
+}
+
+.formulario textarea::-webkit-scrollbar-thumb {
+  background: #c8a45c;
+  border-radius: 1rem;
+}
+
+.formulario textarea::-webkit-scrollbar-thumb:hover {
+  background: #67170c;
+}
+
+.formulario textarea {
+  scrollbar-color: #c8a45c transparent;
 }
