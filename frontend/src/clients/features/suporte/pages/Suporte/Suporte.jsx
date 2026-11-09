@@ -26,6 +26,20 @@ export default function Suporte() {
     enviarEmail();
   };
 
+  const aplicarMascaraTelefone = (valor) => {
+    const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+    if (numeros.length <= 2) {
+      return numeros.replace(/^(\d{0,2})/, "($1");
+    }
+
+    if (numeros.length <= 7) {
+      return numeros.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+    }
+
+    return numeros.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+  };
+
   const motivos = [
     "Selecione um motivo",
     "Problemas de Autopublicação",
@@ -70,8 +84,11 @@ export default function Suporte() {
             className={styles.inputmodificado}
             name="telefone"
             value={telefone}
-            placeholder="Telefone de contato"
-            onChange={(e) => setTelefone(e.target.value)}
+            placeholder="(00) 00000-0000"
+            maxLength={15}
+            onChange={(e) =>
+              setTelefone(aplicarMascaraTelefone(e.target.value))
+            }
           />
 
           <label htmlFor="nome">Nome</label>

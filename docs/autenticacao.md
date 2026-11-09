@@ -23,6 +23,19 @@ A autenticação da aplicação é realizada por sessão e cookies, com validaç
 - **Logout**: Revogação da sessão na API do Supabase e destruição imediata dos cookies locais do navegador.
 - **Acesso Restrito**: Proteção baseada em rotas privadas no ecossistema React Router para autopublicação, painel administrativo e visualização de dados sensíveis.
 
+## Autenticação com Google
+
+O botão de login solicita ao backend uma URL OAuth do Supabase. Depois da autorização, o Supabase redireciona o navegador para `/auth/callback` no frontend, que troca o código ou os tokens por uma sessão e cookies gerenciados pelo backend.
+
+Para habilitar esse fluxo:
+
+1. No Google Cloud Console, crie um cliente OAuth do tipo **Aplicativo da Web**. Em **URIs de redirecionamento autorizados**, adicione `https://<project-ref>.supabase.co/auth/v1/callback` (substitua `<project-ref>` pelo identificador do projeto Supabase).
+2. No Supabase, abra **Authentication > Sign In / Providers > Google**, habilite o provedor e informe o Client ID e o Client Secret gerados pelo Google. O segredo deve permanecer no painel Supabase; não o adicione a `frontend/.env*`, nem com prefixo `VITE_`.
+3. Em **Authentication > URL Configuration** no Supabase, configure o Site URL com a origem do frontend de produção e adicione à lista de Redirect URLs todos os callbacks utilizados, por exemplo `http://localhost:5173/auth/callback` e `https://<dominio-do-frontend>/auth/callback`.
+4. Configure `VITE_API_URL` no ambiente de produção do frontend e `FRONTEND_URL` e `BACKEND_URL` no ambiente do backend. Em desenvolvimento local, o frontend usa `http://localhost:3000` como backend padrão e o callback é construído com a origem atual.
+
+O endereço `/auth/callback` pertence à aplicação. O endereço `/auth/v1/callback` do projeto Supabase pertence ao retorno configurado no Google Cloud Console; eles não são intercambiáveis.
+
 ---
 
 ## Detalhes Técnicos de Infraestrutura
