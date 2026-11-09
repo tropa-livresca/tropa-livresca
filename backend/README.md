@@ -30,7 +30,6 @@ SUPABASE_SERVICE_ROLE_KEY=sua-service-role-key-ficticia
 SUPABASE_REDIRECT_URL=http://localhost:5173/confirmacao-email
 
 # Segurança e Criptografia
-MINHA_CHAVE_SUPER_SECRETA=b42ad8109312923b374b031d3c597710b8c80a0def542caf0b1a36fdca33e6a8
 JWT_SECRET=sua-jwt-key
 
 # Configurações do Serviço de E-mail (SMTP / Nodemailer)

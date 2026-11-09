@@ -60,7 +60,7 @@ export const useEndereco = () => {
       mostrarPopup("erro", "O campo Rua é obrigatório.");
       return false;
     }
-    if (!numero || numero.trim() === "") {
+    if (!numero) {
       mostrarPopup("erro", "O campo Número é obrigatório.");
       return false;
     }
