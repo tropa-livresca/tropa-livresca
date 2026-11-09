@@ -46,9 +46,7 @@ export default function AutorById() {
         </div>
 
         <div className={styles.heroinfo}>
-          <h1 className={styles.titulo}>
-            {autor?.nome || "Autor anônimo"}
-          </h1>
+          <h1 className={styles.titulo}>{autor?.nome || "Autor anônimo"}</h1>
 
           <p className={styles.descricao}>
             {autor?.descricao || "Sem descrição."}
@@ -152,20 +150,14 @@ export default function AutorById() {
                 </Link>
 
                 <div className={styles.infoLivro}>
-                  <Link
-                    to={`/livros/${livro.id}`}
-                    className={styles.linkLivro}
-                  >
+                  <Link to={`/livros/${livro.id}`} className={styles.linkLivro}>
                     <h3 className={styles.livrotitulo}>
                       {livro.titulo || "Sem título"}
                     </h3>
-                    
-                    <p className={styles.sub}>oi</p>
-                   {/*{livro.subtitulo && (
-                      <p className={styles.livrosubtitulo}>
-                        {livro.subtitulo}
-                      </p>
-                    )} */} 
+
+                    {livro.subtitulo && (
+                      <p className={styles.sub}>{livro.subtitulo}</p>
+                    )}
                   </Link>
                 </div>
               </article>
