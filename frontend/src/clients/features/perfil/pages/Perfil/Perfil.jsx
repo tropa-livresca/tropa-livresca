@@ -54,6 +54,20 @@ export default function Perfil() {
     return <Carregando />;
   }
 
+  const aplicarMascaraTelefone = (valor) => {
+    const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+    if (numeros.length <= 2) {
+      return numeros.replace(/^(\d{0,2})/, "($1");
+    }
+
+    if (numeros.length <= 7) {
+      return numeros.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+    }
+
+    return numeros.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     updatePerfil();
@@ -96,7 +110,7 @@ export default function Perfil() {
 
               <span className={styles.telefone}>
                 <FaPhone />
-                {telefone || "(00) 00000-0000"}
+                {aplicarMascaraTelefone(telefone) || "(00) 00000-0000"}
               </span>
             </div>
 
