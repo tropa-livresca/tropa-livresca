@@ -173,7 +173,7 @@ export default function Perfil() {
                     disabled={!editando}
                     className={styles.inputmodificado}
                     id={styles.telefone}
-                    handleOnChange={(e) => setTelefone(e.target.value)}
+                    handleOnChange={(e) => aplicarMascaraTelefone(setTelefone(e.target.value))}
                   />
                 </div>
 
