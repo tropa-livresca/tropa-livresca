@@ -1,4 +1,5 @@
-﻿import { useEffect } from "react";
+﻿
+import { useEffect } from "react";
 import { usePerfil } from "../../hooks/usePerfil";
 import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
@@ -87,6 +88,7 @@ export default function Perfil() {
           Gerencie suas informações pessoais, redes sociais e foto de perfil.
         </p>
       </div>
+
       <div className={styles.container}>
         <section className={styles.containerperfil}>
           <div className={styles.perfilesq}>
@@ -173,7 +175,9 @@ export default function Perfil() {
                     disabled={!editando}
                     className={styles.inputmodificado}
                     id={styles.telefone}
-                    handleOnChange={(e) => aplicarMascaraTelefone(setTelefone(e.target.value))}
+                    handleOnChange={(e) =>
+                      aplicarMascaraTelefone(setTelefone(e.target.value))
+                    }
                   />
                 </div>
 
@@ -212,35 +216,44 @@ export default function Perfil() {
               </p>
 
               <div className={styles.inputs}>
-                <Input
-                  placeholder="Inserir instagram"
-                  value={redesSociais.instagram}
-                  disabled={!editando}
-                  className={styles.inputmodificado}
-                  handleOnChange={(e) =>
-                    handleRedeChange("instagram", e.target.value)
-                  }
-                />
+                <div>
+                  <label>Instagram</label>
+                  <Input
+                    placeholder="Inserir instagram"
+                    value={redesSociais.instagram}
+                    disabled={!editando}
+                    className={styles.inputmodificado}
+                    handleOnChange={(e) =>
+                      handleRedeChange("instagram", e.target.value)
+                    }
+                  />
+                </div>
 
-                <Input
-                  placeholder="Inserir facebook"
-                  value={redesSociais.facebook}
-                  disabled={!editando}
-                  className={styles.inputmodificado}
-                  handleOnChange={(e) =>
-                    handleRedeChange("facebook", e.target.value)
-                  }
-                />
+                <div>
+                  <label>Facebook</label>
+                  <Input
+                    placeholder="Inserir facebook"
+                    value={redesSociais.facebook}
+                    disabled={!editando}
+                    className={styles.inputmodificado}
+                    handleOnChange={(e) =>
+                      handleRedeChange("facebook", e.target.value)
+                    }
+                  />
+                </div>
 
-                <Input
-                  placeholder="Inserir linkedin"
-                  value={redesSociais.linkedin}
-                  disabled={!editando}
-                  className={styles.inputmodificado}
-                  handleOnChange={(e) =>
-                    handleRedeChange("linkedin", e.target.value)
-                  }
-                />
+                <div>
+                  <label>LinkedIn</label>
+                  <Input
+                    placeholder="Inserir linkedin"
+                    value={redesSociais.linkedin}
+                    disabled={!editando}
+                    className={styles.inputmodificado}
+                    handleOnChange={(e) =>
+                      handleRedeChange("linkedin", e.target.value)
+                    }
+                  />
+                </div>
               </div>
             </section>
 
@@ -296,36 +309,56 @@ export default function Perfil() {
             <section>
               <h3>Dados Bancários</h3>
 
+              <p className={styles.subtitulo}>
+                Informações da sua conta bancária.
+              </p>
+
               {dadosBancarios ? (
-                <div className={styles.dadosBancariosResumo}>
-                  <p>
-                    <strong>CPF:</strong> {dadosBancarios.CPF}
-                  </p>
-                  <p>
-                    <strong>Nome completo:</strong>{" "}
-                    {dadosBancarios.nome_completo}
-                  </p>
-                  <p>
-                    <strong>Banco:</strong> {dadosBancarios.numero_banco}
-                  </p>
-                  <p>
-                    <strong>Agência:</strong> {dadosBancarios.numero_agencia}
-                  </p>
-                  <p>
-                    <strong>Conta:</strong> {dadosBancarios.numero_conta}
-                  </p>
-                  <p>
-                    <strong>Tipo de conta:</strong>{" "}
-                    {dadosBancarios.tipo_conta === "corrente"
-                      ? "Conta corrente"
-                      : dadosBancarios.tipo_conta === "poupanca"
-                        ? "Conta poupança"
-                        : dadosBancarios.tipo_conta}
-                  </p>
+                <div
+                  className={`${styles.dadosBancariosResumo} ${!editando ? styles.dadosBancariosDesabilitado : ""}`}
+                >
+                  <div>
+                    <label>CPF</label>
+                    <p>{dadosBancarios.CPF}</p>
+                  </div>
+
+                  <div>
+                    <label>Nome completo</label>
+                    <p>{dadosBancarios.nome_completo}</p>
+                  </div>
+
+                  <div>
+                    <label>Banco</label>
+                    <p>{dadosBancarios.numero_banco}</p>
+                  </div>
+
+                  <div>
+                    <label>Agência</label>
+                    <p>{dadosBancarios.numero_agencia}</p>
+                  </div>
+
+                  <div>
+                    <label>Conta</label>
+                    <p>{dadosBancarios.numero_conta}</p>
+                  </div>
+
+                  <div>
+                    <label>Tipo de conta</label>
+                    <p>
+                      {dadosBancarios.tipo_conta === "corrente"
+                        ? "Conta corrente"
+                        : dadosBancarios.tipo_conta === "poupanca"
+                          ? "Conta poupança"
+                          : dadosBancarios.tipo_conta}
+                    </p>
+                  </div>
                 </div>
               ) : (
-                <p className={styles.subtitulo}>Insira seus dados bancários.</p>
+                <p className={styles.subtitulo}>
+                  Insira seus dados bancários.
+                </p>
               )}
+
               <Link
                 to="/perfil/dadosbancarios"
                 className={`${styles.linkDados} ${!editando ? styles.linkDadosDesabilitado : ""}`}

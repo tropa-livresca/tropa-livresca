@@ -53,7 +53,6 @@
 
 .btn:hover {
   background: #ffbb33;
-  color: #67170c;
 }
 
 .container {
@@ -224,7 +223,7 @@
   color: var(--cor-texto-muted);
   font-family: "Jacques Francois", serif;
   font-size: 0.9rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }

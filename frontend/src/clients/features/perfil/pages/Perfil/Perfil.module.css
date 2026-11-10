@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
 
 .container {
@@ -93,7 +94,7 @@
 }
 
 .perfilesq h2 {
-  font-family: "Jacques Francois";
+  font-family: "Jacques Francois", serif;
   color: #67170c;
 }
 
@@ -127,10 +128,7 @@
   color: #67170c;
 }
 
-.telefone {
-  font-family: none;
-}
-
+.telefone,
 #telefone {
   font-family: none;
 }
@@ -192,7 +190,6 @@
 
 .formulario section {
   display: grid;
-  gap: 1rem;
   border-bottom: 1px solid #e3d5ad;
   padding-bottom: 1.5rem;
 }
@@ -206,13 +203,12 @@
 
 .formulario label {
   color: #67170c;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-family: "Jacques Francois", serif;
 }
 
 .subtitulo {
-  margin: 0;
-  margin-bottom: 1%;
+  margin: 0 0 1rem;
   color: #67170c;
   opacity: 0.8;
   font-size: 1.2rem;
@@ -244,6 +240,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+  row-gap: 0;
 }
 
 .inputs div:last-child {
@@ -252,12 +249,10 @@
 
 .inputs > div {
   display: grid;
-  gap: 0.6rem;
 }
 
 .campo {
   display: grid;
-  gap: 0.6rem;
 }
 
 .formulario textarea {
@@ -266,18 +261,39 @@
   border: 1px solid #e2c77c;
   border-radius: 1rem;
   padding: 0.8rem;
+  scrollbar-width: thin;
+  scrollbar-color: #c8a45c transparent;
+  height: 12rem;
+  margin-bottom: 1rem;
 }
 
 textarea {
   font-size: 1rem;
   resize: none;
-  height: 5rem;
   color: #67170c !important;
 }
 
 .formulario textarea:focus {
   outline: none;
   border: 2px solid #67170c;
+}
+
+.formulario textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.formulario textarea::-webkit-scrollbar-track {
+  background: #fff8d7;
+  border-radius: 1rem;
+}
+
+.formulario textarea::-webkit-scrollbar-thumb {
+  background: #c8a45c;
+  border-radius: 1rem;
+}
+
+.formulario textarea::-webkit-scrollbar-thumb:hover {
+  background: #67170c;
 }
 
 .carregarsvg {
@@ -379,13 +395,14 @@ textarea {
 .enderecoFormulario {
   margin-bottom: 1.7rem;
 }
+
 .linkEndereco {
   width: 8rem;
   color: #fff8d7;
   background: #67170c;
   border: 0;
   border-radius: 0.7rem;
-  padding: 0.7rem 0.7rem;
+  padding: 0.7rem;
   cursor: pointer;
   font-size: 0.8rem;
 }
@@ -396,38 +413,86 @@ textarea {
 }
 
 .linkDados {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   width: 8rem;
   color: #fff8d7;
   background: #67170c;
   border: 0;
   border-radius: 0.7rem;
-  padding: 0.7rem 0.7rem;
+  padding: 0.7rem;
   cursor: pointer;
   font-size: 0.8rem;
   margin: 0;
-  margin-bottom: 1rem;
+  margin-top: 0.7rem;
+  text-decoration: none;
+  transition: 0.3s;
+    margin-bottom: 1rem;
 }
 
 .linkDados:hover {
   background: #ffbb33;
-  transition: 0.3s;
+}
+
+.linkDadosDesabilitado {
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
 }
 
 .numero {
   font-family: none;
 }
 
-.dadosBancariosResumo p {
-  margin: 0 0 0.5rem;
-  color: #67170c;
+.dadosBancariosResumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  width: 100%;
+  margin: 0.3rem 0 0.5rem;
 }
 
-.dadosBancariosResumo strong {
-  font-weight: 600;
+.dadosBancariosResumo > div {
+  display: grid;
+  min-width: 0;
+}
+
+.dadosBancariosResumo label {
+  color: #67170c;
+  font-size: 1.1rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.dadosBancariosResumo p {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0.8rem;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  color: #67170c;
+  text-align: left;
+  font-size: 1rem;
+  font-family: none;
+  overflow-wrap: anywhere;
+}
+
+.dadosBancariosDesabilitado label {
+  opacity: 0.6;
+  color: #806f60;
+}
+
+.dadosBancariosDesabilitado p {
+  background: #eee8c8;
+  border-color: #d8ceb0;
+  opacity: 0.7;
+  color: #806f60;
 }
 
 .enderecoInfo {
-  margin-bottom: 4%;
+  margin-bottom: 2rem;
 }
 
 .enderecoInfo svg {
@@ -455,11 +520,12 @@ textarea {
   background: #67170c;
   border: 0;
   border-radius: 0.7rem;
-  padding: 0.7rem 0.7rem;
+  padding: 0.7rem;
   cursor: pointer;
   font-size: 0.8rem;
   width: 8rem;
-  margin-top: 2%;
+  margin-top: 0.7rem;
+    margin-bottom: 1rem;
 }
 
 .removerFoto:hover {
@@ -483,21 +549,28 @@ textarea {
   color: #806f60;
 }
 
-.enderecoDesabilitado .david {
-  color: #806f60;
-}
-
+.enderecoDesabilitado .david,
 .enderecoDesabilitado .numero {
   color: #806f60;
 }
 
-.enderecoDesabilitado .linkEndereco {
-  opacity: 0.6;
-}
-
+.enderecoDesabilitado .linkEndereco,
 .enderecoDesabilitado .linkDados {
   opacity: 0.6;
 }
+
+@media (max-width: 1200px) {
+  .containerperfil {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 1.5rem;
+  }
+
+  .perfilesq,
+  .formulario {
+    padding: 1.5rem;
+  }
+}
+
 @media (max-width: 900px) {
   .containerperfil {
     grid-template-columns: 1fr;
@@ -506,38 +579,48 @@ textarea {
   .inputs {
     grid-template-columns: 1fr;
   }
+
+  .inputs div:last-child {
+    grid-column: auto;
+  }
 }
 
-.linkDadosDesabilitado {
-  opacity: 0.5;
-  cursor: default;
-  pointer-events: none;
-}
+@media (max-width: 600px) {
+  .container {
+    padding: 3rem 4%;
+  }
 
-.formulario textarea {
-  scrollbar-width: thin;
-  scrollbar-color: #c8a45c #fff8d7;
-  height: 12rem;
-}
+  .topo {
+    padding: 2rem 4%;
+  }
 
-.formulario textarea::-webkit-scrollbar {
-  width: 8px;
-}
+  .topo p {
+    font-size: 1rem;
+  }
 
-.formulario textarea::-webkit-scrollbar-track {
-  background: #fff8d7;
-  border-radius: 1rem;
-}
+  .perfilesq,
+  .formulario {
+    padding: 1.2rem;
+    border-radius: 1rem;
+  }
 
-.formulario textarea::-webkit-scrollbar-thumb {
-  background: #c8a45c;
-  border-radius: 1rem;
-}
+  .formulario h3 {
+    font-size: 1.5rem;
+  }
 
-.formulario textarea::-webkit-scrollbar-thumb:hover {
-  background: #67170c;
-}
+  .subtitulo {
+    font-size: 1rem;
+  }
 
-.formulario textarea {
-  scrollbar-color: #c8a45c transparent;
+  .dadosBancariosResumo {
+    grid-template-columns: 1fr;
+  }
+
+  .acoes {
+    flex-direction: column-reverse;
+  }
+
+  .acoes button {
+    width: 100%;
+  }
 }

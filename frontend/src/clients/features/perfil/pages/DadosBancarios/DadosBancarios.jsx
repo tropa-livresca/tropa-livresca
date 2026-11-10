@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { FiChevronDown } from "react-icons/fi";
 import { useDadosBancarios } from "../../hooks/useDadosBancarios.js";
@@ -135,8 +134,15 @@ export default function DadosBancarios() {
 
   return (
     <main>
-      <button onClick={() => navigate("/perfil")}>Voltar</button>
       <div className={styles.topo}>
+        <button
+          type="button"
+          className={styles.btnVoltar}
+          onClick={() => navigate("/perfil")}
+        >
+          Voltar ao perfil
+        </button>
+
         <h1 className={styles.titulo}>Dados bancários</h1>
 
         {existeConta ? (

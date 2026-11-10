@@ -160,14 +160,15 @@
 }
 
 .botaoSecundario {
-  background: transparent;
-  border: 1.5px solid #67170c;
-  color: #67170c;
+  background: #fff8d7;
+    border: 1px solid #e2c77c;
+    color: #67170c;
 }
 
 .botaoSecundario:hover {
-  background: #67170c;
+  background: #ffbb33;
   color: #ede6b3;
+  transition: 0.3s;
 }
 
 @media (max-width: 600px) {
