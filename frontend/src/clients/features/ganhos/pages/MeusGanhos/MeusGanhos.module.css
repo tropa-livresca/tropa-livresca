@@ -39,7 +39,7 @@
 
 .cartoes {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5rem;
 }
 
@@ -396,6 +396,10 @@
 }
 
 @media (max-width: 900px) {
+  .cartoes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .cartaoResumo {
     padding: 1.5rem;
   }

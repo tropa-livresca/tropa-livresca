@@ -60,11 +60,7 @@ export class AuthController {
       );
       const usuarioCompleto = { ...finalUser, ...dadosPerfil };
 
-      res.cookie(
-        "admin-token",
-        finalAccessToken,
-        AuthController.COOKIE_OPTIONS,
-      );
+      res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
       res.cookie(
         "refresh-token",
         finalRefreshToken,

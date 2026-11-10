@@ -3,6 +3,7 @@ import { usePerfil } from "../../hooks/usePerfil";
 import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
 import { useEndereco } from "../../hooks/useEndereco";
+import { useDadosBancarios } from "../../hooks/useDadosBancarios";
 import { Link } from "react-router-dom";
 import Popup from "../../../../components/PopUp/Popup";
 import Carregando from "../../../../components/Carregando/Carregando";
@@ -40,11 +41,16 @@ export default function Perfil() {
     updatePerfil,
   } = usePerfil();
 
+  const { dadosBancarios, buscarDadosBancarios } = useDadosBancarios();
   const { endereco, BuscarEnderecoPrincipal } = useEndereco();
 
   useEffect(() => {
     BuscarEnderecoPrincipal();
   }, [BuscarEnderecoPrincipal]);
+
+  useEffect(() => {
+    buscarDadosBancarios();
+  }, []);
 
   useEffect(() => {
     getPerfil();
@@ -53,6 +59,20 @@ export default function Perfil() {
   if (carregando) {
     return <Carregando />;
   }
+
+  const aplicarMascaraTelefone = (valor) => {
+    const numeros = valor.replace(/\D/g, "").slice(0, 11);
+
+    if (numeros.length <= 2) {
+      return numeros.replace(/^(\d{0,2})/, "($1");
+    }
+
+    if (numeros.length <= 7) {
+      return numeros.replace(/^(\d{2})(\d{0,5})/, "($1) $2");
+    }
+
+    return numeros.replace(/^(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -96,7 +116,7 @@ export default function Perfil() {
 
               <span className={styles.telefone}>
                 <FaPhone />
-                {telefone || "(00) 00000-0000"}
+                {aplicarMascaraTelefone(telefone) || "(00) 00000-0000"}
               </span>
             </div>
 
@@ -153,7 +173,7 @@ export default function Perfil() {
                     disabled={!editando}
                     className={styles.inputmodificado}
                     id={styles.telefone}
-                    handleOnChange={(e) => setTelefone(e.target.value)}
+                    handleOnChange={(e) => aplicarMascaraTelefone(setTelefone(e.target.value))}
                   />
                 </div>
 
@@ -276,8 +296,36 @@ export default function Perfil() {
             <section>
               <h3>Dados Bancários</h3>
 
-              <p className={styles.subtitulo}>Insira seus dados bancários.</p>
-
+              {dadosBancarios ? (
+                <div className={styles.dadosBancariosResumo}>
+                  <p>
+                    <strong>CPF:</strong> {dadosBancarios.CPF}
+                  </p>
+                  <p>
+                    <strong>Nome completo:</strong>{" "}
+                    {dadosBancarios.nome_completo}
+                  </p>
+                  <p>
+                    <strong>Banco:</strong> {dadosBancarios.numero_banco}
+                  </p>
+                  <p>
+                    <strong>Agência:</strong> {dadosBancarios.numero_agencia}
+                  </p>
+                  <p>
+                    <strong>Conta:</strong> {dadosBancarios.numero_conta}
+                  </p>
+                  <p>
+                    <strong>Tipo de conta:</strong>{" "}
+                    {dadosBancarios.tipo_conta === "corrente"
+                      ? "Conta corrente"
+                      : dadosBancarios.tipo_conta === "poupanca"
+                        ? "Conta poupança"
+                        : dadosBancarios.tipo_conta}
+                  </p>
+                </div>
+              ) : (
+                <p className={styles.subtitulo}>Insira seus dados bancários.</p>
+              )}
               <Link
                 to="/perfil/dadosbancarios"
                 className={`${styles.linkDados} ${!editando ? styles.linkDadosDesabilitado : ""}`}

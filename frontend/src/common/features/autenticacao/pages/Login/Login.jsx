@@ -9,13 +9,13 @@ import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
 
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
 export default function Login() {
-  const { senha, setSenha, error, email, setEmail, handleSignin, navigate } =
-    useLogin();
+  const { senha, setSenha, error, email, setEmail, handleSignin } = useLogin();
+  const navigate = useNavigate();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const location = useLocation();

@@ -32,6 +32,7 @@ export default function Endereco() {
     LimparFormulario,
     handleCriarEndereco,
     AplicarMascaraCEP,
+    FormatarCEP,
     BuscarCepAutomatico,
     DefinirEnderecoPrincipal,
   } = useEndereco();
@@ -223,7 +224,7 @@ export default function Endereco() {
                       <tr key={end.id} className={styles.tabelaLinha}>
                         <td className={styles.tabelaTd}>
                           <span className={styles.fontnumero}>
-                            {end.CEP || end.cep}
+                            {FormatarCEP(end.CEP || end.cep)}
                             {end.principal && (
                               <span className={styles.badgePrincipal}>
                                 Principal
