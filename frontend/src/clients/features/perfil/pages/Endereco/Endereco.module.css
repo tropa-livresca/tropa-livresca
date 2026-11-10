@@ -13,9 +13,10 @@
 }
 
 .topo p {
-  color: #67170c;
+  color: var(--cor-texto-muted);
   text-align: left;
   font-size: 1.2rem;
+  margin: 0.5rem;
 }
 
 .titulo {
@@ -86,8 +87,9 @@
 
 .formularioGrid label {
   color: #67170c;
-  font-size: 1.2rem;
-  font-family: "Jacques Francois", serif;
+    font-size: 1rem;
+    font-family: "Jacques Francois", serif;
+    margin-bottom: 0 !important;
 }
 
 .subtitulo {

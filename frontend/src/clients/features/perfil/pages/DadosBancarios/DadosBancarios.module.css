@@ -1,8 +1,12 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
 .container {
   width: 100%;
   max-width: 100%;
   margin: auto;
   padding: 5rem 6%;
+  box-sizing: border-box;
 }
 
 .topo {
@@ -10,6 +14,7 @@
   padding: 3rem 6%;
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
+  box-sizing: border-box;
 }
 
 .titulo {
@@ -36,6 +41,8 @@
 }
 
 .form {
+  width: 100%;
+  box-sizing: border-box;
   background: #fffdf7;
   border-radius: 1.5rem;
   padding: 2rem;
@@ -44,55 +51,39 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.input {
-  width: 100% !important;
-  background: #fff8d7 !important;
-  border: 1px solid #e2c77c !important;
-  border-radius: 1rem !important;
-  padding: 0.8rem !important;
-  justify-self: stretch !important;
-  font-size: 1rem !important;
-  color: #67170c !important;
-  margin-bottom: 1rem;
-}
-
 .label {
+  display: block;
   color: #67170c;
   font-size: 1rem;
   font-family: "Jacques Francois", serif;
   margin-bottom: 0.3rem;
 }
 
-.input:focus {
-  outline: none !important;
-  border: 2px solid #67170c !important;
-}
-
-.input::placeholder {
-  color: var(--cor-texto-muted) !important;
-}
-
+.input,
 .input1 {
+  display: block;
   width: 100% !important;
+  box-sizing: border-box;
   background: #fff8d7 !important;
   border: 1px solid #e2c77c !important;
   border-radius: 1rem !important;
   padding: 0.8rem !important;
-  justify-self: stretch !important;
   font-size: 1rem !important;
+  font-family: none !important;
   color: #67170c !important;
   margin-bottom: 1rem;
-  font-family: none;
 }
 
+.input:focus,
 .input1:focus {
   outline: none !important;
   border: 2px solid #67170c !important;
 }
 
+.input::placeholder,
 .input1::placeholder {
   color: var(--cor-texto-muted) !important;
-  font-family: "Jacques Francois", serif;
+  font-family: "Jacques Francois", serif !important;
 }
 
 .legend {
@@ -110,4 +101,178 @@
   margin-top: 0.5rem;
   background: #d4b46a;
   border-radius: 999px;
+}
+
+.selectContainer {
+  width: 100%;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  padding: 0.8rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  background: #fff8d7;
+  color: #67170c;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.select:hover,
+.select:focus-visible {
+  border: 2px solid #67170c;
+  outline: none;
+}
+
+.seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: #7a4d38;
+  transition: transform 0.3s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  max-height: 0;
+  overflow: hidden;
+  background: #fffdf4;
+  border-radius: 1rem;
+  border: 0 solid transparent;
+  opacity: 0;
+  margin-top: 0;
+  transition:
+    max-height 0.25s ease,
+    opacity 0.2s ease,
+    margin-top 0.25s ease,
+    border-width 0.2s ease;
+}
+
+.opcoesAbertas {
+  max-height: 150px;
+  margin-top: 0.4rem;
+  border: 1px solid #e2c77c;
+  opacity: 1;
+}
+
+.opcao {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fffdf4;
+  border: none;
+  border-bottom: 1px solid #f1d892;
+  padding: 0.8rem 1rem;
+  color: #67170c;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  font-family: "Jacques Francois", serif;
+}
+
+.opcao:hover {
+  background: #fff8d767;
+  color: #ffbb33;
+}
+
+.opcao:last-child {
+  border-bottom: none;
+}
+
+.mensagem {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 1rem 0 0;
+  padding: 1rem;
+  border: 1px solid;
+  border-radius: 0.8rem;
+  font-family: "Jacques Francois", serif;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.erro {
+  color: red;
+  background-color: transparent;
+  border-color: red;
+}
+
+.sucesso {
+  color: green;
+  background-color: transparent;
+  border-color: green;
+}
+
+.form > button[type="submit"] {
+  width: 100%;
+  padding: 0.7rem;
+  margin-top: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: normal;
+  background-color: #67170c;
+  color: #ede6b3;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.form > button[type="submit"]:hover {
+  background-color: #ffbb33;
+}
+
+.form > button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 3rem 5%;
+  }
+
+  .topo {
+    padding: 2.5rem 5%;
+  }
+
+  .form {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 2rem 4%;
+  }
+
+  .topo {
+    padding: 2rem 4%;
+  }
+
+  .topo p {
+    font-size: 1rem;
+  }
+
+  .form {
+    padding: 1.2rem;
+    border-radius: 1rem;
+  }
+
+  .legend {
+    font-size: 1.3rem;
+  }
 }

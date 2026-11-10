@@ -186,11 +186,10 @@ a {
   color: #67170c;
   padding: 0.8rem 1rem;
   outline: none;
-  transition: 0.25s ease;
 }
 
 .form input:not([type="checkbox"]):focus {
-  border-color: #67170c;
+  border: 2px solid #67170c;
 }
 
 .form input:not([type="checkbox"])::placeholder {

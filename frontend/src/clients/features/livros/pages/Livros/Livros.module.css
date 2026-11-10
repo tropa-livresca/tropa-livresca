@@ -90,7 +90,7 @@
   background-color: #fffdf7;
   border: 1px solid #67170c;
   border-radius: 1rem;
-  color: #333;
+  color: #67170c;
   font-size: 0.9rem;
   cursor: pointer;
   transition: 0.25s;
@@ -132,7 +132,7 @@
   background-color: #fffdf7;
   border: 1px solid #67170c;
   border-radius: 1rem;
-  color: #333;
+  color: #67170c;
   margin: 0px -10px;
   font-size: 0.9rem;
   cursor: pointer;

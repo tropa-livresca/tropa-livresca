@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from "react";
+import { FiChevronDown } from "react-icons/fi";
 import { useDadosBancarios } from "../../hooks/useDadosBancarios.js";
 import Carregando from "../../../../components/Carregando/Carregando.jsx";
 import styles from "./DadosBancarios.module.css";
@@ -25,6 +27,7 @@ export default function DadosBancarios() {
   const [salvando, setSalvando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
+  const [aberto, setAberto] = useState(false);
 
   useEffect(() => {
     buscarDadosBancarios();
@@ -140,9 +143,11 @@ export default function DadosBancarios() {
           </p>
         )}
       </div>
+
       <div className={styles.container}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <legend className={styles.legend}>Preencha os campos abaixo</legend>
+
           <label htmlFor="CPF" className={styles.label}>
             CPF
           </label>
@@ -211,20 +216,68 @@ export default function DadosBancarios() {
           <label htmlFor="tipo_conta" className={styles.label}>
             Tipo de conta
           </label>
-          <select
-            id="tipo_conta"
-            name="tipo_conta"
-            value={dadosFormulario.tipo_conta}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Selecione</option>
-            <option value="corrente">Conta corrente</option>
-            <option value="poupanca">Conta poupança</option>
-          </select>
 
-          {erro && <p role="alert">{erro}</p>}
-          {mensagem && <p role="status">{mensagem}</p>}
+          <div className={styles.selectContainer}>
+            <button
+              type="button"
+              id="tipo_conta"
+              className={styles.select}
+              onClick={() => setAberto(!aberto)}
+              aria-expanded={aberto}
+            >
+              <span>
+                {dadosFormulario.tipo_conta === "corrente"
+                  ? "Conta corrente"
+                  : dadosFormulario.tipo_conta === "poupanca"
+                    ? "Conta poupança"
+                    : "Selecione"}
+              </span>
+
+              <span
+                className={`${styles.seta} ${aberto ? styles.setaAberta : ""}`}
+              >
+                <FiChevronDown />
+              </span>
+            </button>
+
+            <div
+              className={`${styles.opcoes} ${aberto ? styles.opcoesAbertas : ""}`}
+            >
+              {[
+                { valor: "corrente", texto: "Conta corrente" },
+                { valor: "poupanca", texto: "Conta poupança" },
+              ].map((item) => (
+                <button
+                  key={item.valor}
+                  type="button"
+                  className={styles.opcao}
+                  onClick={() => {
+                    handleChange({
+                      target: {
+                        name: "tipo_conta",
+                        value: item.valor,
+                      },
+                    });
+                    setAberto(false);
+                  }}
+                >
+                  {item.texto}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {erro && (
+            <p className={`${styles.mensagem} ${styles.erro}`} role="alert">
+              {erro}
+            </p>
+          )}
+
+          {mensagem && (
+            <p className={`${styles.mensagem} ${styles.sucesso}`} role="status">
+              {mensagem}
+            </p>
+          )}
 
           <button type="submit" disabled={salvando}>
             {salvando
