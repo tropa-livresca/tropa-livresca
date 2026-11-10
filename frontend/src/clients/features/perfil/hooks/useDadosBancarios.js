@@ -1,6 +1,14 @@
 import { useState, useCallback } from "react";
 import { apiFetch } from "../../../../common/services/api";
 
+const extrairDadosBancarios = (resposta) =>
+  resposta?.dadosBancarios ??
+  resposta?.dados ??
+  resposta?.conta ??
+  resposta?.contaAlterada ??
+  resposta ??
+  null;
+
 export const useDadosBancarios = () => {
   const [dadosBancarios, setDadosBancarios] = useState(null);
   const [carregando, setCarregando] = useState(false);
@@ -21,14 +29,14 @@ export const useDadosBancarios = () => {
       if (!res.ok) {
         throw new Error("Erro ao buscar os dados bancários");
       }
-      setDadosBancarios(json);
+      setDadosBancarios(extrairDadosBancarios(json));
     } catch (err) {
       console.error("Problema ao buscar os dados bancários:", err);
       setDadosBancarios(null);
     } finally {
       setCarregando(false);
     }
-  });
+  }, []);
 
   const criarConta = useCallback(
     async (
@@ -59,15 +67,14 @@ export const useDadosBancarios = () => {
           throw new Error("Erro ao criar a conta");
         }
 
-        setDadosBancarios(json);
+        setDadosBancarios(extrairDadosBancarios(json));
       } catch (err) {
         console.error("Problema ao criar a conta:", err);
         setDadosBancarios(null);
       } finally {
         setCarregando(false);
       }
-    },
-  );
+    }, []);
 
   const alterarDadosConta = useCallback(
     async (
@@ -97,15 +104,14 @@ export const useDadosBancarios = () => {
           throw new Error("Erro ao alterar os dados da conta");
         }
 
-        setDadosBancarios(json);
+        setDadosBancarios(extrairDadosBancarios(json));
       } catch (err) {
         console.error("Problema ao alterar os dados da conta:", err);
         setDadosBancarios(null);
       } finally {
         setCarregando(false);
       }
-    },
-  );
+    }, []);
 
   const solicitarSaque = useCallback(async (valorSaque) => {
     setCarregando(true);
@@ -114,20 +120,15 @@ export const useDadosBancarios = () => {
         method: "PATCH",
         body: JSON.stringify({ valorSaque }),
       });
-      const json = await res.json();
-
       if (!res.ok) {
         throw new Error("Erro ao solicitar saque");
       }
-
-      setDadosBancarios(json);
     } catch (err) {
       console.error("Problema ao solicitar saque:", err);
-      setDadosBancarios(null);
     } finally {
       setCarregando(false);
     }
-  });
+  }, []);
 
   return {
     criarConta,
