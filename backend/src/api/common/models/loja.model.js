@@ -60,7 +60,6 @@ export class LojaModel {
     ordem = "",
     categoria = "",
     idioma = "",
-    livroId = "",
   }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;

@@ -4,6 +4,7 @@ import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./VisualizarUsuario.module.css";
 import { useParams, Link } from "react-router-dom";
 import { FiArrowLeft, FiChevronRight, FiMail, FiPhone } from "react-icons/fi";
+import Popup from "../../../../components/PopUp/Popup";
 
 const LIMITE_LISTA = 5;
 
@@ -30,6 +31,7 @@ export default function VisualizarUsuario() {
   const [executandoAcao, setExecutandoAcao] = useState(false);
   const [verTodosLivros, setVerTodosLivros] = useState(false);
   const [verTodasRevisoes, setVerTodasRevisoes] = useState(false);
+  const [popup, setPopup] = useState(null);
 
   useEffect(() => {
     const carregarDados = async () => {
@@ -65,36 +67,60 @@ export default function VisualizarUsuario() {
   const isAdmin = !!usuario.is_admin;
   const isMaster = !!usuario.is_master;
 
-  const handlePromover = async () => {
-    if (!window.confirm(`Deseja promover ${usuario.nome} a Funcionário?`))
-      return;
+  const executarPromocao = async () => {
     setExecutandoAcao(true);
     try {
       await promoverUsuario(usuario.id);
       await buscarUsuarioById(usuario.id);
+      setPopup({
+        tipo: "sucesso",
+        mensagem: `${usuario.nome} foi promovido a funcionário com sucesso.`,
+      });
     } catch (erro) {
-      alert(erro.message || "Erro ao promover usuário.");
+      setPopup({
+        tipo: "erro",
+        mensagem: erro.message || "Erro ao promover usuário.",
+      });
     } finally {
       setExecutandoAcao(false);
     }
   };
 
-  const handleInativar = async () => {
-    if (
-      !window.confirm(
-        `Tem certeza que deseja INATIVAR o funcionário ${usuario.nome}? Ele perderá os acessos.`,
-      )
-    )
-      return;
+  const handlePromover = () => {
+    setPopup({
+      tipo: "sucesso",
+      mensagem: `Deseja promover ${usuario.nome} a funcionário?`,
+      confirmar: executarPromocao,
+      textoConfirmar: "Promover",
+    });
+  };
+
+  const executarInativacao = async () => {
     setExecutandoAcao(true);
     try {
       await inativarFuncionario(usuario.id);
       await buscarUsuarioById(usuario.id);
+      setPopup({
+        tipo: "sucesso",
+        mensagem: `${usuario.nome} foi inativado com sucesso.`,
+      });
     } catch (erro) {
-      alert(erro.message || "Erro ao inativar funcionário.");
+      setPopup({
+        tipo: "erro",
+        mensagem: erro.message || "Erro ao inativar funcionário.",
+      });
     } finally {
       setExecutandoAcao(false);
     }
+  };
+
+  const handleInativar = () => {
+    setPopup({
+      tipo: "erro",
+      mensagem: `Tem certeza que deseja inativar o funcionário ${usuario.nome}? Ele perderá os acessos.`,
+      confirmar: executarInativacao,
+      textoConfirmar: "Inativar",
+    });
   };
 
   const livros = usuario.livros || [];
@@ -329,6 +355,15 @@ export default function VisualizarUsuario() {
           </section>
         )}
       </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          confirmar={popup.confirmar}
+          textoConfirmar={popup.textoConfirmar}
+          fechar={() => setPopup(null)}
+        />
+      )}
     </main>
   );
 }

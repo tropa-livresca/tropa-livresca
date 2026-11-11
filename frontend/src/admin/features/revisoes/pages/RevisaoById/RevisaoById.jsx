@@ -10,6 +10,7 @@ import {
   FaBook,
   FaFilePdf,
 } from "react-icons/fa";
+import Popup from "../../../../components/PopUp/Popup";
 import styles from "./RevisaoById.module.css";
 
 export default function RevisaoById() {
@@ -30,6 +31,7 @@ export default function RevisaoById() {
   } = useRevisao();
 
   const [isEdicao, setIsEdicao] = useState(false);
+  const [popup, setPopup] = useState(null);
 
   useEffect(() => {
     if (!id) return;
@@ -50,13 +52,16 @@ export default function RevisaoById() {
       arquivo.type !== "application/pdf" &&
       !arquivo.name.toLowerCase().endsWith(".pdf")
     ) {
-      alert("Selecione um arquivo PDF.");
+      setPopup({ tipo: "erro", mensagem: "Selecione um arquivo PDF." });
       e.target.value = "";
       return;
     }
 
     if (arquivo.size > 50 * 1024 * 1024) {
-      alert("O arquivo deve ter no máximo 50 MB.");
+      setPopup({
+        tipo: "erro",
+        mensagem: "O arquivo deve ter no máximo 50 MB.",
+      });
       e.target.value = "";
       return;
     }
@@ -72,8 +77,15 @@ export default function RevisaoById() {
     try {
       await atualizarRevisao(id, livroRevisado?.id);
       setIsEdicao(false);
+      setPopup({
+        tipo: "sucesso",
+        mensagem: "Revisão atualizada com sucesso.",
+      });
     } catch (err) {
-      alert(err.message || "Erro ao atualizar revisão.");
+      setPopup({
+        tipo: "erro",
+        mensagem: err.message || "Erro ao atualizar revisão.",
+      });
     }
   };
 
@@ -221,6 +233,13 @@ export default function RevisaoById() {
           </div>
         )}
       </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={() => setPopup(null)}
+        />
+      )}
     </main>
   );
 }
