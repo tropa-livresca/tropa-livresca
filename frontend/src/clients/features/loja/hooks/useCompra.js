@@ -113,10 +113,16 @@ export const useCompra = () => {
         );
       }
 
-      return true;
+      const resultado = await response.json();
+      return {
+        sucesso: true,
+        mensagem:
+          resultado.resultado?.mensagem ||
+          "O e-mail com os livros digitais foi enviado.",
+      };
     } catch (err) {
       setErro(err.message);
-      return false;
+      return { sucesso: false, mensagem: err.message };
     } finally {
       setCarregando(false);
     }

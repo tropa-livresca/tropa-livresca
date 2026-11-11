@@ -1,6 +1,37 @@
 import { LojaService } from "./loja.service.js";
 
 export class LojaController {
+  static async buscarBibliotecaPessoal(req, res, next) {
+    try {
+      const {
+        page = 1,
+        limit = 12,
+        busca = "",
+        filtro = "",
+        ordem = "",
+        categoria = "",
+        idioma = "",
+        livroId = "",
+      } = req.query;
+
+      const resultado = await LojaService.buscarBibliotecaPessoal({
+        userId: req.user?.id,
+        page: Number(page),
+        limit: Number(limit),
+        busca,
+        filtro,
+        ordem,
+        categoria,
+        idioma,
+        livroId: livroId ? Number(livroId) : "",
+      });
+
+      return res.status(200).json(resultado);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   static async buscarLivros(req, res, next) {
     try {
       const {

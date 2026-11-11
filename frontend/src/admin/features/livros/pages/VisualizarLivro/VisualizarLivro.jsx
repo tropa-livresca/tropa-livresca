@@ -4,6 +4,7 @@ import { useLivros } from "../../hooks/useLivros";
 import styles from "./VisualizarLivro.module.css";
 import { FiArrowLeft, FiExternalLink } from "react-icons/fi";
 import Carregando from "../../../../components/Carregando/Carregando";
+import Popup from "../../../../components/PopUp/Popup";
 
 const ROTULO_ESTADO = {
   rascunho: "Rascunho",
@@ -37,7 +38,7 @@ export default function VisualizarLivro() {
   const { id } = useParams();
   const { buscarLivroById, carregando, livro, alterarAtivo } = useLivros();
   const [salvando, setSalvando] = useState(false);
-  const [erroAtivo, setErroAtivo] = useState(null);
+  const [popup, setPopup] = useState(null);
 
   useEffect(() => {
     if (id) {
@@ -79,15 +80,34 @@ export default function VisualizarLivro() {
     ativo,
   } = livro;
 
-  const handleAlterarAtivo = async () => {
-    const mensagem = ativo
-      ? `Tirar "${titulo}" da loja? Ele deixa de aparecer para os leitores, mas vendas e revisões são mantidas.`
-      : `Colocar "${titulo}" de volta na loja?`;
-    if (!window.confirm(mensagem)) return;
-
+  const executarAlteracaoAtivo = async () => {
     setSalvando(true);
-    setErroAtivo(await alterarAtivo(id, !ativo));
-    setSalvando(false);
+    try {
+      await alterarAtivo(id, !ativo);
+      await buscarLivroById(id);
+      setPopup({
+        tipo: "sucesso",
+        mensagem: `O livro "${titulo}" foi ${ativo ? "removido da" : "colocado de volta na"} loja com sucesso.`,
+      });
+    } catch (erro) {
+      setPopup({
+        tipo: "erro",
+        mensagem: erro.message || "Não foi possível alterar a disponibilidade do livro.",
+      });
+    } finally {
+      setSalvando(false);
+    }
+  };
+
+  const handleAlterarAtivo = () => {
+    setPopup({
+      tipo: ativo ? "erro" : "sucesso",
+      mensagem: ativo
+        ? `Tirar "${titulo}" da loja? Ele deixará de aparecer para os leitores, mas vendas e revisões serão mantidas.`
+        : `Colocar "${titulo}" de volta na loja?`,
+      confirmar: executarAlteracaoAtivo,
+      textoConfirmar: ativo ? "Tirar da loja" : "Reativar livro",
+    });
   };
 
   let capaObjeto = null;
@@ -125,7 +145,6 @@ export default function VisualizarLivro() {
                   ? "Tirar da loja"
                   : "Colocar de volta na loja"}
             </button>
-            {erroAtivo && <p className={styles.erroAtivo}>{erroAtivo}</p>}
           </div>
         </div>
       </header>
@@ -279,6 +298,15 @@ export default function VisualizarLivro() {
           </div>
         </aside>
       </section>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          confirmar={popup.confirmar}
+          textoConfirmar={popup.textoConfirmar}
+          fechar={() => setPopup(null)}
+        />
+      )}
     </main>
   );
 }

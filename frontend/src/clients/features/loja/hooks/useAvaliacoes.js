@@ -10,7 +10,6 @@ export const useAvaliacoes = () => {
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState(null);
 
-  // Média e quantidade de avaliações do livro (não exige login).
   const buscarResumo = useCallback(async (livroId) => {
     if (!livroId) return;
     try {
@@ -23,7 +22,6 @@ export const useAvaliacoes = () => {
     }
   }, []);
 
-  // Avaliação do usuário logado e se ele comprou o livro.
   const buscarMinhaAvaliacao = useCallback(async (livroId) => {
     if (!livroId) return;
     try {

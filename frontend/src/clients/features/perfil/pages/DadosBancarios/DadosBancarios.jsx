@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useDadosBancarios } from "../../hooks/useDadosBancarios.js";
 import Carregando from "../../../../components/Carregando/Carregando.jsx";
 import styles from "./DadosBancarios.module.css";
+import { useNavigate } from "react-router-dom";
 
 const formularioInicial = {
   CPF: "",
@@ -20,6 +21,8 @@ export default function DadosBancarios() {
     buscarDadosBancarios,
     dadosBancarios,
   } = useDadosBancarios();
+
+  const navigate = useNavigate();
 
   const [dadosFormulario, setDadosFormulario] = useState(formularioInicial);
   const [salvando, setSalvando] = useState(false);
@@ -129,6 +132,7 @@ export default function DadosBancarios() {
 
   return (
     <main>
+      <button onClick={() => navigate("/perfil")}>Voltar</button>
       <div className={styles.topo}>
         <h1 className={styles.titulo}>Dados bancários</h1>
 

@@ -19,7 +19,9 @@ O projeto utiliza isolamento de escopo com arquivos de configuração separados 
 ### Backend (`backend/.env`)
 
 - `PORT`: Porta de execução do servidor Express (Padrão: 3000)
+- `SUPABASE_URL` e `SUPABASE_ANON_KEY`: URL e chave pública do projeto Supabase
 - `SUPABASE_SERVICE_ROLE_KEY`: Chave privada administrativa para bypass de políticas RLS
+- `FRONTEND_URL` e `BACKEND_URL`: URLs públicas do frontend e backend; obrigatórias em produção
 - `SMTP_HOST`: Endereço do servidor de e-mail de saída (ex: ://gmail.com)
 - `SMTP_PORT`: Porta do servidor SMTP de e-mail (ex: 587 ou 465)
 - `SMTP_USER`: Usuário ou e-mail de autenticação do serviço de correio eletrônico
@@ -27,8 +29,11 @@ O projeto utiliza isolamento de escopo com arquivos de configuração separados 
 
 ### Frontend (`frontend/.env`)
 
+- `VITE_API_URL`: URL do backend; opcional em `localhost` (padrão `http://localhost:3000`) e obrigatória em produção
 - `VITE_SUPABASE_URL`: Endpoint de API do seu projeto Supabase
 - `VITE_SUPABASE_ANON_KEY`: Chave pública anônima do Supabase
+
+Não coloque segredos do provedor Google nos arquivos do frontend. Configure o Client ID e o Client Secret Google nas configurações de autenticação do projeto Supabase, conforme [Autenticação com Google](autenticacao.md#autenticação-com-google).
 
 ---
 

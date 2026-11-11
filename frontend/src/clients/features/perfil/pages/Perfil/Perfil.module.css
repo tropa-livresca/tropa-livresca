@@ -417,6 +417,15 @@ textarea {
   font-family: none;
 }
 
+.dadosBancariosResumo p {
+  margin: 0 0 0.5rem;
+  color: #67170c;
+}
+
+.dadosBancariosResumo strong {
+  font-weight: 600;
+}
+
 .enderecoInfo {
   margin-bottom: 4%;
 }
