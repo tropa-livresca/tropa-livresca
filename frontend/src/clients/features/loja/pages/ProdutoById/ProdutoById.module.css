@@ -367,6 +367,36 @@
   background-color: #ffbb33;
 }
 
+.btnCarrinho:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.avisoLivroComprado {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #d4b46a;
+  border-radius: 10px;
+  background: #fff8d7;
+  color: #67170c;
+}
+
+.avisoLivroComprado p {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+.avisoLivroComprado a {
+  color: #67170c;
+  font-weight: 700;
+}
+
+.avisoVerificacao {
+  margin: 0 0 1rem;
+  color: #a12622;
+  font-size: 0.9rem;
+}
+
 .divisor {
   width: 100%;
   height: 1px;

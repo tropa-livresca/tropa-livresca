@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 
 import { useLivrosLoja } from "../../hooks/useLivrosLoja";
+import { useBibliotecaPessoal } from "../../hooks/useBibliotecaPessoal";
 import { useCarrinho } from "../../hooks/useCarrinho";
 import { useAvaliacoes } from "../../hooks/useAvaliacoes";
 import ResumoAvaliacao from "../../components/Avaliacao/ResumoAvaliacao";
@@ -34,11 +35,15 @@ export default function ProdutoById() {
 
   const { BuscarEnderecoPrincipal } = useEndereco();
   const { adicionarItem } = useCarrinho();
+  const { buscarMeusLivros } = useBibliotecaPessoal();
 
   const [formatoEscolhido, setFormato] = useState(null);
   const [qtd, setQtd] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
   const [solicitandoLogin, setSolicitandoLogin] = useState(false);
+  const [livroDigitalComprado, setLivroDigitalComprado] = useState(false);
+  const [verificandoCompra, setVerificandoCompra] = useState(false);
+  const [erroVerificacaoCompra, setErroVerificacaoCompra] = useState(false);
 
   const avaliacoes = useAvaliacoes();
   const { resumo, buscarResumo } = avaliacoes;
@@ -73,6 +78,41 @@ export default function ProdutoById() {
       BuscarEnderecoPrincipal();
     }
   }, [signed, authCarregando, BuscarEnderecoPrincipal]);
+
+  useEffect(() => {
+    let ativo = true;
+
+    setLivroDigitalComprado(false);
+    setErroVerificacaoCompra(false);
+
+    if (!signed || authCarregando || !id) {
+      setVerificandoCompra(false);
+      return () => {
+        ativo = false;
+      };
+    }
+
+    setVerificandoCompra(true);
+    buscarMeusLivros(1, 1, "", "", "", "", "", id)
+      .then((livrosComprados) => {
+        if (!ativo) return;
+        if (livrosComprados === null) {
+          setErroVerificacaoCompra(true);
+          return;
+        }
+
+        setLivroDigitalComprado(
+          livrosComprados.some((item) => String(item.id) === String(id)),
+        );
+      })
+      .finally(() => {
+        if (ativo) setVerificandoCompra(false);
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, [id, signed, authCarregando, buscarMeusLivros]);
 
   if (carregando) {
     return <Carregando mensagem="Carregando livro..." />;
@@ -218,8 +258,8 @@ export default function ProdutoById() {
               </div>
 
               <div>
-                <strong>Público-alvo</strong>
-                <p>{livro.publico_alvo || "Não informado"}</p>
+                <strong>Categoria</strong>
+                <p>{livro.categoria || "Não informado"}</p>
               </div>
             </div>
 
@@ -303,14 +343,45 @@ export default function ProdutoById() {
                 </label>
               )}
 
-              <button
-                type="button"
-                className={styles.btnCarrinho}
-                onClick={handleAdicionarCarrinho}
-              >
-                <FaShoppingCart />
-                Adicionar ao carrinho
-              </button>
+              {livroDigitalComprado && (
+                <div className={styles.avisoLivroComprado} role="status">
+                  <p>Você já comprou a versão digital deste livro.</p>
+                  <Link to="/bibliotecapessoal">
+                    Acessar biblioteca pessoal
+                  </Link>
+                </div>
+              )}
+
+              {erroVerificacaoCompra && (
+                <p className={styles.avisoVerificacao} role="alert">
+                  Não foi possível verificar se você já comprou este livro
+                  digitalmente.
+                </p>
+              )}
+
+              {livroDigitalComprado && formato === "digital" ? (
+                <Link
+                  to="/bibliotecapessoal"
+                  className={styles.btnCarrinho}
+                >
+                  Acessar biblioteca pessoal
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.btnCarrinho}
+                  onClick={handleAdicionarCarrinho}
+                  disabled={
+                    verificandoCompra ||
+                    (erroVerificacaoCompra && formato === "digital")
+                  }
+                >
+                  <FaShoppingCart />
+                  {verificandoCompra
+                    ? "Verificando compra..."
+                    : "Adicionar ao carrinho"}
+                </button>
+              )}
 
               {adicionado && (
                 <p className={styles.adicionado}>

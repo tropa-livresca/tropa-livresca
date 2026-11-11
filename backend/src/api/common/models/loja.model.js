@@ -60,6 +60,7 @@ export class LojaModel {
     ordem = "",
     categoria = "",
     idioma = "",
+    livroId = "",
   }) {
     const start = (page - 1) * limit;
     const end = start + limit - 1;
@@ -308,7 +309,7 @@ export class LojaModel {
         `
       id,
       fisico,
-      livros (
+      livros!inner (
         titulo,
         manuscrito
       )
@@ -681,6 +682,102 @@ export class LojaModel {
       erro.statusCode = 500;
       throw erro;
     }
+  }
+
+  static async buscarBibliotecaPessoal({
+    userId,
+    page = 1,
+    limit = 12,
+    busca = "",
+    filtro = "",
+    ordem = "",
+    categoria = "",
+    idioma = "",
+    livroId = "",
+  }) {
+    const start = (page - 1) * limit;
+    const end = start + limit - 1;
+    let query = supabaseAdmin
+      .from("itens_venda")
+      .select(
+        `
+        id,
+        fk_vendas_id,
+        livros (
+          id,
+          titulo,
+          data_de_publicacao,
+          preco_digital,
+          preco_fisico,
+          idioma,
+          descricao,
+          categoria,
+          capa,
+          ISBN,
+          users_profile(nome, sobrenome)
+        ),
+        vendas!inner (
+          id,
+          data,
+          fk_user_profile_id,
+          status_pagamento
+        )
+      `,
+        { count: "exact" },
+      )
+      .eq("fisico", false)
+      .eq("vendas.fk_user_profile_id", userId)
+      .eq("vendas.status_pagamento", "pago");
+
+    if (livroId) {
+      query = query.eq("livros.id", livroId);
+    }
+
+    if (busca) {
+      query = query.ilike("livros.titulo", `%${busca}%`);
+    }
+
+    if (categoria) {
+      query = query.ilike("livros.categoria", categoria);
+    }
+
+    if (idioma) {
+      query = query.ilike("livros.idioma", `%${idioma}%`);
+    }
+
+    if (filtro === "alfabetico") {
+      query = query.order("titulo", {
+        ascending: ordem !== "descendente",
+        referencedTable: "livros",
+      });
+    } else if (filtro === "data") {
+      query = query.order("data_de_publicacao", {
+        ascending: ordem === "ascendente",
+        referencedTable: "livros",
+      });
+    } else {
+      query = query.order("titulo", {
+        ascending: true,
+        referencedTable: "livros",
+      });
+    }
+
+    query = query.order("data", {
+      ascending: false,
+      referencedTable: "vendas",
+    });
+
+    const { data, error, count } = await query.range(start, end);
+
+    if (error) {
+      error.statusCode = 500;
+      throw error;
+    }
+
+    return {
+      data: data || [],
+      count: count || 0,
+    };
   }
 
   static async autorizarEntrega(vendaId) {
