@@ -267,21 +267,21 @@ export default function Conteudo({
           <legend>Capa do Livro</legend>
 
           <div className={styles.especificacoes}>
-            <h2>Especificações das capas — formato A5</h2>
+            <h2>Especificações das capas — formato <span className={styles.numero}>A5</span></h2>
 
             <ul>
-              <li>Formato final do livro: 14,8 × 21 cm (A5).</li>
+              <li>Formato final do livro: <span className={styles.numero}>14,8</span> × <span className={styles.numero}>21</span> cm <span className={styles.numero}>(A5)</span>.</li>
               <li>
-                Frente e verso: recomendamos no mínimo 1748 × 2480 px,
-                equivalente a 300 DPI para o formato A5, sem incluir sangria.
+                Frente e verso: recomendamos no mínimo <span className={styles.numero}>1748</span> × <span className={styles.numero}>2480</span> px,
+                equivalente a <span className={styles.numero}>300</span> DPI para o formato <span className={styles.numero}>A5</span>, sem incluir sangria.
               </li>
               <li>Formatos aceitos: JPG, JPEG e PNG.</li>
-              <li>Tamanho máximo: 10 MB por imagem.</li>
+              <li>Tamanho máximo: <span className={styles.numero}>10</span> MB por imagem.</li>
               <li>As dimensões reais serão exibidas após o carregamento.</li>
             </ul>
 
             <p>
-              A medida de 14,8 × 21 cm corresponde ao tamanho final após o
+              A medida de <span className={styles.numero}>14,8</span> × <span className={styles.numero}>21</span> cm corresponde ao tamanho final após o
               corte. A gráfica pode exigir sangria adicional; confirme essa
               especificação antes de preparar os arquivos finais para impressão.
             </p>

@@ -1,3 +1,4 @@
+
 .form {
   background: #fffdf7 !important;
   border-radius: 1.5rem !important;
@@ -26,7 +27,6 @@
 
 .form label {
   color: #67170c;
-  margin-left: 2.5%;
 }
 
 .titulo {
@@ -42,7 +42,6 @@
   width: 4rem;
   height: 2.5px;
   margin-top: 1rem;
-  margin-bottom: 3%;
   background: #d4b46a;
   border-radius: 999px;
 }
@@ -51,7 +50,7 @@
   background: #fffdf7;
   border: 1px solid #e2c77c;
   border-radius: 1rem;
-  margin-bottom: 2%;
+  margin-bottom: 1.7rem;
 }
 
 .card p {
@@ -59,8 +58,26 @@
   font-size: 1.1rem;
 }
 
+.informacoesPreco {
+  margin: 0 1rem 1rem;
+  padding: 1.3rem;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+}
+
+.informacoesPreco > p {
+  margin: 0 0 1.3rem;
+  padding: 0.9rem 1rem;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
 .inputmodificado input {
-  width: 95% !important;
+  width: 100% !important;
   background: #fff8d7 !important;
   border: 1px solid #e2c77c !important;
   border-radius: 1rem !important;
@@ -105,14 +122,42 @@
 }
 
 .strong {
-  color: #67170c;
-  margin-left: 1rem;
-  font-weight: bold;
-  font-size: 1.1rem;
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.5rem 0 0;
+  padding: 1rem;
+  background: #67170c;
+  border: 1px solid #67170c;
+  border-radius: 0.7rem;
+  color: #ede6b3;
+  font-size: 1rem;
+}
+
+.strong .numero {
+  color: #ede6b3;
+  font-size: 1.2rem;
 }
 
 .div2 {
-  margin-bottom: 1%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem 1.2rem;
+  margin-top: 1.5rem;
+  padding: 1.2rem;
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+}
+
+.div2 p {
+  margin: 0;
+  padding: 0.5rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
 }
 
 .botao {
@@ -137,11 +182,12 @@
   cursor: pointer;
   text-decoration: none;
   font-size: 0.8rem;
+  transition: 0.3s;
+  margin: 0;
 }
 
 .btnmeu:hover {
   background-color: #ffbb33;
-  transition: 0.3s;
 }
 
 .btn2meu {
@@ -152,9 +198,68 @@
   padding: 1rem;
   cursor: pointer;
   font-size: 0.8rem;
+  transition: 0.3s;
 }
 
 .btn2meu:hover {
   background-color: #ffbb33;
-  transition: 0.3s;
+}
+
+.descricao {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1rem;
+  margin: 1rem 0 2rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 600px) {
+  .descricao {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .div2 {
+    grid-template-columns: 1fr;
+  }
+
+  .strong {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .form {
+    padding: 1.2rem !important;
+  }
+
+  .informacoesPreco {
+    margin: 0 0.6rem 0.8rem;
+    padding: 0.8rem;
+  }
+
+  .descricao {
+    padding: 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .strong {
+    flex-wrap: wrap;
+    font-size: 0.95rem;
+  }
+
+  .botao {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .navegacao {
+    width: 100%;
+  }
+
+  .navegacao button {
+    flex: 1;
+  }
 }

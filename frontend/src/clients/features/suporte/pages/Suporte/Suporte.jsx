@@ -81,7 +81,7 @@ export default function Suporte() {
           <input
             type="tel"
             id="telefone"
-            className={styles.inputmodificado}
+            className={styles.inputmodificadoa}
             name="telefone"
             value={telefone}
             placeholder="(00) 00000-0000"

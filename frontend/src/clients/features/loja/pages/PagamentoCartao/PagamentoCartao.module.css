@@ -291,7 +291,7 @@
 }
 
 .opcaoSelecionada:hover {
-  border-color: #67170c;
+  border:2px solid #67170c;
 }
 
 .opcaoSelecionada > span {
@@ -349,10 +349,9 @@
   border: none;
   background: transparent;
   color: #67170c;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   text-align: left;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .listaParcelamento button:not(:last-child) {

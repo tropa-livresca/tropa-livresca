@@ -1,4 +1,5 @@
-﻿import Input from "../../../../../common/components/Input/Input";
+﻿
+import Input from "../../../../../common/components/Input/Input";
 import styles from "./Orcamento.module.css";
 import { Link } from "react-router-dom";
 
@@ -18,7 +19,6 @@ export default function Orcamento({
   numeroPaginas = Math.max(0, Number(numeroPaginas) || 0);
 
   const custoMinimoFisico = numeroPaginas * CUSTO_POR_PAGINA_CENTAVOS;
-
   const custoMinimoDigital = CUSTO_MINIMO_DIGITAL_CENTAVOS;
 
   const converterParaCentavos = (valor) => {
@@ -110,19 +110,19 @@ export default function Orcamento({
       </p>
 
       <p>
-        Valor recebido pela plataforma (70%): R${" "}
+        Valor recebido pela plataforma <span className={styles.numero}>(70%)</span>: R${" "}
         <span className={styles.numero}>{valores.valorPlataforma}</span>
       </p>
 
       <p>
-        Valor destinado ao autor (30%): R${" "}
+        Valor destinado ao autor <span className={styles.numero}>(30%)</span>: R${" "}
         <span className={styles.numero}>{valores.valorAutor}</span>
       </p>
 
-      <strong className={styles.strong}>
+      <small className={styles.strong}>
         Preço total de venda: R${" "}
         <span className={styles.numero}>{valores.precoTotal}</span>
-      </strong>
+      </small>
     </div>
   );
 
@@ -131,68 +131,77 @@ export default function Orcamento({
       <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
         <h1 className={styles.titulo}>Orçamento</h1>
 
+         <p className={styles.descricao}>
+          Defina os valores de venda dos seus livros e acompanhe como será
+          distribuído o valor de cada venda.
+        </p>
+
         <div className={styles.card}>
           <legend>Preço do Livro Físico</legend>
 
-          <p>
-            Custo mínimo de fabricação (R$ 0,08 por página): R${" "}
-            <span className={styles.numero}>
-              {formatarMoeda(custoMinimoFisico)}
-            </span>
-          </p>
+          <div className={styles.informacoesPreco}>
+            <p>
+              Custo mínimo de fabricação <span className={styles.numero}>(R$ 0,08 por página): R${" "}</span>
+              <span className={styles.numero}>
+                {formatarMoeda(custoMinimoFisico)}
+              </span>
+            </p>
 
-          <label htmlFor="valorLivroFisico">
-            Valor desejado pelo autor (R$):
-          </label>
+            <label htmlFor="valorLivroFisico">
+              Valor desejado pelo autor (R$):
+            </label>
 
-          <Input
-            id="valorLivroFisico"
-            type="text"
-            placeholder="0,00"
-            className={styles.inputmodificado}
-            value={valoresFisico.valorDesejadoAutor}
-            handleOnChange={(e) =>
-              atualizarPrecoTotal(
-                "valorLivroFisico",
-                e.target.value,
-                custoMinimoFisico,
-              )
-            }
-          />
+            <Input
+              id="valorLivroFisico"
+              type="text"
+              placeholder="0,00"
+              className={styles.inputmodificado}
+              value={valoresFisico.valorDesejadoAutor}
+              handleOnChange={(e) =>
+                atualizarPrecoTotal(
+                  "valorLivroFisico",
+                  e.target.value,
+                  custoMinimoFisico,
+                )
+              }
+            />
 
-          {renderizarResumo(valoresFisico)}
+            {renderizarResumo(valoresFisico)}
+          </div>
         </div>
 
         <div className={styles.card}>
           <legend>Preço do Livro Digital</legend>
 
-          <p>
-            Custo mínimo digital: R${" "}
-            <span className={styles.numero}>
-              {formatarMoeda(custoMinimoDigital)}
-            </span>
-          </p>
+          <div className={styles.informacoesPreco}>
+            <p>
+              Custo mínimo digital: R${" "}
+              <span className={styles.numero}>
+                {formatarMoeda(custoMinimoDigital)}
+              </span>
+            </p>
 
-          <label htmlFor="valorLivroDigital">
-            Valor desejado pelo autor (R$):
-          </label>
+            <label htmlFor="valorLivroDigital">
+              Valor desejado pelo autor (R$):
+            </label>
 
-          <Input
-            id="valorLivroDigital"
-            type="text"
-            placeholder="0,00"
-            className={styles.inputmodificado}
-            value={valoresDigital.valorDesejadoAutor}
-            handleOnChange={(e) =>
-              atualizarPrecoTotal(
-                "valorLivroDigital",
-                e.target.value,
-                custoMinimoDigital,
-              )
-            }
-          />
+            <Input
+              id="valorLivroDigital"
+              type="text"
+              placeholder="0,00"
+              className={styles.inputmodificado}
+              value={valoresDigital.valorDesejadoAutor}
+              handleOnChange={(e) =>
+                atualizarPrecoTotal(
+                  "valorLivroDigital",
+                  e.target.value,
+                  custoMinimoDigital,
+                )
+              }
+            />
 
-          {renderizarResumo(valoresDigital)}
+            {renderizarResumo(valoresDigital)}
+          </div>
         </div>
 
         <div className={styles.botao}>

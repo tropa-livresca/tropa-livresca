@@ -46,7 +46,7 @@
   background: #fffdf7;
   border: 1px solid #e2c77c;
   border-radius: 1rem;
-  margin-bottom: 2%;
+  margin-bottom: 1.7rem;
 }
 
 .carregar {
@@ -159,6 +159,7 @@
   cursor: pointer;
   text-decoration: none;
   font-size: 0.8rem;
+  margin: 0;
 }
 
 .btnmeu:hover {
@@ -180,6 +181,91 @@
   background-color: #ffbb33;
   transition: 0.3s;
 }
+
+
+.especificacoes {
+  width: 97%;
+  box-sizing: border-box;
+  margin: 0 auto 1.5rem;
+  padding: 1.3rem 1.5rem;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 0.8rem;
+  color: #67170c;
+  line-height: 1.7;
+}
+
+.especificacoes h2 {
+  margin: 0 0 0.8rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.especificacoes ul {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.especificacoes li {
+  margin-bottom: 0.35rem;
+  padding-left: 0.2rem;
+  font-size: 0.95rem;
+}
+
+.especificacoes li::marker {
+  color: #e2c77c;
+}
+
+.especificacoes p {
+  margin: 0;
+  padding-top: 0.8rem;
+  border-top: 1px solid #e2c77c;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.numero{
+  font-family: none;
+}
+
+.dimensoes {
+  margin: 0 auto;
+  margin-bottom: 1rem;
+  color: #67170c;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  background: #fff8d7;
+  border: 1px solid #e2c77c;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  width: fit-content;
+  max-width: 100%;
+  font-family: "Lora", serif;
+}
+
+@import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
+
+
+
+@media (max-width: 480px) {
+  .especificacoes {
+    padding: 1rem;
+  }
+
+  .especificacoes h2 {
+    font-size: 1rem;
+  }
+
+  .especificacoes li,
+  .especificacoes p {
+    font-size: 0.8rem;
+  }
+}
+
 
 @media (min-width: 1920px) {
   .preview img {

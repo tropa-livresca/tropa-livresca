@@ -349,7 +349,7 @@ export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
             <label>Categoria do Livro</label>
             <div className={styles.selectContainer}>
               <div
-                className={styles.select}
+                className={styles.select2}
                 onClick={() => setCategoriaAberta(!categoriaAberta)}
               >
                 <span>{dados.categoria || "Selecione uma categoria"}</span>

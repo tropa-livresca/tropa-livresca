@@ -1,5 +1,4 @@
-﻿
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import styles from "./Confirmacao.module.css";
 import { FaPen } from "react-icons/fa";
 import { FaFilePdf } from "react-icons/fa";
@@ -10,14 +9,14 @@ export default function Confirmacao({
   dados,
   irParaEtapaEspecifica,
   publicarLivro,
-  erro
+  erro,
 }) {
   const navigate = useNavigate();
 
   const salvarLivroERedirecionar = async (estado) => {
     try {
-      if(erro){
-        return
+      if (erro) {
+        return;
       }
       await publicarLivro(estado);
       navigate("/meuslivros");
@@ -43,7 +42,6 @@ export default function Confirmacao({
 
   return (
     <main>
-
       <div className={styles.form}>
         <div className={styles.tituloContainer}>
           <h1 className={styles.titulo}>Confirmação</h1>
@@ -61,7 +59,7 @@ export default function Confirmacao({
         </div>
 
         {dados.detalhes && (
-          <div>
+          <div className={styles.detalhesContainer}>
             <div className={styles.card}>
               <legend>Título e Subtítulo</legend>
 
@@ -84,14 +82,14 @@ export default function Confirmacao({
               <legend>Edição</legend>
 
               <div className={styles.containergrid}>
-                <div>
+                <div className={styles.colunaCompleta}>
                   <label>ISBN do livro:</label>
-                  <div className={styles.liinput}>{dados.detalhes.ISBN}</div>
+                  <div className={styles.liinput}><span className={styles.numero}>{dados.detalhes.ISBN}</span></div>
                 </div>
               </div>
             </div>
 
-            <div className={styles.card}>
+            <div className={`${styles.card} ${styles.cardInformacoes}`}>
               <legend>Informações do Livro</legend>
 
               <div className={styles.containergrid}>
@@ -116,9 +114,8 @@ export default function Confirmacao({
                   </div>
                 </div>
 
-                <div className={styles.colunaCompleta}>
+                <div>
                   <label>Colaboradores:</label>
-
                   <div className={styles.liinput}>
                     {dados.detalhes.colaboradores
                       ?.map((c) => `${c.nome} ${c.sobrenome} (${c.funcao})`)
@@ -128,7 +125,7 @@ export default function Confirmacao({
               </div>
             </div>
 
-            <div className={styles.card}>
+            <div className={`${styles.card} ${styles.cardDescricao}`}>
               <legend>Descrição</legend>
 
               <div>
@@ -142,6 +139,7 @@ export default function Confirmacao({
           </div>
         )}
       </div>
+
       <div>
         <div>
           <div>
@@ -198,10 +196,13 @@ export default function Confirmacao({
               </div>
             </div>
           </div>
+
           <div className={styles.form}>
             <div className={styles.tituloContainer}>
               <h1 className={styles.titulo}>Imagens da Capa</h1>
+
               <button
+                type="button"
                 onClick={() => irParaEtapaEspecifica(2)}
                 className={styles.btnEditarDescricao}
               >
@@ -209,12 +210,14 @@ export default function Confirmacao({
                 <span>Editar</span>
               </button>
             </div>
+
             <div className={styles.capa}>
               {dados.conteudo.capa.frente ? (
                 <div className={`${styles.capas} ${styles.card2}`}>
                   <p className={styles.fvo}>
                     <small>Frente:</small>
                   </p>
+
                   <div className={styles.imagemContainer}>
                     <img
                       src={dados.conteudo.capa.frente}
@@ -228,6 +231,7 @@ export default function Confirmacao({
                   <p className={styles.fvo}>
                     <small>Frente:</small>
                   </p>
+
                   <div className={styles.imagemContainer}>
                     <span className={styles.imgerro}>
                       Imagem da frente não adicionada.
@@ -241,6 +245,7 @@ export default function Confirmacao({
                   <p className={styles.fvo}>
                     <small>Verso:</small>
                   </p>
+
                   <div className={styles.imagemContainer}>
                     <img
                       src={dados.conteudo.capa.verso}
@@ -254,6 +259,7 @@ export default function Confirmacao({
                   <p className={styles.fvo}>
                     <small>Verso:</small>
                   </p>
+
                   <div className={styles.imagemContainer}>
                     <span className={styles.imgerro}>
                       Imagem do verso não adicionada.
@@ -265,6 +271,7 @@ export default function Confirmacao({
           </div>
         </div>
       </div>
+
       <div className={`${styles.form} ${styles.formOrcamento}`}>
         <div className={styles.tituloContainer}>
           <h1 className={styles.titulo}>Orçamento</h1>
@@ -307,19 +314,17 @@ export default function Confirmacao({
               </div>
             </div>
 
-            <div>Número de páginas: {dados.orcamento.numeroPaginas}</div>
+            <div className={styles.paginasCard}>
+              <span>Número de páginas</span>
+              <strong className={styles.numero}>
+                {dados.orcamento.numeroPaginas}
+              </strong>
+            </div>
           </div>
         )}
 
-
-{erro != null ? (
-                
-                <span >{erro}</span>
-              ) : (<></>)}
-
+        {erro != null && <div className={styles.erro}>{erro}</div>}
       </div>
-
-      
 
       <div className={styles.botoes}>
         <Link to="/meuslivros" className={styles.btn}>
