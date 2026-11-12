@@ -14,7 +14,11 @@ router.get(
 );
 router.get("/numero-vendas/:id", LojaController.buscarNumeroVendasLivro);
 router.get("/venda/:id", checkAuth, LojaController.consultarVenda);
-
+router.get(
+  "/bibliotecapessoal",
+  checkAuth,
+  LojaController.buscarBibliotecaPessoal,
+);
 router.get("/:id", LojaController.buscarLivroById);
 
 router.patch("/status/:id", checkAuth, LojaController.mudarStatusPagamento);

@@ -9,6 +9,7 @@ jest.mock("../../../../src/api/clients/loja/loja.controller.js", () => {
   return {
     LojaController: {
       buscarLivros: handler("buscarLivros"),
+      buscarBibliotecaPessoal: handler("buscarBibliotecaPessoal"),
       buscarLivroById: handler("buscarLivroById"),
       calcularFretePrazo: handler("calcularFretePrazo"),
       buscarHistoricoVendasUsuario: handler("buscarHistoricoVendasUsuario"),
@@ -36,6 +37,7 @@ describe("Rotas da Loja (cliente)", () => {
     ["/historico-vendas", "buscarHistoricoVendasUsuario"],
     ["/numero-vendas/7", "buscarNumeroVendasLivro"],
     ["/venda/7", "consultarVenda"],
+    ["/bibliotecapessoal", "buscarBibliotecaPessoal"],
   ])("GET %s não é capturado por /:id", async (rota, handler) => {
     const response = await request(app).get(rota).expect(200);
 
