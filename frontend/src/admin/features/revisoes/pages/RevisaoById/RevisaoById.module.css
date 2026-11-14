@@ -40,7 +40,6 @@
 .numero {
   font-family: none;
 }
-/* Barra Superior */
 .topBar {
   display: flex;
   justify-content: space-between;
@@ -56,6 +55,7 @@
   text-decoration: none;
   font-weight: 500;
   font-size: 0.95rem;
+  cursor: pointer;
   transition: color 0.2s;
 }
 
@@ -63,7 +63,6 @@
   color: #1a202c;
 }
 
-/* Botões Principais de Estado */
 .botaoEditar,
 .botaoCancelar {
   display: flex;
@@ -73,14 +72,11 @@
   border-radius: 6px;
   font-weight: 600;
   font-size: 0.9rem;
-  cursor: pointer;
+  cursor: pointer !important;
   border: none;
-  transition: background-color 0.2s;
+  transition: 0.3s;
 }
 
-
-
-/* Bloco de Conteúdo */
 .conteudoCard {
   background: #fffdf7 !important;
   border-radius: 1.5rem;
@@ -121,6 +117,7 @@
   font-size: 0.85rem;
   margin: 0;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .linkLivro:hover {
@@ -133,7 +130,6 @@
   color: #fffdf7;
 }
 
-/* Formulário e Inputs */
 .formulario {
   display: flex;
   flex-direction: column;
@@ -162,9 +158,6 @@
   font-size: 1rem !important;
   color: #67170c !important;
   outline: none;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
 }
 
 .input::placeholder,
@@ -174,8 +167,8 @@
 
 .input:focus,
 .textarea:focus {
-  border-color: #3182ce;
-}
+  border:2px solid #67170c !important;
+} 
 
 .textarea {
   resize: vertical;
@@ -187,7 +180,6 @@
   color: #718096;
 }
 
-/* Box de visualização do link do arquivo */
 .arquivoBox {
   display: flex;
   justify-content: space-between;
@@ -219,7 +211,6 @@
   text-decoration: underline;
 }
 
-/* Rodapé de Ações do Formulário */
 .acoesFormulario {
   display: flex;
   justify-content: flex-end;
@@ -239,18 +230,18 @@
   font-size: 0.9rem;
   cursor: pointer;
   border: none;
-  transition: background-color 0.2s;
+  transition:0.3s;
 }
 
 .botaoLimpar {
   color: #67170c;
   background-color: #fffdf7;
-  border: 1px solid #e2c77c;
+  border: 1px solid #67170c;
 }
 
 .botaoLimpar:hover {
   background-color: #ffbb33;
-  border: none;
+  border: 1px solid #ffbb33;
   color: #fffdf7;
   transition: 0.3s;
 }
@@ -263,11 +254,10 @@
 
 .botaoSalvar:hover {
   background-color: #ffbb33;
-  border: none;
+  border: 1px solid #ffbb33;
   transition: 0.3s;
 }
 
-/* Feedback de Erro */
 .feedbackErro {
   text-align: center;
   padding: 3rem;
@@ -358,6 +348,10 @@
   cursor: default;
   opacity: 0.6;
   pointer-events: none;
+}
+.formularioBloqueado .labelManuscrito {
+  opacity: 1;
+  color: #67170c;
 }
 
 .formularioBloqueado .carregarsvg,

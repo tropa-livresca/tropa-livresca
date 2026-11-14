@@ -439,9 +439,9 @@
   font-weight: 500;
   text-align: center;
   border-radius: 0.7rem;
-  border: 1px solid #c9998d;
-  color: #67170c;
-  background: rgb(172, 172, 136) !important;
+  border: 1px solid var(--cor-texto-muted);
+  color: var(--cor-texto-muted);
+  background: transparent !important;
   width: 100%;
   max-width: 120px;
   box-sizing: border-box;
@@ -457,9 +457,9 @@
   font-weight: 500;
   text-align: center;
   border-radius: 0.7rem;
-  border: 1px solid #c9998d;
-  color: #67170c;
-  background: #67170c6c !important;
+  border: 1px solid var(--cor-texto-muted);
+  color: var(--cor-texto-muted);
+  background: transparent !important;
   width: 100%;
   max-width: 120px;
   box-sizing: border-box;

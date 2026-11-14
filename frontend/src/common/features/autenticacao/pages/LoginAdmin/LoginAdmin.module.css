@@ -1,3 +1,4 @@
+
 @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
 
 .container {
@@ -17,8 +18,6 @@
 }
 
 .lesquerdo {
-  place-items: center;
-  padding: 2rem;
   display: grid;
   place-items: center;
   padding: 2rem;
@@ -32,10 +31,11 @@
   display: grid;
   box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
-    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+    0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
 .formulario {
+  position: relative;
   width: 100%;
   max-width: 40rem;
   display: grid;
@@ -43,11 +43,11 @@
 }
 
 .formulario h1 {
-  color: #67170c;
-  font-size: 2.5rem;
-  text-align: center;
-  margin-left: 0;
-  margin-bottom: 0.5rem;
+      color: #67170c;
+    font-size: 2.5rem;
+    text-align: center;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
 }
 
 .formulario h2 {
@@ -69,14 +69,6 @@
   padding-left: 2rem;
 }
 
-p,
-a {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  margin-top: 1.5rem;
-  text-decoration: none;
-}
-
 .informacoes {
   display: grid;
   justify-content: center;
@@ -89,27 +81,19 @@ a {
 .para p {
   text-align: left;
   color: #67170c;
-  margin: 0.5rem;
-}
-
-#checkbox {
-  width: 90%;
-  justify-self: center;
-  display: grid;
-  grid-template-columns: auto 1fr;
-}
-
-#checkbox label {
-  padding-left: 0.5rem;
-}
-
-#checkbox input {
-  justify-self: start;
+  margin-bottom: 0;
+  margin-top: 1.3rem;
 }
 
 .errinho p:not(.button p) {
   margin-bottom: 0;
   color: #67170c;
+}
+
+.errorText {
+  color: #67170c;
+  text-align: center;
+  margin: 0.5rem 0;
 }
 
 .inputSenha {
@@ -138,13 +122,9 @@ a {
   color: #67170c;
 }
 
-.formulario {
-  position: relative;
-}
-
 .voltar {
   position: absolute;
-  top: 40%;
+  top: 22%;
   left: 5%;
   width: 3.3rem;
   height: 2.8rem;
@@ -158,24 +138,30 @@ a {
   z-index: 20;
 }
 
-.divisor {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.voltar:disabled,
+.olho:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.form input:not([type="checkbox"]) {
   width: 90%;
-  margin: 1.5rem auto;
-}
-
-.divisor span {
-  flex: 1;
-  height: 1px;
-  background: #c9b9a5;
-}
-
-.divisor p {
-  margin: 0;
+  box-sizing: border-box;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+  background: #fff8d7;
   color: #67170c;
-  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+}
+
+.form input:not([type="checkbox"]):focus {
+  border: 2px solid #67170c;
+}
+
+.form input:not([type="checkbox"])::placeholder {
+  color: var(--cor-texto-muted);
+  opacity: 1;
 }
 
 @media (max-width: 1024px) {
@@ -201,7 +187,7 @@ a {
     z-index: 2;
   }
 
-  form {
+  .form {
     border-radius: 2rem;
     padding: 2rem 0.8rem;
   }
@@ -226,20 +212,9 @@ a {
     text-align: left;
   }
 
-  p,
-  a {
+  .para p {
     font-size: 0.95rem;
     margin: 1rem 0;
-  }
-
-  #checkbox {
-    width: 90%;
-    gap: 0.5rem;
-    align-items: center;
-  }
-
-  #checkbox label {
-    padding-left: 0;
   }
 
   .olho {
@@ -249,9 +224,5 @@ a {
   .voltar {
     width: 2.5rem;
     height: 2.5rem;
-  }
-
-  .divisor {
-    width: 90%;
   }
 }
