@@ -4,6 +4,7 @@ import { FaFilePdf } from "react-icons/fa";
 import { useRevisao } from "../../hooks/useRevisao.js";
 import { useLivros } from "../../../livros/hooks/useLivros.js";
 import { LIVRO_ESTADO } from "../../../../../common/config/livroEstados.js";
+import Popup from "../../../../components/PopUp/Popup";
 
 import styles from "./NovaRevisao.module.css";
 
@@ -13,6 +14,7 @@ export default function NovaRevisao() {
 
   const [arquivoSelecionado, setArquivoSelecionado] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [popup, setPopup] = useState(null);
 
   const {
     revisaoAtual,
@@ -57,7 +59,10 @@ export default function NovaRevisao() {
         (!arquivo.type || arquivo.type === "application/pdf");
 
       if (!ehPdf) {
-        alert("Selecione um arquivo PDF válido.");
+        setPopup({
+          tipo: "erro",
+          mensagem: "Selecione um arquivo PDF válido.",
+        });
         event.target.value = "";
         setArquivoSelecionado("");
         return;
@@ -71,7 +76,10 @@ export default function NovaRevisao() {
 
   const executarAcao = async (status) => {
     if (!id) {
-      alert("Não foi possível identificar o livro.");
+      setPopup({
+        tipo: "erro",
+        mensagem: "Não foi possível identificar o livro.",
+      });
       return;
     }
 
@@ -96,11 +104,17 @@ export default function NovaRevisao() {
           "Revisão enviada e publicação negada com sucesso.",
       };
 
-      alert(mensagens[status] || "Revisão salva com sucesso.");
+      setPopup({
+        tipo: "sucesso",
+        mensagem: mensagens[status] || "Revisão salva com sucesso.",
+      });
     } catch (err) {
       console.error("Erro ao salvar revisão:", err);
 
-      alert(err.message || "Não foi possível concluir a operação.");
+      setPopup({
+        tipo: "erro",
+        mensagem: err.message || "Não foi possível concluir a operação.",
+      });
     } finally {
       setEnviando(false);
     }
@@ -276,6 +290,13 @@ export default function NovaRevisao() {
           )}
         </form>
       </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={() => setPopup(null)}
+        />
+      )}
     </main>
   );
 }

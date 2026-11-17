@@ -30,6 +30,7 @@ import Carrinho from "../loja/pages/Carrinho/Carrinho";
 import ProdutoById from "../loja/pages/ProdutoById/ProdutoById.jsx";
 import ResumoCompra from "../loja/pages/ResumoCompra/ResumoCompra.jsx";
 import MeusPedidos from "../loja/pages/MeusPedidos/MeusPedidos.jsx";
+import BibliotecaPessoal from "../loja/pages/BibliotecaPessoal/BibliotecaPessoal.jsx";
 import MeusGanhos from "../ganhos/pages/MeusGanhos/MeusGanhos.jsx";
 import Pagamento from "../loja/pages/Pagamento/Pagamento.jsx";
 import PagamentoCartao from "../loja/pages/PagamentoCartao/PagamentoCartao.jsx";
@@ -112,6 +113,10 @@ const RoutesClients = () => {
               element={<PoliticaPrivacidade />}
             />
             <Route path="/loja" element={<Loja />} />
+            <Route
+              path="/bibliotecapessoal"
+              element={<Private Item={BibliotecaPessoal} />}
+            />
             <Route path="/pagamento" element={<Pagamento />} />
             <Route
               path="/pagamento/cartao"

@@ -71,15 +71,21 @@ export const useEndereco = () => {
     return true;
   }, [CEP, estado, cidade, bairro, rua, numero, pais, mostrarPopup]);
 
-  const AplicarMascaraCEP = useCallback((valor) => {
-    const apenasNumeros = valor.replace(/\D/g, "");
+  const FormatarCEP = useCallback((valor) => {
+    const apenasNumeros = String(valor ?? "")
+      .replace(/\D/g, "")
+      .slice(0, 8);
 
     if (apenasNumeros.length <= 5) {
-      setCEP(apenasNumeros);
-    } else {
-      setCEP(`${apenasNumeros.slice(0, 5)}-${apenasNumeros.slice(5, 8)}`);
+      return apenasNumeros;
     }
+    return `${apenasNumeros.slice(0, 5)}-${apenasNumeros.slice(5, 8)}`;
   }, []);
+
+  const AplicarMascaraCEP = useCallback(
+    (valor) => setCEP(FormatarCEP(valor)),
+    [FormatarCEP],
+  );
 
   const BuscarCepAutomatico = useCallback(
     async (cepInformado) => {
@@ -391,6 +397,7 @@ export const useEndereco = () => {
     handleCriarEndereco,
     BuscarCepAutomatico,
     AplicarMascaraCEP,
+    FormatarCEP,
     DefinirEnderecoPrincipal,
     BuscarEnderecoPrincipal,
     popup,

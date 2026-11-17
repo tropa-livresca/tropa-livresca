@@ -105,14 +105,13 @@
   outline: none;
   color: #67170c;
   font-size: 0.95rem;
-  transition: 0.25s ease;
   margin-bottom: 1.5rem;
   background-color: #fff8d7;
   border: 1px solid #e2c77c;
 }
 
 .inputGroup input:focus {
-  border-color: #67170c;
+  border: 2px solid #67170c;
 }
 
 .inputGroup input::placeholder {

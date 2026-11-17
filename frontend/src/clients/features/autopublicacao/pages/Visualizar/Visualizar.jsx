@@ -39,18 +39,12 @@ export default function Visualizar() {
   } = livroSelecionado;
 
   return (
-    <main className={styles.container}>
+    <main>
       <header className={styles.header}>
         <div className={styles.headerInfo}>
-          <span className={`${styles.badge} ${styles[estado]}`}>{estado}</span>
-
           <h1 className={styles.titulo}>{titulo}</h1>
 
           {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
-
-          <p className={styles.autor}>
-            Por: <strong>Autor</strong>
-          </p>
         </div>
 
         <div className={styles.headerActions}>
@@ -72,131 +66,138 @@ export default function Visualizar() {
         </div>
       </header>
 
-      <section className={styles.layoutGrid}>
-        <div className={styles.mainContent}>
-          <div className={styles.card}>
-            <h2>Sinopse / Descrição</h2>
-
-            <p className={styles.descricao}>
-              {descricao || "Nenhuma descrição informada."}
-            </p>
-          </div>
-
-          {manuscrito && (
+      <div className={styles.container}>
+        <section className={styles.layoutGrid}>
+          <div className={styles.mainContent}>
             <div className={styles.card}>
-              <h2>Visualização do Manuscrito</h2>
+              <h2>Sinopse / Descrição</h2>
 
-              <div className={styles.pdfWrapper}>
-                <object
-                  data={manuscrito}
-                  type="application/pdf"
-                  width="100%"
-                  height="650px"
-                >
-                  <p className={styles.vazio}>
-                    Seu navegador não suporta a exibição de PDFs.{" "}
-                    <a
-                      href={manuscrito}
-                      download
-                      target="_blank"
-                      rel="noreferrer"
-                      className={styles.btnlivro}
-                    >
-                      Clique aqui para baixar o arquivo.
-                    </a>
-                  </p>
-                </object>
-              </div>
+              <p className={styles.descricao}>
+                {descricao || "Nenhuma descrição informada."}
+              </p>
             </div>
-          )}
-        </div>
 
-        <aside className={styles.sidebar}>
-          <div className={styles.card}>
-            <h2>Preços de Venda</h2>
+            {manuscrito && (
+              <div className={styles.card}>
+                <h2>Visualização do Manuscrito</h2>
 
-            <div className={styles.precosGrid}>
-              <div className={styles.precoItem}>
-                <span>Físico</span>
-                <strong className={styles.numero}>
-                  R$ {preco_fisico || "0,00"}
-                </strong>
+                <div className={styles.pdfWrapper}>
+                  <object
+                    data={manuscrito}
+                    type="application/pdf"
+                    width="100%"
+                    height="650px"
+                  >
+                    <p className={styles.vazio}>
+                      Seu navegador não suporta a exibição de PDFs.{" "}
+                      <a
+                        href={manuscrito}
+                        download
+                        target="_blank"
+                        rel="noreferrer"
+                        className={styles.btnlivro}
+                      >
+                        Clique aqui para baixar o arquivo.
+                      </a>
+                    </p>
+                  </object>
+                </div>
               </div>
-
-              <div className={styles.precoItem}>
-                <span>Digital</span>
-                <strong className={styles.numero}>
-                  R$ {preco_digital || "0,00"}
-                </strong>
-              </div>
-            </div>
+            )}
           </div>
 
-          <div className={styles.card2}>
-            <h2>Metadados e Regras</h2>
+          <aside className={styles.sidebar}>
+            <div className={styles.card}>
+              <h2>Preços de Venda</h2>
 
-            <ul className={styles.metaList}>
-              <li>
-                <span>Idioma:</span> <strong>{idioma}</strong>
-              </li>
+              <div className={styles.precosGrid}>
+                <div className={styles.precoItem}>
+                  <span>Físico</span>
+                  <strong className={styles.numero}>
+                    R$ {preco_fisico || "0,00"}
+                  </strong>
+                </div>
 
-              <li>
-                <span>Categoria:</span> <strong>{categoria}</strong>
-              </li>
+                <div className={styles.precoItem}>
+                  <span>Digital</span>
+                  <strong className={styles.numero}>
+                    R$ {preco_digital || "0,00"}
+                  </strong>
+                </div>
+              </div>
+            </div>
 
-              <li>
-                <span>Direitos de Autopublicação:</span>{" "}
-                <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong>
-              </li>
+            <div className={styles.card2}>
+              <h2>Metadados e Regras</h2>
 
-              <li>
-                <span>Estado:</span>
-                <strong className={`${styles.badge} ${styles[estado]}`}>
-                  {estado}
-                </strong>
-              </li>
+              <ul className={styles.metaList}>
+                <li>
+                  <span className={styles.autor}>Por: </span>
+                  <strong>Autor</strong>
+                </li>
+                <li>
+                  <span>Idioma:</span> <strong>{idioma}</strong>
+                </li>
 
-              <li>
-                <span>Colaboradores:</span>
+                <li>
+                  <span>Categoria:</span> <strong>{categoria}</strong>
+                </li>
 
-                <div>
-                  {Array.isArray(colaboradores) && colaboradores.length > 0 ? (
-                    colaboradores.map((colab, index) => (
-                      <div key={index} className={styles.colabItem}>
-                        {colab.nome} {colab.sobrenome} ({colab.funcao})
-                      </div>
-                    ))
-                  ) : (
-                    <strong>Nenhum informado</strong>
+                <li>
+                  <span>Direitos de Autopublicação:</span>{" "}
+                  <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong>
+                </li>
+
+                <li>
+                  <span>Estado:</span>
+                  <strong className={`${styles.badge} ${styles[estado]}`}>
+                    {estado}
+                  </strong>
+                </li>
+
+                <li>
+                  <span>Colaboradores:</span>
+
+                  <div>
+                    {Array.isArray(colaboradores) &&
+                    colaboradores.length > 0 ? (
+                      colaboradores.map((colab, index) => (
+                        <div key={index} className={styles.colabItem}>
+                          {colab.nome} {colab.sobrenome} ({colab.funcao})
+                        </div>
+                      ))
+                    ) : (
+                      <strong>Nenhum informado</strong>
+                    )}
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            {(capa?.frente || capa?.verso) && (
+              <div className={styles.card}>
+                <h2>Capas do Livro</h2>
+
+                <div className={styles.capasContainer}>
+                  {capa?.frente && (
+                    <div className={styles.capaBox}>
+                  
+                      <img src={capa.frente} alt="Capa Frente" />
+                    </div>
+                  )}
+
+                  {capa?.verso && (
+                    <div className={styles.capaBox}>
+                     
+                      <img src={capa.verso} alt="Capa Verso" />
+                    </div>
                   )}
                 </div>
-              </li>
-            </ul>
-          </div>
-
-          {(capa?.frente || capa?.verso) && (
-            <div className={styles.card}>
-              <h2>Capas do Livro</h2>
-
-              <div className={styles.capasContainer}>
-                {capa?.frente && (
-                  <div className={styles.capaBox}>
-                    <span>Frente</span>
-                    <img src={capa.frente} alt="Capa Frente" />
-                  </div>
-                )}
-
-                {capa?.verso && (
-                  <div className={styles.capaBox}>
-                    <span>Verso</span>
-                    <img src={capa.verso} alt="Capa Verso" />
-                  </div>
-                )}
               </div>
-            </div>
-          )}
-        </aside>
-      </section>
+            )}
+          </aside>
+        </section>
+      </div>
     </main>
   );
 }

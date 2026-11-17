@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Popup from "../../../../components/PopUp/Popup";
 
 import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
 import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
@@ -83,29 +84,35 @@ export default function Conteudo({
   voltarEtapa,
   uploadManuscrito
 }) {
+  const [popup, setPopup] = useState(null);
 
   const atualizarCampo = async (chave, e) => {
     const input = e.target;
     const arquivo = input.files?.[0];
+    if (!arquivo) return;
     const blob = await fileToDataUri(arquivo);
 
-    if (!arquivo) return;
     if (chave === "manuscrito") {
       if (
         arquivo.type !== "application/pdf" &&
         !arquivo.name.toLowerCase().endsWith(".pdf")
       ) {
-        window.alert("Formato inválido. Envie o manuscrito em PDF.");
+        setPopup({
+          tipo: "erro",
+          mensagem: "Formato inválido. Envie o manuscrito em PDF.",
+        });
         input.value = "";
         return;
       }
 
       if (arquivo.size <= 0 || arquivo.size > TAMANHO_MAXIMO_MANUSCRITO) {
-        window.alert(
-          arquivo.size <= 0
-            ? "O arquivo está vazio."
-            : "O manuscrito deve ter no máximo 50 MB.",
-        );
+        setPopup({
+          tipo: "erro",
+          mensagem:
+            arquivo.size <= 0
+              ? "O arquivo está vazio."
+              : "O manuscrito deve ter no máximo 50 MB.",
+        });
         input.value = "";
         return;
       }
@@ -139,9 +146,11 @@ export default function Conteudo({
       } catch (erro) {
         console.error("Erro ao calcular páginas do PDF:", erro);
 
-        window.alert(
-          "Não foi possível calcular as páginas do manuscrito. Verifique se o PDF é válido.",
-        );
+        setPopup({
+          tipo: "erro",
+          mensagem:
+            "Não foi possível calcular as páginas do manuscrito. Verifique se o PDF é válido.",
+        });
 
         input.value = "";
       }
@@ -158,14 +167,13 @@ export default function Conteudo({
   const atualizarCapa = async (parte, e) => {
     const input = e.target;
     const arquivo = input.files?.[0];
-    const blob = await fileToDataUri(arquivo);
-
     if (!arquivo) return;
+    const blob = await fileToDataUri(arquivo);
 
     const erro = validarCapa(arquivo);
 
     if (erro) {
-      window.alert(erro);
+      setPopup({ tipo: "erro", mensagem: erro });
       input.value = "";
       return;
     }
@@ -177,10 +185,12 @@ export default function Conteudo({
         dimensoes.largura < LARGURA_MINIMA_A5_PX ||
         dimensoes.altura < ALTURA_MINIMA_A5_PX
       ) {
-        window.alert(
-          `A imagem da ${parte} da capa tem ${dimensoes.largura} × ${dimensoes.altura} px. ` +
+        setPopup({
+          tipo: "erro",
+          mensagem:
+            `A imagem da ${parte} da capa tem ${dimensoes.largura} × ${dimensoes.altura} px. ` +
             `Para o padrão A5, recomendamos no mínimo ${LARGURA_MINIMA_A5_PX} × ${ALTURA_MINIMA_A5_PX} px (300 DPI, sem sangria).`,
-        );
+        });
 
         input.value = "";
         return;
@@ -198,7 +208,7 @@ export default function Conteudo({
         },
       });
     } catch (erroLeitura) {
-      window.alert(erroLeitura.message);
+      setPopup({ tipo: "erro", mensagem: erroLeitura.message });
       input.value = "";
     }
   };
@@ -257,21 +267,21 @@ export default function Conteudo({
           <legend>Capa do Livro</legend>
 
           <div className={styles.especificacoes}>
-            <h2>Especificações das capas — formato A5</h2>
+            <h2>Especificações das capas — formato <span className={styles.numero}>A5</span></h2>
 
             <ul>
-              <li>Formato final do livro: 14,8 × 21 cm (A5).</li>
+              <li>Formato final do livro: <span className={styles.numero}>14,8</span> × <span className={styles.numero}>21</span> cm <span className={styles.numero}>(A5)</span>.</li>
               <li>
-                Frente e verso: recomendamos no mínimo 1748 × 2480 px,
-                equivalente a 300 DPI para o formato A5, sem incluir sangria.
+                Frente e verso: recomendamos no mínimo <span className={styles.numero}>1748</span> × <span className={styles.numero}>2480</span> px,
+                equivalente a <span className={styles.numero}>300</span> DPI para o formato <span className={styles.numero}>A5</span>, sem incluir sangria.
               </li>
               <li>Formatos aceitos: JPG, JPEG e PNG.</li>
-              <li>Tamanho máximo: 10 MB por imagem.</li>
+              <li>Tamanho máximo: <span className={styles.numero}>10</span> MB por imagem.</li>
               <li>As dimensões reais serão exibidas após o carregamento.</li>
             </ul>
 
             <p>
-              A medida de 14,8 × 21 cm corresponde ao tamanho final após o
+              A medida de <span className={styles.numero}>14,8</span> × <span className={styles.numero}>21</span> cm corresponde ao tamanho final após o
               corte. A gráfica pode exigir sangria adicional; confirme essa
               especificação antes de preparar os arquivos finais para impressão.
             </p>
@@ -366,6 +376,13 @@ export default function Conteudo({
           </div>
         </div>
       </form>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={() => setPopup(null)}
+        />
+      )}
     </main>
   );
 }

@@ -1,5 +1,15 @@
 import Carregando from "../../../../components/Carregando/Carregando";
 
+import styles from "./Formulario.module.css";
+import Detalhes from "../../pages/Detalhes/Detalhes";
+import Conteudo from "../../pages/Conteudo/Conteudo";
+import Orcamento from "../../pages/Orcamento/Orcamento";
+import Confirmacao from "../../pages/Confirmacao/Confirmacao";
+import { useAutopublicacao } from "../../hooks/useAutopublicacao";
+import { useMeusLivros } from "../../hooks/useMeusLivros";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
 export default function Formulario({ idLivroEdicao }) {
   const {
     dadosLivro,

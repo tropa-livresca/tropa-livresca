@@ -5,7 +5,7 @@ import styles from "./LoginAdmin.module.css";
 import logo from "../../images/login.jpg";
 import logo2 from "../../../../images/logo.png";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { IoChevronBack } from "react-icons/io5";
 
@@ -21,10 +21,11 @@ export default function LoginAdmin() {
     setError,
     loading,
     handleLoginAdmin,
-    navigate,
   } = useLoginAdmin();
 
   const [mostrarSenha, setMostrarSenha] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -51,7 +52,7 @@ export default function LoginAdmin() {
 
           <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleLoginAdmin} className={styles.form}>
-            <h1>LOGIN ADMINISTRADOR</h1>
+            <h1>LOGIN ADM</h1>
             <h2>Bem-vindo de volta</h2>
             <h3>Insira seus dados para acessar sua conta</h3>
 

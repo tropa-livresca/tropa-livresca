@@ -26,6 +26,47 @@ export class LojaService {
     return livros.map((livro) => this._parseCapaUrls(livro));
   }
 
+  static async buscarBibliotecaPessoal({
+    userId,
+    page = 1,
+    limit = 12,
+    busca = "",
+    filtro = "",
+    ordem = "",
+    categoria = "",
+    idioma = "",
+    livroId = "",
+  }) {
+    if (!userId) errorUsuarioId();
+
+    const biblioteca = await LojaModel.buscarBibliotecaPessoal({
+      userId,
+      page,
+      limit,
+      busca,
+      filtro,
+      ordem,
+      categoria,
+      idioma,
+      livroId,
+    });
+    const livros = biblioteca.data.map((item) => ({
+      ...this._parseCapaUrls(item.livros),
+      compraId: item.vendas.id,
+      dataCompra: item.vendas.data,
+    }));
+
+    return {
+      livros,
+      meta: {
+        page,
+        limit,
+        totalItems: biblioteca.count,
+        totalPages: Math.ceil(biblioteca.count / limit),
+      },
+    };
+  }
+
   static async buscarLivros({
     page = 1,
     limit = 12,

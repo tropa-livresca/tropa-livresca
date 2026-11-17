@@ -17,6 +17,19 @@
   margin-bottom: 1rem;
 }
 
+.inputmodificadoa {
+  width: 100% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: stretch !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-bottom: 1rem;
+  font-family: none !important;
+}
+
 .form label {
   color: #67170c;
   font-size: 1rem;
@@ -122,7 +135,7 @@
   color: #67170c;
   text-align: left;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.9rem;
 }
 
 .opcao:hover {

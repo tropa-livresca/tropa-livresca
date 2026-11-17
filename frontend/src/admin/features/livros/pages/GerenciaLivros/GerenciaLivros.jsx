@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import styles from "./GerenciaLivros.module.css";
 import Carregando from "../../../../components/Carregando/Carregando";
+import Popup from "../../../../components/PopUp/Popup";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
 
 export default function GerenciaLivros() {
@@ -16,6 +17,7 @@ export default function GerenciaLivros() {
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [executandoAcao, setExecutandoAcao] = useState(false);
   const [dropdownAberto, setDropdownAberto] = useState(null);
+  const [popup, setPopup] = useState(null);
 
   const dropdownRef = useRef(null);
 
@@ -66,23 +68,35 @@ export default function GerenciaLivros() {
     setDropdownAberto(null);
   };
 
-  const handleInativar = async (livro) => {
-    const acao = livro.ativo ? "INATIVAR" : "ATIVAR";
-    const status = livro.ativo ? "indisponivel" : "disponivel";
-    const mensagem = `Tem certeza que deseja ${acao} o livro ${livro.titulo}? Ele ficara ${status} para compra.`;
-
-    if (!window.confirm(mensagem)) return;
-
+  const executarAlteracaoAtivo = async (livro) => {
     setExecutandoAcao(true);
 
     try {
       await alterarAtivo(livro.id, !livro.ativo);
       await buscarLivros(1, itensPorPagina, busca, filtro, ordem, "", estado);
+      setPopup({
+        tipo: "sucesso",
+        mensagem: `O livro "${livro.titulo}" foi ${livro.ativo ? "inativado" : "ativado"} com sucesso.`,
+      });
     } catch (erro) {
-      alert(erro.message || "Erro ao inativar livro.");
+      setPopup({
+        tipo: "erro",
+        mensagem: erro.message || "Erro ao alterar disponibilidade do livro.",
+      });
     } finally {
       setExecutandoAcao(false);
     }
+  };
+
+  const handleInativar = (livro) => {
+    const acao = livro.ativo ? "inativar" : "ativar";
+    const disponibilidade = livro.ativo ? "indisponível" : "disponível";
+    setPopup({
+      tipo: livro.ativo ? "erro" : "sucesso",
+      mensagem: `Tem certeza que deseja ${acao} o livro "${livro.titulo}"? Ele ficará ${disponibilidade} para compra.`,
+      confirmar: () => executarAlteracaoAtivo(livro),
+      textoConfirmar: livro.ativo ? "Inativar" : "Ativar",
+    });
   };
 
   const textoFiltro =
@@ -423,6 +437,15 @@ export default function GerenciaLivros() {
           />
         )}
       </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          confirmar={popup.confirmar}
+          textoConfirmar={popup.textoConfirmar}
+          fechar={() => setPopup(null)}
+        />
+      )}
     </main>
   );
 }

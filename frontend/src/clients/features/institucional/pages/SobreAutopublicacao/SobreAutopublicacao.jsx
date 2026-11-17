@@ -1,7 +1,12 @@
 import styles from "./SobreAutopublicacao.module.css";
+import useAuth from "../../../../../common/hooks/useAuth.js";
 import { Link } from "react-router-dom";
 
 export default function SobreAutopublicacao() {
+  const { signed } = useAuth();
+
+  const isLoggedIn = signed ? "/meuslivros" : "/auth/login";
+
   return (
     <div className={styles.home_wrapper}>
       <div className={styles.topo}>
@@ -15,7 +20,7 @@ export default function SobreAutopublicacao() {
               criação.
             </p>
             <div className={styles.hero_actions}>
-              <Link to="/auth/cadastro" className={styles.btn_primary}>
+              <Link to={isLoggedIn} className={styles.btn_primary}>
                 Começar Publicação
               </Link>
               <Link to="/livros" className={styles.btn_secondary}>

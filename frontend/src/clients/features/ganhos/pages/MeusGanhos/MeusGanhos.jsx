@@ -36,9 +36,12 @@ export default function MeusGanhos() {
   const extrato = ganhos?.extrato || [];
   const saldoDisponivel = Number(ganhos?.saldo ?? 0);
 
-  const totalRecebido = extrato
-    .filter((mov) => mov.tipo === "entrada")
-    .reduce((acc, mov) => acc + Number(mov.valor || 0), 0);
+  const somarMovimentacoes = (tipo) =>
+    extrato
+      .filter((mov) => mov.tipo === tipo)
+      .reduce((acc, mov) => acc + Number(mov.valor || 0), 0);
+  const totalRecebido = somarMovimentacoes("entrada");
+  const totalRetirado = somarMovimentacoes("saida");
 
   const existeConta = dadosBancarios && Object.keys(dadosBancarios).length > 0;
 
@@ -134,13 +137,19 @@ export default function MeusGanhos() {
               <div className={`${styles.cartaoResumo} ${styles.destaque}`}>
                 <span>Saldo disponível</span>
                 <strong>{formatarPreco(saldoDisponivel)}</strong>
-                <small>Verifique seu saldo</small>
+                <small>Valor disponível para saque</small>
               </div>
 
               <div className={styles.cartaoResumo}>
                 <span>Total recebido</span>
                 <strong>{formatarPreco(totalRecebido)}</strong>
-                <small>Valor retirado</small>
+                <small>Soma dos direitos autorais recebidos</small>
+              </div>
+
+              <div className={styles.cartaoResumo}>
+                <span>Total retirado</span>
+                <strong>{formatarPreco(totalRetirado)}</strong>
+                <small>Soma dos saques realizados</small>
               </div>
             </div>
 
