@@ -165,7 +165,9 @@ export default function RevisaoById() {
               </div>
 
               <div className={styles.campoGrupo}>
-                <label className={styles.label}>Manuscrito / Anexo:</label>
+                <label className={`${styles.label} ${styles.labelManuscrito}`}>
+                  Manuscrito / Anexo:
+                </label>
 
                 {isEdicao && (
                   <label className={styles.carregar}>
@@ -174,7 +176,7 @@ export default function RevisaoById() {
                     <span>
                       Subir arquivo do livro
                       <span className={styles.clique}>
-                        Aceitamos apenas arquivos .pdf 
+                        Aceitamos apenas arquivos .pdf
                       </span>
                     </span>
 

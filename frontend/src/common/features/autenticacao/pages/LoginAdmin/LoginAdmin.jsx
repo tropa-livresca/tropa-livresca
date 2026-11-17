@@ -52,7 +52,7 @@ export default function LoginAdmin() {
 
           <img src={logo2} alt="Tropa Livresca" width="100" />
           <form onSubmit={handleLoginAdmin} className={styles.form}>
-            <h1>LOGIN ADMINISTRADOR</h1>
+            <h1>LOGIN ADM</h1>
             <h2>Bem-vindo de volta</h2>
             <h3>Insira seus dados para acessar sua conta</h3>
 

@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
@@ -117,8 +118,11 @@ export default function MeusLivros() {
       <div className={styles.container}>
         <form onSubmit={handleBuscar} className={styles.painelBusca}>
           <div className={styles.linhaBusca}>
+            <span className={styles.iconeLupa}>
+              <FaSearch />
+            </span>
+
             <label className={styles.campoBusca}>
-              <FaSearch className={styles.iconeLupa} aria-hidden="true" />
               <input
                 type="search"
                 placeholder="Buscar pelo título..."
@@ -135,13 +139,21 @@ export default function MeusLivros() {
               <button
                 type="button"
                 className={styles.botaoOrdenar}
-                onClick={() => setDropdownAberto(!dropdownAberto)}
+                onClick={() =>
+                  setDropdownAberto(
+                    dropdownAberto ? null : "ordenacao"
+                  )
+                }
                 aria-expanded={!!dropdownAberto}
               >
-                <span className={styles.rotuloOrdenar}>Ordenar:</span>{" "}
+                <span className={styles.rotuloOrdenar}>
+                  Ordenar:
+                </span>
                 {ordenacaoAtual.rotulo}
                 <FiChevronDown
-                  className={dropdownAberto ? styles.setaAberta : ""}
+                  className={
+                    dropdownAberto ? styles.setaAberta : ""
+                  }
                 />
               </button>
 
@@ -165,18 +177,30 @@ export default function MeusLivros() {
                 </ul>
               )}
             </div>
+
+            <button type="submit" className={styles.btnbuscar}>
+              Buscar
+            </button>
           </div>
+        </form>
+
+        <div className={styles.filtroSituacao}>
+          <span className={styles.filtroRotulo}>
+            Filtrar por situação
+          </span>
 
           <div
             className={styles.estados}
             role="group"
-            aria-label="Filtrar por estado"
+            aria-label="Filtrar por situação"
           >
             {FILTROS_ESTADO.map(([valor, rotulo]) => (
               <button
                 key={rotulo}
                 type="button"
-                className={`${styles.pilula} ${estado === valor ? styles.pilulaAtiva : ""}`}
+                className={`${styles.aba} ${
+                  estado === valor ? styles.abaAtiva : ""
+                }`}
                 aria-pressed={estado === valor}
                 onClick={() => {
                   setEstado(valor);
@@ -187,7 +211,7 @@ export default function MeusLivros() {
               </button>
             ))}
           </div>
-        </form>
+        </div>
 
         {possuiLivros ? (
           <div className={styles.tabelaLinhas}>
@@ -213,7 +237,9 @@ export default function MeusLivros() {
                       {livro.titulo}
                     </strong>
 
-                    <span className={`${styles.badge} ${styles[livro.estado]}`}>
+                    <span
+                      className={`${styles.badge} ${styles[livro.estado]}`}
+                    >
                       {livro.estado}
                     </span>
                   </div>
@@ -236,7 +262,9 @@ export default function MeusLivros() {
                         Editar
                       </Link>
 
-                      {ESTADOS_ENVIAVEIS_REVISAO.includes(livro.estado) && (
+                      {ESTADOS_ENVIAVEIS_REVISAO.includes(
+                        livro.estado
+                      ) && (
                         <button
                           type="button"
                           onClick={() => enviarParaRevisao(livro.id)}
@@ -249,7 +277,9 @@ export default function MeusLivros() {
                   )}
 
                   {livro.estado === LIVRO_ESTADO.PUBLICADO && (
-                    <span className={styles.textoPublicado}>Publicado</span>
+                    <span className={styles.textoPublicado}>
+                      Publicado
+                    </span>
                   )}
 
                   {livro.estado === LIVRO_ESTADO.RASCUNHO && (
@@ -268,8 +298,12 @@ export default function MeusLivros() {
                 </div>
               </div>
             ))}
+
             <div className={styles.adicionardiv}>
-              <Link to="/novo-livro" className={styles.btnAdicionar}>
+              <Link
+                to="/novo-livro"
+                className={styles.btnAdicionar}
+              >
                 +
               </Link>
             </div>
@@ -283,8 +317,9 @@ export default function MeusLivros() {
             </h1>
 
             <span className={styles.sub}>
-              Dê o primeiro passo na sua carreira de escritor. Autopublique seu
-              livro e compartilhe sua obra com novos leitores.
+              Dê o primeiro passo na sua carreira de escritor.
+              Autopublique seu livro e compartilhe sua obra com novos
+              leitores.
             </span>
           </div>
         )}
