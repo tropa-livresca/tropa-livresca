@@ -61,9 +61,15 @@ export class UsuariosModel {
           (livro) =>
             livro.estado === LIVRO_ESTADO.PUBLICADO && livro.ativo === true,
         );
+        const nomeCompleto = `${usuario.nome || ""} ${
+          usuario.sobrenome || ""
+        }`.trim();
         return {
           id: usuario.id,
-          nome: usuario.nome,
+          nome: nomeCompleto,
+          nomeCompleto,
+          sobrenome: usuario.sobrenome || "",
+          imagem: usuario.imagem || null,
           isAdmin: !!usuario.is_admin,
           isAutor: temLivroPublicado,
           redes_sociais: usuario.redes_sociais,
@@ -96,14 +102,24 @@ export class UsuariosModel {
           );
         count = filtrados.length;
         const start = (Math.max(1, Number(page) || 1) - 1) * limit;
-        usuariosFormatados = filtrados.slice(start, start + limit).map((u) => ({
-          id: u.id,
-          nome: u.nome,
-          isAdmin: !!u.is_admin,
-          isAutor: true,
-          redes_sociais: u.redes_sociais,
-          primeiro_acesso: u.primeiro_acesso,
-        }));
+        usuariosFormatados = filtrados
+          .slice(start, start + limit)
+          .map((u) => {
+            const nomeCompleto = `${u.nome || ""} ${
+              u.sobrenome || ""
+            }`.trim();
+            return {
+              id: u.id,
+              nome: nomeCompleto,
+              nomeCompleto,
+              sobrenome: u.sobrenome || "",
+              imagem: u.imagem || null,
+              isAdmin: !!u.is_admin,
+              isAutor: true,
+              redes_sociais: u.redes_sociais,
+              primeiro_acesso: u.primeiro_acesso,
+            };
+          });
       }
 
       return { data: usuariosFormatados, count };

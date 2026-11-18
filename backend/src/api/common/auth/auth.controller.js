@@ -41,7 +41,7 @@ export class AuthController {
   static async obterDadosUsuarioUnificado(userId) {
     const pb = criarClienteAdminPocketBase();
 
-    const filtro = pb.filter("usuario = {:userId}", {
+    const filtro = pb.filter("auth_user = {:userId}", {
       userId,
     });
 
@@ -50,7 +50,7 @@ export class AuthController {
         .collection(COLECAO_PERFIL)
         .getFirstListItem(filtro, {
           fields:
-            "id,usuario,telefone,imagem,descricao,redes_sociais,is_admin,is_master,primeiro_acesso,funcao",
+            "id,auth_user,imagem,descricao,redes_sociais,is_admin,is_master,primeiro_acesso",
         });
 
       return perfil;
@@ -64,7 +64,7 @@ export class AuthController {
   }
 
   static async obterUsuarioCompleto(usuario) {
-    const perfil = await this.obterDadosUsuarioUnificado(usuario.id);
+    const perfil = await AuthController.obterDadosUsuarioUnificado(usuario.id);
 
     return {
       ...usuario,
@@ -172,7 +172,7 @@ export class AuthController {
 
   static async signup(req, res, next) {
     try {
-      const { email, password, nome, sobrenome } = req.body;
+      const { email, password, telefone, nome, sobrenome } = req.body;
 
       const pb = criarCliente();
 
@@ -181,6 +181,7 @@ export class AuthController {
         password,
         passwordConfirm: password,
         emailVisibility: false,
+        telefone,
         nome,
         sobrenome,
       });
@@ -220,7 +221,9 @@ export class AuthController {
         });
       }
 
-      const usuarioCompleto = await this.obterUsuarioCompleto(authData.record);
+      const usuarioCompleto = await AuthController.obterUsuarioCompleto(
+        authData.record,
+      );
 
       res.cookie("auth-token", authData.token, AuthController.COOKIE_OPTIONS);
 
@@ -274,7 +277,9 @@ export class AuthController {
 
       const pb = criarCliente(token);
       const authData = await pb.collection(COLECAO_AUTH).authRefresh();
-      const usuarioCompleto = await this.obterUsuarioCompleto(authData.record);
+      const usuarioCompleto = await AuthController.obterUsuarioCompleto(
+        authData.record,
+      );
 
       res.cookie("auth-token", authData.token, AuthController.COOKIE_OPTIONS);
 
@@ -289,7 +294,9 @@ export class AuthController {
 
   static async getSession(req, res, next) {
     try {
-      const usuarioCompleto = await this.obterUsuarioCompleto(req.user);
+      const usuarioCompleto = await AuthController.obterUsuarioCompleto(
+        req.user,
+      );
 
       return res.status(200).json({ user: usuarioCompleto });
     } catch (error) {
@@ -325,7 +332,9 @@ export class AuthController {
 
       const usuario = authData.record;
 
-      const perfil = await this.obterDadosUsuarioUnificado(usuario.id);
+      const perfil = await AuthController.obterDadosUsuarioUnificado(
+        usuario.id,
+      );
 
       if (!perfil.is_admin) {
         return res.status(403).json({
@@ -396,7 +405,7 @@ export class AuthController {
         passwordConfirm: novaSenha,
       });
 
-      const perfil = await this.obterDadosUsuarioUnificado(userId);
+      const perfil = await AuthController.obterDadosUsuarioUnificado(userId);
 
       await pb.collection(COLECAO_PERFIL).update(perfil.id, {
         primeiro_acesso: false,

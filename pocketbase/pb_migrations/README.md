@@ -3,6 +3,8 @@
 ## Conteúdo
 
 - `pb_migrations/1700000000_initial_schema.js`: cria as oito collections e seus campos e relações.
+- `pb_migrations/1795026400_fix_users_profile_relation.js`: relaciona os perfis aos usuários autenticados.
+- `pb_hooks/main.pb.js`: cria um perfil ao cadastrar usuário e copia telefone e e-mail.
 
 ## Requisitos
 
@@ -17,6 +19,8 @@ Copie a pasta `pb_migrations` para a raiz do projeto PocketBase:
 meu-projeto/
 ├── pocketbase
 ├── pb_data/
+├── pb_hooks/
+│   └── main.pb.js
 └── pb_migrations/
     └── 1700000000_initial_schema.js
 ```
@@ -48,4 +52,4 @@ No Windows, use `pocketbase.exe` no lugar de `./pocketbase`.
 
 ## Atenção antes de produção
 
-Esta migração cria a estrutura, não transfere registros do PostgreSQL/Supabase. Também não recria triggers, funções RPC, políticas RLS, buckets Storage, views ou regras de negócio que não aparecem na documentação fornecida. Faça backup e teste em uma instância descartável antes de aplicar em produção.
+As migrações criam a estrutura, mas não transferem registros do PostgreSQL/Supabase nem recriam funções RPC, políticas RLS, buckets Storage, views ou regras de negócio externas. O hook em `pb_hooks/main.pb.js` cobre a criação de perfil no PocketBase. Faça backup e teste em uma instância descartável antes de aplicar em produção.

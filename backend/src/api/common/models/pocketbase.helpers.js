@@ -20,7 +20,7 @@ export async function obterIdPerfil(pb, usuarioId) {
   try {
     const perfil = await pb
       .collection("users_profile")
-      .getFirstListItem(pb.filter("usuario = {:usuarioId}", { usuarioId }));
+      .getFirstListItem(pb.filter("auth_user = {:usuarioId}", { usuarioId }));
     return perfil.id;
   } catch (error) {
     if (error.status !== 404) marcarErro(error);

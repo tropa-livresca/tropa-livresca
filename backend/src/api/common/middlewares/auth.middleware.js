@@ -10,12 +10,12 @@ const COLECAO_PERFIL = "users_profile";
 const buscarPerfilAdmin = async (userId) => {
   const pb = criarClienteAdminPocketBase();
 
-  const filtro = pb.filter("usuario = {:userId}", {
+  const filtro = pb.filter("auth_user = {:userId}", {
     userId,
   });
 
   return await pb.collection(COLECAO_PERFIL).getFirstListItem(filtro, {
-    fields: "id,usuario,is_admin,is_master,primeiro_acesso",
+    fields: "id,auth_user,is_admin,is_master,primeiro_acesso",
   });
 };
 

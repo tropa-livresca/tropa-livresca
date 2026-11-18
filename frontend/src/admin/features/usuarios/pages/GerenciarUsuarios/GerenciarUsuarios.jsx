@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useUsuarios } from "../../hooks/useUsuarios";
-import { FaSearch, FaUser, FaUserCheck, FaUserShield } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import Carregando from "../../../../components/Carregando/Carregando";
 import styles from "./GerenciarUsuarios.module.css";
 import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
@@ -212,16 +212,20 @@ export default function GerenciarUsuarios() {
                   <tr key={c} className={styles.linhaTabela}>
                     <td className={styles.colunaNome}>
                       <span className={styles.avatarInline}>
-                        {usuario.isAdmin ? (
-                          <FaUserShield />
-                        ) : usuario.isAutor ? (
-                          <FaUserCheck />
+                        {usuario.imagem ? (
+                          <img
+                            src={usuario.imagem}
+                            alt=""
+                            className={styles.avatarImagem}
+                          />
                         ) : (
-                          <FaUser />
+                          usuario.nomeCompleto?.charAt(0).toUpperCase() ||
+                          usuario.nome?.charAt(0).toUpperCase() ||
+                          "?"
                         )}
                       </span>
 
-                      {usuario.nome}
+                      {usuario.nomeCompleto || usuario.nome}
                     </td>
 
                     <td>

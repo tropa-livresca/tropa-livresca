@@ -161,11 +161,21 @@ export default function VisualizarUsuario() {
         <div className={styles.gridPerfil}>
           <section className={styles.cartao}>
             <div className={styles.cabecalhoPerfil}>
-              <div className={styles.avatar} aria-hidden="true">
-                {usuario.nome?.charAt(0).toUpperCase() || "?"}
-              </div>
+              {usuario.imagem ? (
+                <img
+                  src={usuario.imagem}
+                  alt={`Imagem de ${usuario.nome}`}
+                  className={styles.avatarImagem}
+                />
+              ) : (
+                <div className={styles.avatar} aria-hidden="true">
+                  {usuario.nome?.charAt(0).toUpperCase() || "?"}
+                </div>
+              )}
               <div>
-                <h2 className={styles.nomeUsuario}>{usuario.nome}</h2>
+                <h2 className={styles.nomeUsuario}>
+                  {`${usuario.nome || ""} ${usuario.sobrenome || ""}`.trim()}
+                </h2>
                 <span
                   className={`${styles.badge} ${isAdmin ? styles.badgeAdmin : styles.badgeCliente}`}
                 >

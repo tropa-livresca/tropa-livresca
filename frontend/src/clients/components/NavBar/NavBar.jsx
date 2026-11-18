@@ -120,7 +120,8 @@ export default function NavBar() {
               </button>
 
               <span className={styles.nomeUsuario}>
-                {perfil?.nome || "Perfil"}
+                {`${perfil?.nome || ""} ${perfil?.sobrenome || ""}`.trim() ||
+                  "Perfil"}
               </span>
 
               {menuUsuario && (

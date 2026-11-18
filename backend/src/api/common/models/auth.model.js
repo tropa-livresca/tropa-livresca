@@ -7,7 +7,7 @@ export class AuthModel {
   static async buscarPerfil(userId) {
     return await pb
       .collection(COLECAO_PERFIL)
-      .getFirstListItem(`usuario = "${userId}"`);
+      .getFirstListItem(`auth_user = "${userId}"`);
   }
 
   static async conferirPrimeiroAcesso(userId) {
