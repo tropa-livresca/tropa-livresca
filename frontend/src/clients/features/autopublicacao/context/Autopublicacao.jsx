@@ -1,7 +1,6 @@
 ﻿
 import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback, useContext, useEffect } from "react";
-import { supabase } from "../../../../common/lib/supabaseClient.js";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
 import { AuthContext } from "../../../../common/context/auth/AuthContext";
 import { LIVRO_ESTADO } from "../../../../common/config/livroEstados";
@@ -21,6 +20,7 @@ const ESTADO_INICIAL_LIVRO = {
 
   conteudo: {
     manuscrito: null,
+    manuscritoPath: null,
     capa: {
       frente: null,
       verso: null,
@@ -398,74 +398,54 @@ export const AutopublicacaoProvider = ({ children }) => {
   
 
   const dataURItoBlob = useCallback((dataURI) => {
-          let byteString = atob(dataURI.split(",")[1]);
+    const [metadata, encoded] = dataURI.split(",");
+    const mimeType = metadata.match(/data:(.*?);base64/)?.[1];
+    if (!encoded || !mimeType) {
+      throw new Error("Arquivo inválido.");
+    }
 
-          let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    const byteString = atob(encoded);
+    const bytes = new Uint8Array(byteString.length);
+    for (let index = 0; index < byteString.length; index++) {
+      bytes[index] = byteString.charCodeAt(index);
+    }
+    return new Blob([bytes], { type: mimeType });
+  }, []);
 
-          let ab = new ArrayBuffer(byteString.length);
-          let ia = new Uint8Array(ab);
-          for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-          }
+  const uploadArquivo = useCallback(
+    async (arquivo, tipo, tipoDeArquivo) => {
+      if (!arquivo) return null;
 
-          return new Blob([ab], { type: mimeString });
-        })
+      const blob = dataURItoBlob(arquivo);
+      const mimeType = blob.type || tipoDeArquivo;
+      const extensao = mimeType === "image/jpeg" ? "jpg" : mimeType.split("/").pop();
+      const formData = new FormData();
+      formData.append("tipo", tipo);
+      formData.append(
+        "arquivo",
+        new File([blob], `arquivo.${extensao}`, { type: mimeType }),
+      );
 
-  const uploadArquivo = useCallback(async (arquivo, tipo, tipoDeArquivo) => {
-          if (!arquivo) return null;
+      const response = await apiFetch(
+        "/api/v1/clients/autopublicacao/upload-url",
+        { method: "POST", body: formData },
+      );
+      const uploadData = await response.json();
+      if (!response.ok) {
+        throw new Error(uploadData.error || `Erro ao enviar ${tipo}.`);
+      }
+      if (!uploadData.path || !uploadData.url) {
+        throw new Error(`O upload de ${tipo} não retornou caminho e URL.`);
+      }
+      return uploadData;
+    },
+    [dataURItoBlob],
+  );
 
-          let blob = dataURItoBlob(arquivo);
-          let file = new File([blob], "arquivo", { type: tipoDeArquivo });
-
-          const extensao = file?.type.split("/").pop() || "bin";
-
-          const res = await apiFetch(
-            "/api/v1/clients/autopublicacao/upload-url",
-
-            {
-              method: "POST",
-
-              body: JSON.stringify({
-                tipo,
-
-                extensao,
-                mimeType: file.type,
-                tamanho: file.size,
-              }),
-            },
-          );
-
-          const uploadData = await res.json();
-
-          if (!res.ok)
-            throw new Error(uploadData.error || "Erro ao autorizar upload");
-
-          const { bucket, path, token } = uploadData;
-          if (!bucket || !path || !token) {
-            throw new Error(
-              `A autorização de upload para ${tipo} não retornou bucket, caminho e token válidos.`,
-            );
-          }
-
-          const { error } = await supabase.storage
-
-            .from(bucket)
-
-            .uploadToSignedUrl(path, token, blob);
-
-          if (error) {
-            throw new Error(`Erro ao enviar ${tipo}: ${error.message}`);
-          }
-
-          return path;
-        })
-
-        const uploadManuscrito = useCallback(async (arquivo) => {
-          const path = await uploadArquivo(arquivo, "manuscrito", "application/pdf");
-        
-          return "https://jeeurwhquycjssjgcjws.supabase.co/storage/v1/object/public/manuscrito-livro/"+path
-
-        })
+  const uploadManuscrito = useCallback(
+    (arquivo) => uploadArquivo(arquivo, "manuscrito", "application/pdf"),
+    [uploadArquivo],
+  );
 
   const inserirLivro = useCallback(
     async (dadosDoLivro, estadoDesejado = LIVRO_ESTADO.RASCUNHO) => {
@@ -474,15 +454,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         estadoAtualLivro === LIVRO_ESTADO.PUBLICADO
       ) {
         throw new Error("Este livro está travado para alterações no momento.");
-      }
-
-      console.log(dadosDoLivro.conteudo.manuscrito.slice(120));
-      console.log(userId);
-      let manuscrito = await supabase.storage.from("manuscrito-livro").list(userId, {search:dadosDoLivro.conteudo.manuscrito.slice(120)});
-      console.log(manuscrito);
-
-      if(manuscrito.data.length == 0){
-        return "manuscrito removido"
       }
 
       setCarregando(true);
@@ -504,29 +475,24 @@ export const AutopublicacaoProvider = ({ children }) => {
         let caminhosArquivos;
 
         try {
-          const capaFrentePath =
-            await
-              uploadArquivo(
-                capa?.frente,
+          const uploadCapaSeNova = async (parte, tipo) => {
+            if (!capa?.[parte]?.startsWith("data:")) {
+              return conteudo.capaPaths?.[parte] || null;
+            }
+            const resultado = await uploadArquivo(
+              capa[parte],
+              tipo,
+              "image/png",
+            );
+            arquivosEnviados.push({ tipo, path: resultado.path });
+            return resultado.path;
+          };
 
-                "capa_frente",
-
-                "image/png",
-              );
-
-              arquivosEnviados.push({ tipo:"capa_frente", capaFrentePath });
-
-             const capaVersoPath = await uploadArquivo(
-                capa?.verso,
-
-                "capa_verso",
-
-                "image/png",
-              );
-
-              arquivosEnviados.push({ tipo:"capa_verso", capaVersoPath });
-
-           
+          const capaFrentePath = await uploadCapaSeNova(
+            "frente",
+            "capa_frente",
+          );
+          const capaVersoPath = await uploadCapaSeNova("verso", "capa_verso");
 
           caminhosArquivos = {
             capa: {
@@ -566,7 +532,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
           capaPaths: caminhosArquivos.capa,
 
-          manuscritoPath:  dadosDoLivro.conteudo.manuscrito,
+          manuscritoPath: conteudo.manuscritoPath || conteudo.manuscrito,
         };
 
         const rota = isEdicao
@@ -599,7 +565,7 @@ export const AutopublicacaoProvider = ({ children }) => {
       
     },
 
-    [user, isEdicao, estadoAtualLivro],
+    [user, isEdicao, estadoAtualLivro, uploadArquivo],
   );
 
   const publicarLivroNoContexto = async (

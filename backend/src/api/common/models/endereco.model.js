@@ -1,118 +1,119 @@
-import { supabaseAdmin } from "../config/supabase.js";
+import {
+  criarClienteModel,
+  marcarErro,
+  obterIdPerfil,
+} from "./pocketbase.helpers.js";
+
+const COLECAO = "enderecos";
+
+async function buscarEnderecos(userId, filtros = {}) {
+  const pb = criarClienteModel();
+  const perfilId = await obterIdPerfil(pb, userId);
+  const partesFiltro = ["fk_user_profile_id = {:perfilId}"];
+  const params = { perfilId };
+
+  for (const [campo, valor] of Object.entries(filtros)) {
+    partesFiltro.push(`${campo} = {:${campo}}`);
+    params[campo] = valor;
+  }
+
+  return pb.collection(COLECAO).getFullList({
+    filter: pb.filter(partesFiltro.join(" && "), params),
+  });
+}
+
+async function buscarEndereco(userId, id, ativo = null) {
+  const enderecos = await buscarEnderecos(
+    userId,
+    ativo === null ? {} : { ativo },
+  );
+  return enderecos.find((endereco) => endereco.id === id) || null;
+}
 
 export class EnderecoModel {
   static async BuscarEnderecos(userId) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .select("*")
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      return { data: await buscarEnderecos(userId, { ativo: true }) };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return { data };
   }
 
   static async BuscarEnderecoPrincipal(userId) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .select("*")
-      .eq("fk_user_profile_id", userId)
-      .eq("principal", true)
-      .eq("ativo", true)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const enderecos = await buscarEnderecos(userId, {
+        principal: true,
+        ativo: true,
+      });
+      return { data: enderecos[0] || null };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return { data };
   }
 
   static async BuscarEnderecoById(id, userId) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .select()
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true)
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      return { data: await buscarEndereco(userId, id) };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return { data };
   }
 
   static async AtualizarEnderecoById(id, dadosAtualizados, userId) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .update(dadosAtualizados)
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
+    const pb = criarClienteModel();
+    const endereco = await buscarEndereco(userId, id, undefined);
+    if (!endereco) {
+      const error = new Error("Endereço não encontrado.");
+      error.statusCode = 404;
       throw error;
     }
 
-    return { data };
+    try {
+      return {
+        data: await pb.collection(COLECAO).update(id, dadosAtualizados),
+      };
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 
   static async InativarEndereco(id, userId) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .update({ ativo: false })
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return { data };
+    return this.AtualizarEnderecoById(id, { ativo: false }, userId);
   }
 
   static async CriarEndereco(dadosEndereco) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .insert(dadosEndereco)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
+    const pb = criarClienteModel();
+    const dados = { ...dadosEndereco };
+    if (dados.fk_user_profile_id) {
+      dados.fk_user_profile_id = await obterIdPerfil(
+        pb,
+        dados.fk_user_profile_id,
+      );
     }
 
-    return { data };
+    try {
+      const endereco = await pb.collection(COLECAO).create(dados);
+      return { data: endereco };
+    } catch (error) {
+      marcarErro(error, 400);
+    }
   }
 
   static async DefinirPrincipal(id, userId) {
-    const { data, error } = await supabaseAdmin
-      .from("enderecos")
-      .update({ principal: true })
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
+    const pb = criarClienteModel();
+    const endereco = await buscarEndereco(userId, id, undefined);
+    if (!endereco) {
+      const error = new Error("Endereço não encontrado.");
+      error.statusCode = 404;
       throw error;
     }
 
-    return { data };
+    try {
+      return {
+        data: await pb.collection(COLECAO).update(id, { principal: true }),
+      };
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 }

@@ -55,7 +55,7 @@ export function PerfilProvider({ children }) {
         linkedin: dadosPerfil.redes_sociais?.linkedin || "",
       });
     } catch (error) {
-      console.error("Erro ao recolher os dados do supabase", error);
+      console.error("Erro ao recolher os dados do PocketBase", error);
     } finally {
       setCarregando(false);
     }

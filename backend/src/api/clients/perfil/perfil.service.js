@@ -1,12 +1,26 @@
-import { supabaseAdmin } from "../../common/config/supabase.js";
 import { PerfilModel } from "../../common/models/perfil.model.js";
+import {
+  STORAGE_BUCKET,
+  criarUrlAssinada,
+  normalizarCaminhoPersistido,
+  removerArquivos,
+  uploadArquivo,
+  validarArquivoArmazenado,
+  validarMetadadosUpload,
+} from "../../common/config/storage.js";
 
 export class PerfilService {
-  static _extrairPathDaUrl(url) {
-    if (!url) return null;
-    const urlSemQuery = url.split("?")[0];
-    const partes = urlSemQuery.split("/storage/v1/object/public/public_box/");
-    return partes.length > 1 ? partes[1] : null;
+  static async _formatarPerfil(perfil) {
+    if (!perfil?.imagem) return perfil;
+    const path = normalizarCaminhoPersistido(
+      perfil.imagem,
+      STORAGE_BUCKET.PERFIS,
+    );
+    if (!path) return perfil;
+    return {
+      ...perfil,
+      imagem: await criarUrlAssinada(STORAGE_BUCKET.PERFIS, path),
+    };
   }
 
   static async buscarPerfil(userId) {
@@ -29,7 +43,7 @@ export class PerfilService {
       };
     }
 
-    return perfil;
+    return this._formatarPerfil(perfil);
   }
 
   static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
@@ -54,7 +68,9 @@ export class PerfilService {
             : redes_sociais;
       }
 
-      return await PerfilModel.atualizarPerfil(userId, updates);
+      return this._formatarPerfil(
+        await PerfilModel.atualizarPerfil(userId, updates),
+      );
     } catch (error) {
       if (error.statusCode) throw error;
       const erroBanco = new Error("Erro ao atualizar os dados do perfil.");
@@ -82,53 +98,37 @@ export class PerfilService {
       const perfilAtual = await PerfilModel.buscarPerfil(userId);
       const urlImagemAntiga = perfilAtual?.imagem;
 
-      const timestamp = Date.now();
       const extensao = file.originalname.split(".").pop();
-      const filePath = `images/${userId}/perfil_${timestamp}.${extensao}`;
-
-      const { error: uploadError } = await supabaseAdmin.storage
-        .from("public_box")
-        .upload(filePath, file.buffer, {
-          contentType: file.mimetype,
-          upsert: true,
-        });
-
-      if (uploadError) {
-        uploadError.statusCode = 500;
-        throw uploadError;
-      }
-
-      const responseUrl = supabaseAdmin.storage
-        .from("public_box")
-        .getPublicUrl(filePath);
-
-      const novaPublicUrl =
-        responseUrl?.data?.publicUrl || responseUrl?.publicUrl;
-
-      if (!novaPublicUrl) {
-        const erroUrl = new Error(
-          "Não foi possível gerar a URL pública da imagem.",
+      const { regra, extensao: extensaoValida } = validarMetadadosUpload({
+        tipo: "imagem_perfil",
+        extensao,
+        mimeType: file.mimetype,
+        tamanho: file.size ?? file.buffer.length,
+      });
+      const filePath = `${userId}/perfil_${Date.now()}.${extensaoValida}`;
+      await uploadArquivo(regra.bucket, filePath, file);
+      try {
+        await validarArquivoArmazenado(
+          regra.bucket,
+          filePath,
+          "imagem_perfil",
         );
-        erroUrl.statusCode = 500;
-        throw erroUrl;
-      }
-
-      const perfilData = await PerfilModel.atualizarApenasImagem(
-        userId,
-        novaPublicUrl,
-      );
-
-      if (urlImagemAntiga) {
-        const antigoPath = this._extrairPathDaUrl(urlImagemAntiga);
-        if (antigoPath) {
-          supabaseAdmin.storage
-            .from("public_box")
-            .remove([antigoPath])
-            .catch(() => {});
+        const perfilData = await PerfilModel.atualizarApenasImagem(
+          userId,
+          filePath,
+        );
+        const pathAntigo = normalizarCaminhoPersistido(
+          urlImagemAntiga,
+          STORAGE_BUCKET.PERFIS,
+        );
+        if (pathAntigo && pathAntigo !== filePath) {
+          await removerArquivos(STORAGE_BUCKET.PERFIS, [pathAntigo]);
         }
+        return this._formatarPerfil(perfilData);
+      } catch (error) {
+        await removerArquivos(regra.bucket, [filePath]);
+        throw error;
       }
-
-      return perfilData;
     } catch (error) {
       if (error.statusCode) throw error;
       const erroBanco = new Error("Erro ao salvar a nova imagem de perfil.");
@@ -149,17 +149,13 @@ export class PerfilService {
       const urlImagemAntiga = perfilAtual?.imagem;
 
       const perfilData = await PerfilModel.atualizarApenasImagem(userId, null);
-
-      if (urlImagemAntiga) {
-        const antigoPath = this._extrairPathDaUrl(urlImagemAntiga);
-        if (antigoPath) {
-          supabaseAdmin.storage
-            .from("public_box")
-            .remove([antigoPath])
-            .catch(() => {});
-        }
+      const pathAntigo = normalizarCaminhoPersistido(
+        urlImagemAntiga,
+        STORAGE_BUCKET.PERFIS,
+      );
+      if (pathAntigo) {
+        await removerArquivos(STORAGE_BUCKET.PERFIS, [pathAntigo]);
       }
-
       return perfilData;
     } catch (error) {
       if (error.statusCode) throw error;

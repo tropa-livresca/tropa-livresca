@@ -131,15 +131,13 @@ export default function Conteudo({
           throw new Error("O PDF não possui páginas válidas.");
         }
 
-        const path = await uploadManuscrito(blob);
-
-        console.log(numeroPaginas);
-        console.log(path);
+        const arquivoEnviado = await uploadManuscrito(blob);
 
         onChange({
           ...dados,
-          manuscrito: path,
-          numeroPaginas:numeroPaginas,
+          manuscrito: arquivoEnviado.url,
+          manuscritoPath: arquivoEnviado.path,
+          numeroPaginas,
         });
 
         await pdfDocument.destroy();

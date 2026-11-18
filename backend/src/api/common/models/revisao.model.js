@@ -1,24 +1,71 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
 import {
   LIVRO_ESTADO,
   TRANSICOES_ADMINISTRADOR,
   transicaoPermitida,
 } from "../config/livro-estados.js";
+import {
+  criarClienteModel,
+  getListPocketBase,
+  marcarErro,
+  obterIdPerfil,
+} from "./pocketbase.helpers.js";
+
+const COLECAO_REVISOES = "revisoes";
+const COLECAO_LIVROS = "livros";
+const RELACAO_LIVRO = "fk_livro_id";
+const RELACAO_PERFIL = "fk_user_profile_id";
+const EXPAND_LIVRO = `${RELACAO_LIVRO},${RELACAO_LIVRO}.fk_user_profile_id`;
+
+function mapearRevisao(revisao) {
+  const { expand, ...dados } = revisao;
+  const livro = expand?.[RELACAO_LIVRO] || null;
+  return {
+    ...dados,
+    livros: livro
+      ? {
+          ...livro,
+          users_profile: livro.expand?.fk_user_profile_id || null,
+        }
+      : null,
+  };
+}
+
+async function buscarRevisaoOpcional(pb, filtro, parametros = {}) {
+  try {
+    return await pb
+      .collection(COLECAO_REVISOES)
+      .getFirstListItem(pb.filter(filtro, parametros), {
+        expand: EXPAND_LIVRO,
+      });
+  } catch (error) {
+    if (error.status === 404) return null;
+    marcarErro(error);
+  }
+}
+
 export class RevisaoModel {
   static async BuscarLivroRevisao(busca) {
-    const { data, error } = await supabase
-      .from("livros")
-      .select(
-        "id, titulo, subtitulo, capa, estado, users_profile(nome, sobrenome)",
-      )
-      .ilike("titulo", `%${busca}%`);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    try {
+      const filtros = [];
+      const params = {};
+      if (busca) {
+        filtros.push("titulo ~ {:busca}");
+        params.busca = busca;
+      }
+      const result = await pb.collection(COLECAO_LIVROS).getFullList({
+        filter: filtros.length ? pb.filter(filtros.join(" && "), params) : "",
+        expand: "fk_user_profile_id",
+        fields:
+          "id,titulo,subtitulo,capa,estado,fk_user_profile_id,expand.fk_user_profile_id.nome,expand.fk_user_profile_id.sobrenome",
+      });
+      return result.map((livro) => ({
+        ...livro,
+        users_profile: livro.expand?.fk_user_profile_id || null,
+      }));
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async BuscarRevisoes(
@@ -29,148 +76,125 @@ export class RevisaoModel {
     ordem = "",
     livro = "",
   ) {
-    const start = (page - 1) * limit;
-    const end = start + limit - 1;
-
-    let query = supabase
-      .from("revisoes")
-      .select(
-        "*, livros!inner(id, titulo, subtitulo, capa, users_profile(nome, sobrenome))",
-        { count: "exact" },
-      );
-
+    const pb = criarClienteModel();
+    const filtros = [];
+    const params = {};
     if (busca) {
-      query = query.or(`nome.ilike.%${busca}%`);
+      filtros.push("nome ~ {:busca}");
+      params.busca = busca;
     }
-
     if (livro) {
-      query = query.eq("fk_livro_id", livro);
+      filtros.push(`${RELACAO_LIVRO} = {:livro}`);
+      params.livro = livro;
     }
+    const sortField = filtro === "data" ? "data_criacao" : "nome";
+    const sort =
+      filtro === "data"
+        ? ordem === "ascendente"
+          ? sortField
+          : `-${sortField}`
+        : ordem === "descendente"
+          ? `-${sortField}`
+          : sortField;
 
-    if (filtro === "data") {
-      const isAsc = ordem === "ascendente";
-      query = query.order("data_de_criacao", { ascending: isAsc });
-    } else {
-      const isAsc = ordem !== "descendente";
-      query = query.order("nome", { ascending: isAsc });
+    try {
+      const result = await getListPocketBase(pb.collection(COLECAO_REVISOES), {
+        page,
+        limit,
+        filter: filtros.length ? pb.filter(filtros.join(" && "), params) : "",
+        sort,
+        expand: EXPAND_LIVRO,
+      });
+      const data = result.items.map(mapearRevisao);
+      return {
+        data,
+        livros: data.map((revisao) => revisao.livros).filter(Boolean),
+        count: result.totalItems,
+      };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const { data, error, count } = await query.range(start, end);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return {
-      data: data || [],
-      livros: (data || []).map((revisao) => revisao.livros).filter(Boolean),
-      count: count || 0,
-    };
   }
 
   static async BuscarRevisaoById(id) {
-    const { data, error } = await supabase
-      .from("revisoes")
-      .select("*, livros!inner(*)")
-      .eq("id", id)
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    try {
+      const revisao = await pb
+        .collection(COLECAO_REVISOES)
+        .getOne(id, { expand: EXPAND_LIVRO });
+      const dados = mapearRevisao(revisao);
+      return { data: dados, livro: dados.livros };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return {
-      data: data,
-      livro: data.livros,
-    };
   }
 
   static async BuscarRevisaoByUserId(userId) {
-    const { data, error } = await supabase
-      .from("revisoes")
-      .select(
-        "*, livros!inner(id, titulo, subtitulo, capa, users_profile(nome, sobrenome))",
-      )
-      .eq("fk_user_profile_id", userId);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, userId);
+    try {
+      const data = await pb.collection(COLECAO_REVISOES).getFullList({
+        filter: pb.filter(`${RELACAO_PERFIL} = {:perfilId}`, { perfilId }),
+        expand: EXPAND_LIVRO,
+      });
+      return { data: data.map(mapearRevisao) };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return {
-      data: data || [],
-    };
   }
 
   static async BuscarRevisaoByLivroId(livroId) {
-    const { data, error } = await supabase
-      .from("revisoes")
-      .select(
-        "*, livros!inner(id, titulo, subtitulo, capa, users_profile(nome, sobrenome))",
-      )
-      .eq("fk_livro_id", livroId);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    try {
+      const data = await pb.collection(COLECAO_REVISOES).getFullList({
+        filter: pb.filter(`${RELACAO_LIVRO} = {:livroId}`, { livroId }),
+        expand: EXPAND_LIVRO,
+      });
+      return { data: data.map(mapearRevisao) };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return {
-      data: data || [],
-    };
   }
 
   static async AtualizarRevisao(id, funcionarioId, dadosAtualizados) {
-    const { data, error } = await supabaseAdmin
-      .from("revisoes")
-      .update(dadosAtualizados)
-      .eq("id", id)
-      .eq("fk_user_profile_id", funcionarioId)
-      .eq("completado", false)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, funcionarioId);
+    const revisao = await buscarRevisaoOpcional(
+      pb,
+      `id = {:id} && ${RELACAO_PERFIL} = {:perfilId} && completado = false`,
+      { id, perfilId },
+    );
+    if (!revisao) {
+      const error = new Error(
+        "Revisão não encontrada ou não pertence ao administrador.",
+      );
+      error.statusCode = 403;
       throw error;
     }
 
-    if (!data) {
-      const updateError = new Error(
-        "Revisão não encontrada ou não pertence ao administrador.",
-      );
-      updateError.statusCode = 403;
-      throw updateError;
+    try {
+      const atualizada = await pb
+        .collection(COLECAO_REVISOES)
+        .update(id, dadosAtualizados);
+      return mapearRevisao(atualizada);
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async VerificarRevisor(livroId, funcionarioId) {
-    const { data, error } = await supabase
-      .from("revisoes")
-      .select("*, livros!inner(estado)")
-      .eq("completado", false)
-      .eq("fk_livro_id", livroId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    if (data) {
-      let revisor = false;
-      if (data.fk_user_profile_id == funcionarioId) {
-        revisor = true;
-      }
-      return { ...data, revisor };
-    }
-
-    return null;
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, funcionarioId);
+    const revisao = await buscarRevisaoOpcional(
+      pb,
+      `completado = false && ${RELACAO_LIVRO} = {:livroId}`,
+      { livroId },
+    );
+    if (!revisao) return null;
+    return {
+      ...mapearRevisao(revisao),
+      revisor: revisao[RELACAO_PERFIL] === perfilId,
+    };
   }
 
   static async atualizarEstadoComRevisao(livroId, novoEstado, funcionarioId) {
@@ -186,19 +210,13 @@ export class RevisaoModel {
       throw error;
     }
 
-    const { data: revisao, error: revisaoError } = await supabaseAdmin
-      .from("revisoes")
-      .select("id, fk_livro_id, fk_user_profile_id, completado")
-      .eq("fk_livro_id", livroId)
-      .eq("fk_user_profile_id", funcionarioId)
-      .eq("completado", false)
-      .maybeSingle();
-
-    if (revisaoError) {
-      revisaoError.statusCode = 500;
-      throw revisaoError;
-    }
-
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, funcionarioId);
+    const revisao = await buscarRevisaoOpcional(
+      pb,
+      `${RELACAO_LIVRO} = {:livroId} && ${RELACAO_PERFIL} = {:perfilId} && completado = false`,
+      { livroId, perfilId },
+    );
     if (!revisao) {
       const error = new Error(
         "Administrador não possui revisão pendente vinculada a este livro.",
@@ -207,21 +225,13 @@ export class RevisaoModel {
       throw error;
     }
 
-    const { data: livro, error: livroError } = await supabaseAdmin
-      .from("livros")
-      .update({ estado: novoEstado })
-      .eq("id", livroId)
-      .eq("ativo", true)
-      .eq("estado", LIVRO_ESTADO.EM_REVISAO)
-      .select()
-      .maybeSingle();
-
-    if (livroError) {
-      livroError.statusCode = 500;
-      throw livroError;
+    let livro;
+    try {
+      livro = await pb.collection(COLECAO_LIVROS).getOne(livroId);
+    } catch (error) {
+      marcarErro(error);
     }
-
-    if (!livro) {
+    if (!livro.ativo || livro.estado !== LIVRO_ESTADO.EM_REVISAO) {
       const error = new Error(
         "O livro não está em revisão ou seu estado foi alterado.",
       );
@@ -229,109 +239,74 @@ export class RevisaoModel {
       throw error;
     }
 
-    const { data: revisaoConcluida, error: conclusaoError } =
-      await supabaseAdmin
-        .from("revisoes")
-        .update({ completado: true })
-        .eq("id", revisao.id)
-        .eq("fk_livro_id", livroId)
-        .eq("fk_user_profile_id", funcionarioId)
-        .eq("completado", false)
-        .select()
-        .maybeSingle();
-
-    if (conclusaoError || !revisaoConcluida) {
-      await supabaseAdmin
-        .from("livros")
-        .update({ estado: LIVRO_ESTADO.EM_REVISAO })
-        .eq("id", livroId)
-        .eq("estado", novoEstado)
-        .eq("ativo", true);
-
-      const error =
-        conclusaoError || new Error("Não foi possível concluir a revisão.");
-      error.statusCode = conclusaoError ? 500 : 409;
-      throw error;
+    let livroAtualizado;
+    try {
+      livroAtualizado = await pb
+        .collection(COLECAO_LIVROS)
+        .update(livroId, { estado: novoEstado });
+      const revisaoConcluida = await pb
+        .collection(COLECAO_REVISOES)
+        .update(revisao.id, { completado: true });
+      return { ...livroAtualizado, revisao: revisaoConcluida };
+    } catch (error) {
+      if (livroAtualizado) {
+        await pb.collection(COLECAO_LIVROS).update(livroId, {
+          estado: LIVRO_ESTADO.EM_REVISAO,
+        });
+      }
+      marcarErro(error, 409);
     }
-
-    return { ...livro, revisao: revisaoConcluida };
   }
 
   static async buscarLivroParaRevisao(livroId) {
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .select("id, estado, ativo")
-      .eq("id", livroId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    try {
+      const livro = await pb.collection(COLECAO_LIVROS).getOne(livroId, {
+        fields: "id,estado,ativo",
+      });
+      return { id: livro.id, estado: livro.estado, ativo: livro.ativo };
+    } catch (error) {
+      if (error.status === 404) return null;
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async buscarRevisaoPendentePorLivro(livroId) {
-    const { data, error } = await supabaseAdmin
-      .from("revisoes")
-      .select("id, fk_livro_id, fk_user_profile_id, completado")
-      .eq("fk_livro_id", livroId)
-      .eq("completado", false)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
+    const pb = criarClienteModel();
+    return buscarRevisaoOpcional(
+      pb,
+      `${RELACAO_LIVRO} = {:livroId} && completado = false`,
+      { livroId },
+    );
   }
 
   static async buscarRevisaoParaAtualizacao(id, funcionarioId) {
-    const { data, error } = await supabaseAdmin
-      .from("revisoes")
-      .select("id, fk_livro_id, fk_user_profile_id, completado")
-      .eq("id", id)
-      .eq("fk_user_profile_id", funcionarioId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, funcionarioId);
+    return buscarRevisaoOpcional(
+      pb,
+      `id = {:id} && ${RELACAO_PERFIL} = {:perfilId}`,
+      { id, perfilId },
+    );
   }
 
   static async CriarRevisao(dadosRevisao) {
-    const { data, error } = await supabaseAdmin
-      .from("revisoes")
-      .insert(dadosRevisao)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    const dados = { ...dadosRevisao };
+    if (dados[RELACAO_PERFIL]) {
+      dados[RELACAO_PERFIL] = await obterIdPerfil(pb, dados[RELACAO_PERFIL]);
     }
-
-    return data;
+    try {
+      const revisao = await pb.collection(COLECAO_REVISOES).create(dados);
+      return mapearRevisao(revisao);
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 
   static async CompletarRevisao(id, funcionarioId) {
-    const { data: revisao, error: revisaoError } = await supabaseAdmin
-      .from("revisoes")
-      .select("id, fk_livro_id, fk_user_profile_id, completado")
-      .eq("id", id)
-      .eq("fk_user_profile_id", funcionarioId)
-      .maybeSingle();
-
-    if (revisaoError) {
-      revisaoError.statusCode = 500;
-      throw revisaoError;
-    }
-
+    const pb = criarClienteModel();
+    const revisao = await this.buscarRevisaoParaAtualizacao(id, funcionarioId);
     if (!revisao) {
       const error = new Error(
         "Revisão não encontrada ou não pertence ao administrador.",
@@ -339,20 +314,9 @@ export class RevisaoModel {
       error.statusCode = 403;
       throw error;
     }
-
     if (revisao.completado) return revisao;
 
-    const { data: livro, error: livroError } = await supabaseAdmin
-      .from("livros")
-      .select("estado")
-      .eq("id", revisao.fk_livro_id)
-      .maybeSingle();
-
-    if (livroError) {
-      livroError.statusCode = 500;
-      throw livroError;
-    }
-
+    const livro = await this.buscarLivroParaRevisao(revisao[RELACAO_LIVRO]);
     if (
       ![
         LIVRO_ESTADO.PUBLICADO,
@@ -367,29 +331,13 @@ export class RevisaoModel {
       throw error;
     }
 
-    const { data, error } = await supabaseAdmin
-      .from("revisoes")
-      .update({ completado: true })
-      .eq("id", id)
-      .eq("fk_user_profile_id", funcionarioId)
-      .eq("completado", false)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      return await pb.collection(COLECAO_REVISOES).update(id, {
+        completado: true,
+      });
+    } catch (error) {
+      marcarErro(error);
     }
-
-    if (!data) {
-      const updateError = new Error(
-        "Revisão já foi concluída ou está desatualizada.",
-      );
-      updateError.statusCode = 409;
-      throw updateError;
-    }
-
-    return data;
   }
 
   static async publicarLivro(idLivro, funcionarioId) {

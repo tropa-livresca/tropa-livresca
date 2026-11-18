@@ -1,29 +1,62 @@
-import supabase from "../config/supabase.js";
 import jwt from "jsonwebtoken";
+import {
+  criarClientePocketBase,
+  criarClienteAdminPocketBase,
+} from "../config/pocketbase.js";
 
+const COLECAO_AUTH = "users";
+const COLECAO_PERFIL = "users_profile";
+
+const buscarPerfilAdmin = async (userId) => {
+  const pb = criarClienteAdminPocketBase();
+
+  const filtro = pb.filter("usuario = {:userId}", {
+    userId,
+  });
+
+  return await pb.collection(COLECAO_PERFIL).getFirstListItem(filtro, {
+    fields: "id,usuario,is_admin,is_master,primeiro_acesso",
+  });
+};
+
+// Autenticação comum
 export const checkAuth = async (req, res, next) => {
-  const token = req.cookies["auth-token"];
+  const token = req.cookies?.["auth-token"];
 
   if (!token) {
-    return res
-      .status(401)
-      .json({ error: "Token de autenticação não fornecido." });
+    return res.status(401).json({
+      error: "Token de autenticação não fornecido.",
+    });
   }
 
   try {
-    const { data, error } = await supabase.auth.getUser(token);
-    if (error) {
-      return res.status(401).json({ error: "Token de autenticação inválido." });
-    }
+    // Cada requisição utiliza uma instância independente.
+    const pb = criarClientePocketBase();
 
-    req.user = data.user;
+    pb.authStore.save(token, null);
+
+    // Valida o token diretamente no PocketBase.
+    const { record } = await pb.collection(COLECAO_AUTH).authRefresh();
+
+    req.user = record;
+
     return next();
   } catch (err) {
     console.error("Erro ao verificar autenticação:", err);
-    return res.status(500).json({ error: "Erro ao verificar autenticação." });
+
+    if (err.status === 401 || err.status === 403) {
+      return res.status(401).json({
+        error: "Token de autenticação inválido ou expirado.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Erro ao verificar autenticação.",
+    });
   }
 };
 
+// Autenticação administrativa
 export const verificarAutenticacaoAdm = async (req, res, next) => {
   const token = req.cookies?.["admin-token"];
 
@@ -36,32 +69,13 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decoded.is_admin) {
+    if (!decoded.is_admin || !decoded.id) {
       return res.status(403).json({
         error: "Acesso restrito a administradores.",
       });
     }
 
-    const { data: adm, error } = await supabase
-      .from("users_profile")
-      .select("is_admin, is_master, senha_adm, primeiro_acesso")
-      .eq("id", decoded.id)
-      .single();
-
-    if (error) {
-      console.error("ERRO AO BUSCAR ADMIN:", error);
-
-      return res.status(500).json({
-        error: "Erro ao consultar administrador.",
-        details: error.message,
-      });
-    }
-
-    if (!adm) {
-      return res.status(403).json({
-        error: "Administrador não encontrado.",
-      });
-    }
+    const adm = await buscarPerfilAdmin(decoded.id);
 
     if (!adm.is_admin) {
       return res.status(403).json({
@@ -80,12 +94,25 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
   } catch (err) {
     console.error("Erro ao validar admin-token:", err);
 
-    return res.status(401).json({
-      error: "Sessão administrativa inválida ou expirada.",
+    if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        error: "Sessão administrativa inválida ou expirada.",
+      });
+    }
+
+    if (err.status === 404) {
+      return res.status(403).json({
+        error: "Administrador não encontrado.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Erro ao verificar sessão administrativa.",
     });
   }
 };
 
+// Autenticação administrativa Master
 export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
   const token = req.cookies?.["admin-token"];
 
@@ -98,32 +125,13 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    if (!decoded.is_admin) {
+    if (!decoded.is_admin || !decoded.id) {
       return res.status(403).json({
         error: "Acesso restrito a administradores Master.",
       });
     }
 
-    const { data: adm, error } = await supabase
-      .from("users_profile")
-      .select("is_admin, is_master, senha_adm, primeiro_acesso")
-      .eq("id", decoded.id)
-      .single();
-
-    if (error) {
-      console.error("ERRO AO BUSCAR ADMIN:", error);
-
-      return res.status(500).json({
-        error: "Erro ao consultar administrador.",
-        details: error.message,
-      });
-    }
-
-    if (!adm) {
-      return res.status(403).json({
-        error: "Administrador não encontrado.",
-      });
-    }
+    const adm = await buscarPerfilAdmin(decoded.id);
 
     if (!adm.is_admin) {
       return res.status(403).json({
@@ -133,7 +141,7 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
 
     if (!adm.is_master) {
       return res.status(403).json({
-        error: "Usuário não possui privil[efio de administrador master.",
+        error: "Usuário não possui privilégios de administrador Master.",
       });
     }
 
@@ -146,10 +154,22 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
 
     return next();
   } catch (err) {
-    console("Erro na sessão do adm master", err);
+    console.error("Erro na sessão do administrador Master:", err);
 
-    return res.status(401).json({
-      error: "Sessão administrativa inválida ou expirada.",
+    if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+      return res.status(401).json({
+        error: "Sessão administrativa inválida ou expirada.",
+      });
+    }
+
+    if (err.status === 404) {
+      return res.status(403).json({
+        error: "Administrador não encontrado.",
+      });
+    }
+
+    return res.status(500).json({
+      error: "Erro ao verificar sessão administrativa.",
     });
   }
 };

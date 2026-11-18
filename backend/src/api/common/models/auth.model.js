@@ -1,259 +1,198 @@
-import supabase from "../config/supabase.js";
+import pb from "../config/pocketbase.js";
 
-import {
-  SUPABASE_AUTH_REDIRECT_URL,
-  SUPABASE_RESET_PASSWORD_URL,
-  SUPABASE_EMAIL_CONFIRMATION_URL,
-} from "../config/environment.js";
+const COLECAO_AUTH = "users";
+const COLECAO_PERFIL = "users_profile";
+
 export class AuthModel {
-  static async conferirPrimeiroAcesso(userId) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .select("primeiro_acesso")
-      .eq("id", userId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data?.primeiro_acesso ?? false;
+  static async buscarPerfil(userId) {
+    return await pb
+      .collection(COLECAO_PERFIL)
+      .getFirstListItem(`usuario = "${userId}"`);
   }
 
-  static async alterarSenhaAdmin(userId, novaSenha) {
-    const { data, error } = await supabase.rpc("alterar_senha_adm", {
-      p_user_id: userId,
-      p_nova_senha: novaSenha,
-    });
+  static async conferirPrimeiroAcesso(userId) {
+    try {
+      const perfil = await this.buscarPerfil(userId);
+      return perfil.primeiro_acesso ?? false;
+    } catch (error) {
+      if (error.status === 404) return false;
 
-    if (error) {
-      error.statusCode = 500;
+      error.statusCode = error.status || 500;
+      throw error;
+    }
+  }
+
+  static async alterarSenhaAdmin(userId, novaSenha, senhaAntiga) {
+    const usuarioAtual = pb.authStore.record;
+
+    if (!usuarioAtual || usuarioAtual.id !== userId) {
+      const error = new Error(
+        "Não é permitido alterar a senha de outro usuário.",
+      );
+      error.statusCode = 403;
       throw error;
     }
 
-    return {
-      data: data?.[0] ?? null,
+    const dadosSenha = {
+      password: novaSenha,
+      passwordConfirm: novaSenha,
     };
+
+    if (senhaAntiga) {
+      dadosSenha.oldPassword = senhaAntiga;
+    }
+
+    const usuario = await pb
+      .collection(COLECAO_AUTH)
+      .update(userId, dadosSenha);
+
+    const perfil = await this.buscarPerfil(userId);
+
+    await pb.collection(COLECAO_PERFIL).update(perfil.id, {
+      primeiro_acesso: false,
+    });
+
+    return { data: usuario };
   }
 
   static async signinAdmin(email, senha) {
-    const { data: busca, error: buscaError } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("email", email)
-      .maybeSingle();
+    try {
+      const authData = await pb
+        .collection(COLECAO_AUTH)
+        .authWithPassword(email, senha);
 
-    if (buscaError || !busca) {
-      return { data: null, error: new Error("E-mail não cadastrado.") };
+      const userId = authData.record.id;
+      const perfil = await this.conferirAdmin(userId);
+
+      return {
+        data: {
+          userId,
+          user: {
+            ...authData.record,
+            ...perfil,
+          },
+        },
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: Object.assign(
+          new Error(
+            error.status === 403
+              ? "Acesso negado. Apenas administradores."
+              : "Credenciais administrativas inválidas.",
+          ),
+          {
+            statusCode: error.status === 403 ? 403 : 401,
+          },
+        ),
+      };
     }
-
-    const { data: rpcResult, error: rpcError } = await supabase.rpc(
-      "verificar_senha_adm",
-      {
-        user_id: busca.id,
-        senha_digitada: senha,
-      },
-    );
-
-    if (rpcError || !rpcResult) {
-      return { data: null, error: new Error("Senha incorreta.") };
-    }
-
-    return {
-      data: {
-        userId: busca.id,
-        user: busca,
-      },
-      error: null,
-    };
   }
 
   static async conferirAdmin(userId) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .select("is_admin")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      const erroBanco = new Error(error.message || "Erro no banco de dados.");
-      erroBanco.statusCode = 500;
-      throw erroBanco;
-    }
-
-    if (!data || data.is_admin == false) {
-      const erroAdmin = new Error("Acesso negado. Apenas administradores.");
-      erroAdmin.statusCode = 403;
-      throw erroAdmin;
-    }
-
-    return data;
-  }
-
-  static async atualizarSenha(senhaNova) {
-    const { data, error } = await supabase.auth.updateUser({
-      password: senhaNova,
-    });
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return data;
-  }
-
-  static async enviarEmailRecuperacao(email, redirectUrl) {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl || SUPABASE_RESET_PASSWORD_URL,
-    });
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
-  }
-
-  static async signinComGoogle(redirectTo) {
-    const callbackUrl = redirectTo || SUPABASE_AUTH_REDIRECT_URL;
-
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: callbackUrl,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
+      const perfil = await this.buscarPerfil(userId);
 
-      if (error) {
-        const oauthError = new Error(
-          error.message || "Falha ao iniciar autenticação do Google.",
-        );
-        oauthError.statusCode = 502;
-        throw oauthError;
+      if (!perfil.is_admin) {
+        const error = new Error("Acesso negado. Apenas administradores.");
+        error.statusCode = 403;
+        throw error;
       }
 
-      return {
-        ...data,
-        url: data?.url || callbackUrl,
-      };
+      return perfil;
     } catch (error) {
       if (!error.statusCode) {
-        error.statusCode = 502;
+        error.statusCode = error.status || 500;
       }
+
       throw error;
     }
   }
 
-  static async setSession(accessToken, refreshToken) {
-    const { data, error } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
+  static async atualizarSenha(senhaNova, senhaAntiga) {
+    const usuario = pb.authStore.record;
+
+    if (!usuario) {
+      const error = new Error("Nenhum usuário autenticado.");
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const dados = {
+      password: senhaNova,
+      passwordConfirm: senhaNova,
+    };
+
+    if (senhaAntiga) {
+      dados.oldPassword = senhaAntiga;
+    }
+
+    return await pb.collection(COLECAO_AUTH).update(usuario.id, dados);
+  }
+
+  static async enviarEmailRecuperacao(email) {
+    return await pb.collection(COLECAO_AUTH).requestPasswordReset(email);
+  }
+
+  static async confirmarNovaSenha(token, senhaNova) {
+    return await pb
+      .collection(COLECAO_AUTH)
+      .confirmPasswordReset(token, senhaNova, senhaNova);
+  }
+
+  static async signinComGoogle() {
+    return await pb.collection(COLECAO_AUTH).authWithOAuth2({
+      provider: "google",
     });
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-    return data;
-  }
-
-  static async setSessionWithCode(code) {
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-    return data;
-  }
-
-  static async refreshSession(refreshToken) {
-    if (!refreshToken) {
-      const erroToken = new Error("Token de atualização não fornecido.");
-      erroToken.statusCode = 401;
-      throw erroToken;
-    }
-
-    const { data, error } = await supabase.auth.refreshSession({
-      refresh_token: refreshToken,
-    });
-
-    if (error || !data.session) {
-      const erroValidacao = new Error(
-        "Token de atualização inválido ou expirado.",
-      );
-      erroValidacao.statusCode = 401;
-      throw erroValidacao;
-    }
-    return data;
-  }
-
-  static async signup(email, password, nome, sobrenome, telefone) {
-    if (!email || !password || !nome || !telefone) {
-      const erroCampos = new Error(
-        "Todos os campos são obrigatórios para o cadastro.",
-      );
-      erroCampos.statusCode = 400;
-      throw erroCampos;
-    }
-
-    const redirectUrl = SUPABASE_EMAIL_CONFIRMATION_URL;
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: { nome, sobrenome, telefone },
-      },
-    });
-
-    if (error) {
-      if (
-        error.message?.includes("already registered") ||
-        error.status === 422
-      ) {
-        const erroDuplicado = new Error(
-          "O e-mail informado já está cadastrado no sistema.",
-        );
-        erroDuplicado.statusCode = 400;
-        throw erroDuplicado;
-      }
-      error.statusCode = 400;
-      throw error;
-    }
-    return data;
-  }
-
-  static async signout() {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return true;
   }
 
   static async signin(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    return await pb.collection(COLECAO_AUTH).authWithPassword(email, password);
+  }
+
+  static async signup(email, password, nome, sobrenome, telefone) {
+    const dados = {
       email,
       password,
-    });
+      passwordConfirm: password,
+      nome,
+      sobrenome,
+      telefone,
+    };
 
-    if (error) {
-      error.statusCode = 400;
+    const usuario = await pb.collection(COLECAO_AUTH).create(dados);
+
+    await pb.collection(COLECAO_AUTH).requestVerification(email);
+
+    return usuario;
+  }
+
+  static async signout() {
+    pb.authStore.clear();
+    return true;
+  }
+
+  static async refreshSession() {
+    if (!pb.authStore.isValid) {
+      const error = new Error("Sessão inválida ou expirada.");
+      error.statusCode = 401;
       throw error;
     }
-    return data;
+
+    return await pb.collection(COLECAO_AUTH).authRefresh();
+  }
+
+  static getUsuarioAtual() {
+    return pb.authStore.record;
+  }
+
+  static getToken() {
+    return pb.authStore.token;
+  }
+
+  static isAuthenticated() {
+    return pb.authStore.isValid;
   }
 }

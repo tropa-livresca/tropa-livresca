@@ -1,5 +1,19 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
+import {
+  criarClienteModel,
+  getListPocketBase,
+  marcarErro,
+  obterIdPerfil,
+} from "./pocketbase.helpers.js";
+
+const COLECAO = "livros";
+const RELACAO_PERFIL = "fk_user_profile_id";
+
+function erroConflito() {
+  const error = new Error("Livro não encontrado ou estado desatualizado.");
+  error.statusCode = 409;
+  return error;
+}
 
 export class AutopublicacaoModel {
   static async buscarComFiltros({
@@ -11,180 +25,112 @@ export class AutopublicacaoModel {
     ordem = "",
     estado = "",
   } = {}) {
-    const start = (page - 1) * limit;
-    const end = start + limit - 1;
-
-    let query = supabase
-      .from("livros")
-      .select("*", { count: "exact" })
-      .eq("ativo", true)
-      .eq("fk_user_profile_id", userId);
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, userId);
+    const filtros = ["ativo = true", `${RELACAO_PERFIL} = {:perfilId}`];
+    const params = { perfilId };
 
     if (busca) {
-      query = query.ilike("titulo", `%${busca}%`);
+      filtros.push("titulo ~ {:busca}");
+      params.busca = busca;
     }
-
-    if (filtro === "alfabetico") {
-      const isAsc = ordem !== "descendente";
-      query = query.order("titulo", { ascending: isAsc });
-    } else if (filtro === "data") {
-      const isAsc = ordem === "ascendente";
-      query = query.order("data_de_publicacao", { ascending: isAsc });
-    } else {
-      query = query.order("titulo", { ascending: true });
-    }
-
     if (Object.values(LIVRO_ESTADO).includes(estado)) {
-      query = query.eq("estado", estado);
+      filtros.push("estado = {:estado}");
+      params.estado = estado;
     }
 
-    const { data, error, count } = await query.range(start, end);
+    const campoOrdenacao = filtro === "data" ? "data_de_publicacao" : "titulo";
+    const ascending =
+      filtro === "data" ? ordem === "ascendente" : ordem !== "descendente";
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const resultado = await getListPocketBase(pb.collection(COLECAO), {
+        page,
+        limit,
+        filter: pb.filter(filtros.join(" && "), params),
+        sort: ascending ? campoOrdenacao : `-${campoOrdenacao}`,
+      });
+      return { data: resultado.items, count: resultado.totalItems };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return {
-      data,
-      count: count || 0,
-    };
   }
 
   static async buscarDetalhesPorId(idLivro, userId) {
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .select("*")
-      .eq("id", idLivro)
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true)
-      .maybeSingle();
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, userId);
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const livro = await pb.collection(COLECAO).getOne(idLivro);
+      return livro[RELACAO_PERFIL] === perfilId && livro.ativo ? livro : null;
+    } catch (error) {
+      if (error.status === 404) return null;
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async atualizarEstado(id, novoEstado, userId, estadoAtual) {
-    let query = supabaseAdmin
-      .from("livros")
-      .update({ estado: novoEstado })
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true);
-
-    if (estadoAtual) {
-      query = query.eq("estado", estadoAtual);
+    const pb = criarClienteModel();
+    const livro = await this.buscarDetalhesPorId(id, userId);
+    if (!livro || (estadoAtual && livro.estado !== estadoAtual)) {
+      throw erroConflito();
     }
 
-    const { data, error: updateError } = await query.select().maybeSingle();
-
-    if (updateError) {
-      updateError.statusCode = 500;
-      throw updateError;
+    try {
+      return await pb.collection(COLECAO).update(id, { estado: novoEstado });
+    } catch (error) {
+      marcarErro(error);
     }
-
-    if (!data) {
-      const error = new Error("Livro não encontrado ou estado desatualizado.");
-      error.statusCode = 409;
-      throw error;
-    }
-
-    return data;
   }
 
   static async criarLivro(dadosLivro) {
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .insert(dadosLivro)
-      .select()
-      .single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    const pb = criarClienteModel();
+    const dados = { ...dadosLivro };
+    if (dados[RELACAO_PERFIL]) {
+      dados[RELACAO_PERFIL] = await obterIdPerfil(pb, dados[RELACAO_PERFIL]);
     }
-    return data;
+
+    try {
+      return await pb.collection(COLECAO).create(dados);
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 
   static async atualizarLivro(id, userId, estadoAtual, dadosAtualizados) {
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .update(dadosAtualizados)
-      .eq("id", id)
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true)
-      .eq("estado", estadoAtual)
-      .select()
-      .maybeSingle();
+    const pb = criarClienteModel();
+    const livro = await this.buscarDetalhesPorId(id, userId);
+    if (!livro || livro.estado !== estadoAtual) throw erroConflito();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      return await pb.collection(COLECAO).update(id, dadosAtualizados);
+    } catch (error) {
+      marcarErro(error);
     }
-
-    if (!data) {
-      const updateError = new Error(
-        "Livro não encontrado ou estado desatualizado.",
-      );
-      updateError.statusCode = 409;
-      throw updateError;
-    }
-
-    return data;
   }
 
   static async deletarLivro(idLivro, userId) {
-    const { data: livroAtual, error: fetchError } = await supabaseAdmin
-      .from("livros")
-      .select("estado")
-      .eq("id", idLivro)
-      .eq("fk_user_profile_id", userId)
-      .maybeSingle();
+    const pb = criarClienteModel();
+    const livro = await this.buscarDetalhesPorId(idLivro, userId);
 
-    if (fetchError) {
-      fetchError.statusCode = 500;
-      throw fetchError;
-    }
-
-    if (!livroAtual) {
+    if (!livro) {
       const error = new Error("Livro não encontrado.");
       error.statusCode = 404;
       throw error;
     }
-
-    if (livroAtual.estado !== LIVRO_ESTADO.RASCUNHO) {
-      const erroEstado = new Error(
+    if (livro.estado !== LIVRO_ESTADO.RASCUNHO) {
+      const error = new Error(
         "Livros em rascunho podem ser deletados. Livros em revisão ou publicados não podem ser deletados.",
       );
-      erroEstado.statusCode = 400;
-      throw erroEstado;
-    }
-
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .delete()
-      .eq("id", idLivro)
-      .eq("fk_user_profile_id", userId)
-      .eq("ativo", true)
-      .eq("estado", LIVRO_ESTADO.RASCUNHO)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
+      error.statusCode = 400;
       throw error;
     }
 
-    if (!data) {
-      const deleteError = new Error("Livro não encontrado ou já foi removido.");
-      deleteError.statusCode = 409;
-      throw deleteError;
+    try {
+      await pb.collection(COLECAO).delete(idLivro);
+      return livro;
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 }

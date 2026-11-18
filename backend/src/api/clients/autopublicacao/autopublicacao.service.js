@@ -1,4 +1,3 @@
-import { supabaseAdmin } from "../../common/config/supabase.js";
 import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js";
 import {
   LIVRO_ESTADO,
@@ -12,6 +11,7 @@ import {
   normalizarCaminhoPersistido,
   obterRegraArquivo,
   removerArquivos,
+  uploadArquivo,
   validarArquivoArmazenado,
   validarMetadadosUpload,
   validarPathDoUsuario,
@@ -575,34 +575,44 @@ export class AutopublicacaoService {
     return { data: livroFormatado, manuscritoUrl: livroFormatado.manuscrito };
   }
 
-  static async criarUploadLivro({ userId, tipo, extensao, mimeType, tamanho }) {
+  static async criarUploadLivro({ userId, tipo, arquivo }) {
     if (!userId) {
       const error = new Error("Usuário não autenticado.");
       error.statusCode = 401;
       throw error;
     }
+    if (!arquivo?.buffer || !arquivo.originalname) {
+      const error = new Error("Nenhum arquivo válido foi enviado.");
+      error.statusCode = 400;
+      throw error;
+    }
 
+    const extensao = arquivo.originalname.split(".").pop();
     const { extensao: extensaoNormalizada } = validarMetadadosUpload({
       tipo,
       extensao,
-      mimeType,
-      tamanho,
+      mimeType: arquivo.mimetype,
+      tamanho: arquivo.size ?? arquivo.buffer.length,
     });
-    const { bucket, path } = criarPathUpload(userId, tipo, extensaoNormalizada);
+    const { bucket, path } = criarPathUpload(
+      userId,
+      tipo,
+      extensaoNormalizada,
+    );
+    this._validarPath(path, userId, bucket);
 
-    const { data, error } = await supabaseAdmin.storage
-      .from(bucket)
-      .createSignedUploadUrl(path);
-
-    if (error) {
-      error.statusCode = 500;
+    await uploadArquivo(bucket, path, arquivo);
+    try {
+      await validarArquivoArmazenado(bucket, path, tipo);
+    } catch (error) {
+      await this._removerComAviso(bucket, [path]);
       throw error;
     }
 
     return {
       bucket,
       path,
-      token: data.token,
+      url: await criarUrlAssinada(bucket, path),
     };
   }
 

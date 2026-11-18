@@ -142,11 +142,18 @@ export class LojaService {
       error(400, "Não há como realizar compra sem itens da venda.");
 
     const itensNormalizados = itens.map((item) => {
-      const livroId = Number(item.livroId);
+      const livroIdTexto = String(item.livroId ?? "").trim();
+      const livroId = /^\d+$/.test(livroIdTexto)
+        ? Number(livroIdTexto)
+        : livroIdTexto;
       const fisico = item.fisico === true;
       const qtd = fisico ? Number(item.qtd) : 1;
 
-      if (!Number.isInteger(livroId) || livroId <= 0)
+      if (
+        !livroIdTexto ||
+        (typeof livroId === "number" &&
+          (!Number.isSafeInteger(livroId) || livroId <= 0))
+      )
         error(400, "Livro inválido no carrinho.");
       if (!Number.isInteger(qtd) || qtd < 1 || qtd > MAX_QTD_POR_ITEM)
         error(400, "Quantidade inválida no carrinho.");
@@ -156,10 +163,12 @@ export class LojaService {
 
     const livroIds = [...new Set(itensNormalizados.map((i) => i.livroId))];
     const livros = await LojaModel.buscarLivrosParaVenda(livroIds);
-    const livrosPorId = new Map(livros.map((livro) => [livro.id, livro]));
+    const livrosPorId = new Map(
+      livros.map((livro) => [String(livro.id), livro]),
+    );
 
     const itensVenda = itensNormalizados.map(({ livroId, fisico, qtd }) => {
-      const livro = livrosPorId.get(livroId);
+      const livro = livrosPorId.get(String(livroId));
       if (!livro) error(400, "Um dos livros do carrinho não está disponível.");
 
       const precoUnitario = Number(

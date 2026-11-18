@@ -2,6 +2,7 @@ import express from "express";
 
 import { AutopublicacaoController } from "./autopublicacao.controller.js";
 import { checkAuth } from "../../common/middlewares/auth.middleware.js";
+import { upload } from "../../common/middlewares/upload.middleware.js";
 
 const router = express.Router();
 
@@ -12,6 +13,7 @@ router.get("/:id", checkAuth, AutopublicacaoController.buscarLivroById);
 router.post(
   "/upload-url",
   checkAuth,
+  upload.single("arquivo"),
   AutopublicacaoController.criarUploadLivro,
 );
 

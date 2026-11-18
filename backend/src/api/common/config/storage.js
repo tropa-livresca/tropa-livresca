@@ -1,8 +1,11 @@
-import { supabaseAdmin } from "./supabase.js";
+import { criarClienteAdminPocketBase } from "./pocketbase.js";
+
+const COLECAO_ARQUIVOS = "storage_files";
 
 export const STORAGE_BUCKET = Object.freeze({
   CAPAS: "capa-livros",
   MANUSCRITOS: "manuscrito-livro",
+  PERFIS: "imagens-perfil",
 });
 
 export const STORAGE_SIGNED_URL_TTL = 300;
@@ -17,6 +20,13 @@ export const STORAGE_FILE_RULES = Object.freeze({
   }),
   capa_verso: Object.freeze({
     bucket: STORAGE_BUCKET.CAPAS,
+    extensions: Object.freeze(["jpg", "jpeg", "png"]),
+    mimeTypes: Object.freeze(["image/jpeg", "image/png"]),
+    maxBytes: 10 * 1024 * 1024,
+    signature: "image",
+  }),
+  imagem_perfil: Object.freeze({
+    bucket: STORAGE_BUCKET.PERFIS,
     extensions: Object.freeze(["jpg", "jpeg", "png"]),
     mimeTypes: Object.freeze(["image/jpeg", "image/png"]),
     maxBytes: 10 * 1024 * 1024,
@@ -37,13 +47,29 @@ function erroStorage(mensagem, statusCode = 400) {
   return error;
 }
 
+function marcarErro(error, statusCode = 500) {
+  error.statusCode = error.statusCode || error.status || statusCode;
+  throw error;
+}
+
+async function buscarArquivo(bucket, path) {
+  const pb = criarClienteAdminPocketBase();
+  try {
+    const record = await pb.collection(COLECAO_ARQUIVOS).getFirstListItem(
+      pb.filter("bucket = {:bucket} && path = {:path}", { bucket, path }),
+    );
+    return { pb, record };
+  } catch (error) {
+    if (error.status === 404) {
+      throw erroStorage("Arquivo não encontrado.", 404);
+    }
+    marcarErro(error);
+  }
+}
+
 export function obterRegraArquivo(tipo) {
   const regra = STORAGE_FILE_RULES[tipo];
-
-  if (!regra) {
-    throw erroStorage("Tipo de arquivo inválido para o sistema.");
-  }
-
+  if (!regra) throw erroStorage("Tipo de arquivo inválido para o sistema.");
   return regra;
 }
 
@@ -62,19 +88,15 @@ export function validarMetadadosUpload({ tipo, extensao, mimeType, tamanho }) {
   if (!regra.extensions.includes(extensaoNormalizada)) {
     throw erroStorage("Extensão de arquivo não permitida.");
   }
-
   if (!regra.mimeTypes.includes(mimeType)) {
     throw erroStorage("Tipo MIME de arquivo não permitido.");
   }
-
   if (!Number.isInteger(tamanhoNumerico) || tamanhoNumerico <= 0) {
     throw erroStorage("Tamanho de arquivo inválido.");
   }
-
   if (tamanhoNumerico > regra.maxBytes) {
     throw erroStorage("Arquivo excede o tamanho máximo permitido.");
   }
-
   return { regra, extensao: extensaoNormalizada };
 }
 
@@ -82,9 +104,6 @@ export function validarPathDoUsuario(path, userId, bucket) {
   if (typeof path !== "string" || !path || !userId || !bucket) {
     throw erroStorage("Path de arquivo inválido.", 400);
   }
-
-  console.log(path);
-
   if (
     path.includes("..") ||
     path.includes("\\") ||
@@ -97,35 +116,28 @@ export function validarPathDoUsuario(path, userId, bucket) {
   ) {
     throw erroStorage("Tentativa inválida de manipulação de arquivo.", 403);
   }
-
   if (path.split("/").some((segment) => !segment || segment === ".")) {
     throw erroStorage("Path de arquivo inválido.", 400);
   }
-
   return path;
 }
 
 export function normalizarCaminhoPersistido(value, bucket) {
   if (typeof value !== "string" || !value) return null;
-
   if (!value.startsWith("http://") && !value.startsWith("https://")) {
     return value;
   }
 
   try {
     const url = new URL(value);
-    const marker = `/storage/v1/object/`;
+    const marker = "/storage/v1/object/";
     const markerIndex = url.pathname.indexOf(marker);
-
     if (markerIndex === -1) return null;
-
     const pathParts = url.pathname
       .slice(markerIndex + marker.length)
       .split("/");
     const bucketIndex = pathParts.indexOf(bucket);
-
     if (bucketIndex === -1) return null;
-
     return decodeURIComponent(pathParts.slice(bucketIndex + 1).join("/"));
   } catch {
     return null;
@@ -133,60 +145,71 @@ export function normalizarCaminhoPersistido(value, bucket) {
 }
 
 export function criarPathUpload(userId, tipo, extensao) {
-  console.log(userId);
-  console.log(tipo);
-  console.log(extensao);
-
   const regra = obterRegraArquivo(tipo);
   const extensaoNormalizada = normalizarExtensao(extensao);
-
   return {
     bucket: regra.bucket,
     path: `${userId}/livro_${tipo}_${globalThis.crypto.randomUUID()}.${extensaoNormalizada}`,
   };
 }
 
-export async function criarUrlAssinada(bucket, path) {
-  const { data, error } = await supabaseAdmin.storage
-    .from(bucket)
-    .createSignedUrl(path, STORAGE_SIGNED_URL_TTL);
+export async function uploadArquivo(bucket, path, arquivo) {
+  const pb = criarClienteAdminPocketBase();
+  const owner = path.split("/")[0];
+  const formData = new FormData();
+  const blob = new Blob([arquivo.buffer], { type: arquivo.mimetype });
+  formData.append("owner", owner);
+  formData.append("bucket", bucket);
+  formData.append("path", path);
+  formData.append(
+    "file",
+    new File([blob], path.split("/").pop(), { type: arquivo.mimetype }),
+  );
 
-  if (error) {
-    error.statusCode = 500;
-    throw error;
+  try {
+    return await pb.collection(COLECAO_ARQUIVOS).create(formData);
+  } catch (error) {
+    marcarErro(error);
   }
+}
 
-  return data.signedUrl;
+export async function criarUrlAssinada(bucket, path) {
+  const { pb, record } = await buscarArquivo(bucket, path);
+  try {
+    const token = await pb.files.getToken();
+    return pb.files.getURL(record, record.file, { token });
+  } catch (error) {
+    marcarErro(error);
+  }
 }
 
 export async function removerArquivos(bucket, paths) {
-  const pathsValidos = [...new Set((paths || []).filter(Boolean))];
+  const caminhos = [...new Set((paths || []).filter(Boolean))];
+  if (!caminhos.length) return;
 
-  if (!pathsValidos.length) return;
-
-  const { error } = await supabaseAdmin.storage
-    .from(bucket)
-    .remove(pathsValidos);
-
-  if (error) {
-    error.statusCode = 500;
-    throw error;
+  const pb = criarClienteAdminPocketBase();
+  for (const path of caminhos) {
+    try {
+      const record = await pb.collection(COLECAO_ARQUIVOS).getFirstListItem(
+        pb.filter("bucket = {:bucket} && path = {:path}", { bucket, path }),
+      );
+      await pb.collection(COLECAO_ARQUIVOS).delete(record.id);
+    } catch (error) {
+      if (error.status === 404) continue;
+      marcarErro(error);
+    }
   }
 }
 
 export async function validarArquivoArmazenado(bucket, path, tipo) {
   const regra = obterRegraArquivo(tipo);
-  const { data, error } = await supabaseAdmin.storage
-    .from(bucket)
-    .download(path);
-
-  if (error) {
-    error.statusCode = 400;
-    throw error;
+  const url = await criarUrlAssinada(bucket, path);
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw erroStorage("Não foi possível validar o arquivo armazenado.", 400);
   }
 
-  const bytes = new Uint8Array(await data.arrayBuffer());
-
+  const bytes = new Uint8Array(await response.arrayBuffer());
   if (bytes.length === 0 || bytes.length > regra.maxBytes) {
     throw erroStorage("Arquivo armazenado excede o tamanho permitido.");
   }
@@ -205,7 +228,6 @@ export async function validarArquivoArmazenado(bucket, path, tipo) {
     bytes[6] === 0x1a &&
     bytes[7] === 0x0a;
   const assinaturaValida = regra.signature === "pdf" ? ehPdf : ehJpeg || ehPng;
-
   if (!assinaturaValida) {
     throw erroStorage("Conteúdo do arquivo não corresponde ao tipo permitido.");
   }

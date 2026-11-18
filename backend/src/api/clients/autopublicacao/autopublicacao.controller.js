@@ -69,16 +69,12 @@ export class AutopublicacaoController {
   static async criarUploadLivro(req, res, next) {
     try {
       const userId = req.user?.id;
-      const { tipo, extensao, mimeType, tamanho } = req.body;
-
-      console.log("q");
+      const { tipo } = req.body;
 
       const resultado = await AutopublicacaoService.criarUploadLivro({
         userId,
         tipo,
-        extensao,
-        mimeType,
-        tamanho,
+        arquivo: req.file,
       });
 
       return res.status(200).json(resultado);

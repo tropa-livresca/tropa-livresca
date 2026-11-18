@@ -1,4 +1,3 @@
-import { supabaseAdmin } from "../../common/config/supabase.js";
 import { RevisaoModel } from "../../common/models/revisao.model.js";
 import { LIVRO_ESTADO } from "../../common/config/livro-estados.js";
 import {
@@ -6,6 +5,7 @@ import {
   criarUrlAssinada,
   normalizarCaminhoPersistido,
   removerArquivos,
+  uploadArquivo,
   validarArquivoArmazenado,
   validarMetadadosUpload,
 } from "../../common/config/storage.js";
@@ -69,19 +69,7 @@ export class RevisaoService {
     });
 
     const path = this._novoPathRevisao(userId);
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from(STORAGE_BUCKET.MANUSCRITOS)
-      .upload(path, arquivo.buffer, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: arquivo.mimetype,
-      });
-
-    if (uploadError) {
-      uploadError.statusCode = 500;
-      throw uploadError;
-    }
-
+    await uploadArquivo(STORAGE_BUCKET.MANUSCRITOS, path, arquivo);
     try {
       await validarArquivoArmazenado(
         STORAGE_BUCKET.MANUSCRITOS,

@@ -1,111 +1,120 @@
-import { createRequire } from "node:module";
+import { jest } from "@jest/globals";
+const mockColecoes = {};
+const mockCliente = {
+  collection: jest.fn((nome) => mockColecoes[nome]),
+  filter: jest.fn((filter) => filter),
+};
 
-const require = createRequire(import.meta.url);
+jest.unstable_mockModule(
+  "../../../src/api/common/models/pocketbase.helpers.js",
+  () => ({
+    criarClienteModel: () => mockCliente,
+    marcarErro(error) {
+      error.statusCode = error.statusCode || error.status || 500;
+      throw error;
+    },
+    obterIdPerfil: async (_pb, id) => id,
+  }),
+);
 
-// Cada chamada a supabase.from() consome o próximo resultado da fila.
-const resultados = [];
-const inserts = [];
-
-function criarQuery() {
-  const query = {
-    select: jest.fn(() => query),
-    eq: jest.fn(() => query),
-    limit: jest.fn(() => query),
-    insert: jest.fn((linhas) => {
-      inserts.push(linhas);
-      return query;
-    }),
-    maybeSingle: jest.fn(() => Promise.resolve(resultados.shift())),
-    then: (onFulfilled, onRejected) =>
-      Promise.resolve(resultados.shift()).then(onFulfilled, onRejected),
-  };
-  return query;
-}
-
-jest.mock("../../../src/api/common/config/supabase.js", () => ({
-  __esModule: true,
-  supabaseAdmin: { from: jest.fn(() => criarQuery()) },
-}));
-
-const {
-  MovimentacoesModel,
-} = require("../../../src/api/common/models/movimentacoes.model.js");
+const { MovimentacoesModel } =
+  await import("../../../src/api/common/models/movimentacoes.model.js");
 
 describe("MovimentacoesModel.autorizarDepositoContaAutor", () => {
   beforeEach(() => {
-    resultados.length = 0;
-    inserts.length = 0;
+    jest.clearAllMocks();
+    mockColecoes.vendas = {
+      getOne: jest.fn().mockResolvedValue({
+        id: "sale-1",
+        status_pagamento: "pago",
+      }),
+    };
+    mockColecoes.movimentacoes_financeiras = {
+      getList: jest.fn().mockResolvedValue({ items: [] }),
+      create: jest
+        .fn()
+        .mockImplementation((record) =>
+          Promise.resolve({ id: `movement-${record.tipo}-${record.valor}` }),
+        ),
+      delete: jest.fn(),
+    };
+    mockColecoes.itens_venda = {
+      getFullList: jest.fn().mockResolvedValue([
+        {
+          subtotal: 100,
+          expand: {
+            fk_livros_itens_id: { fk_user_profile_id: "author-1" },
+          },
+        },
+      ]),
+    };
   });
 
-  it("repassa 30% ao autor e grava data e status", async () => {
-    resultados.push(
-      { data: { id: 1, status_pagamento: "pago" }, error: null },
-      { data: [], error: null },
-      {
-        data: [{ subtotal: 100, livros: { fk_user_profile_id: "autor-1" } }],
-        error: null,
-      },
-      { data: null, error: null },
-    );
-
+  it("cria os lançamentos de venda e comissão usando relações do PocketBase", async () => {
     await expect(
-      MovimentacoesModel.autorizarDepositoContaAutor(1),
+      MovimentacoesModel.autorizarDepositoContaAutor("sale-1"),
     ).resolves.toEqual({ sucesso: true });
 
-    expect(inserts).toHaveLength(1);
-    const [entradaBruta, saidaAutor, creditoAutor] = inserts[0];
-
-    expect(entradaBruta).toMatchObject({ tipo: "entrada", valor: 100 });
-    expect(saidaAutor).toMatchObject({ tipo: "saida", valor: 30 });
-    expect(creditoAutor).toMatchObject({
+    const criadas =
+      mockColecoes.movimentacoes_financeiras.create.mock.calls.map(
+        ([record]) => record,
+      );
+    expect(criadas).toHaveLength(3);
+    expect(criadas[0]).toMatchObject({
+      fk_vendas_id: "sale-1",
+      fk_user_profile_id: "",
+      tipo: "entrada",
+      valor: 100,
+      status: "concluido",
+    });
+    expect(criadas[1]).toMatchObject({
+      tipo: "saida",
+      valor: 30,
+    });
+    expect(criadas[2]).toMatchObject({
+      fk_user_profile_id: "author-1",
       tipo: "entrada",
       valor: 30,
-      fk_user_profile_id: "autor-1",
     });
-
-    for (const linha of inserts[0]) {
-      expect(linha.status).toBe("concluido");
-      expect(linha.data).toEqual(expect.any(String));
-    }
   });
 
-  it("recusa venda que não está paga", async () => {
-    resultados.push({
-      data: { id: 1, status_pagamento: "pendente" },
-      error: null,
+  it("recusa vendas não pagas e repasses duplicados", async () => {
+    mockColecoes.vendas.getOne.mockResolvedValueOnce({
+      id: "sale-1",
+      status_pagamento: "pendente",
     });
-
     await expect(
-      MovimentacoesModel.autorizarDepositoContaAutor(1),
+      MovimentacoesModel.autorizarDepositoContaAutor("sale-1"),
     ).rejects.toMatchObject({ statusCode: 400 });
-    expect(inserts).toHaveLength(0);
-  });
+    expect(
+      mockColecoes.movimentacoes_financeiras.create,
+    ).not.toHaveBeenCalled();
 
-  it("recusa repasse duplicado", async () => {
-    resultados.push(
-      { data: { id: 1, status_pagamento: "pago" }, error: null },
-      { data: [{ id: 99 }], error: null },
-    );
-
+    mockColecoes.vendas.getOne.mockResolvedValueOnce({
+      id: "sale-1",
+      status_pagamento: "pago",
+    });
+    mockColecoes.movimentacoes_financeiras.getList.mockResolvedValueOnce({
+      items: [{ id: "existing" }],
+    });
     await expect(
-      MovimentacoesModel.autorizarDepositoContaAutor(1),
+      MovimentacoesModel.autorizarDepositoContaAutor("sale-1"),
     ).rejects.toMatchObject({ statusCode: 409 });
-    expect(inserts).toHaveLength(0);
+    expect(
+      mockColecoes.movimentacoes_financeiras.create,
+    ).not.toHaveBeenCalled();
   });
 
-  it("propaga erro do insert em vez de responder sucesso", async () => {
-    resultados.push(
-      { data: { id: 1, status_pagamento: "pago" }, error: null },
-      { data: [], error: null },
-      {
-        data: [{ subtotal: 50, livros: { fk_user_profile_id: "autor-1" } }],
-        error: null,
-      },
-      { data: null, error: new Error("violação de NOT NULL") },
-    );
+  it("remove lançamentos parciais e propaga o erro se a gravação falhar", async () => {
+    mockColecoes.movimentacoes_financeiras.create
+      .mockResolvedValueOnce({ id: "created-1" })
+      .mockRejectedValueOnce(new Error("falha ao gravar"));
 
     await expect(
-      MovimentacoesModel.autorizarDepositoContaAutor(1),
-    ).rejects.toThrow("violação de NOT NULL");
+      MovimentacoesModel.autorizarDepositoContaAutor("sale-1"),
+    ).rejects.toThrow("falha ao gravar");
+    expect(mockColecoes.movimentacoes_financeiras.delete).toHaveBeenCalledWith(
+      "created-1",
+    );
   });
 });

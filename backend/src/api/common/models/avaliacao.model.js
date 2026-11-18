@@ -1,79 +1,110 @@
-import { supabaseAdmin } from "../config/supabase.js";
+import {
+  criarClienteModel,
+  getListPocketBase,
+  marcarErro,
+  obterIdPerfil,
+} from "./pocketbase.helpers.js";
+
+const COLECAO = "avaliacoes";
+
+async function buscarAvaliacao(pb, usuarioId, livroId) {
+  const perfilId = await obterIdPerfil(pb, usuarioId);
+  try {
+    return await pb
+      .collection(COLECAO)
+      .getFirstListItem(
+        pb.filter(
+          "fk_livros_id = {:livroId} && fk_users_profile_id = {:perfilId}",
+          { livroId, perfilId },
+        ),
+      );
+  } catch (error) {
+    if (error.status === 404) return null;
+    marcarErro(error);
+  }
+}
 
 export class AvaliacaoModel {
   static async buscarResumoLivro(livroId) {
-    const { data, error } = await supabaseAdmin
-      .from("avaliacoes")
-      .select("qtd_estrelas")
-      .eq("fk_livros_id", livroId);
+    const pb = criarClienteModel();
+    try {
+      const avaliacoes = await pb.collection(COLECAO).getFullList({
+        filter: pb.filter("fk_livros_id = {:livroId}", { livroId }),
+        fields: "qtd_estrelas",
+      });
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+      const total = avaliacoes.length;
+      if (total === 0) return { media: 0, total: 0 };
+      const soma = avaliacoes.reduce(
+        (acc, item) => acc + (item.qtd_estrelas || 0),
+        0,
+      );
+      return { media: Math.round((soma / total) * 10) / 10, total };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const total = data?.length || 0;
-    if (total === 0) return { media: 0, total: 0 };
-
-    const soma = data.reduce((acc, item) => acc + (item.qtd_estrelas || 0), 0);
-
-    return { media: Math.round((soma / total) * 10) / 10, total };
   }
 
   static async buscarAvaliacaoUsuario(usuarioId, livroId) {
-    const { data, error } = await supabaseAdmin
-      .from("avaliacoes")
-      .select("id, qtd_estrelas")
-      .eq("fk_livros_id", livroId)
-      .eq("fk_users_profile_id", usuarioId)
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
+    const pb = criarClienteModel();
+    const avaliacao = await buscarAvaliacao(pb, usuarioId, livroId);
+    return avaliacao
+      ? { id: avaliacao.id, qtd_estrelas: avaliacao.qtd_estrelas }
+      : null;
   }
 
   static async usuarioComprouLivro(usuarioId, livroId) {
-    const { data, error } = await supabaseAdmin
-      .from("itens_venda")
-      .select("id, vendas!inner(fk_user_profile_id, status_pagamento)")
-      .eq("fk_livros_itens_id", livroId)
-      .eq("vendas.fk_user_profile_id", usuarioId)
-      .eq("vendas.status_pagamento", "pago")
-      .limit(1);
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, usuarioId);
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const vendas = await pb.collection("vendas").getFullList({
+        filter: pb.filter(
+          "fk_user_profile_id = {:perfilId} && status_pagamento = 'pago'",
+          { perfilId },
+        ),
+        fields: "id",
+      });
+      if (vendas.length === 0) return false;
+
+      const filtroVendas = vendas
+        .map((_, index) => `fk_vendas_id = {:venda${index}}`)
+        .join(" || ");
+      const params = Object.fromEntries(
+        vendas.map((venda, index) => [`venda${index}`, venda.id]),
+      );
+      const itens = await getListPocketBase(pb.collection("itens_venda"), {
+        page: 1,
+        limit: 1,
+        filter: pb.filter(
+          `fk_livros_itens_id = {:livroId} && (${filtroVendas})`,
+          { ...params, livroId },
+        ),
+        fields: "id",
+      });
+      return itens.items.length > 0;
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data.length > 0;
   }
 
   static async salvarAvaliacao(usuarioId, livroId, qtdEstrelas) {
-    const existente = await this.buscarAvaliacaoUsuario(usuarioId, livroId);
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, usuarioId);
+    const existente = await buscarAvaliacao(pb, usuarioId, livroId);
 
-    const query = existente
-      ? supabaseAdmin
-          .from("avaliacoes")
-          .update({ qtd_estrelas: qtdEstrelas })
-          .eq("id", existente.id)
-      : supabaseAdmin.from("avaliacoes").insert({
-          fk_livros_id: livroId,
-          fk_users_profile_id: usuarioId,
-          qtd_estrelas: qtdEstrelas,
-        });
-
-    const { data, error } = await query.select("id, qtd_estrelas").single();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const dados = { qtd_estrelas: qtdEstrelas };
+      const avaliacao = existente
+        ? await pb.collection(COLECAO).update(existente.id, dados)
+        : await pb.collection(COLECAO).create({
+            ...dados,
+            fk_livros_id: livroId,
+            fk_users_profile_id: perfilId,
+          });
+      return { id: avaliacao.id, qtd_estrelas: avaliacao.qtd_estrelas };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 }

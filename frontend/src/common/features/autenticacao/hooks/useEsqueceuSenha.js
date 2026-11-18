@@ -17,10 +17,7 @@ export const useEsqueceuSenha = () => {
       const response = await apiFetch("/api/v1/auth/esquecer-senha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          redirectTo: `${window.location.origin}/auth/redefinir-senha`,
-        }),
+        body: JSON.stringify({ email }),
       });
 
       const dados = await response.json();
