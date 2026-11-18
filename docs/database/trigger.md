@@ -1,176 +1,73 @@
-# Documentação dos Gatilhos (Triggers) — Supabase/PostgreSQL
+# Gatilhos do PocketBase
 
-Este documento descreve os gatilhos (_triggers_) utilizados na plataforma Tropa Livresca, responsáveis por executar automaticamente funções do banco de dados em resposta a operações realizadas nas tabelas.
+Os gatilhos PostgreSQL não são transferidos automaticamente para o PocketBase. Pontos executados por triggers podem ser implementados por hooks JavaScript ou pelas regras da aplicação.
 
-Os gatilhos estão distribuídos nos esquemas `auth` e `public` e utilizam funções escritas em PL/pgSQL para realizar operações relacionadas ao cadastro de usuários, à sincronização de e-mails e ao gerenciamento de endereços principais.
+## Hook disponível
 
----
+O projeto possui atualmente o hook em `pocketbase/pb_hooks/main.pb.js`:
 
-## Instruções para Execução e Implantação
+| Evento | Collection | Operação |
+| --- | --- | --- |
+| `onRecordAfterCreateSuccess` | `users` | Criar o perfil correspondente |
 
-Para recriar os gatilhos em outro ambiente do Supabase, observe as seguintes diretrizes:
+O hook cria `users_profile` com o mesmo ID da conta autenticada, copia telefone e e-mail e define os privilégios iniciais.
 
-1. **Criação prévia das funções:** as funções acionadas pelos gatilhos devem existir antes da execução dos comandos `CREATE TRIGGER`.
-2. **Esquema de origem:** cada gatilho deve ser criado no mesmo esquema e na tabela indicados na definição original.
-3. **Momento de execução:** `BEFORE` indica que a função é executada antes da operação; `AFTER` indica que é executada depois da operação.
-4. **Orientação por linha:** `FOR EACH ROW` determina que o gatilho seja executado individualmente para cada registro afetado.
-5. **Eventos:** os eventos documentados são `INSERT`, responsáveis por disparar os gatilhos durante a inserção de registros.
-6. **Permissões:** a criação de gatilhos no esquema `auth` pode exigir privilégios administrativos apropriados no Supabase.
+## Conversão dos gatilhos anteriores
 
----
+### Criação de usuário
 
-# Estrutura dos Gatilhos
+Equivalente a `on_auth_user_created`:
 
-## 1. `on_auth_user_created`
+- Evento: usuário criado em `users`.
+- Hook: `onRecordAfterCreateSuccess`.
+- Resultado: criação de `users_profile`.
 
-**Tabela:** `auth.users`
+O hook atual está no projeto e cria o perfil após o cadastro.
 
-**Função executada:** `public.handle_new_user()`
+### Sincronização de e-mail
 
-**Finalidade:** executar a função de criação do perfil público quando um novo usuário é inserido na tabela de autenticação do Supabase.
+Não existe atualmente um hook equivalente a `on_auth_user_email_sync`.
 
-| Propriedade     | Definição                |
-| --------------- | ------------------------ |
-| Esquema         | `auth`                   |
-| Tabela          | `users`                  |
-| Nome do gatilho | `on_auth_user_created`   |
-| Função acionada | `public.handle_new_user` |
-| Momento         | `AFTER`                  |
-| Evento          | `INSERT`                 |
-| Orientação      | `ROW`                    |
+Para sincronizar o e-mail:
 
-### Método de criação
+1. Atualize o campo `email` em `users_profile` no mesmo fluxo que altera o e-mail.
+2. Ou implemente um hook de atualização da collection `users`.
+3. Proteja o campo contra alterações não autorizadas.
 
-```sql
-CREATE TRIGGER on_auth_user_created
-AFTER INSERT ON auth.users
-FOR EACH ROW
-EXECUTE FUNCTION public.handle_new_user();
+### Endereço principal
+
+A função `gerenciar_endereco_principal_automatico` não foi convertida automaticamente.
+
+Antes de ativar essa regra no PocketBase, implemente um dos mecanismos abaixo:
+
+```javascript
+onRecordBeforeCreateRequest((e) => {
+  // Validar ou ajustar o registro antes da criação.
+  return e.next();
+}, "enderecos");
 ```
 
-### Funcionamento
-
-Após a inserção de um usuário em `auth.users`, o gatilho executa `public.handle_new_user()`. Conforme a implementação documentada, essa função insere um perfil correspondente em `public.users_profile`, utilizando o UUID do usuário e os dados disponíveis nos metadados do cadastro.
-
----
-
-## 2. `on_auth_user_email_sync`
-
-**Tabela:** `auth.users`
-
-**Função executada:** `public.handle_user_email_sync()`
-
-**Finalidade:** executar a função responsável por sincronizar o e-mail da conta de autenticação com o perfil público.
-
-| Propriedade     | Definição                       |
-| --------------- | ------------------------------- |
-| Esquema         | `auth`                          |
-| Tabela          | `users`                         |
-| Nome do gatilho | `on_auth_user_email_sync`       |
-| Função acionada | `public.handle_user_email_sync` |
-| Momento         | `AFTER`                         |
-| Evento          | `INSERT`                        |
-| Orientação      | `ROW`                           |
-
-### Método de criação
-
-```sql
-CREATE TRIGGER on_auth_user_email_sync
-AFTER INSERT ON auth.users
-FOR EACH ROW
-EXECUTE FUNCTION public.handle_user_email_sync();
+```javascript
+onRecordBeforeUpdateRequest((e) => {
+  // Validar ou ajustar o registro antes da atualização.
+  return e.next();
+}, "enderecos");
 ```
 
-### Funcionamento
+## Regras de implementação
 
-Após a inserção de um usuário em `auth.users`, o gatilho executa `public.handle_user_email_sync()`, que sincroniza o e-mail com `public.users_profile`.
+1. Mantenha um único responsável pela consistência dos endereços principais.
+2. Evite atualizar registros recursivamente sem verificar o contexto do hook.
+3. Use transações ou operações sequenciais controladas quando necessário.
+4. Teste criação, alteração e exclusão de endereços.
+5. Configure as API rules para impedir que o usuário altere registros de outra pessoa.
 
-A implementação apresentada da função também contempla a inserção ou atualização do perfil caso ele ainda não exista.
+## Gatilhos não implementados
 
-**Observação importante:** a definição fornecida indica o evento `INSERT`, e não `UPDATE`. Portanto, esse gatilho, isoladamente, não sincroniza alterações posteriores de e-mail. Para isso, seria necessário um gatilho separado para `AFTER UPDATE OF email`, caso esse comportamento seja desejado.
+Os seguintes comportamentos precisam ser implementados ou confirmados no PocketBase:
 
-Além disso, como `on_auth_user_created` também insere um perfil, a execução dos dois gatilhos durante o mesmo cadastro exige atenção: a função de sincronização deve ser compatível com a existência prévia do perfil e com as restrições de unicidade da tabela.
-
----
-
-## 3. `trigger_endereco_principal_automatico`
-
-**Tabela:** `public.enderecos`
-
-**Função executada:** `public.gerenciar_endereco_principal_automatico()`
-
-**Finalidade:** executar a função de gerenciamento do endereço principal antes da inserção de cada endereço.
-
-| Propriedade     | Definição                                        |
-| --------------- | ------------------------------------------------ |
-| Esquema         | `public`                                         |
-| Tabela          | `enderecos`                                      |
-| Nome do gatilho | `trigger_endereco_principal_automatico`          |
-| Função acionada | `public.gerenciar_endereco_principal_automatico` |
-| Momento         | `BEFORE`                                         |
-| Evento          | `INSERT`                                         |
-| Orientação      | `ROW`                                            |
-
-### Método de criação
-
-```sql
-CREATE TRIGGER trigger_endereco_principal_automatico
-BEFORE INSERT ON public.enderecos
-FOR EACH ROW
-EXECUTE FUNCTION public.gerenciar_endereco_principal_automatico();
-```
-
-### Funcionamento
-
-Antes de cada inserção em `public.enderecos`, o gatilho executa a função `public.gerenciar_endereco_principal_automatico()`.
-
-A função pode ajustar o campo `principal` do registro que está sendo inserido, conforme as regras de negócio implementadas.
-
-**Observação importante:** a função apresentada anteriormente também contém lógica para operações `UPDATE`. Entretanto, o gatilho documentado está associado somente ao evento `INSERT`. Para que a lógica de atualização seja executada automaticamente, será necessário confirmar a existência de outro gatilho `BEFORE UPDATE` ou ajustar a definição, conforme o comportamento desejado.
-
----
-
-# Relacionamento entre Gatilhos e Funções
-
-| Gatilho                                 | Tabela             | Evento          | Função executada                                   |
-| --------------------------------------- | ------------------ | --------------- | -------------------------------------------------- |
-| `on_auth_user_created`                  | `auth.users`       | `AFTER INSERT`  | `public.handle_new_user()`                         |
-| `on_auth_user_email_sync`               | `auth.users`       | `AFTER INSERT`  | `public.handle_user_email_sync()`                  |
-| `trigger_endereco_principal_automatico` | `public.enderecos` | `BEFORE INSERT` | `public.gerenciar_endereco_principal_automatico()` |
-
----
-
-# Verificação dos Gatilhos Existentes
-
-A consulta abaixo permite verificar os gatilhos registrados no banco de dados e conferir suas tabelas, seus eventos e suas funções associadas.
-
-```sql
-SELECT
-    event_object_schema AS table_schema,
-    event_object_table AS table_name,
-    trigger_name,
-    action_timing,
-    event_manipulation AS event,
-    action_orientation AS orientation,
-    action_statement AS function_triggered
-FROM information_schema.triggers
-WHERE
-    (event_object_schema = 'auth'
-        AND event_object_table = 'users')
-    OR
-    (event_object_schema = 'public'
-        AND event_object_table = 'enderecos')
-ORDER BY
-    event_object_schema,
-    event_object_table,
-    trigger_name,
-    event_manipulation;
-```
-
-## Observações finais
-
-- Os comandos de criação acima reproduzem os nomes e os eventos informados na listagem recebida.
-- Antes de executar os comandos em um ambiente existente, verifique se os gatilhos já foram criados, pois a criação de um gatilho com nome duplicado na mesma tabela provocará erro.
-- A criação dos gatilhos não cria automaticamente as funções associadas.
-- Os gatilhos de `auth.users` devem ser mantidos em conformidade com a configuração do Supabase Auth.
-- As definições documentadas não alteram automaticamente o banco de dados real.
+- sincronização posterior de e-mail;
+- controle automático do endereço principal;
+- envio de notificações em alterações financeiras;
+- execução de ações administrativas em revisões;
+- validação de funções administrativas.

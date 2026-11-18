@@ -21,6 +21,7 @@ export async function obterIdPerfil(pb, usuarioId) {
     const perfil = await pb
       .collection("users_profile")
       .getFirstListItem(pb.filter("auth_user = {:usuarioId}", { usuarioId }));
+
     return perfil.id;
   } catch (error) {
     if (error.status !== 404) marcarErro(error);
@@ -30,6 +31,7 @@ export async function obterIdPerfil(pb, usuarioId) {
     pb.collection("users_profile"),
     usuarioId,
   );
+
   return perfilExistente?.id || usuarioId;
 }
 
@@ -45,11 +47,13 @@ export function getListPocketBase(
   { page = 1, limit = 12, ...options },
 ) {
   const pagina = paginaPocketBase({ page, limit });
+
   return colecao.getList(pagina.page, pagina.perPage, options);
 }
 
 export function mapearExpansao(record, relacao, campo) {
   const { expand, ...dados } = record;
+
   return {
     ...dados,
     [campo]: expand?.[relacao] || null,

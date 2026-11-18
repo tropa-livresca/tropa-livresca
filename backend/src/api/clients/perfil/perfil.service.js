@@ -1,25 +1,16 @@
 import { PerfilModel } from "../../common/models/perfil.model.js";
-import {
-  STORAGE_BUCKET,
-  criarUrlAssinada,
-  normalizarCaminhoPersistido,
-  removerArquivos,
-  uploadArquivo,
-  validarArquivoArmazenado,
-  validarMetadadosUpload,
-} from "../../common/config/storage.js";
+import { criarClienteModel } from "../../common/models/pocketbase.helpers.js";
+import { validarMetadadosUpload } from "../../common/config/storage.js";
 
 export class PerfilService {
   static async _formatarPerfil(perfil) {
     if (!perfil?.imagem) return perfil;
-    const path = normalizarCaminhoPersistido(
-      perfil.imagem,
-      STORAGE_BUCKET.PERFIS,
-    );
-    if (!path) return perfil;
+
+    const pb = criarClienteModel();
+
     return {
       ...perfil,
-      imagem: await criarUrlAssinada(STORAGE_BUCKET.PERFIS, path),
+      imagem: pb.files.getURL(perfil, perfil.imagem),
     };
   }
 
@@ -39,45 +30,68 @@ export class PerfilService {
         telefone: "",
         descricao: "",
         imagem: "",
-        redes_sociais: { instagram: "", facebook: "", linkedin: "", email: "" },
+        redes_sociais: {
+          instagram: "",
+          facebook: "",
+          linkedin: "",
+          email: "",
+        },
       };
     }
 
     return this._formatarPerfil(perfil);
   }
 
-  static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
-    if (!userId) {
-      const erro401 = new Error("Sessão expirada.");
-      erro401.statusCode = 401;
-      throw erro401;
-    }
-
-    try {
-      const { nome, telefone, descricao } = dadosPerfil || {};
-      const updates = {
-        nome: nome || null,
-        telefone: telefone || null,
-        descricao: descricao || null,
-      };
-
-      if (redes_sociais) {
-        updates.redes_sociais =
-          typeof redes_sociais === "string"
-            ? JSON.parse(redes_sociais)
-            : redes_sociais;
-      }
-
-      return this._formatarPerfil(
-        await PerfilModel.atualizarPerfil(userId, updates),
-      );
-    } catch (error) {
-      if (error.statusCode) throw error;
-      const erroBanco = new Error("Erro ao atualizar os dados do perfil.");
-      erroBanco.statusCode = 500;
-      throw erroBanco;
-    }
+  
+static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
+  if (!userId) {
+    const erro401 = new Error("Sessão expirada.");
+    erro401.statusCode = 401;
+    throw erro401;
   }
+
+  try {
+    const { nome, telefone, descricao } = dadosPerfil || {};
+
+    // Nome pertence à collection users.
+    if (nome !== undefined) {
+      await PerfilModel.atualizarNomeUsuario(userId, {
+        nome: nome || "",
+      });
+    }
+
+    // Demais informações pertencem a users_profile.
+    const updates = {
+      telefone: telefone || "",
+      descricao: descricao || "",
+    };
+
+    if (redes_sociais) {
+      updates.redes_sociais =
+        typeof redes_sociais === "string"
+          ? JSON.parse(redes_sociais)
+          : redes_sociais;
+    }
+
+    const perfil = await PerfilModel.atualizarPerfil(
+      userId,
+      updates,
+    );
+
+    return this._formatarPerfil(
+      await PerfilModel.buscarPerfil(userId),
+    );
+  } catch (error) {
+    if (error.statusCode) throw error;
+
+    const erroBanco = new Error(
+      "Erro ao atualizar os dados do perfil.",
+    );
+    erroBanco.statusCode = 500;
+    throw erroBanco;
+  }
+}
+
 
   static async AtualizarImagemPerfil({ userId, file }) {
     if (!userId) {
@@ -95,38 +109,27 @@ export class PerfilService {
     }
 
     try {
-      const perfilAtual = await PerfilModel.buscarPerfil(userId);
-      const urlImagemAntiga = perfilAtual?.imagem;
-
       const extensao = file.originalname.split(".").pop();
-      const { regra, extensao: extensaoValida } = validarMetadadosUpload({
+
+      const { extensao: extensaoValida } = validarMetadadosUpload({
         tipo: "imagem_perfil",
         extensao,
         mimeType: file.mimetype,
         tamanho: file.size ?? file.buffer.length,
       });
-      const filePath = `${userId}/perfil_${Date.now()}.${extensaoValida}`;
-      await uploadArquivo(regra.bucket, filePath, file);
-      try {
-        await validarArquivoArmazenado(regra.bucket, filePath, "imagem_perfil");
-        const perfilData = await PerfilModel.atualizarApenasImagem(
-          userId,
-          filePath,
-        );
-        const pathAntigo = normalizarCaminhoPersistido(
-          urlImagemAntiga,
-          STORAGE_BUCKET.PERFIS,
-        );
-        if (pathAntigo && pathAntigo !== filePath) {
-          await removerArquivos(STORAGE_BUCKET.PERFIS, [pathAntigo]);
-        }
-        return this._formatarPerfil(perfilData);
-      } catch (error) {
-        await removerArquivos(regra.bucket, [filePath]);
-        throw error;
-      }
+
+      const nomeArquivo = `perfil_${Date.now()}.${extensaoValida}`;
+
+      const perfil = await PerfilModel.atualizarApenasImagem(
+        userId,
+        file,
+        nomeArquivo,
+      );
+
+      return this._formatarPerfil(perfil);
     } catch (error) {
       if (error.statusCode) throw error;
+
       const erroBanco = new Error("Erro ao salvar a nova imagem de perfil.");
       erroBanco.statusCode = 500;
       throw erroBanco;
@@ -141,20 +144,12 @@ export class PerfilService {
     }
 
     try {
-      const perfilAtual = await PerfilModel.buscarPerfil(userId);
-      const urlImagemAntiga = perfilAtual?.imagem;
+      const perfil = await PerfilModel.removerImagem(userId);
 
-      const perfilData = await PerfilModel.atualizarApenasImagem(userId, null);
-      const pathAntigo = normalizarCaminhoPersistido(
-        urlImagemAntiga,
-        STORAGE_BUCKET.PERFIS,
-      );
-      if (pathAntigo) {
-        await removerArquivos(STORAGE_BUCKET.PERFIS, [pathAntigo]);
-      }
-      return perfilData;
+      return this._formatarPerfil(perfil);
     } catch (error) {
       if (error.statusCode) throw error;
+
       const erroBanco = new Error("Erro ao remover a foto de perfil.");
       erroBanco.statusCode = 500;
       throw erroBanco;

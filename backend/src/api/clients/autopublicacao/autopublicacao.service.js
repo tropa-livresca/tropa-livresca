@@ -1,23 +1,21 @@
 import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js";
 import {
+  criarClienteModel,
+  obterIdPerfil,
+} from "../../common/models/pocketbase.helpers.js";
+
+import {
   LIVRO_ESTADO,
   TRANSICOES_CLIENTE,
   transicaoPermitida,
 } from "../../common/config/livro-estados.js";
-import {
-  STORAGE_BUCKET,
-  criarPathUpload,
-  criarUrlAssinada,
-  normalizarCaminhoPersistido,
-  obterRegraArquivo,
-  removerArquivos,
-  uploadArquivo,
-  validarArquivoArmazenado,
-  validarMetadadosUpload,
-  validarPathDoUsuario,
-} from "../../common/config/storage.js";
 
 export class AutopublicacaoService {
+  static _removerArquivo(formData, campo, nomeArquivo) {
+    if (!nomeArquivo) return;
+
+    formData.append(`${campo}-`, nomeArquivo);
+  }
   static _converterPreco(valor, nomeCampo) {
     if (valor === null || valor === undefined || valor === "") return 0;
 
@@ -38,122 +36,110 @@ export class AutopublicacaoService {
     return preco;
   }
 
-  static _parseCapa(capa) {
-    if (!capa) return {};
-    if (typeof capa === "object") return capa;
+  static _obterArquivo(arquivos, campo) {
+    const arquivo = arquivos?.[campo];
 
-    if (typeof capa === "string") {
-      try {
-        const capaParseada = JSON.parse(capa);
-        return capaParseada && typeof capaParseada === "object"
-          ? capaParseada
-          : {};
-      } catch {
-        return {};
-      }
+    if (Array.isArray(arquivo)) {
+      return arquivo[0] || null;
     }
 
-    return {};
+    return arquivo || null;
   }
 
-  static _capaPaths(capa) {
-    const capaNormalizada = this._parseCapa(capa);
+  static _adicionarArquivo(formData, campo, arquivo) {
+    if (!arquivo) return;
 
-    return {
-      frente: normalizarCaminhoPersistido(
-        capaNormalizada.frente,
-        STORAGE_BUCKET.CAPAS,
-      ),
-      verso: normalizarCaminhoPersistido(
-        capaNormalizada.verso,
-        STORAGE_BUCKET.CAPAS,
-      ),
-    };
+    if (!arquivo.buffer || !arquivo.originalname) {
+      const error = new Error(`Arquivo inválido: ${campo}.`);
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const blob = new Blob([arquivo.buffer], {
+      type: arquivo.mimetype,
+    });
+
+    formData.append(campo, blob, arquivo.originalname);
   }
 
-  static async _assinarLivro(livro) {
+  static _adicionarCampo(formData, campo, valor) {
+    if (valor === undefined || valor === null) return;
+
+    if (typeof valor === "object") {
+      formData.append(campo, JSON.stringify(valor));
+      return;
+    }
+
+    formData.append(campo, String(valor));
+  }
+
+  static _criarFormData(dados, arquivos = {}) {
+    const formData = new FormData();
+
+    Object.entries(dados).forEach(([campo, valor]) => {
+      this._adicionarCampo(formData, campo, valor);
+    });
+
+    ["manuscrito", "capa_frente", "capa_verso"].forEach((campo) => {
+      this._adicionarArquivo(
+        formData,
+        campo,
+        this._obterArquivo(arquivos, campo),
+      );
+    });
+
+    return formData;
+  }
+
+  static _assinarLivro(livro) {
     if (!livro) return livro;
 
-    const capaPaths = this._capaPaths(livro.capa);
-    const capas = await Promise.all(
-      Object.entries(capaPaths).map(async ([parte, path]) => [
-        parte,
-        path ? await criarUrlAssinada(STORAGE_BUCKET.CAPAS, path) : null,
-      ]),
-    );
-    const manuscritoPath = normalizarCaminhoPersistido(
-      livro.manuscrito,
-      STORAGE_BUCKET.MANUSCRITOS,
-    );
+    const pb = criarClienteModel();
+
+    const manuscrito = livro.manuscrito || null;
+    const capaFrente = livro.capa_frente || null;
+    const capaVerso = livro.capa_verso || null;
 
     return {
       ...livro,
-      capa: Object.fromEntries(capas),
-      capaPaths,
-      manuscrito: manuscritoPath
-        ? await criarUrlAssinada(STORAGE_BUCKET.MANUSCRITOS, manuscritoPath)
-        : null,
-      manuscritoPath,
+
+      manuscrito: manuscrito ? pb.files.getURL(livro, manuscrito) : null,
+
+      manuscritoPath: manuscrito,
+
+      capa: {
+        frente: capaFrente ? pb.files.getURL(livro, capaFrente) : null,
+
+        verso: capaVerso ? pb.files.getURL(livro, capaVerso) : null,
+      },
+
+      capaPaths: {
+        frente: capaFrente,
+        verso: capaVerso,
+      },
     };
   }
 
   static async _assinarLivros(livros) {
-    return Promise.all(livros.map((livro) => this._assinarLivro(livro)));
+    return livros.map((livro) => this._assinarLivro(livro));
   }
 
-  static _validarPath(path, userId, bucket) {
-    if (path === null || path === undefined) return null;
-    const pathNormalizado = normalizarCaminhoPersistido(path, bucket);
-    return validarPathDoUsuario(pathNormalizado, userId, bucket);
-  }
+  static _validarArquivosObrigatorios(arquivos = {}) {
+    const manuscrito = this._obterArquivo(arquivos, "manuscrito");
+    const capaFrente = this._obterArquivo(arquivos, "capa_frente");
 
-  static _pathsCapaParaPersistir({ capa, capaPaths, capaAtual, userId }) {
-    const entradas = capaPaths ?? capa ?? {};
-    const pathsAtuais = this._capaPaths(capaAtual);
+    if (!manuscrito) {
+      const error = new Error("O manuscrito do livro é obrigatório.");
+      error.statusCode = 400;
+      throw error;
+    }
 
-    return Object.fromEntries(
-      ["frente", "verso"].map((parte) => {
-        const valor = Object.prototype.hasOwnProperty.call(entradas, parte)
-          ? entradas[parte]
-          : pathsAtuais[parte];
-        return [
-          parte,
-          valor === null
-            ? null
-            : this._validarPath(valor, userId, STORAGE_BUCKET.CAPAS),
-        ];
-      }),
-    );
-  }
-
-  static async _removerComAviso(bucket, paths) {
-    if (!paths?.length) return;
-
-    try {
-      await removerArquivos(bucket, paths);
-    } catch (error) {
-      console.error("Não foi possível remover arquivos do Storage:", error);
+    if (!capaFrente) {
+      const error = new Error("A capa do livro é obrigatória.");
+      error.statusCode = 400;
+      throw error;
     }
   }
-
-  static async _validarArquivosNovos({ capa, manuscritoPath }) {
-    await Promise.all(
-      Object.entries(capa || {})
-        .filter(([, path]) => path)
-        .map(([, path]) =>
-          validarArquivoArmazenado(STORAGE_BUCKET.CAPAS, path, "capa_frente"),
-        ),
-    );
-
-    if (manuscritoPath) {
-      await validarArquivoArmazenado(
-        STORAGE_BUCKET.MANUSCRITOS,
-        manuscritoPath,
-        "manuscrito",
-      );
-    }
-  }
-
   static async atualizarEstado(livroId, userId, novoEstado) {
     if (!livroId) {
       const erroDados = new Error(
@@ -213,34 +199,8 @@ export class AutopublicacaoService {
   }
 
   static async deletarLivroRascunho(livroId, userId) {
-    const livroDeletado = await AutopublicacaoModel.deletarLivro(
-      livroId,
-      userId,
-    );
-
-    if (livroDeletado.error) throw livroDeletado.error;
-
-    const livros = Array.isArray(livroDeletado)
-      ? livroDeletado
-      : [livroDeletado];
-    const capas = livros.flatMap((livro) =>
-      Object.values(this._capaPaths(livro?.capa)).filter(Boolean),
-    );
-    const manuscritos = livros
-      .map((livro) =>
-        normalizarCaminhoPersistido(
-          livro?.manuscrito,
-          STORAGE_BUCKET.MANUSCRITOS,
-        ),
-      )
-      .filter(Boolean);
-
-    await this._removerComAviso(STORAGE_BUCKET.CAPAS, capas);
-    await this._removerComAviso(STORAGE_BUCKET.MANUSCRITOS, manuscritos);
-
-    return livroDeletado;
+    return await AutopublicacaoModel.deletarLivro(livroId, userId);
   }
-
   static async buscarComFiltros({
     userId,
     page,
@@ -305,10 +265,12 @@ export class AutopublicacaoService {
     userId,
     dadosLivro = {},
     estadoInicial = LIVRO_ESTADO.RASCUNHO,
-    capa = {},
-    capaPaths = undefined,
-    manuscritoPath = null,
+    arquivos = {},
   }) {
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, userId);
+
+    this._validarArquivosObrigatorios(arquivos);
     if (!userId) {
       const error = new Error(
         "Sessão expirada. Autentique-se novamente para publicar.",
@@ -328,75 +290,48 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    const capaParaPersistir = this._pathsCapaParaPersistir({
-      capa,
-      capaPaths,
-      userId,
-    });
-    const manuscritoParaPersistir = manuscritoPath
-      ? this._validarPath(manuscritoPath, userId, STORAGE_BUCKET.MANUSCRITOS)
-      : null;
-    const capasNovas = Object.values(capaParaPersistir).filter(Boolean);
-
-    try {
-      await this._validarArquivosNovos({
-        capa: capaParaPersistir,
-        manuscritoPath: manuscritoParaPersistir,
-      });
-    } catch (error) {
-      await this._removerComAviso(STORAGE_BUCKET.CAPAS, capasNovas);
-      await this._removerComAviso(
-        STORAGE_BUCKET.MANUSCRITOS,
-        manuscritoParaPersistir ? [manuscritoParaPersistir] : [],
-      );
-      throw error;
-    }
+    const detalhes = dadosLivro.detalhes || {};
+    const orcamento = dadosLivro.orcamento || {};
 
     const dadosParaInserir = {
       ativo: true,
-      fk_user_profile_id: userId,
+      fk_user_profile_id: perfilId,
       estado: estadoInicial,
-      ISBN: dadosLivro.detalhes?.ISBN || null,
-      titulo: dadosLivro.detalhes?.titulo || null,
-      subtitulo: dadosLivro.detalhes?.subtitulo || null,
-      descricao: dadosLivro.detalhes?.descricao || null,
-      numero_paginas: dadosLivro.orcamento?.numeroPaginas
-        ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
+
+      ISBN: detalhes.ISBN || null,
+      titulo: detalhes.titulo || null,
+      subtitulo: detalhes.subtitulo || null,
+      descricao: detalhes.descricao || null,
+
+      numero_paginas: orcamento.numeroPaginas
+        ? parseInt(orcamento.numeroPaginas, 10)
         : null,
-      idioma: dadosLivro.detalhes.idioma,
-      categoria: dadosLivro.detalhes.categoria,
-      colaboradores: dadosLivro.detalhes?.colaboradores || [],
+
+      idioma: detalhes.idioma,
+      categoria: detalhes.categoria,
+      colaboradores: detalhes.colaboradores || [],
+
       direitos_de_publicacao:
-        dadosLivro.detalhes?.direitoPublicacao === "sim" ||
-        dadosLivro.detalhes?.direitoPublicacao === true,
+        detalhes.direitoPublicacao === "sim" ||
+        detalhes.direitoPublicacao === true,
+
       data_de_publicacao: new Date().toISOString().split("T")[0],
+
       preco_digital: this._converterPreco(
-        dadosLivro.orcamento?.valorLivroDigital,
+        orcamento.valorLivroDigital,
         "livro digital",
       ),
+
       preco_fisico: this._converterPreco(
-        dadosLivro.orcamento?.valorLivroFisico,
+        orcamento.valorLivroFisico,
         "livro físico",
       ),
-      capa: capaParaPersistir,
-      manuscrito: manuscritoParaPersistir,
     };
 
-    let novoLivro;
-    try {
-      novoLivro = await AutopublicacaoModel.criarLivro(dadosParaInserir);
-    } catch (error) {
-      await this._removerComAviso(STORAGE_BUCKET.CAPAS, capasNovas);
-      await this._removerComAviso(
-        STORAGE_BUCKET.MANUSCRITOS,
-        manuscritoParaPersistir ? [manuscritoParaPersistir] : [],
-      );
-      throw error;
-    }
+    const formData = this._criarFormData(dadosParaInserir, arquivos);
 
-    if (novoLivro.error) throw novoLivro.error;
-
-    const livroFormatado = await this._assinarLivro(novoLivro);
+    const novoLivro = await AutopublicacaoModel.criarLivro(formData);
+    const livroFormatado = this._assinarLivro(novoLivro);
 
     return {
       data: livroFormatado,
@@ -408,9 +343,8 @@ export class AutopublicacaoService {
     userId,
     livroId,
     dadosLivro = {},
-    capa = {},
-    capaPaths = undefined,
-    manuscritoPath = undefined,
+    arquivos = {},
+    removerArquivos = {},
   }) {
     if (!userId) {
       const error = new Error(
@@ -453,184 +387,76 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    const capaAtual = this._capaPaths(livroAtual.capa);
-    const capaParaPersistir = this._pathsCapaParaPersistir({
-      capa,
-      capaPaths,
-      capaAtual: livroAtual.capa,
-      userId,
-    });
-    const manuscritoAtual = normalizarCaminhoPersistido(
-      livroAtual.manuscrito,
-      STORAGE_BUCKET.MANUSCRITOS,
-    );
-    const manuscritoParaPersistir =
-      manuscritoPath === undefined
-        ? manuscritoAtual
-        : manuscritoPath === null
-          ? null
-          : this._validarPath(
-              manuscritoPath,
-              userId,
-              STORAGE_BUCKET.MANUSCRITOS,
-            );
-    const capasSubstitutas = Object.fromEntries(
-      Object.entries(capaParaPersistir).filter(
-        ([parte, path]) => path && path !== capaAtual[parte],
-      ),
-    );
-    const manuscritoSubstituto =
-      manuscritoParaPersistir && manuscritoParaPersistir !== manuscritoAtual
-        ? manuscritoParaPersistir
-        : null;
-    try {
-      await this._validarArquivosNovos({
-        capa: capasSubstitutas,
-        manuscritoPath: manuscritoSubstituto,
-      });
-    } catch (error) {
-      await this._removerComAviso(
-        STORAGE_BUCKET.CAPAS,
-        Object.values(capasSubstitutas),
-      );
-      await this._removerComAviso(
-        STORAGE_BUCKET.MANUSCRITOS,
-        manuscritoSubstituto ? [manuscritoSubstituto] : [],
-      );
-      throw error;
-    }
+    const detalhes = dadosLivro.detalhes || {};
+    const orcamento = dadosLivro.orcamento || {};
 
     const dadosParaAtualizar = {
-      ISBN: dadosLivro.detalhes?.ISBN || livroAtual.ISBN,
-      titulo: dadosLivro.detalhes?.titulo || livroAtual.titulo,
-      subtitulo: dadosLivro.detalhes?.subtitulo || livroAtual.subtitulo,
-      descricao: dadosLivro.detalhes?.descricao || livroAtual.descricao,
-      idioma: dadosLivro.detalhes?.idioma || livroAtual.idioma,
-      categoria: dadosLivro.detalhes?.categoria || livroAtual.categoria,
-      numero_paginas: dadosLivro.orcamento?.numeroPaginas
-        ? parseInt(dadosLivro.orcamento.numeroPaginas, 10)
-        : livroAtual.numero_paginas,
-      colaboradores:
-        dadosLivro.detalhes?.colaboradores || livroAtual.colaboradores,
+      ISBN: detalhes.ISBN ?? livroAtual.ISBN,
+      titulo: detalhes.titulo ?? livroAtual.titulo,
+      subtitulo: detalhes.subtitulo ?? livroAtual.subtitulo,
+      descricao: detalhes.descricao ?? livroAtual.descricao,
+      idioma: detalhes.idioma ?? livroAtual.idioma,
+      categoria: detalhes.categoria ?? livroAtual.categoria,
+
+      colaboradores: detalhes.colaboradores ?? livroAtual.colaboradores,
+
       direitos_de_publicacao:
-        dadosLivro.detalhes?.direitoPublicacao === "sim" ||
-        dadosLivro.detalhes?.direitoPublicacao === true ||
-        livroAtual.direitos_de_publicacao,
+        detalhes.direitoPublicacao !== undefined
+          ? detalhes.direitoPublicacao === "sim" ||
+            detalhes.direitoPublicacao === true
+          : livroAtual.direitos_de_publicacao,
+
       preco_digital:
-        dadosLivro.orcamento?.valorLivroDigital !== undefined &&
-        dadosLivro.orcamento?.valorLivroDigital !== null &&
-        dadosLivro.orcamento?.valorLivroDigital !== ""
-          ? this._converterPreco(
-              dadosLivro.orcamento.valorLivroDigital,
-              "livro digital",
-            )
+        orcamento.valorLivroDigital !== undefined &&
+        orcamento.valorLivroDigital !== ""
+          ? this._converterPreco(orcamento.valorLivroDigital, "livro digital")
           : livroAtual.preco_digital,
+
       preco_fisico:
-        dadosLivro.orcamento?.valorLivroFisico !== undefined &&
-        dadosLivro.orcamento?.valorLivroFisico !== null &&
-        dadosLivro.orcamento?.valorLivroFisico !== ""
-          ? this._converterPreco(
-              dadosLivro.orcamento.valorLivroFisico,
-              "livro físico",
-            )
+        orcamento.valorLivroFisico !== undefined &&
+        orcamento.valorLivroFisico !== ""
+          ? this._converterPreco(orcamento.valorLivroFisico, "livro físico")
           : livroAtual.preco_fisico,
-      capa: capaParaPersistir,
-      manuscrito: manuscritoParaPersistir,
     };
 
-    let atualizado;
-    try {
-      atualizado = await AutopublicacaoModel.atualizarLivro(
-        livroId,
-        userId,
-        livroAtual.estado,
-        dadosParaAtualizar,
-      );
-    } catch (error) {
-      await this._removerComAviso(
-        STORAGE_BUCKET.CAPAS,
-        Object.values(capasSubstitutas),
-      );
-      await this._removerComAviso(
-        STORAGE_BUCKET.MANUSCRITOS,
-        manuscritoSubstituto ? [manuscritoSubstituto] : [],
-      );
-      throw error;
+    if (
+      orcamento.numeroPaginas !== undefined &&
+      orcamento.numeroPaginas !== ""
+    ) {
+      const numeroPaginas = Number.parseInt(orcamento.numeroPaginas, 10);
+
+      if (!Number.isInteger(numeroPaginas) || numeroPaginas < 1) {
+        const error = new Error("Número de páginas inválido.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      dadosParaAtualizar.numero_paginas = numeroPaginas;
     }
 
-    if (atualizado.error) throw atualizado.error;
+    const formData = this._criarFormData(dadosParaAtualizar, arquivos);
 
-    const capasAntigas = Object.entries(capaAtual)
-      .filter(([parte, path]) => path && path !== capaParaPersistir[parte])
-      .map(([, path]) => path);
-    await this._removerComAviso(STORAGE_BUCKET.CAPAS, capasAntigas);
-    if (manuscritoAtual && manuscritoAtual !== manuscritoParaPersistir) {
-      await this._removerComAviso(STORAGE_BUCKET.MANUSCRITOS, [
-        manuscritoAtual,
-      ]);
+    for (const campo of ["manuscrito", "capa_frente", "capa_verso"]) {
+      const arquivoNovo = this._obterArquivo(arquivos, campo);
+      const deveRemover = removerArquivos?.[campo] === true;
+
+      if (deveRemover && !arquivoNovo) {
+        this._removerArquivo(formData, campo, livroAtual[campo]);
+      }
     }
 
-    const livroFormatado = await this._assinarLivro(atualizado);
+    const atualizado = await AutopublicacaoModel.atualizarLivro(
+      livroId,
+      userId,
+      livroAtual.estado,
+      formData,
+    );
 
-    return { data: livroFormatado, manuscritoUrl: livroFormatado.manuscrito };
-  }
-
-  static async criarUploadLivro({ userId, tipo, arquivo }) {
-    if (!userId) {
-      const error = new Error("Usuário não autenticado.");
-      error.statusCode = 401;
-      throw error;
-    }
-    if (!arquivo?.buffer || !arquivo.originalname) {
-      const error = new Error("Nenhum arquivo válido foi enviado.");
-      error.statusCode = 400;
-      throw error;
-    }
-
-    const extensao = arquivo.originalname.split(".").pop();
-    const { extensao: extensaoNormalizada } = validarMetadadosUpload({
-      tipo,
-      extensao,
-      mimeType: arquivo.mimetype,
-      tamanho: arquivo.size ?? arquivo.buffer.length,
-    });
-    const { bucket, path } = criarPathUpload(userId, tipo, extensaoNormalizada);
-    this._validarPath(path, userId, bucket);
-
-    await uploadArquivo(bucket, path, arquivo);
-    try {
-      await validarArquivoArmazenado(bucket, path, tipo);
-    } catch (error) {
-      await this._removerComAviso(bucket, [path]);
-      throw error;
-    }
+    const livroFormatado = this._assinarLivro(atualizado);
 
     return {
-      bucket,
-      path,
-      url: await criarUrlAssinada(bucket, path),
+      data: livroFormatado,
+      manuscritoUrl: livroFormatado.manuscrito,
     };
-  }
-
-  static async limparUploads({ userId, arquivos = [] }) {
-    if (!userId) {
-      const error = new Error("Usuário não autenticado.");
-      error.statusCode = 401;
-      throw error;
-    }
-
-    const porBucket = new Map();
-
-    for (const arquivo of arquivos) {
-      const regra = obterRegraArquivo(arquivo?.tipo);
-      const path = validarPathDoUsuario(arquivo?.path, userId, regra.bucket);
-      const paths = porBucket.get(regra.bucket) || [];
-      paths.push(path);
-      porBucket.set(regra.bucket, paths);
-    }
-
-    for (const [bucket, paths] of porBucket) {
-      await removerArquivos(bucket, paths);
-    }
   }
 }

@@ -27,19 +27,23 @@ export class AutopublicacaoModel {
   } = {}) {
     const pb = criarClienteModel();
     const perfilId = await obterIdPerfil(pb, userId);
+
     const filtros = ["ativo = true", `${RELACAO_PERFIL} = {:perfilId}`];
+
     const params = { perfilId };
 
     if (busca) {
       filtros.push("titulo ~ {:busca}");
       params.busca = busca;
     }
+
     if (Object.values(LIVRO_ESTADO).includes(estado)) {
       filtros.push("estado = {:estado}");
       params.estado = estado;
     }
 
     const campoOrdenacao = filtro === "data" ? "data_de_publicacao" : "titulo";
+
     const ascending =
       filtro === "data" ? ordem === "ascendente" : ordem !== "descendente";
 
@@ -50,7 +54,11 @@ export class AutopublicacaoModel {
         filter: pb.filter(filtros.join(" && "), params),
         sort: ascending ? campoOrdenacao : `-${campoOrdenacao}`,
       });
-      return { data: resultado.items, count: resultado.totalItems };
+
+      return {
+        data: resultado.items,
+        count: resultado.totalItems,
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -62,6 +70,7 @@ export class AutopublicacaoModel {
 
     try {
       const livro = await pb.collection(COLECAO).getOne(idLivro);
+
       return livro[RELACAO_PERFIL] === perfilId && livro.ativo ? livro : null;
     } catch (error) {
       if (error.status === 404) return null;
@@ -72,12 +81,15 @@ export class AutopublicacaoModel {
   static async atualizarEstado(id, novoEstado, userId, estadoAtual) {
     const pb = criarClienteModel();
     const livro = await this.buscarDetalhesPorId(id, userId);
+
     if (!livro || (estadoAtual && livro.estado !== estadoAtual)) {
       throw erroConflito();
     }
 
     try {
-      return await pb.collection(COLECAO).update(id, { estado: novoEstado });
+      return await pb.collection(COLECAO).update(id, {
+        estado: novoEstado,
+      });
     } catch (error) {
       marcarErro(error);
     }
@@ -85,14 +97,31 @@ export class AutopublicacaoModel {
 
   static async criarLivro(dadosLivro) {
     const pb = criarClienteModel();
-    const dados = { ...dadosLivro };
-    if (dados[RELACAO_PERFIL]) {
-      dados[RELACAO_PERFIL] = await obterIdPerfil(pb, dados[RELACAO_PERFIL]);
+
+    if (!(dadosLivro instanceof FormData)) {
+      const error = new Error(
+        "Os dados do livro devem ser enviados no formato FormData.",
+      );
+
+      error.statusCode = 400;
+      throw error;
     }
 
     try {
-      return await pb.collection(COLECAO).create(dados);
+      return await pb.collection(COLECAO).create(dadosLivro);
     } catch (error) {
+      console.error("\n========== ERRO POCKETBASE ==========");
+
+      console.error("Status:", error.status);
+      console.error("Mensagem:", error.response?.message);
+
+      console.error(
+        "Detalhes dos campos:",
+        JSON.stringify(error.response?.data, null, 2),
+      );
+
+      console.error("====================================\n");
+
       marcarErro(error);
     }
   }
@@ -100,7 +129,10 @@ export class AutopublicacaoModel {
   static async atualizarLivro(id, userId, estadoAtual, dadosAtualizados) {
     const pb = criarClienteModel();
     const livro = await this.buscarDetalhesPorId(id, userId);
-    if (!livro || livro.estado !== estadoAtual) throw erroConflito();
+
+    if (!livro || livro.estado !== estadoAtual) {
+      throw erroConflito();
+    }
 
     try {
       return await pb.collection(COLECAO).update(id, dadosAtualizados);
@@ -118,10 +150,12 @@ export class AutopublicacaoModel {
       error.statusCode = 404;
       throw error;
     }
+
     if (livro.estado !== LIVRO_ESTADO.RASCUNHO) {
       const error = new Error(
         "Livros em rascunho podem ser deletados. Livros em revisão ou publicados não podem ser deletados.",
       );
+
       error.statusCode = 400;
       throw error;
     }

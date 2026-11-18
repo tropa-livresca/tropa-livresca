@@ -4,6 +4,11 @@ import { AutopublicacaoContext } from "./AutopublicacaoContext";
 import { AuthContext } from "../../../../common/context/auth/AuthContext";
 import { LIVRO_ESTADO } from "../../../../common/config/livroEstados";
 import Popup from "../../../components/PopUp/Popup";
+import {
+  salvarRascunho,
+  buscarRascunho,
+  removerRascunho,
+} from "../services/rascunhoDB.js";
 
 const ESTADO_INICIAL_LIVRO = {
   detalhes: {
@@ -19,12 +24,7 @@ const ESTADO_INICIAL_LIVRO = {
 
   conteudo: {
     manuscrito: null,
-    manuscritoPath: null,
     capa: {
-      frente: null,
-      verso: null,
-    },
-    capaPaths: {
       frente: null,
       verso: null,
     },
@@ -33,7 +33,6 @@ const ESTADO_INICIAL_LIVRO = {
   orcamento: {
     valorLivroFisico: "",
     valorLivroDigital: "",
-
     numeroPaginas: "",
   },
 };
@@ -80,106 +79,86 @@ export const AutopublicacaoProvider = ({ children }) => {
 
     if (!userId) return;
 
-    const dadosSalvos = localStorage.getItem(chaveRascunho("dados"));
+    let ativo = true;
 
-    const etapaSalva = Number(localStorage.getItem(chaveRascunho("etapa")));
-
-    if (dadosSalvos) {
+    const recuperarRascunho = async () => {
       try {
-        const dadosRecuperados = JSON.parse(dadosSalvos);
+        const dadosSalvos = await buscarRascunho(userId);
 
-        if (dadosRecuperados?.conteudo) {
-          const conteudoRecuperado = dadosRecuperados.conteudo;
+        const etapaSalva = Number(localStorage.getItem(chaveRascunho("etapa")));
 
-          dadosRecuperados.conteudo = {
-            ...conteudoRecuperado,
-            manuscrito:
-              typeof conteudoRecuperado.manuscrito === "string"
-                ? conteudoRecuperado.manuscrito
-                : null,
-            capa: {
-              frente:
-                typeof conteudoRecuperado.capa?.frente === "string"
-                  ? conteudoRecuperado.capa.frente
-                  : null,
-              verso:
-                typeof conteudoRecuperado.capa?.verso === "string"
-                  ? conteudoRecuperado.capa.verso
-                  : null,
+        if (!ativo) return;
+
+        if (dadosSalvos?.dadosLivro) {
+          setDadosLivro({
+            ...ESTADO_INICIAL_LIVRO,
+            ...dadosSalvos.dadosLivro,
+            detalhes: {
+              ...ESTADO_INICIAL_LIVRO.detalhes,
+              ...dadosSalvos.dadosLivro.detalhes,
             },
-            capaPaths: {
-              frente: conteudoRecuperado.capaPaths?.frente || null,
-              verso: conteudoRecuperado.capaPaths?.verso || null,
+            conteudo: {
+              ...ESTADO_INICIAL_LIVRO.conteudo,
+              ...dadosSalvos.dadosLivro.conteudo,
+              capa: {
+                ...ESTADO_INICIAL_LIVRO.conteudo.capa,
+                ...dadosSalvos.dadosLivro.conteudo?.capa,
+              },
             },
-            manuscritoPath: conteudoRecuperado.manuscritoPath || null,
-          };
+            orcamento: {
+              ...ESTADO_INICIAL_LIVRO.orcamento,
+              ...dadosSalvos.dadosLivro.orcamento,
+            },
+          });
         }
 
-        setDadosLivro({
-          ...ESTADO_INICIAL_LIVRO,
-          ...dadosRecuperados,
-          detalhes: {
-            ...ESTADO_INICIAL_LIVRO.detalhes,
-            ...(dadosRecuperados?.detalhes || {}),
-          },
-          conteudo: {
-            ...ESTADO_INICIAL_LIVRO.conteudo,
-            ...(dadosRecuperados?.conteudo || {}),
-          },
-          orcamento: {
-            ...ESTADO_INICIAL_LIVRO.orcamento,
-            ...(dadosRecuperados?.orcamento || {}),
-          },
-        });
-      } catch {
-        localStorage.removeItem(chaveRascunho("dados"));
+        if (etapaSalva >= 1 && etapaSalva <= 4) {
+          setEtapa(etapaSalva);
+        }
+
+        setRascunhoUsuarioId(userId);
+      } catch (error) {
+        console.error("Erro ao recuperar rascunho:", error);
+
+        if (ativo) {
+          setRascunhoUsuarioId(userId);
+          mostrarPopup(
+            "erro",
+            "Não foi possível recuperar o rascunho salvo neste dispositivo.",
+          );
+        }
       }
-    }
+    };
 
-    if (etapaSalva >= 1 && etapaSalva <= 4) setEtapa(etapaSalva);
+    recuperarRascunho();
 
-    setRascunhoUsuarioId(userId);
-  }, [chaveRascunho, userId]);
+    return () => {
+      ativo = false;
+    };
+  }, [userId, chaveRascunho, mostrarPopup]);
 
   useEffect(() => {
-    if (isEdicao || !userId || rascunhoUsuarioId !== userId) return;
+    if (isEdicao || !userId || rascunhoUsuarioId !== userId) {
+      return;
+    }
 
     localStorage.setItem(chaveRascunho("etapa"), etapa.toString());
 
-    const conteudoAtual = dadosLivro.conteudo || {};
+    const timeout = setTimeout(async () => {
+      try {
+        await salvarRascunho(userId, {
+          dadosLivro,
+          etapa,
+        });
+      } catch (error) {
+        console.error("Erro ao salvar rascunho:", error);
 
-    const dadosParaSalvar = {
-      ...dadosLivro,
-      conteudo: {
-        ...conteudoAtual,
-        manuscrito:
-          typeof conteudoAtual.manuscrito === "string"
-            ? conteudoAtual.manuscrito
-            : null,
-        capa: {
-          frente:
-            typeof conteudoAtual.capa?.frente === "string"
-              ? conteudoAtual.capa.frente
-              : null,
-          verso:
-            typeof conteudoAtual.capa?.verso === "string"
-              ? conteudoAtual.capa.verso
-              : null,
-        },
-        capaPaths: {
-          frente: conteudoAtual.capaPaths?.frente || null,
-          verso: conteudoAtual.capaPaths?.verso || null,
-        },
-        manuscritoPath: conteudoAtual.manuscritoPath || null,
-      },
-    };
+        setErro("Não foi possível salvar o rascunho neste dispositivo.");
+      }
+    }, 500);
 
-    localStorage.setItem(
-      chaveRascunho("dados"),
-
-      JSON.stringify(dadosParaSalvar),
-    );
-  }, [chaveRascunho, dadosLivro, etapa, isEdicao, rascunhoUsuarioId, userId]);
+    return () => clearTimeout(timeout);
+  }, [userId, dadosLivro, etapa, isEdicao, rascunhoUsuarioId, chaveRascunho]);
 
   const carregarDadosParaEdicao = useCallback(async (dadosBanco) => {
     if (!dadosBanco) return;
@@ -190,23 +169,12 @@ export const AutopublicacaoProvider = ({ children }) => {
 
     setEtapa(1);
 
-    let capa = dadosBanco.capa;
+    const manuscrito = dadosBanco.manuscritoUrl || null;
 
-    if (typeof capa === "string") {
-      try {
-        capa = JSON.parse(capa);
-      } catch {
-        capa = null;
-      }
-    }
-
-    capa = {
-      frente: capa?.frente || null,
-
-      verso: capa?.verso || null,
+    const capa = {
+      frente: dadosBanco.capa_frenteUrl || null,
+      verso: dadosBanco.capa_versoUrl || null,
     };
-
-    const manuscrito = dadosBanco.manuscrito || null;
 
     const normalizeBool = (valor) => {
       if (
@@ -261,16 +229,7 @@ export const AutopublicacaoProvider = ({ children }) => {
 
       conteudo: {
         manuscrito,
-
         capa,
-
-        manuscritoPath: dadosBanco.manuscritoPath || null,
-
-        capaPaths: dadosBanco.capaPaths || {
-          frente: null,
-
-          verso: null,
-        },
       },
 
       orcamento: {
@@ -395,57 +354,39 @@ export const AutopublicacaoProvider = ({ children }) => {
     });
   };
 
-  const dataURItoBlob = useCallback((dataURI) => {
-    const [metadata, encoded] = dataURI.split(",");
+  const converterParaArquivo = useCallback((arquivo, nome, mimePadrao) => {
+    if (!arquivo) return null;
+
+    if (arquivo instanceof File) return arquivo;
+
+    if (arquivo instanceof Blob) {
+      return new File([arquivo], nome, {
+        type: arquivo.type || mimePadrao,
+      });
+    }
+
+    if (typeof arquivo !== "string" || !arquivo.startsWith("data:")) {
+      return null;
+    }
+
+    const [metadata, encoded] = arquivo.split(",");
     const mimeType = metadata.match(/data:(.*?);base64/)?.[1];
+
     if (!encoded || !mimeType) {
-      throw new Error("Arquivo inválido.");
+      throw new Error(`Arquivo ${nome} inválido.`);
     }
 
     const byteString = atob(encoded);
     const bytes = new Uint8Array(byteString.length);
+
     for (let index = 0; index < byteString.length; index++) {
       bytes[index] = byteString.charCodeAt(index);
     }
-    return new Blob([bytes], { type: mimeType });
+
+    return new File([bytes], nome, {
+      type: mimeType || mimePadrao,
+    });
   }, []);
-
-  const uploadArquivo = useCallback(
-    async (arquivo, tipo, tipoDeArquivo) => {
-      if (!arquivo) return null;
-
-      const blob = dataURItoBlob(arquivo);
-      const mimeType = blob.type || tipoDeArquivo;
-      const extensao =
-        mimeType === "image/jpeg" ? "jpg" : mimeType.split("/").pop();
-      const formData = new FormData();
-      formData.append("tipo", tipo);
-      formData.append(
-        "arquivo",
-        new File([blob], `arquivo.${extensao}`, { type: mimeType }),
-      );
-
-      const response = await apiFetch(
-        "/api/v1/clients/autopublicacao/upload-url",
-        { method: "POST", body: formData },
-      );
-      const uploadData = await response.json();
-      if (!response.ok) {
-        throw new Error(uploadData.error || `Erro ao enviar ${tipo}.`);
-      }
-      if (!uploadData.path || !uploadData.url) {
-        throw new Error(`O upload de ${tipo} não retornou caminho e URL.`);
-      }
-      return uploadData;
-    },
-    [dataURItoBlob],
-  );
-
-  const uploadManuscrito = useCallback(
-    (arquivo) => uploadArquivo(arquivo, "manuscrito", "application/pdf"),
-    [uploadArquivo],
-  );
-
   const inserirLivro = useCallback(
     async (dadosDoLivro, estadoDesejado = LIVRO_ESTADO.RASCUNHO) => {
       if (
@@ -458,78 +399,57 @@ export const AutopublicacaoProvider = ({ children }) => {
       setCarregando(true);
 
       try {
-        const userId = user?.id;
-
-        if (!userId || typeof userId !== "string")
-          throw new Error("ID do usuário inválido");
-
-        const conteudo = dadosDoLivro.conteudo;
-        const capa = conteudo.capa;
-
-        const arquivosEnviados = [];
-
-        let caminhosArquivos;
-
-        try {
-          const uploadCapaSeNova = async (parte, tipo) => {
-            if (!capa?.[parte]?.startsWith("data:")) {
-              return conteudo.capaPaths?.[parte] || null;
-            }
-            const resultado = await uploadArquivo(
-              capa[parte],
-              tipo,
-              "image/png",
-            );
-            arquivosEnviados.push({ tipo, path: resultado.path });
-            return resultado.path;
-          };
-
-          const capaFrentePath = await uploadCapaSeNova(
-            "frente",
-            "capa_frente",
-          );
-          const capaVersoPath = await uploadCapaSeNova("verso", "capa_verso");
-
-          caminhosArquivos = {
-            capa: {
-              frente: capaFrentePath,
-
-              verso: capaVersoPath,
-            },
-          };
-        } catch (uploadError) {
-          if (arquivosEnviados.length) {
-            await apiFetch("/api/v1/clients/autopublicacao/upload-url", {
-              method: "DELETE",
-
-              body: JSON.stringify({ arquivos: arquivosEnviados }),
-            }).catch((cleanupError) => {
-              console.error(
-                "Erro ao limpar uploads incompletos:",
-
-                cleanupError,
-              );
-            });
-          }
-
-          throw uploadError;
+        if (!user?.id || typeof user.id !== "string") {
+          throw new Error("ID do usuário inválido.");
         }
 
-        const payload = {
-          dadosLivro: {
-            detalhes: dadosDoLivro.detalhes,
+        const { detalhes, conteudo, orcamento } = dadosDoLivro;
 
-            orcamento: dadosDoLivro.orcamento,
-          },
+        const formData = new FormData();
 
-          ...(isEdicao ? {} : { estadoInicial: estadoDesejado }),
-
-          capa: caminhosArquivos.capa,
-
-          capaPaths: caminhosArquivos.capa,
-
-          manuscritoPath: conteudo.manuscritoPath || conteudo.manuscrito,
+        const dadosParaEnviar = {
+          detalhes,
+          orcamento,
         };
+
+        formData.append("dadosLivro", JSON.stringify(dadosParaEnviar));
+
+        if (!isEdicao) {
+          formData.append("estadoInicial", estadoDesejado);
+        }
+
+        const arquivos = [
+          {
+            campo: "manuscrito",
+            arquivo: conteudo.manuscrito,
+            nome: "manuscrito.pdf",
+            mime: "application/pdf",
+          },
+          {
+            campo: "capa_frente",
+            arquivo: conteudo.capa?.frente,
+            nome: "capa-frente",
+            mime: "image/jpeg",
+          },
+          {
+            campo: "capa_verso",
+            arquivo: conteudo.capa?.verso,
+            nome: "capa-verso",
+            mime: "image/jpeg",
+          },
+        ];
+
+        for (const item of arquivos) {
+          const arquivo = converterParaArquivo(
+            item.arquivo,
+            item.nome,
+            item.mime,
+          );
+
+          if (arquivo) {
+            formData.append(item.campo, arquivo);
+          }
+        }
 
         const rota = isEdicao
           ? `/api/v1/clients/autopublicacao/${dadosDoLivro.id}`
@@ -539,57 +459,51 @@ export const AutopublicacaoProvider = ({ children }) => {
 
         const res = await apiFetch(rota, {
           method: metodo,
-
-          headers: { "Content-Type": "application/json" },
-
-          body: JSON.stringify(payload),
+          body: formData,
         });
 
         const json = await res.json();
 
-        if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
+        if (!res.ok) {
+          throw new Error(json.error || `Erro ${res.status}`);
+        }
 
         setErro(null);
-        return;
+        return json;
       } catch (error) {
-        console.error("Erro em salvar livro:", error);
-
+        console.error("Erro ao salvar livro:", error);
+        setErro(error.message);
         throw error;
       } finally {
         setCarregando(false);
       }
     },
-
-    [user, isEdicao, estadoAtualLivro, uploadArquivo],
+    [user, isEdicao, estadoAtualLivro, converterParaArquivo],
   );
 
   const publicarLivroNoContexto = async (
     estadoDesejado = LIVRO_ESTADO.RASCUNHO,
-    arquivo,
   ) => {
-    const error = await inserirLivro(dadosLivro, estadoDesejado, arquivo);
+    try {
+      await inserirLivro(dadosLivro, estadoDesejado);
 
-    if (error != null) {
-      setErro(error);
-      setDadosLivro({
-        ...dadosLivro,
-        conteudo: { ...dadosLivro.conteudo, manuscrito: null },
-      });
+      if (userId) {
+        await removerRascunho(userId);
+
+        localStorage.removeItem(chaveRascunho("etapa"));
+      }
+
+      setErro(null);
+      setDadosLivro(ESTADO_INICIAL_LIVRO);
+      setIsEdicao(false);
+      setEstadoAtualLivro(null);
+      setEtapa(1);
+    } catch (error) {
+      setErro(error.message);
+      throw error;
     }
-
-    localStorage.removeItem(chaveRascunho("dados"));
-
-    localStorage.removeItem(chaveRascunho("etapa"));
-
-    setDadosLivro(ESTADO_INICIAL_LIVRO);
-
-    setIsEdicao(false);
-
-    setEstadoAtualLivro(null);
-
-    setEtapa(1);
   };
-
+  
   const rascunhoPronto = Boolean(userId && rascunhoUsuarioId === userId);
 
   return (
@@ -616,8 +530,6 @@ export const AutopublicacaoProvider = ({ children }) => {
         irParaEtapaEspecifica,
 
         publicarLivro: publicarLivroNoContexto,
-
-        uploadManuscrito,
 
         erro,
       }}

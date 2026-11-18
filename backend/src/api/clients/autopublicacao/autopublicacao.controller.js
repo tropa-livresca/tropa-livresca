@@ -1,10 +1,36 @@
 import { AutopublicacaoService } from "./autopublicacao.service.js";
 
+const lerDadosLivro = (valor) => {
+  let dadosLivro = valor;
+
+  if (typeof dadosLivro === "string") {
+    try {
+      dadosLivro = JSON.parse(dadosLivro);
+    } catch {
+      const error = new Error("Os dados do livro não estão em um JSON válido.");
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
+  if (
+    !dadosLivro ||
+    typeof dadosLivro !== "object" ||
+    Array.isArray(dadosLivro)
+  ) {
+    const error = new Error("Os dados do livro não foram informados.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  return dadosLivro;
+};
+
 export class AutopublicacaoController {
   static async buscarLivroById(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = req.user?.id;
+      const userId = req.user.id;
 
       const livro = await AutopublicacaoService.buscarDetalhesPorId(id, userId);
 
@@ -17,14 +43,14 @@ export class AutopublicacaoController {
   static async atualizarEstado(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = req.user?.id;
+      const userId = req.user.id;
       const { novoEstado } = req.body;
 
-      const livro = await AutopublicacaoService.atualizarEstado(
+      const livro = await AutopublicacaoService.atualizarEstado({
         id,
         userId,
         novoEstado,
-      );
+      });
 
       return res.status(200).json(livro);
     } catch (err) {
@@ -39,7 +65,7 @@ export class AutopublicacaoController {
 
       await AutopublicacaoService.deletarLivroRascunho(id, userId);
 
-      return res.status(200).end();
+      return res.status(204).end();
     } catch (err) {
       next(err);
     }
@@ -47,17 +73,13 @@ export class AutopublicacaoController {
 
   static async criarLivro(req, res, next) {
     try {
-      const userId = req.user?.id;
-      const { dadosLivro, estadoInicial, capa, capaPaths, manuscritoPath } =
-        req.body;
+      const userId = req.user.id;
 
       const resultado = await AutopublicacaoService.criarLivro({
         userId,
-        dadosLivro,
-        estadoInicial,
-        capa,
-        capaPaths,
-        manuscritoPath,
+        dadosLivro: lerDadosLivro(req.body?.dadosLivro),
+        estadoInicial: req.body.estadoInicial,
+        arquivos: req.files,
       });
 
       return res.status(201).json(resultado);
@@ -66,37 +88,23 @@ export class AutopublicacaoController {
     }
   }
 
-  static async criarUploadLivro(req, res, next) {
-    try {
-      const userId = req.user?.id;
-      const { tipo } = req.body;
-
-      const resultado = await AutopublicacaoService.criarUploadLivro({
-        userId,
-        tipo,
-        arquivo: req.file,
-      });
-
-      return res.status(200).json(resultado);
-    } catch (error) {
-      next(error);
-    }
-  }
-
   static async buscarComFiltros(req, res, next) {
     try {
       const userId = req.user.id;
-      const page = parseInt(req.query.page, 10) || 1;
-      const limit = parseInt(req.query.limit, 10) || 12;
-      const busca = req.query.busca || "";
-      const filtro = req.query.filtro || "";
-      const ordem = req.query.ordem || "";
-      const estado = req.query.estado || "";
+
+      const {
+        page = 1,
+        limit = 12,
+        busca = "",
+        filtro = "",
+        ordem = "",
+        estado = "",
+      } = req.query;
 
       const resultado = await AutopublicacaoService.buscarComFiltros({
         userId,
-        page,
-        limit,
+        page: Number(page),
+        limit: Number(limit),
         busca,
         filtro,
         ordem,
@@ -111,32 +119,18 @@ export class AutopublicacaoController {
 
   static async atualizarLivro(req, res, next) {
     try {
-      const userId = req.user?.id;
+      const userId = req.user.id;
       const { id } = req.params;
-      const { dadosLivro, capa, capaPaths, manuscritoPath } = req.body;
 
       const resultado = await AutopublicacaoService.atualizarLivro({
         userId,
         livroId: id,
-        dadosLivro,
-        capa,
-        capaPaths,
-        manuscritoPath,
+        dadosLivro: lerDadosLivro(req.body?.dadosLivro),
+        arquivos: req.files,
+        arquivosRemovidos: req.body.arquivosRemovidos,
       });
 
       return res.status(200).json(resultado);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async limparUploads(req, res, next) {
-    try {
-      const userId = req.user?.id;
-      const { arquivos } = req.body;
-
-      await AutopublicacaoService.limparUploads({ userId, arquivos });
-      return res.status(204).end();
     } catch (err) {
       next(err);
     }
