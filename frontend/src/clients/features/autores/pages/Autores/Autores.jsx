@@ -1,0 +1,95 @@
+﻿import styles from "./Autores.module.css";
+import { Link } from "react-router-dom";
+import { useAutores } from "../../../../hooks/useAutores";
+import { FaSearch } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { FaUserCircle } from "react-icons/fa";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
+import Carregando from "../../../../components/Carregando/Carregando";
+
+export default function Autores() {
+  const { autores, carregando, erro, buscarAutores, meta } = useAutores();
+  const [busca, setBusca] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+
+  useEffect(() => {
+    buscarAutores(paginaAtual, 12, busca);
+  }, [paginaAtual, buscarAutores]);
+
+  const handleBuscar = (e) => {
+    e.preventDefault();
+    setPaginaAtual(1);
+    buscarAutores(1, 12, busca);
+  };
+
+  if (erro) return <p>{erro}</p>;
+
+  return (
+    <div>
+      <main>
+        <DescricaoTela
+          titulo="Autores"
+          descricao=" Descubra escritores que compartilham histórias únicas,
+          cheias de emoção e originalidade em suas obras."
+        />
+
+        <div className={styles.container}>
+          <form className={styles.busca} onSubmit={handleBuscar}>
+            <span className={styles.iconebusca}>
+              <FaSearch />
+            </span>
+
+            <input
+              type="text"
+              placeholder="Buscar autor"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+
+            <button className={styles.btnbuscar} type="submit">
+              Buscar
+            </button>
+          </form>
+          <div className={styles.autorescontainer}>
+            {carregando ? (
+              <Carregando mensagem="Carregando autores..." />
+            ) : !autores || autores.length === 0 ? (
+              <p>Nenhum autor encontrado</p>
+            ) : (
+              autores.map((autor) => {
+                return (
+                  <div className={styles.autorinf} key={autor.id}>
+                    {autor.imagem ? (
+                      <img src={autor.imagem} alt={autor.nome} />
+                    ) : (
+                      <div className={styles.semfoto}>
+                        <FaUserCircle />
+                      </div>
+                    )}
+                    <h3>{autor.nome || "Autor anônimo"}</h3>
+                    <Link
+                      to={`/autores/${autor.id}`}
+                      className={styles.btndetalhes}
+                    >
+                      Ver perfil
+                    </Link>
+                  </div>
+                );
+              })
+            )}
+
+            {!carregando && meta && meta.totalPages > 1 && (
+              <Paginacao
+                paginaAtual={paginaAtual}
+                totalPaginas={meta?.totalPages}
+                totalItems={meta?.totalItems}
+                onMudarPagina={setPaginaAtual}
+              />
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}

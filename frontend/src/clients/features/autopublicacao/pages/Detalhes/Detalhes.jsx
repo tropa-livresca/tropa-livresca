@@ -1,0 +1,404 @@
+﻿import { useState } from "react";
+import Input from "../../../../../common/components/Input/Input";
+import styles from "./Detalhes.module.css";
+import { FiChevronDown } from "react-icons/fi";
+import { Link } from "react-router-dom";
+
+export default function Detalhes({ dados, onChange, irParaProximaEtapa }) {
+  const listaIdiomas = [
+    { id: "", label: "Selecione um idioma" },
+    { id: "portugues", label: "Português" },
+    { id: "ingles", label: "Inglês" },
+    { id: "espanhol", label: "Espanhol" },
+    { id: "outro", label: "Outro" },
+  ];
+
+  const maskISBN = (value) => {
+    const cleanValue = value.replace(/[^0-9X]/gi, "");
+
+    return cleanValue
+      .replace(/^(\d{3})(\d)/, "$1-$2")
+      .replace(/^(\d{3}-\d{2})(\d)/, "$1-$2")
+      .replace(/^(\d{3}-\d{2}-\d{5})(\d)/, "$1-$2")
+      .replace(/^(\d{3}-\d{2}-\d{5}-\d{2})(\d)/, "$1-$2")
+      .substring(0, 17);
+  };
+
+  const funcaoOpcoes = [
+    "Selecione a função",
+    "Coautor",
+    "Ilustrador",
+    "Revisor",
+    "Tradutor",
+    "Outro",
+  ];
+
+  const categoriasOpcoes = [
+    "Romance",
+    "Fantasia",
+    "Ficção Científica",
+    "Mistério",
+    "Terror",
+    "Aventura",
+    "Drama",
+    "Suspense",
+    "História",
+    "Adulto",
+  ];
+
+  const [categoriaAberta, setCategoriaAberta] = useState(false);
+
+  const imagemExplicita =
+    dados.imagensExplicitas === true
+      ? "sim"
+      : dados.imagensExplicitas === false
+        ? "nao"
+        : "";
+
+  const listaColaboradores = dados.colaboradores || [];
+
+  const atualizarCampo = (chave, valor) => {
+    onChange({ ...dados, [chave]: valor });
+  };
+
+  const atualizarColaborador = (index, chave, valor) => {
+    const novosColaboradores = [...listaColaboradores];
+    novosColaboradores[index] = {
+      ...novosColaboradores[index],
+      [chave]: valor,
+    };
+    atualizarCampo("colaboradores", novosColaboradores);
+  };
+
+  const adicionarColaborador = () => {
+    const novosColaboradores = [
+      ...listaColaboradores,
+      { funcao: "", nome: "", sobrenome: "" },
+    ];
+    atualizarCampo("colaboradores", novosColaboradores);
+  };
+
+  const removerColaborador = (indexParaRemover) => {
+    const novosColaboradores = listaColaboradores.filter(
+      (_, index) => index !== indexParaRemover,
+    );
+    atualizarCampo("colaboradores", novosColaboradores);
+  };
+
+  const [funcoesAbertas, setFuncoesAbertas] = useState({});
+  const [idiomaAberto, setIdiomaAberto] = useState(false);
+
+  return (
+    <main>
+      <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
+        <h1 className={styles.titulo}>Detalhes</h1>
+
+        <div className={styles.card}>
+          <legend>Título e subtítulo</legend>
+
+          <label>Título:</label>
+          <Input
+            placeholder="Inserir título"
+            type="text"
+            value={dados.titulo || ""}
+            onChange={(e) => atualizarCampo("titulo", e.target.value)}
+            handleOnChange={(e) => atualizarCampo("titulo", e.target.value)}
+            className={styles.inputmodificado}
+          />
+
+          <label>Subtítulo:</label>
+          <Input
+            placeholder="Inserir subtítulo"
+            type="text"
+            value={dados.subtitulo || ""}
+            onChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+            handleOnChange={(e) => atualizarCampo("subtitulo", e.target.value)}
+            className={styles.inputmodificado}
+          />
+        </div>
+
+        <div className={styles.card}>
+          <legend>ISBN do livro</legend>
+          <label>ISBN: </label>
+          <Input
+            placeholder="978-00-00000-00-0"
+            type="text"
+            value={dados.ISBN || ""}
+            onChange={(e) => atualizarCampo("ISBN", maskISBN(e.target.value))}
+            handleOnChange={(e) =>
+              atualizarCampo("ISBN", maskISBN(e.target.value))
+            }
+            className={styles.inputmodificado}
+          />
+        </div>
+
+        <div className={styles.card}>
+          <legend>Colaboradores do livro</legend>
+
+          {listaColaboradores.map((colaborador, index) => (
+            <div key={index} className={styles.selectContainer}>
+              <h4>
+                Colaborador <span className={styles.numero}>{index + 1}</span>
+              </h4>
+
+              <label>Função:</label>
+              <div className={styles.selectContainer}>
+                <div
+                  className={styles.select}
+                  onClick={() =>
+                    setFuncoesAbertas((prev) => ({
+                      ...prev,
+                      [index]: !prev[index],
+                    }))
+                  }
+                >
+                  <span>{colaborador.funcao || "Selecione a função"}</span>
+
+                  <FiChevronDown
+                    className={`${styles.seta} ${
+                      funcoesAbertas[index] ? styles.setaAberta : ""
+                    }`}
+                  />
+                </div>
+
+                {funcoesAbertas[index] && (
+                  <div className={styles.opcoes}>
+                    {funcaoOpcoes.map((opcao) => (
+                      <div
+                        key={opcao.value || opcao}
+                        className={styles.opcao}
+                        onClick={() => {
+                          atualizarColaborador(
+                            index,
+                            "funcao",
+                            opcao.value || opcao,
+                          );
+
+                          setFuncoesAbertas((prev) => ({
+                            ...prev,
+                            [index]: false,
+                          }));
+                        }}
+                      >
+                        {opcao.label || opcao}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <label>Nome:</label>
+              <Input
+                placeholder="Inserir nome do colaborador"
+                type="text"
+                value={colaborador.nome || ""}
+                onChange={(e) =>
+                  atualizarColaborador(index, "nome", e.target.value)
+                }
+                className={styles.inputmodificado}
+              />
+
+              <label>Sobrenome:</label>
+              <Input
+                placeholder="Inserir sobrenome do colaborador"
+                type="text"
+                value={colaborador.sobrenome || ""}
+                onChange={(e) =>
+                  atualizarColaborador(index, "sobrenome", e.target.value)
+                }
+                className={styles.inputmodificado}
+              />
+
+              <button
+                type="button"
+                onClick={() => removerColaborador(index)}
+                className={styles.btn}
+              >
+                Remover este colaborador
+              </button>
+            </div>
+          ))}
+
+          <div className={styles.posterior}>
+            <button
+              type="button"
+              onClick={adicionarColaborador}
+              className={styles.btn2}
+            >
+              + Adicionar colaborador
+            </button>
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <legend>Idioma</legend>
+          <label>Idioma:</label>
+          <div className={styles.selectContainer}>
+            <div
+              className={styles.select}
+              onClick={() => setIdiomaAberto(!idiomaAberto)}
+            >
+              <span>
+                {listaIdiomas.find((idioma) => idioma.id === dados.idioma)
+                  ?.label || "Selecione um idioma"}
+              </span>
+
+              <FiChevronDown
+                className={`${styles.seta} ${
+                  idiomaAberto ? styles.setaAberta : ""
+                }`}
+              />
+            </div>
+
+            {idiomaAberto && (
+              <div className={styles.opcoes}>
+                {listaIdiomas.map((idioma) => (
+                  <div
+                    key={idioma.id}
+                    className={styles.opcao}
+                    onClick={() => {
+                      atualizarCampo("idioma", idioma.id);
+                      setIdiomaAberto(false);
+                    }}
+                  >
+                    {idioma.label}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <legend>Descrição</legend>
+          <label>Descrição do livro: </label>
+          <textarea
+            placeholder="Inserir descrição do livro"
+            value={dados.descricao || ""}
+            onChange={(e) => atualizarCampo("descricao", e.target.value)}
+          />
+        </div>
+
+        <div className={styles.card}>
+          <legend>Direitos de Publicação</legend>
+
+          <div className={styles.radioOpcao}>
+            <Input
+              id="direitoPublicacaoSim"
+              type="radio"
+              name="direitoPublicacao"
+              checked={dados.direitoPublicacao === "sim"}
+              onChange={() => atualizarCampo("direitoPublicacao", "sim")}
+            />
+            <label htmlFor="direitoPublicacaoSim">Sim</label>
+          </div>
+
+          <div className={styles.radioOpcao}>
+            <Input
+              id="direitoPublicacaoNao"
+              type="radio"
+              name="direitoPublicacao"
+              checked={dados.direitoPublicacao === "nao"}
+              onChange={() => atualizarCampo("direitoPublicacao", "nao")}
+            />
+            <label htmlFor="direitoPublicacaoNao">Não</label>
+          </div>
+        </div>
+
+        <div className={styles.card}>
+          <legend>Restrições de Conteúdo</legend>
+          <label className={styles.labelTitulo}>Há imagens explícitas?</label>
+          <div className={styles.radioOpcao}>
+            <Input
+              id="imagemExplicitaSim"
+              type="radio"
+              name="imagemExplicita"
+              checked={imagemExplicita === "sim"}
+              onChange={() => {
+                onChange({
+                  ...dados,
+                  imagensExplicitas: true,
+                  categoria: "Adulto",
+                });
+              }}
+            />
+            <label htmlFor="imagemExplicitaSim">Sim</label>
+          </div>
+          <div className={styles.radioOpcao}>
+            <Input
+              id="imagemExplicitaNao"
+              type="radio"
+              name="imagemExplicita"
+              checked={imagemExplicita === "nao"}
+              onChange={() => {
+                onChange({
+                  ...dados,
+                  imagensExplicitas: false,
+                  categoria: "",
+                });
+              }}
+            />
+
+            <label htmlFor="imagemExplicitaNao">Não</label>
+          </div>
+        </div>
+
+        {imagemExplicita === "nao" ? (
+          <div className={styles.card}>
+            <legend>Classificação</legend>
+            <label>Categoria do Livro</label>
+            <div className={styles.selectContainer}>
+              <div
+                className={styles.select2}
+                onClick={() => setCategoriaAberta(!categoriaAberta)}
+              >
+                <span>{dados.categoria || "Selecione uma categoria"}</span>
+
+                <FiChevronDown
+                  className={`${styles.seta} ${
+                    categoriaAberta ? styles.setaAberta : ""
+                  }`}
+                />
+              </div>
+
+              {categoriaAberta && (
+                <div className={styles.opcoes}>
+                  {categoriasOpcoes.map((categoria) => (
+                    <div
+                      key={categoria}
+                      className={styles.opcao}
+                      onClick={() => {
+                        atualizarCampo("categoria", categoria);
+                        setCategoriaAberta(false);
+                      }}
+                    >
+                      {categoria}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : imagemExplicita === "sim" ? (
+          <div className={styles.avisoAdulto}>
+            <p>O livro será incluído automaticamente na categoria Adulto.</p>
+          </div>
+        ) : null}
+
+        <div className={styles.botao}>
+          <Link to="/meuslivros" className={styles.btnmeu}>
+            Voltar a Meus Livros
+          </Link>
+
+          <button
+            type="button"
+            onClick={irParaProximaEtapa}
+            className={styles.btnid}
+          >
+            Posterior
+          </button>
+        </div>
+      </form>
+    </main>
+  );
+}

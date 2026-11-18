@@ -1,0 +1,74 @@
+.paginacao {
+  grid-column: 2 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.btnpagina {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 999px;
+  background: #67170c;
+  color: #ede6b3;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btnpagina svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.btnpagina:hover:not(:disabled) {
+  background: #ffbb33;
+  transition: 0.3s;
+}
+
+.btnpagina:disabled {
+  background: var(--cor-superficie-clara);
+  color: var(--cor-texto-muted);
+  border: 1px solid rgba(77, 31, 24, 0.15);
+  box-shadow: none;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.info {
+  text-align: center;
+  line-height: 1.2;
+}
+
+.pagina {
+  display: block;
+  color: var(--cor-texto);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.total {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--cor-texto-muted);
+}
+
+.numero {
+  font-family: none;
+}
+@media (max-width: 480px) {
+  .paginacao {
+    gap: 0.8rem;
+  }
+
+  .btnpagina {
+    padding: 0.7rem 1rem;
+    font-size: 0.8rem;
+  }
+}

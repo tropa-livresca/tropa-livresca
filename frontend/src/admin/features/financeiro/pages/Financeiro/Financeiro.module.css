@@ -1,0 +1,210 @@
+.mainContainer {
+  margin-top: 0rem;
+}
+
+.topo {
+  width: 100%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+  padding: 3rem 6%;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+  margin-bottom: 2rem;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.numero {
+  font-family: none;
+  font-size: 1.05rem;
+  white-space: nowrap;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  padding: 3rem 6%;
+}
+
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.5rem;
+}
+
+.cartaoResumo,
+.cartao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.6rem 2rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.cartaoResumo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.cartaoResumo span {
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.cartaoResumo strong {
+  color: #67170c;
+  font-size: 2rem;
+  font-family: none;
+}
+
+.cartaoResumo small {
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.subtitulo {
+  margin: 0 0 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1.8px solid #d4b46a;
+  color: #67170c;
+  font-size: 1.3rem;
+}
+
+.extrato {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.movimentacao {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  margin: 0;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid #e3d5ad;
+}
+
+.movimentacao:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+.iconeEntrada {
+  color: var(--cor-texto-muted);
+  border: 1px solid #e3d5ad;
+}
+
+.iconeSaida {
+  color: #67170c;
+  border: 1px solid #e3d5ad;
+}
+
+.descricao {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.descricao small {
+  overflow: hidden;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 0.2rem;
+}
+
+.descricao small .numero {
+  font-size: inherit;
+}
+
+.descricao strong {
+  overflow: hidden;
+  color: #67170c;
+  font-size: 1.05rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.valorEntrada,
+.valorSaida {
+  white-space: nowrap;
+  font-family: none;
+  font-size: 1.05rem;
+}
+
+.valorEntrada {
+  color: green;
+}
+
+.valorSaida {
+  color: red;
+}
+
+.vazio {
+  margin: 0;
+  color: #777;
+  font-style: italic;
+}
+
+.erro {
+  padding: 0.9rem 1.2rem;
+  border-radius: 1rem;
+  background: #ffe9e6;
+  color: #a1260f;
+}
+
+@media (max-width: 700px) {
+  .topo,
+  .container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .cartaoResumo,
+  .cartao {
+    padding: 1.2rem;
+  }
+}

@@ -1,0 +1,76 @@
+@startuml
+
+title <size:18><b>Casos de Uso — Endereços</b></size>
+
+left to right direction
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam roundcorner 18
+skinparam dpi 150
+
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 13
+skinparam defaultTextAlignment center
+
+skinparam titleFontName "Segoe UI"
+skinparam titleFontSize 18
+skinparam titleFontColor #172033
+
+skinparam packageStyle rectangle
+skinparam packageBorderThickness 2
+skinparam packageFontName "Segoe UI Semibold"
+skinparam packageFontSize 15
+skinparam packageFontColor #172033
+skinparam packageBackgroundColor white
+
+skinparam usecase {
+    BackgroundColor white
+    BorderColor #64748B
+    BorderThickness 1.5
+    FontColor #172033
+    FontName "Segoe UI"
+    FontSize 12
+    Padding 10
+}
+
+skinparam actor {
+    BackgroundColor white
+    BorderColor #334155
+    BorderThickness 2
+    FontColor #172033
+    FontName "Segoe UI Semibold"
+    FontSize 13
+}
+
+skinparam arrow {
+    Color #64748B
+    Thickness 1.5
+}
+
+actor "Autor / Leitor" as Usuario
+
+package "ENDEREÇOS" {
+
+    usecase "Efetuar Login" as UC_Login
+
+    usecase "Consultar Endereços" as UC_ConsultarEnd
+    usecase "Cadastrar Endereço" as UC_CadastrarEnd
+    usecase "Alterar Endereço" as UC_AlterarEnd
+    usecase "Inativar Endereço" as UC_InativarEnd
+    usecase "Indicar Endereço Principal" as UC_EndPrincipal
+
+    UC_ConsultarEnd ..> UC_Login : <<include>>
+    UC_CadastrarEnd ..> UC_Login : <<include>>
+    UC_AlterarEnd ..> UC_Login : <<include>>
+    UC_InativarEnd ..> UC_Login : <<include>>
+    UC_EndPrincipal ..> UC_Login : <<include>>
+
+    Usuario --> UC_ConsultarEnd
+    Usuario --> UC_CadastrarEnd
+    Usuario --> UC_AlterarEnd
+    Usuario --> UC_InativarEnd
+    Usuario --> UC_EndPrincipal
+}
+
+@enduml

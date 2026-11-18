@@ -1,0 +1,56 @@
+.popup {
+  position: relative;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  background: #fffdf7;
+  border-radius: 1.5rem;
+  text-align: center;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  animation: aparecer 0.25s ease;
+}
+
+.containerconf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icone {
+  font-size: 5rem;
+  color: green;
+}
+
+.popup h3 {
+  color: #67170c;
+  font-size: 1.8rem;
+}
+
+.popup p {
+  margin: 0 0 1rem;
+  color: #67170c;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+}
+
+.numero {
+  font-family: none;
+}
+
+.btn {
+  border: none;
+  border-radius: 0.5rem;
+  background-color: transparent;
+  color: #67170c;
+  font-weight: 300;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1.1rem;
+}
+
+.btn:hover {
+  text-decoration: underline;
+}

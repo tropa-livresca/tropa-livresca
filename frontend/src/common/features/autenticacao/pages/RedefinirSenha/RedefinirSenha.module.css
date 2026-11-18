@@ -1,0 +1,191 @@
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
+.container {
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  padding: 2rem;
+  background: #ede6b3;
+}
+
+.card {
+  width: 100%;
+  max-width: 38rem;
+  box-sizing: border-box;
+  padding: 3.5rem 3.2rem;
+  background: #fffdf7;
+  border-radius: 1.8rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.card form {
+  display: grid;
+  gap: 1rem;
+}
+
+.card h1 {
+  margin: 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.card p {
+  margin: 0 0 1rem;
+  color: var(--cor-texto-muted);
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.inputGroup {
+  display: grid;
+}
+
+.inputGroup label {
+  color: #67170c;
+  font-size: 0.95rem;
+}
+
+.inputGroup input {
+  width: 100%;
+  height: 3.3rem;
+  box-sizing: border-box;
+  padding: 0 1rem;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7rem;
+  outline: none;
+  background-color: #fff8d7;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.inputGroup input:focus {
+  border-color: #67170c;
+}
+
+.inputGroup input::placeholder {
+  color: var(--cor-texto-muted);
+  opacity: 1;
+}
+
+.inputGroup input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.mensagem {
+  display: grid;
+  gap: 0.7rem;
+  margin-top: 0.3rem;
+}
+
+.erroMensagem {
+padding: 0.8rem 1rem;
+  border: 1px solid red;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: red;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.sucessoMensagem {
+ padding: 0.8rem 1rem;
+  border: 1px solid green;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: green;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.botaoEnviar {
+  width: 100%;
+  min-height: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin-top: 0.5rem;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 0.7rem;
+  background: #67170c;
+  color: #ede6b3;
+  font-family: inherit;
+  font-size: 1rem;
+  letter-spacing: 0.04rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botaoEnviar:hover:not(:disabled) {
+  background: #ffbb33;
+}
+
+.botaoEnviar:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .card {
+    max-width: 34rem;
+    padding: 3rem 2rem;
+    border-radius: 1.5rem;
+  }
+
+  .card h1 {
+    font-size: 2.1rem;
+  }
+
+  .card p {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .card {
+    padding: 2.5rem 1.3rem;
+    border-radius: 1.3rem;
+  }
+
+  .card form {
+    gap: 1rem;
+  }
+
+  .card h1 {
+    font-size: 1.8rem;
+  }
+
+  .card p {
+    font-size: 0.9rem;
+  }
+
+  .inputGroup input {
+    height: 3.1rem;
+  }
+
+  .botaoEnviar {
+    min-height: 3.1rem;
+  }
+}

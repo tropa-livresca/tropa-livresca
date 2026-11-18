@@ -1,0 +1,396 @@
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.containerLivros {
+  display: grid;
+  grid-template-columns: 18rem minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas:
+    "filtros busca"
+    "filtros livros"
+    ". paginacao";
+  align-content: start;
+  align-items: start;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.filtros {
+  grid-area: filtros;
+  align-self: stretch;
+  min-width: 0;
+  width: 90%;
+  border-right: 1px solid #e3d5ad;
+}
+
+.filtros h2 {
+  color: #67170c;
+  font-size: 1.5rem;
+}
+
+.filtros ul {
+  padding-left: 1.5rem;
+  line-height: 2.2;
+}
+
+.filtros li {
+  list-style: none;
+  color: #67170c;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.filtros li:hover {
+  text-decoration: underline;
+}
+
+.filtros li.filtroAtivo {
+  font-weight: bold;
+}
+
+.filtroIdioma {
+  padding-top: 1rem;
+  border-top: 1px solid #e3d5ad;
+}
+
+.limparFiltros {
+  width: calc(100% - 1.5rem);
+  margin: 1.5rem 0 1rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  background-color: transparent;
+  color: #67170c;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.limparFiltros:hover {
+  background-color: #67170c;
+  color: #ede6b3;
+}
+
+.busca {
+  grid-area: busca;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: 3rem minmax(150px, 1fr) 200px 6rem;
+  align-items: center;
+  padding: 0.4rem;
+  background-color: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+}
+
+.iconeBusca {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+.busca input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 1rem;
+}
+
+.selectContainer {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.select {
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.7rem 0.8rem;
+  margin: 0 -20px;
+  box-sizing: border-box;
+  background-color: #fffdf7;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  color: #67170c;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.select svg {
+  flex-shrink: 0;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: -20px;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0.2rem;
+  background-color: #fffdf7;
+  border-radius: 0.8rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.options button {
+  padding: 0.8rem 1rem;
+  border: 0;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: #67170c;
+  text-align: left;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.options button:hover {
+  background-color: #ffecc9;
+  color: #ffbb33;
+}
+
+.botaoBuscar,
+.botaoReenviar {
+  border: none;
+  border-radius: 1.5rem;
+  background-color: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botaoBuscar {
+  padding: 1rem 1.5rem;
+}
+
+.botaoBuscar:hover,
+.botaoReenviar:hover:not(:disabled) {
+  background-color: #ffbb33;
+}
+
+.livros {
+  grid-area: livros;
+  width: 100%;
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-content: start;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cardLivro {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+
+.linkCapa {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 2 / 3;
+}
+
+.capa {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.linkCapa:hover .capa {
+  transform: scale(1.08);
+}
+
+.semCapa {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e3d5ad;
+  color: #67170c;
+}
+
+.infoLivro {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  padding-top: 0.5rem;
+}
+
+.linkLivro {
+  color: #67170c;
+  text-decoration: none;
+}
+
+.infoLivro h2 {
+  margin: 0;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.2rem;
+  line-height: 1.3;
+}
+
+.autor {
+  margin: 0.5rem 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+}
+
+.infoLivro small {
+  margin-bottom: 0.75rem;
+  color: var(--cor-texto-muted);
+}
+
+.botaoReenviar {
+  margin-top: auto;
+  padding: 0.65rem 1rem;
+}
+
+.botaoReenviar:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.semResultados {
+  grid-column: 1 / -1;
+  padding: 3rem 0;
+  color: #67170c;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.paginacao {
+  grid-area: paginacao;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  margin-top: 1rem;
+}
+
+.erro {
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+.erro {
+  color: #a12622;
+}
+
+@media (max-width: 1200px) {
+  .container {
+    padding: 4rem 4%;
+  }
+
+  .containerLivros {
+    grid-template-columns: 15rem minmax(0, 1fr);
+  }
+
+  .livros {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .containerLivros {
+    grid-template-columns: 12rem minmax(0, 1fr);
+  }
+
+  .busca {
+    grid-template-columns: 2.5rem minmax(100px, 1fr) 150px 5rem;
+  }
+
+  .livros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 650px) {
+  .container {
+    padding: 2rem 5%;
+  }
+
+  .containerLivros {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "busca"
+      "filtros"
+      "livros"
+      "paginacao";
+  }
+
+  .filtros {
+    width: 100%;
+    border-right: 0;
+  }
+
+  .filtros ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding-left: 0;
+  }
+
+  .filtros li {
+    font-size: 0.95rem;
+  }
+
+  .busca {
+    grid-template-columns: 2.5rem minmax(0, 1fr) 5rem;
+  }
+
+  .selectContainer {
+    grid-column: 1 / 3;
+  }
+
+  .select {
+    margin: 0;
+  }
+
+  .options {
+    left: 0;
+  }
+
+  .botaoBuscar {
+    grid-column: 3;
+    grid-row: 2;
+    padding: 0.9rem 0.5rem;
+  }
+
+  .livros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

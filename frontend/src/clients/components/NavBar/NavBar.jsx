@@ -1,0 +1,191 @@
+﻿import { Link } from "react-router-dom";
+import useAuth from "../../../common/hooks/useAuth";
+import { usePerfil } from "../../features/perfil/hooks/usePerfil";
+import { useState, useEffect } from "react";
+import styles from "./NavBar.module.css";
+import logo from "../../../common/images/logo.png";
+
+import { FaUserCircle } from "react-icons/fa";
+import { FiDollarSign, FiLogOut, FiPackage } from "react-icons/fi";
+
+export default function NavBar() {
+  const { perfil, getPerfil } = usePerfil();
+  const { signed, loading, signout } = useAuth();
+  const [menuAberto, setMenuAberto] = useState(false);
+  const [menuUsuario, setMenuUsuario] = useState(false);
+
+  useEffect(() => {
+    if (!loading && signed) {
+      getPerfil();
+    }
+  }, [loading, signed, getPerfil]);
+
+  const sair = async () => {
+    try {
+      const errorMsg = await signout();
+      if (errorMsg) {
+        console.error("Erro ao fazer logout:", errorMsg);
+      }
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
+  return (
+    <div className={styles.containernav}>
+      <div className={styles.logonav}>
+        <Link to="/">
+          <img src={logo} alt="Tropa Livresca" width="100" />
+        </Link>
+      </div>
+
+      <button
+        className={styles.hamburguer}
+        onClick={() => setMenuAberto(!menuAberto)}
+      >
+        ☰
+      </button>
+
+      <nav
+        className={`${styles.navbar} ${menuAberto ? styles.menuAberto : ""}`}
+      >
+        <ul className={styles.list}>
+          <li className={styles.item}>
+            <Link to="/">Sobre Nós</Link>
+            <ul className={styles.subtema}>
+              <li>
+                <Link to="/">Início</Link>
+              </li>
+              <li>
+                <Link to="/historia">História</Link>
+              </li>
+              <li>
+                <Link to="/sobreautopublicacao">Sobre a Autopublicação</Link>
+              </li>
+            </ul>
+          </li>
+          <li className={styles.item}>
+            <Link to="/livros">Livros</Link>
+          </li>
+          <li className={styles.item}>
+            <Link to="/loja">Loja</Link>
+          </li>
+          <li className={styles.item}>
+            <Link to="/autores">Autores</Link>
+          </li>
+          <li className={styles.item}>
+            <Link to="/meuslivros">Se Autopublique</Link>
+            <ul className={styles.subtema}>
+              <li>
+                <Link to="/meuslivros">Meus Livros</Link>
+              </li>
+            </ul>
+          </li>
+          <li className={styles.item}>
+            <Link to="/">Suporte</Link>
+            <ul className={styles.subtema}>
+              <li>
+                <Link to="/FAQ">Perguntas Frequentes</Link>
+              </li>
+              <li>
+                <Link to="/politica-de-privacidade">
+                  Política de Privacidade
+                </Link>
+              </li>
+              <li>
+                <Link to="/suporte">Contato</Link>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        {signed ? (
+          <div className={styles.navbutton}>
+            <div className={styles.usuarioMenu}>
+              <button
+                className={styles.usuarioBotao}
+                onClick={() => setMenuUsuario(!menuUsuario)}
+              >
+                {perfil?.imagem ? (
+                  <img
+                    src={perfil.imagem}
+                    alt="Imagem de perfil"
+                    className={styles.imagemPerfil}
+                  />
+                ) : (
+                  <div className={styles.avatar} aria-hidden="true">
+                    {perfil?.nome?.charAt(0).toUpperCase() || "?"}
+                  </div>
+                )}
+              </button>
+
+              <span className={styles.nomeUsuario}>
+                {perfil?.nome || "Perfil"}
+              </span>
+
+              {menuUsuario && (
+                <div className={styles.menuDropdown}>
+                  <Link
+                    to="/perfil"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FaUserCircle className={styles.menuIcon} />
+                    Meu Perfil
+                  </Link>
+
+                  <Link
+                    to="/perfil/senha"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FaUserCircle className={styles.menuIcon} />
+                    Conta e Senha
+                  </Link>
+
+                  <Link
+                    to="/pedidos"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FiPackage className={styles.menuIcon} />
+                    Meus Pedidos
+                  </Link>
+
+                  <Link
+                    to="/meus-ganhos"
+                    className={styles.menuItem}
+                    onClick={() => setMenuUsuario(false)}
+                  >
+                    <FiDollarSign className={styles.menuIcon} />
+                    Meus Ganhos
+                  </Link>
+
+                  <button
+                    className={styles.menuItem}
+                    onClick={() => {
+                      setMenuUsuario(false);
+                      sair();
+                    }}
+                  >
+                    <FiLogOut className={styles.menuIcon} />
+                    Sair
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <div className={styles.navbutton}>
+            <Link to="/auth/cadastro" className={styles.button}>
+              Cadastro
+            </Link>
+            <Link to="/auth/login" className={styles.button}>
+              Login
+            </Link>
+          </div>
+        )}
+      </nav>
+    </div>
+  );
+}

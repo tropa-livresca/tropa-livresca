@@ -1,0 +1,194 @@
+import { useLivros } from "../../../../hooks/useLivros";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
+import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
+import Carregando from "../../../../components/Carregando/Carregando";
+import Paginacao from "../../../../../common/components/Paginacao/Paginacao";
+import styles from "./Livros.module.css";
+import { FiChevronDown } from "react-icons/fi";
+
+export default function Livros() {
+  const { Livros, meta, BuscarLivros, carregando } = useLivros();
+
+  const [busca, setBusca] = useState("");
+  const [filtro, setFiltro] = useState("");
+  const [ordem, setOrdem] = useState("");
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const [dropdownAberto, setDropdownAberto] = useState(null);
+
+  useEffect(() => {
+    const carregarDados = async () => {
+      await BuscarLivros(paginaAtual, 12, busca, filtro, ordem);
+    };
+
+    carregarDados();
+  }, [paginaAtual, filtro, ordem]);
+
+  const handleBuscar = (e) => {
+    e.preventDefault();
+    setPaginaAtual(1);
+    BuscarLivros(1, 12, busca, filtro, ordem);
+  };
+
+  const handleFiltro = (novoFiltro) => {
+    setFiltro(novoFiltro);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+  };
+
+  const handleOrdem = (novaOrdem) => {
+    setOrdem(novaOrdem);
+    setPaginaAtual(1);
+    setDropdownAberto(null);
+  };
+
+  return (
+    <main>
+      <DescricaoTela
+        titulo="Livros publicados pela editora"
+        descricao="Histórias que transformam, ideias que inspiram: Explore nosso catálogo."
+      />
+
+      <div className={styles.container}>
+        <form onSubmit={handleBuscar} className={styles.busca}>
+          <span className={styles.iconebusca}>
+            <FaSearch />
+          </span>
+
+          <input
+            className={styles.inputBusca}
+            type="text"
+            placeholder="Buscar livro"
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+          />
+
+          <div className={styles.selectContainer}>
+            <div
+              className={styles.select}
+              onClick={() =>
+                setDropdownAberto(dropdownAberto === "filtro" ? null : "filtro")
+              }
+            >
+              <span>
+                {filtro === "alfabetico"
+                  ? "Ordem Alfabética"
+                  : filtro === "data"
+                    ? "Data de Publicação"
+                    : "Ordenar por"}
+              </span>
+              <FiChevronDown
+                className={dropdownAberto === "filtro" ? styles.setaAberta : ""}
+              />
+            </div>
+
+            {dropdownAberto === "filtro" && (
+              <div className={styles.options}>
+                <div onClick={() => handleFiltro("")}>
+                  <span>Ordenar por</span>
+                </div>
+                <div onClick={() => handleFiltro("alfabetico")}>
+                  <span>Ordem Alfabética</span>
+                </div>
+                <div onClick={() => handleFiltro("data")}>
+                  <span>Data de Publicação</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className={styles.selectContainer}>
+            <div
+              className={styles.select1}
+              onClick={() =>
+                setDropdownAberto(dropdownAberto === "ordem" ? null : "ordem")
+              }
+            >
+              <span>
+                {ordem === "ascendente"
+                  ? "Mais Antigos"
+                  : ordem === "descendente"
+                    ? "Mais Recentes"
+                    : "Ordenar por"}
+              </span>
+              <FiChevronDown
+                className={dropdownAberto === "ordem" ? styles.setaAberta : ""}
+              />
+            </div>
+
+            {dropdownAberto === "ordem" && (
+              <div className={styles.options}>
+                <div onClick={() => handleOrdem("")}>
+                  <span>Ordenar por</span>
+                </div>
+                <div onClick={() => handleOrdem("ascendente")}>
+                  <span>Mais Antigos</span>
+                </div>
+                <div onClick={() => handleOrdem("descendente")}>
+                  <span>Mais Recentes</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <button type="submit" className={styles.btnbuscar}>
+            Buscar
+          </button>
+        </form>
+
+        {carregando ? (
+          <div className={styles.carregando}>
+            <Carregando mensagem="Carregando livros..." />
+          </div>
+        ) : !Livros || Livros.length === 0 ? (
+          <p className={styles.semLivros}>Nenhum livro encontrado</p>
+        ) : (
+          <div className={styles.livros}>
+            {Livros.map((livro) => {
+              return (
+                <div key={livro.id} className={styles.cardLivro}>
+                  <Link to={`/livros/${livro.id}`} className={styles.linkCapa}>
+                    <div className={styles.capaContainer}>
+                      {livro?.capa?.frente ? (
+                        <img
+                          src={livro.capa.frente}
+                          alt={livro.titulo}
+                          className={styles.capa}
+                        />
+                      ) : (
+                        <div className={styles.semImagem}>Sem imagem</div>
+                      )}
+                    </div>
+                  </Link>
+
+                  <div className={styles.infoLivro}>
+                    <Link
+                      to={`/livros/${livro.id}`}
+                      className={styles.linkLivro}
+                    >
+                      <h3>{livro.titulo || "Sem título"}</h3>
+                      <p className={styles.autor}>
+                        {livro.users_profile.nome || "Sem autor"}{" "}
+                        {livro.users_profile.sobrenome || ""}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {!carregando && meta && meta.totalPages > 1 && (
+          <Paginacao
+            paginaAtual={paginaAtual}
+            totalPaginas={meta.totalPages}
+            totalItems={meta.totalItems}
+            onMudarPagina={(novaPagina) => setPaginaAtual(novaPagina)}
+          />
+        )}
+      </div>
+    </main>
+  );
+}

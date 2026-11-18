@@ -1,0 +1,31 @@
+.btnvoltar{
+     display: inline-flex;
+  align-items: center;
+  justify-content: center;
+        padding: 0.8em 2em;
+    border-radius: 0.5rem;
+    font-weight: normal;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 1rem;
+    margin-bottom: 0;
+    background-color: #67170c;
+    color: #ede6b3;
+    border: 1px solid #67170c;
+    margin-right: 1rem;
+}
+
+.btnvoltar:hover{
+    border: 1px solid transparent;
+     background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btnvoltar svg{
+    margin-right: 0.4rem;
+}
+
+.grupobtn{
+    display:flex;
+    align-items:center;
+}

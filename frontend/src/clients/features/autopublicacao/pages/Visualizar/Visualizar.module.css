@@ -1,0 +1,462 @@
+ @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
+}
+
+.header {
+  width: 100%;
+  padding: 3rem 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+  box-sizing: border-box;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-family: "Jacques Francois", serif;
+  overflow-wrap: anywhere;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.subtitulo {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.autor {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  text-align: left;
+}
+
+.autor strong {
+  color: #67170c;
+  font-weight: 600;
+}
+
+.rascunho,
+.em_revisao {
+  color: var(--cor-texto-muted);
+}
+
+.publicado {
+  color: #67170c;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  min-width: 11rem;
+  gap: 1rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.7rem 1.4rem;
+  border-radius: 0.75rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.btnPrimary,
+.btnSecondary {
+  background: #67170c;
+  color: #ede6b3;
+  border:1px solid #67170c;
+}
+
+.btnPrimary:hover,
+.btnSecondary:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+  border: 1px solid #ffbb33;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.8fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.mainContent,
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.card,
+.card2 {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+  padding: 1.8rem 2rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+}
+
+.card h2,
+.card2 h2 {
+  margin: 0;
+    color: #67170c;
+    font-size: 1.3rem;
+    line-height: 1.2;
+    margin-top: 0;
+}
+
+.card h2::after,
+.card2 h2::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2px;
+  margin-top: 0.7rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.descricao {
+  margin: 0.5rem 0 0rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  text-align: left;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+
+.pdfWrapper {
+  width: 100%;
+  height: 70vh;
+  min-height: 28rem;
+  overflow: hidden;
+  border: 1px solid #e3d5ad;
+  border-radius: 1rem;
+  background: #fff9e9;
+  box-sizing: border-box;
+}
+
+.pdfWrapper object {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vazio {
+  margin: 0;
+  padding: 1.5rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  line-height: 1.7;
+}
+
+.btnlivro {
+  color: #67170c;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: #d4b46a;
+  text-underline-offset: 3px;
+}
+
+.btnlivro:hover {
+  color: #a43a22;
+}
+
+.precosGrid {
+  display: flex;
+  flex-direction: column;
+}
+
+.precoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid #e3d5ad;
+  background: transparent;
+  color: #67170c;
+  box-sizing: border-box;
+}
+
+.precoItem:first-child {
+  border-top: 1px solid #e3d5ad;
+}
+
+.precoItem:hover,
+.metaList li:hover {
+  background: #fff9e9;
+}
+
+.precoItem span {
+  flex-shrink: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.numero {
+  min-width: 0;
+  color: #67170c;
+  font-family: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+ 
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #e3d5ad;
+  list-style: none;
+}
+
+.metaList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0.75rem;
+  border-bottom: 1px solid #e3d5ad;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.metaList li span {
+  flex-shrink: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.metaList li strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #67170c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.metaList li > div {
+  min-width: 0;
+  text-align: right;
+}
+
+.colabItem {
+  padding: 0.2rem 0;
+  color: #67170c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+
+.capasContainer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.capaBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+}
+
+.capaBox span {
+  color: #67170c;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.capaBox img {
+  display: block;
+  width: 100%;
+  max-width: 13rem;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 1px solid #e3d5ad;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(103, 23, 12, 0.08);
+}
+
+
+.loading,
+.error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 1.2rem;
+}
+
+.error {
+  color: #67170c;
+}
+
+
+@media (max-width: 1000px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 2rem 1.25rem;
+  }
+
+  .header {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .headerInfo {
+    width: 100%;
+  }
+
+  .headerActions {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .headerActions .btn {
+    width: 100%;
+  }
+
+  .titulo::after {
+    margin-bottom: 1.25rem;
+  }
+
+  .subtitulo {
+    font-size: 1rem;
+  }
+
+  .card,
+  .card2 {
+    padding: 1.3rem;
+    border-radius: 1rem;
+  }
+
+  .pdfWrapper {
+    height: 60vh;
+    min-height: 20rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .container {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .header {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 1.8rem;
+  }
+
+  .titulo::after {
+    width: 5rem;
+    height: 3px;
+    margin-top: 0.75rem;
+  }
+
+  .subtitulo {
+    font-size: 0.95rem;
+  }
+
+  .capasContainer {
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+  }
+
+  .metaList li {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .metaList li strong {
+    text-align: left;
+  }
+
+  .metaList li > div {
+    text-align: left;
+  }
+
+  .colabItem {
+    text-align: left;
+  }
+
+  .pdfWrapper {
+    height: 55vh;
+    min-height: 18rem;
+  }
+}

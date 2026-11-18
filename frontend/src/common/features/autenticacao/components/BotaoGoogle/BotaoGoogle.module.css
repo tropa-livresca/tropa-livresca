@@ -1,0 +1,34 @@
+.btngoogle {
+  background: #fff8d7;
+  width: 90%;
+  margin-left: 5%;
+  padding: 0.8rem;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid #e2c77c;
+  border-radius: 0.7em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: #67170c;
+  font-size: 1rem;
+}
+
+.btngoogle:hover,
+.btngoogle:hover svg {
+  background-color: #ffbb33;
+  color: #ede6b3;
+  transition: 0.3s;
+}
+
+.btngoogle svg {
+  margin-right: 3%;
+  font-size: 1.2rem;
+  color: #67170c;
+}
+
+@media (max-width: 1024px) {
+  .btngoogle {
+    width: 90%;
+  }
+}

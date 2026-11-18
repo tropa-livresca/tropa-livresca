@@ -1,0 +1,518 @@
+.container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.hero {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+
+.capaContainer {
+  width: 320px;
+  aspect-ratio: 3 / 4.3;
+  margin: 0 auto;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  background: #e8dfbb;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.foto {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.semfoto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #67170c;
+  background: #fff8c9;
+}
+
+.heroinfo {
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
+  align-self: center;
+}
+
+.titulo {
+  margin: 0;
+  font-family: "Jacques Francois", serif;
+  font-size: 2.7rem;
+  line-height: 1.15;
+  color: #67170c;
+  overflow-wrap: anywhere;
+}
+
+.subtitulo {
+  margin: 0.6rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--cor-texto-muted);
+}
+
+.infoTopo {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.genero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border-radius: 20px;
+  background: #e9dfb9;
+  color: #392c27;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tags span {
+  padding: 0.45rem 0.9rem;
+  border-radius: 20px;
+  background: #fffdf7;
+  color: #67170c;
+  font-size: 0.85rem;
+  border: 1px solid #e3d5ad;
+}
+
+.informacoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas:
+    "autor publicado"
+    "data publico"
+    "idioma .";
+  grid-auto-rows: 72px;
+  align-items: stretch;
+  gap: 0.65rem;
+  margin-top: 1.3rem;
+}
+
+.informacao,
+.informacaoAutor {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  height: 72px;
+  min-width: 0;
+  min-height: 72px;
+  padding: 0.6rem 0.8rem;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.informacaoPublicado {
+  grid-area: publicado;
+}
+
+.informacaoData {
+  grid-area: data;
+}
+
+.informacaoPublico {
+  grid-area: publico;
+}
+
+.informacaoIdioma {
+  grid-area: idioma;
+}
+
+.informacao:hover,
+.informacaoAutor:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+}
+
+.iconeInformacao {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #f5edcf;
+  color: #67170c;
+  font-size: 0.95rem;
+}
+
+.informacao strong,
+.autorDados strong {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: #67170c;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.informacao p,
+.autorDados p {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.8rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: left;
+}
+
+.informacao > div:last-child,
+.autorDados {
+  min-width: 0;
+}
+
+.fotoAutor,
+.semFotoAutor {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.semFotoAutor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e9dfb9;
+  color: #67170c;
+  border: 1px solid #d4b46a;
+  font-size: 0.6rem;
+}
+
+.linkAutor {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  margin: 0;
+}
+
+.linkAutor:hover {
+  transform: translateY(-2px);
+  transition: 0.2s ease;
+}
+
+.autorDados {
+  min-width: 0;
+  flex: 1;
+}
+
+.numero {
+  font-family: Arial, sans-serif;
+  font-variant-numeric: normal;
+  color: #67170c;
+}
+
+.conteudo {
+  width: 100%;
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+  align-items: start;
+}
+
+.conteudoPrincipal {
+  min-width: 0;
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  min-height: 19.8rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.compra {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1.8rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.chamadaLoja {
+  margin: 0 0 1.2rem;
+  color: #67170c;
+  font-size: 1.05rem;
+}
+
+.btnCarrinho {
+  width: 100%;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  gap: 0.7rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-sizing: border-box;
+  background: #67170c;
+  color: #ede6b3;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btnCarrinho:hover {
+  background-color: #ffbb33;
+}
+
+.divisor {
+  width: 100%;
+  height: 1px;
+  margin: 1.5rem 0;
+  background: #e4d9b9;
+}
+
+.beneficio {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-bottom: 1.1rem;
+  color: #51433e;
+  font-size: 0.95rem;
+}
+
+.beneficio:last-child {
+  margin-bottom: 0;
+}
+
+.beneficio svg {
+  flex-shrink: 0;
+  font-size: 1.15rem;
+  color: #67170c;
+}
+
+.secaoColaboradores {
+  width: 100%;
+  margin-top: 2rem;
+  padding: 2rem;
+  box-sizing: border-box;
+  border-radius: 14px;
+  background: #fffdf7;
+  border: 1px solid #eee4c9;
+}
+
+.tituloSecao {
+  margin: 0 0 1.3rem;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+}
+
+.listaColaboradores {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.colaborador {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 9px;
+  background: #f5eed7;
+}
+
+.nomeColaborador {
+  font-weight: 600;
+  color: #30231f;
+}
+
+.funcaoColaborador {
+  color: #75635b;
+  text-align: right;
+}
+
+.naoEncontrado {
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #67170c;
+}
+
+@media (max-width: 1200px) {
+  .hero {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 2.5rem;
+  }
+
+  .capaContainer {
+    width: 280px;
+  }
+
+  .titulo {
+    font-size: 2.3rem;
+  }
+
+  .informacoes {
+    gap: 0.6rem;
+  }
+
+  .informacao,
+  .informacaoAutor {
+    padding: 0.6rem 0.7rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 3rem 4%;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .capaContainer {
+    width: 300px;
+  }
+
+  .heroinfo {
+    margin-top: 0;
+  }
+
+  .conteudo {
+    grid-template-columns: 1fr;
+  }
+
+  .compra {
+    order: 2;
+  }
+}
+
+@media (max-width: 650px) {
+  .container {
+    padding: 2.5rem 4%;
+  }
+
+  .capaContainer {
+    width: 270px;
+  }
+
+  .titulo {
+    font-size: 2rem;
+  }
+
+  .subtitulo {
+    font-size: 1rem;
+  }
+
+  .informacoes {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "autor"
+      "publicado"
+      "data"
+      "publico"
+      "idioma";
+    grid-auto-rows: 72px;
+    gap: 0.6rem;
+  }
+
+  .informacao,
+  .informacaoAutor {
+    padding: 0.65rem 0.8rem;
+  }
+
+  .conteudoPrincipal,
+  .compra,
+  .secaoColaboradores {
+    padding: 1.3rem;
+  }
+
+  .listaColaboradores {
+    grid-template-columns: 1fr;
+  }
+
+  .colaborador {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .funcaoColaborador {
+    text-align: left;
+  }
+}
+
+@media (max-width: 500px) {
+  .container {
+    padding: 2rem 4%;
+  }
+
+  .capaContainer {
+    width: 240px;
+  }
+
+  .titulo {
+    font-size: 1.7rem;
+  }
+
+  .genero,
+  .tags span {
+    font-size: 0.75rem;
+  }
+
+  .preco {
+    font-size: 1.7rem;
+  }
+
+  .fotoAutor,
+  .semFotoAutor {
+    width: 42px;
+    height: 42px;
+  }
+
+  .iconeInformacao {
+    width: 34px;
+    height: 34px;
+    font-size: 0.95rem;
+  }
+}

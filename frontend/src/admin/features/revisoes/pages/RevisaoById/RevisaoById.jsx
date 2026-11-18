@@ -1,0 +1,247 @@
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { useRevisao } from "../../hooks/useRevisao.js";
+import {
+  FaEdit,
+  FaTimes,
+  FaSave,
+  FaTrash,
+  FaExternalLinkAlt,
+  FaBook,
+  FaFilePdf,
+} from "react-icons/fa";
+import Popup from "../../../../components/PopUp/Popup";
+import styles from "./RevisaoById.module.css";
+
+export default function RevisaoById() {
+  const { id } = useParams();
+
+  const {
+    buscarRevisaoById,
+    revisaoAtual,
+    livroRevisado,
+    nome,
+    setNome,
+    manuscrito,
+    setManuscrito,
+    apontamento,
+    setApontamento,
+    atualizarRevisao,
+    limparCampos,
+  } = useRevisao();
+
+  const [isEdicao, setIsEdicao] = useState(false);
+  const [popup, setPopup] = useState(null);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const carregarDados = async () => {
+      await buscarRevisaoById(id);
+    };
+
+    carregarDados();
+  }, [id, buscarRevisaoById]);
+
+  const selecionarManuscrito = (e) => {
+    const arquivo = e.target.files?.[0];
+
+    if (!arquivo) return;
+
+    if (
+      arquivo.type !== "application/pdf" &&
+      !arquivo.name.toLowerCase().endsWith(".pdf")
+    ) {
+      setPopup({ tipo: "erro", mensagem: "Selecione um arquivo PDF." });
+      e.target.value = "";
+      return;
+    }
+
+    if (arquivo.size > 50 * 1024 * 1024) {
+      setPopup({
+        tipo: "erro",
+        mensagem: "O arquivo deve ter no máximo 50 MB.",
+      });
+      e.target.value = "";
+      return;
+    }
+
+    setManuscrito(arquivo);
+  };
+
+  const executarSalvar = async (e) => {
+    e.preventDefault();
+
+    if (!id) return;
+
+    try {
+      await atualizarRevisao(id, livroRevisado?.id);
+      setIsEdicao(false);
+      setPopup({
+        tipo: "sucesso",
+        mensagem: "Revisão atualizada com sucesso.",
+      });
+    } catch (err) {
+      setPopup({
+        tipo: "erro",
+        mensagem: err.message || "Erro ao atualizar revisão.",
+      });
+    }
+  };
+
+  return (
+    <main>
+      <div className={styles.topo}>
+        <h2 className={styles.titulo}>
+          Detalhes da Revisão <span className={styles.numero}>#{id}</span>
+        </h2>
+
+        <p>Verifique e altere a revisão caso necessário.</p>
+      </div>
+
+      <div className={styles.container}>
+        {revisaoAtual ? (
+          <div className={styles.conteudoCard}>
+            <div className={styles.headerRevisao}>
+              <button
+                type="button"
+                onClick={() => setIsEdicao(!isEdicao)}
+                className={styles.linkLivro}
+              >
+                {isEdicao ? (
+                  <>
+                    <FaTimes /> Cancelar
+                  </>
+                ) : (
+                  <>
+                    <FaEdit /> Editar Revisão
+                  </>
+                )}
+              </button>
+
+              {livroRevisado?.id && (
+                <Link
+                  to={`/admin/livros/visualizar/${livroRevisado.id}`}
+                  className={styles.linkLivro}
+                >
+                  <FaBook /> Ver livro relacionado
+                </Link>
+              )}
+            </div>
+
+            <form
+              onSubmit={executarSalvar}
+              className={`${styles.formulario} ${
+                !isEdicao ? styles.formularioBloqueado : ""
+              }`}
+            >
+              <div className={styles.campoGrupo}>
+                <label className={styles.label}>Nome da revisão:</label>
+
+                <input
+                  type="text"
+                  name="nome"
+                  value={nome || ""}
+                  disabled={!isEdicao}
+                  onChange={(e) => setNome(e.target.value)}
+                  className={styles.input}
+                  placeholder="Ex: Revisão de ortografia do capítulo 1"
+                />
+              </div>
+
+              <div className={styles.campoGrupo}>
+                <label className={styles.label}>Apontamento:</label>
+
+                <textarea
+                  id="apontamento"
+                  name="apontamento"
+                  rows={10}
+                  placeholder="Digite detalhadamente as notas da revisão..."
+                  value={apontamento || ""}
+                  disabled={!isEdicao}
+                  onChange={(e) => setApontamento(e.target.value)}
+                  className={styles.textarea}
+                />
+              </div>
+
+              <div className={styles.campoGrupo}>
+                <label className={`${styles.label} ${styles.labelManuscrito}`}>
+                  Manuscrito / Anexo:
+                </label>
+
+                {isEdicao && (
+                  <label className={styles.carregar}>
+                    <FaFilePdf className={styles.carregarsvg} />
+
+                    <span>
+                      Subir arquivo do livro
+                      <span className={styles.clique}>
+                        Aceitamos apenas arquivos .pdf
+                      </span>
+                    </span>
+
+                    <input
+                      type="file"
+                      hidden
+                      accept=".pdf,application/pdf"
+                      onChange={selecionarManuscrito}
+                    />
+                  </label>
+                )}
+
+                {typeof manuscrito === "string" && manuscrito && (
+                  <div className={styles.arquivoBox}>
+                    <span>Arquivo atual anexado ao sistema</span>
+
+                    <a
+                      href={manuscrito}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={styles.linkArquivo}
+                    >
+                      Visualizar arquivo <FaExternalLinkAlt size={12} />
+                    </a>
+                  </div>
+                )}
+
+                {manuscrito instanceof File && (
+                  <p className={styles.arquivocarregado}>
+                    Arquivo selecionado: {manuscrito.name}
+                  </p>
+                )}
+              </div>
+
+              {isEdicao && (
+                <div className={styles.acoesFormulario}>
+                  <button
+                    type="button"
+                    onClick={limparCampos}
+                    className={styles.botaoLimpar}
+                  >
+                    <FaTrash /> Limpar Formulário
+                  </button>
+
+                  <button type="submit" className={styles.botaoSalvar}>
+                    <FaSave /> Salvar Alterações
+                  </button>
+                </div>
+              )}
+            </form>
+          </div>
+        ) : (
+          <div className={styles.feedbackErro}>
+            Nenhuma revisão encontrada para este ID. Verifique o caminho
+            informado.
+          </div>
+        )}
+      </div>
+      {popup && (
+        <Popup
+          tipo={popup.tipo}
+          mensagem={popup.mensagem}
+          fechar={() => setPopup(null)}
+        />
+      )}
+    </main>
+  );
+}

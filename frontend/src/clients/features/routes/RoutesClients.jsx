@@ -1,0 +1,183 @@
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import MainLayout from "../../components/MainLayout/MainLayout";
+import useAuth from "../../../common/hooks/useAuth";
+import Modal from "../../../common/components/Modal/Modal";
+import modalStyles from "../../../common/components/Modal/Modal.module.css";
+import { PerfilProvider } from "../../context/Perfil.jsx";
+import { CarrinhoProvider } from "../loja/context/Carrinho.jsx";
+
+import DadosBancarios from "../perfil/pages/DadosBancarios/DadosBancarios.jsx";
+import NotFound from "../../../common/features/paginasErro/pages/NotFound/NotFound.jsx";
+import PoliticaPrivacidade from "../institucional/pages/PoliticaPrivacidade/PoliticaPrivacidade.jsx";
+import Inicio from "../institucional/pages/Inicio/Inicio";
+import TrocarSenha from "../perfil/pages/TrocarSenha/TrocarSenha";
+import SobreAutopublicacao from "../institucional/pages/SobreAutopublicacao/SobreAutopublicacao";
+import Perfil from "../perfil/pages/Perfil/Perfil";
+import Endereco from "../perfil/pages/Endereco/Endereco";
+import FAQ from "../suporte/pages/FAQ/FAQ";
+import Historia from "../institucional/pages/Historia/Historia";
+import Autores from "../autores/pages/Autores/Autores";
+import AutorById from "../autores/pages/AutorById/AutorById";
+import MeusLivros from "../autopublicacao/pages/MeusLivros/MeusLivros";
+import EditarLivro from "../autopublicacao/pages/EditarLivro/EditarLivro";
+import Livros from "../livros/pages/Livros/Livros";
+import Visualizar from "../autopublicacao/pages/Visualizar/Visualizar";
+import NovoLivro from "../autopublicacao/pages/NovoLivro/NovoLivro";
+import LivroById from "../livros/pages/LivroById/LivroById";
+import Suporte from "../suporte/pages/Suporte/Suporte";
+import Loja from "../loja/pages/Loja/Loja";
+import Carrinho from "../loja/pages/Carrinho/Carrinho";
+import ProdutoById from "../loja/pages/ProdutoById/ProdutoById.jsx";
+import ResumoCompra from "../loja/pages/ResumoCompra/ResumoCompra.jsx";
+import MeusPedidos from "../loja/pages/MeusPedidos/MeusPedidos.jsx";
+import BibliotecaPessoal from "../loja/pages/BibliotecaPessoal/BibliotecaPessoal.jsx";
+import MeusGanhos from "../ganhos/pages/MeusGanhos/MeusGanhos.jsx";
+import Pagamento from "../loja/pages/Pagamento/Pagamento.jsx";
+import PagamentoCartao from "../loja/pages/PagamentoCartao/PagamentoCartao.jsx";
+import PagamentoPix from "../loja/pages/PagamentoPix/PagamentoPix.jsx";
+import PagamentoBoleto from "../loja/pages/PagamentoBoleto/PagamentoBoleto.jsx";
+
+const Private = ({ Item }) => {
+  const { signed, loading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  if (loading) return null;
+
+  if (signed) return <Item />;
+
+  const voltar = () => {
+    if (location.key === "default") {
+      navigate("/", { replace: true });
+    } else {
+      navigate(-1);
+    }
+  };
+
+  return (
+    <Modal
+      title="Acesse sua conta"
+      description="Entre ou crie uma conta para continuar. Se preferir, você pode voltar à página anterior."
+      onClose={voltar}
+    >
+      <div className={modalStyles.acoes}>
+        <button
+          type="button"
+          className={modalStyles.botao}
+          onClick={() =>
+            navigate("/auth/login", {
+              state: { from: location },
+            })
+          }
+        >
+          Login
+        </button>
+        <button
+          type="button"
+          className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+          onClick={() =>
+            navigate("/auth/cadastro", {
+              state: { from: location },
+            })
+          }
+        >
+          Cadastre-se
+        </button>
+        <button
+          type="button"
+          className={`${modalStyles.botao} ${modalStyles.botaoSecundario}`}
+          onClick={voltar}
+        >
+          Agora não
+        </button>
+      </div>
+    </Modal>
+  );
+};
+
+const RoutesClients = () => {
+  return (
+    <CarrinhoProvider>
+      <PerfilProvider>
+        <Routes>
+          <Route element={<MainLayout />}>
+            <Route path="/" element={<Inicio />} />
+            <Route path="/perfil/dadosbancarios" element={<DadosBancarios />} />
+            <Route path="/historia" element={<Historia />} />
+            <Route
+              path="/sobreautopublicacao"
+              element={<SobreAutopublicacao />}
+            />
+            <Route
+              path="/politica-de-privacidade"
+              element={<PoliticaPrivacidade />}
+            />
+            <Route path="/loja" element={<Loja />} />
+            <Route
+              path="/bibliotecapessoal"
+              element={<Private Item={BibliotecaPessoal} />}
+            />
+            <Route path="/pagamento" element={<Pagamento />} />
+            <Route
+              path="/pagamento/cartao"
+              element={<Private Item={PagamentoCartao} />}
+            />
+            <Route
+              path="/pagamento/pix"
+              element={<Private Item={PagamentoPix} />}
+            />
+            <Route
+              path="/pagamento/boleto"
+              element={<Private Item={PagamentoBoleto} />}
+            />
+            <Route path="/carrinho" element={<Carrinho />} />
+            <Route path="/loja/livro/:id" element={<ProdutoById />} />
+            <Route
+              path="/checkout/:frete/:mod"
+              element={<Private Item={Pagamento} />}
+            />
+            <Route
+              path="/pedido/:id"
+              element={<Private Item={ResumoCompra} />}
+            />
+            <Route path="/pedidos" element={<Private Item={MeusPedidos} />} />
+            <Route
+              path="/meus-ganhos"
+              element={<Private Item={MeusGanhos} />}
+            />
+            <Route path="/autores" element={<Autores />} />
+            <Route path="/autores/:id" element={<AutorById />} />
+            <Route path="/FAQ" element={<FAQ />} />
+            <Route path="/suporte" element={<Suporte />} />
+            <Route path="/meuslivros" element={<Private Item={MeusLivros} />} />
+            <Route path="/livros" element={<Livros />} />
+            <Route path="/livros/:id" element={<LivroById />} />
+            <Route path="/perfil" element={<Private Item={Perfil} />} />
+            <Route
+              path="/perfil/senha"
+              element={<Private Item={TrocarSenha} />}
+            />
+            <Route
+              path="/perfil/endereco"
+              element={<Private Item={Endereco} />}
+            />
+            <Route path="/novo-livro" element={<Private Item={NovoLivro} />} />
+            <Route
+              path="/editar-livro/:id"
+              element={<Private Item={EditarLivro} />}
+            />
+            |
+            <Route
+              path="/visualizar-livro/:id"
+              element={<Private Item={Visualizar} />}
+            />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PerfilProvider>
+    </CarrinhoProvider>
+  );
+};
+
+export default RoutesClients;

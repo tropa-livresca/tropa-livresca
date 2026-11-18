@@ -1,0 +1,132 @@
+import Carregando from "../../../../components/Carregando/Carregando";
+
+import styles from "./Formulario.module.css";
+import Detalhes from "../../pages/Detalhes/Detalhes";
+import Conteudo from "../../pages/Conteudo/Conteudo";
+import Orcamento from "../../pages/Orcamento/Orcamento";
+import Confirmacao from "../../pages/Confirmacao/Confirmacao";
+import { useAutopublicacao } from "../../hooks/useAutopublicacao";
+import { useMeusLivros } from "../../hooks/useMeusLivros";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+export default function Formulario({ idLivroEdicao }) {
+  const {
+    dadosLivro,
+    etapa,
+    isEdicao,
+    estadoAtualLivro,
+    carregarDadosParaEdicao,
+    atualizarEtapa,
+    irParaProximaEtapa,
+    voltarEtapa,
+    irParaEtapaEspecifica,
+    publicarLivro,
+    uploadManuscrito,
+    erro,
+  } = useAutopublicacao();
+
+  const { buscarLivroById } = useMeusLivros();
+
+  const [carregandoLivro, setCarregandoLivro] = useState(false);
+  const [erroCarregar, setErroCarregar] = useState(null);
+  const navegar = { irParaProximaEtapa, voltarEtapa };
+
+  useEffect(() => {
+    if (!idLivroEdicao) return;
+
+    const buscarDadosDoLivro = async () => {
+      try {
+        setCarregandoLivro(true);
+        setErroCarregar(null);
+
+        const dadosDoLivroDoBanco = await buscarLivroById(idLivroEdicao);
+
+        if (dadosDoLivroDoBanco) {
+          carregarDadosParaEdicao(dadosDoLivroDoBanco);
+          setErroCarregar(null);
+        } else {
+          setErroCarregar("Não foram encontrados dados para este livro.");
+        }
+      } catch (error) {
+        console.error("Erro ao inicializar dados de edição do livro:", error);
+        setErroCarregar("Não foi possível carregar os dados deste livro.");
+      } finally {
+        setCarregandoLivro(false);
+      }
+    };
+
+    buscarDadosDoLivro();
+  }, [idLivroEdicao, carregarDadosParaEdicao, buscarLivroById]);
+
+  if (carregandoLivro) {
+    return <Carregando mensagem="Carregando dados do livro para edição..." />;
+  }
+
+  if (idLivroEdicao && erroCarregar) {
+    return (
+      <main>
+        <div className={styles.erro}>{erroCarregar}</div>
+        <Link to="/meuslivros" className={styles.btn}>
+          Voltar a Meus Livros
+        </Link>
+      </main>
+    );
+  }
+
+  const tituloFormulario = isEdicao ? "Editar Livro" : "Novo Livro";
+
+  return (
+    <main>
+      <div className={styles.topo}>
+        <h1 className={styles.titulo}>{tituloFormulario}</h1>
+
+        <span className={styles.descricao}>
+          Etapa <span className={styles.numero}>{etapa}</span> de{" "}
+          <span className={styles.numero}>4</span>
+        </span>
+      </div>
+
+      <div className={styles.container}>
+        {etapa === 1 && (
+          <Detalhes
+            dados={dadosLivro.detalhes}
+            onChange={atualizarEtapa("detalhes")}
+            estadoAtualLivro={estadoAtualLivro}
+            {...navegar}
+          />
+        )}
+
+        {etapa === 2 && (
+          <Conteudo
+            dados={dadosLivro.conteudo}
+            onChange={atualizarEtapa("conteudo")}
+            isEdicao={isEdicao}
+            {...navegar}
+            uploadManuscrito={uploadManuscrito}
+          />
+        )}
+
+        {etapa === 3 && (
+          <Orcamento
+            dados={dadosLivro.orcamento}
+            numeroPaginas={dadosLivro.orcamento.numeroPaginas}
+            onChange={atualizarEtapa("orcamento")}
+            {...navegar}
+          />
+        )}
+
+        {etapa === 4 && (
+          <Confirmacao
+            dados={dadosLivro}
+            isEdicao={isEdicao}
+            estadoAtualLivro={estadoAtualLivro}
+            irParaEtapaEspecifica={irParaEtapaEspecifica}
+            publicarLivro={publicarLivro}
+            erro={erro}
+          />
+        )}
+      </div>
+    </main>
+  );
+}

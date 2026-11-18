@@ -1,0 +1,122 @@
+Table users_profile {
+  id uuid [pk, not null]
+  nome text [not null]
+  sobrenome text [not null]
+  telefone varchar [not null]
+  imagem text
+  descricao text
+  redes_sociais jsonb
+  is_admin boolean [not null]
+  senha_adm text
+  primeiro_acesso boolean [not null]
+  email text
+  is_master boolean
+  dados_bancarios jsonb
+}
+
+Table itens_venda {
+  id bigint [pk, increment, not null]
+  qtd bigint [not null]
+  subtotal numeric [not null]
+  fk_livros_itens_id bigint [not null]
+  fk_vendas_id bigint [not null]
+  fisico boolean [not null]
+  preco_unitario numeric [not null]
+}
+
+Table livros {
+  id bigint [pk, increment, not null]
+  direitos_de_publicacao boolean [not null]
+  data_de_publicacao date [not null]
+  preco_digital numeric [not null]
+  preco_fisico numeric [not null]
+  titulo text [not null]
+  subtitulo text [not null]
+  descricao text [not null]
+  fk_user_profile_id uuid [not null]
+  ativo boolean [not null]
+  estado varchar [not null]
+  idioma text [not null]
+  manuscrito text
+  colaboradores jsonb
+  capa jsonb
+  categoria text
+  ISBN text
+  numero_paginas smallint
+}
+
+Table avaliacoes {
+  id bigint [pk, increment, not null]
+  data_criacao timestamptz [not null]
+  fk_livros_id bigint
+  fk_users_profile_id uuid
+  qtd_estrelas smallint
+}
+
+Table vendas {
+  id bigint [pk, increment, not null]
+  data timestamptz [not null]
+  total numeric [not null]
+  metodo_pagamento bigint [not null]
+  status_pagamento text [not null]
+  fk_user_profile_id uuid [not null]
+  endereco_entrega jsonb
+  status_entrega text [not null]
+}
+
+Table movimentacoes_financeiras {
+  id bigint [pk, increment, not null]
+  data timestamptz [not null]
+  fk_user_profile_id uuid
+  fk_vendas_id bigint
+  tipo text [not null]
+  valor numeric [not null]
+  descricao text [not null]
+  status text [not null]
+}
+
+Table enderecos {
+  id bigint [pk, increment, not null]
+  estado varchar [not null]
+  bairro text [not null]
+  rua text [not null]
+  num integer [not null]
+  cep varchar [not null]
+  fk_user_profile_id uuid [not null]
+  cidade text [not null]
+  complemento text
+  pais text
+  ativo boolean
+  principal boolean
+}
+
+Table revisoes {
+  id bigint [pk, increment, not null]
+  arquivo text [not null]
+  data_criacao timestamptz [not null]
+  apontamento text
+  fk_user_profile_id uuid [not null]
+  fk_livro_id bigint [not null]
+  nome text
+  completado boolean [not null]
+}
+
+// Relacionamentos / Chaves estrangeiras
+
+Ref: movimentacoes_financeiras.fk_vendas_id > vendas.id
+Ref: movimentacoes_financeiras.fk_user_profile_id > users_profile.id
+
+Ref: itens_venda.fk_livros_itens_id > livros.id
+Ref: itens_venda.fk_vendas_id > vendas.id
+
+Ref: vendas.fk_user_profile_id > users_profile.id
+
+Ref: revisoes.fk_livro_id > livros.id
+Ref: revisoes.fk_user_profile_id > users_profile.id
+
+Ref: enderecos.fk_user_profile_id > users_profile.id
+
+Ref: livros.fk_user_profile_id > users_profile.id
+
+Ref: avaliacoes.fk_livros_id > livros.id
+Ref: avaliacoes.fk_users_profile_id > users_profile.id

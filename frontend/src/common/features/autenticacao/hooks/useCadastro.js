@@ -1,0 +1,105 @@
+import { useState, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../../hooks/useAuth";
+
+export const useCadastro = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [popup, setPopup] = useState(null);
+
+  const mostrarPopup = useCallback((tipo, mensagem) => {
+    setPopup({
+      tipo,
+      mensagem,
+    });
+  }, []);
+
+  const fecharPopup = useCallback(() => {
+    setPopup(null);
+    navigate("/auth/login", { state: location.state });
+  }, [location.state, navigate]);
+
+  const [nome, setNome] = useState("");
+  const [sobrenome, setSobrenome] = useState("");
+  const [senha, setSenha] = useState("");
+  const [confSenha, setConfSenha] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [error, setError] = useState("");
+  const [privacidade, setPrivacidade] = useState(false);
+
+  const { signup } = useAuth();
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !senha || !confSenha || !telefone || !nome || !sobrenome) {
+      setError("Preencha todos os campos.");
+      return;
+    }
+
+    let novosErros = [];
+
+    if (senha.length < 8) {
+      novosErros.push("A senha precisa ter, no mínimo, 8 caracteres.");
+    }
+
+    const regexSenha = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/;
+
+    if (!regexSenha.test(senha)) {
+      novosErros.push(
+        "A senha deve conter letras maiúsculas, minúsculas, números e caracteres especiais.",
+      );
+    }
+
+    if (senha !== confSenha) {
+      novosErros.push("As senhas não são iguais.");
+    }
+
+    if (telefone.length !== 15) {
+      novosErros.push("Número de telefone incorreto.");
+    }
+
+    if (!privacidade) {
+      novosErros.push("Por favor, clique em aceitar Política de Privacidade.");
+    }
+
+    if (novosErros.length > 0) {
+      setError(novosErros);
+      return;
+    }
+
+    const resError = await signup(email, senha, telefone, nome, sobrenome);
+
+    if (resError) {
+      setError(resError);
+      return;
+    }
+
+    mostrarPopup("sucesso", "Cadastro realizado com sucesso!");
+  };
+
+  return {
+    email,
+    setEmail,
+    senha,
+    setSenha,
+    privacidade,
+    setPrivacidade,
+    error,
+    setError,
+    sobrenome,
+    setSobrenome,
+    nome,
+    setNome,
+    confSenha,
+    setConfSenha,
+    telefone,
+    setTelefone,
+    navigate,
+    handleSignup,
+    popup,
+    fecharPopup,
+  };
+};

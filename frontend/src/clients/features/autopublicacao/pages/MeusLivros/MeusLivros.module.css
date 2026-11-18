@@ -1,0 +1,724 @@
+
+@import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
+
+.topo {
+  width: 100%;
+  padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.subcontainer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2rem;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 4vw, 4rem) !important;
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn {
+  display: grid;
+  place-items: center;
+  padding: 1rem 2rem;
+  border-radius: 1rem;
+  background: #67170c;
+  color: #ede6b3;
+  font-family: inherit;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #ffbb33;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin: auto;
+  padding: 5rem 6%;
+  box-sizing: border-box;
+}
+
+.painelBusca {
+  width: 100%;
+  margin-bottom: 2.5rem;
+}
+
+.linhaBusca {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 3rem minmax(150px, 1fr) 260px 6rem;
+  align-items: center;
+  padding: 0.4rem;
+  background-color: #fffdf7;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+}
+
+.iconeLupa {
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  color: #67170c;
+  font-size: 1.2rem;
+}
+
+.campoBusca {
+  width: 100%;
+  min-width: 0;
+  display: block;
+  background: transparent;
+}
+
+.campoBusca input {
+  width: 100%;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.campoBusca input::placeholder {
+  color: var(--cor-texto-muted);
+}
+
+.campoBusca input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.ordenar {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.botaoOrdenar {
+  width: 100%;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0.7rem 0.8rem;
+  box-sizing: border-box;
+  background-color: #fffdf7;
+  border: 1px solid #67170c;
+  border-radius: 1rem;
+  color: #67170c;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.rotuloOrdenar {
+  color: #67170c;
+  white-space: nowrap;
+}
+
+.botaoOrdenar:hover {
+  background-color: #ffecc9;
+}
+
+.botaoOrdenar svg {
+  flex-shrink: 0;
+  color: #67170c;
+  font-size: 1.2rem;
+  transition: transform 0.25s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.opcoesOrdenar {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  z-index: 100;
+  overflow: hidden;
+  padding: 0.2rem;
+  margin: 0;
+  list-style: none;
+  background: #fffdf7;
+  border-radius: 0.8rem;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+}
+
+.opcoesOrdenar button {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: none;
+  border-radius: 0.7rem;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.opcoesOrdenar button:hover {
+  background-color: #ffecc9;
+  color: #ffbb33;
+}
+
+.btnbuscar {
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 1.5rem;
+  background-color: #67170c;
+  color: #ede6b3;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-left: 10px !important;
+}
+
+.btnbuscar:hover {
+  background-color: #ffbb33;
+}
+
+.filtroSituacao {
+  margin-bottom: 3rem;
+}
+
+.filtroRotulo {
+  display: block;
+  margin-bottom: 1rem;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.estados {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.45rem;
+  background: #fffdf7;
+   box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  border-radius: 1rem;
+}
+
+.aba {
+  position: relative;
+  padding: 0.8rem 1.4rem;
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: var(--cor-texto-muted);
+  font-family: "Jacques Francois", serif;
+  font-size: 1rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.aba:hover:not(.abaAtiva) {
+  color: #67170c;
+}
+
+.abaAtiva {
+  background: #67170c;
+  border-color: #67170c;
+  color: #ede6b3;
+}
+
+.abaAtiva:hover {
+  background: #ffbb33;
+  transition: 0.3s;
+  border-color: #ffbb33;
+}
+
+.tabelaLinhas {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.linhaLivro {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  background: #fffdf7;
+ box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+  transition: 0.25s;
+}
+
+.linhaLivro:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(103, 23, 12, 0.1);
+}
+
+.infoColuna {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.capaContainer {
+  width: 4.5rem;
+  height: 6.5rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #fff8d7;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.capaMini {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.semCapaMini {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #67170c;
+  font-size: 1.7rem;
+}
+
+.detalhesTexto {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+
+.livroTitulo {
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.3rem;
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  display: inline-block;
+  width: max-content;
+  padding: 0.35rem 0.8rem;
+  border-radius: 0.5rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+.rascunho {
+  background: #c6f6d5;
+  color: brown;
+}
+
+.em_revisao {
+  background: #c6f6d5;
+  color: orange;
+}
+
+.publicado {
+  background: #c6f6d5;
+  color: green;
+}
+
+.negado {
+  background: #c6f6d5;
+  color: red;
+}
+
+.acoesColuna {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.btnAcao {
+  min-height: 2.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #d4b46a;
+  border-radius: 0.6rem;
+  background: #fff8d7;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.85rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btnVisualizar:hover,
+.btnEditar:hover {
+  border-color: #ffbb33;
+  background: #ffbb33;
+  color: #ede6b3;
+}
+
+.btnPublicar {
+  border-color: #67170c;
+  background: #67170c;
+  color: #ede6b3;
+}
+
+.btnPublicar:hover {
+  border-color: #ffbb33;
+  background: #ffbb33;
+  color: #67170c;
+}
+
+.btnInativar:hover {
+  border-color: #b83232;
+  background: #b83232;
+  color: #fff;
+}
+
+.textoPublicado {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid #c6dfc9;
+  border-radius: 0.6rem;
+  background: #e9f5e9;
+  color: #67170c;
+  font-size: 0.85rem;
+}
+
+.adicionardiv {
+  position: fixed;
+  right: 2.5rem;
+  bottom: 2.5rem;
+  z-index: 999;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btnAdicionar {
+  width: 3.8rem;
+  height: 3.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #67170c;
+  color: #ede6b3;
+  font-size: 2.5rem;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.btnAdicionar:hover {
+  background: #ffbb33;
+}
+
+.cardnenhumlivro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+ box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  border-radius: 1rem;
+  background: #fffdf7;
+  text-align: center;
+}
+
+.cardnenhumlivro svg {
+  color: #67170c;
+}
+
+.titulon {
+  margin: 0.5rem 0;
+  color: #67170c;
+  font-family: "Jacques Francois", serif;
+  font-size: 1.6rem;
+}
+
+.sub {
+  max-width: 45rem;
+  color: var(--cor-texto-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 1150px) {
+  .container,
+  .topo {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+
+  .linhaBusca {
+    grid-template-columns: 3rem minmax(120px, 1fr) 220px 6rem;
+  }
+
+  .linhaLivro {
+    padding: 1.3rem;
+  }
+
+  .acoesColuna {
+    gap: 0.5rem;
+  }
+
+  .btnAcao {
+    padding: 0.55rem 0.85rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding: 3rem 4%;
+  }
+
+  .topo {
+    padding: 3rem 4%;
+  }
+
+  .linhaBusca {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+    padding: 0.8rem;
+    border-radius: 1.2rem;
+  }
+
+  .iconeLupa {
+    display: none;
+  }
+
+  .campoBusca input {
+    height: 3.2rem;
+    padding: 0 1rem;
+    border-radius: 0.9rem;
+  }
+
+  .botaoOrdenar {
+    min-height: 3.2rem;
+    padding: 0 1rem;
+  }
+
+  .btnbuscar {
+    width: 100%;
+    height: 3.2rem;
+  }
+
+  .linhaLivro {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .acoesColuna {
+    width: 100%;
+    justify-content: flex-start;
+    padding-top: 1rem;
+    border-top: 1px solid #eee5d1;
+  }
+}
+
+@media (max-width: 650px) {
+  .topo {
+    padding: 2.5rem 5%;
+  }
+
+  .container {
+    padding: 2.5rem 5%;
+  }
+
+  .titulo {
+    font-size: clamp(1.9rem, 8vw, 2.7rem);
+  }
+
+  .subcontainer {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .subcontainer p {
+    font-size: 1rem;
+  }
+
+  .btn {
+    justify-self: start;
+    padding: 0.9rem 1.5rem;
+  }
+
+  .ordenar {
+    width: 100%;
+  }
+
+  .estados {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    box-sizing: border-box;
+  }
+
+  .aba {
+    width: 100%;
+    padding: 0.8rem 0.5rem;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .linhaLivro {
+    padding: 1.2rem;
+    border-radius: 0.8rem;
+  }
+
+  .infoColuna {
+    gap: 1rem;
+  }
+
+  .livroTitulo {
+    font-size: 1.1rem;
+  }
+
+  .acoesColuna {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .btnAcao {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem 0.4rem;
+    font-size: 0.8rem;
+    text-align: center;
+  }
+
+  .textoPublicado {
+    text-align: center;
+  }
+
+  .cardnenhumlivro {
+    padding: 2.5rem 1rem;
+  }
+
+  .titulon {
+    font-size: 1.3rem;
+  }
+
+  .adicionardiv {
+    right: 1.5rem;
+    bottom: 1.5rem;
+  }
+
+  .btnAdicionar {
+    width: 3.5rem;
+    height: 3.5rem;
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .topo {
+    padding: 2.2rem 5%;
+  }
+
+  .container {
+    padding: 2rem 5%;
+  }
+
+  .estados {
+    gap: 0.4rem;
+  }
+
+  .acoesColuna {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .btnAdicionar {
+    width: 3.2rem;
+    height: 3.2rem;
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .topo,
+  .container {
+    padding-left: 4%;
+    padding-right: 4%;
+  }
+
+  .titulo {
+    font-size: 1.7rem;
+  }
+
+  .topo p {
+    font-size: 0.9rem;
+  }
+
+  .acoesColuna {
+    grid-template-columns: 1fr;
+  }
+
+  .infoColuna {
+    gap: 0.8rem;
+  }
+
+  .capaContainer {
+    width: 3.5rem;
+    height: 5.2rem;
+  }
+
+  .livroTitulo {
+    font-size: 1rem;
+  }
+}

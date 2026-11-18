@@ -1,0 +1,483 @@
+.mainContainer {
+  margin-top: 0;
+}
+
+.topo {
+  width: 100%;
+  padding: 3rem 6%;
+  background: #f7f0cfb1;
+  border-bottom: 2px solid #d4b46a;
+}
+
+.topoConteudo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.topoTexto {
+  min-width: 0;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 8rem;
+  height: 4px;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.topo p {
+  margin-bottom: 0.5rem;
+  color: var(--cor-texto-muted);
+  text-align: left;
+  font-size: 1.2rem;
+}
+
+.acoes {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex-shrink: 0;
+  min-width: 11rem;
+  gap: 2rem;
+}
+
+.topo .erroAtivo {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: #67170c;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.btnVoltar,
+.btnAtivar,
+.btnInativar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid #c9998d;
+  border-radius: 0.75rem;
+  background: transparent;
+  color: #67170c;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: 0.3s;
+}
+
+.btnVoltar {
+  margin: 0;
+}
+
+.btnVoltar svg {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+.btnVoltar:hover,
+.btnAtivar:hover:not(:disabled),
+.btnInativar:hover:not(:disabled) {
+  border-color: #67170c;
+  background: #67170c;
+  color: #fffdf7;
+}
+
+.btnAtivar:disabled,
+.btnInativar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  padding: 3rem 6%;
+  box-sizing: border-box;
+}
+
+.layoutGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.8fr) minmax(0, 2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.mainContent,
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.cartao {
+  padding: 1.8rem 2rem;
+  border-radius: 1.5rem;
+  background: #fffdf7;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05);
+  box-sizing: border-box;
+}
+
+.cabecalhoSecao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cabecalhoSecao .secaoTitulo {
+  margin: 0;
+}
+
+.secaoTitulo,
+.inf {
+  margin: 0;
+  color: #67170c;
+  font-size: 1.3rem;
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+.manus {
+  margin: 0;
+  color: #67170c;
+  font-size: 1.3rem;
+  line-height: 1.2;
+  margin-top: 0;
+}
+
+.manup {
+  margin: 0.5rem 0 1.25rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.desc,
+.descricao,
+.infp {
+  margin: 0.5rem 0 1.25rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.desc1 {
+  margin: 0.5rem 0 1.25rem;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  text-align: left;
+  padding-bottom: 0.1rem;
+}
+.linkExterno {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #c9998d;
+  border-radius: 0.67rem;
+  background: transparent;
+  color: #67170c;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: 0.3s;
+  margin-top: -0.3rem;
+}
+
+.linkExterno:hover {
+  border-color: #67170c;
+  background: #67170c;
+  color: #fffdf7;
+}
+
+.pdfWrapper {
+  height: 70vh;
+  min-height: 28rem;
+  overflow: hidden;
+  border: 1px solid #e3d5ad;
+  border-radius: 1rem;
+  background: #fff9e9;
+}
+
+.vazio,
+.capasVazio {
+  margin: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+}
+
+.vazio {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.btnlivro {
+  color: #67170c;
+  font-weight: 600;
+}
+
+.semDados {
+  margin: 0;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: #fffdf7;
+  color: var(--cor-texto-muted);
+  text-align: center;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid #e3d5ad;
+  border-radius: 999px;
+  background: transparent;
+  color: #67170c;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.rascunho,
+.em_revisao {
+  color: var(--cor-texto-muted);
+}
+
+.publicado {
+  color: #67170c;
+}
+
+.negado,
+.recall,
+.inativo {
+  border-color: #c9998d;
+  color: #67170c;
+}
+
+.precosGrid {
+  display: flex;
+  flex-direction: column;
+}
+
+.precoItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0.75rem;
+  border: none;
+  border-bottom: 1px solid #e3d5ad;
+  background: transparent;
+  color: #67170c;
+  box-sizing: border-box;
+}
+
+.precoItem:first-child {
+  border-top: 1px solid #e3d5ad;
+}
+
+.precoItem:hover,
+.metaList li:hover {
+  background: #fff9e9;
+}
+
+.precoItem span,
+.metaList span {
+  flex-shrink: 0;
+  color: var(--cor-texto-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.precoItem strong,
+.metaList strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #67170c;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.metaList {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #e3d5ad;
+  list-style: none;
+}
+
+.metaList li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 0.75rem;
+  border-bottom: 1px solid #e3d5ad;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.metaList li > div {
+  min-width: 0;
+  text-align: right;
+}
+
+.metaList li > .badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.numero {
+  font-family: none;
+}
+
+.colabItem {
+  padding: 0.2rem 0;
+  color: #67170c;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.capasContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+.capaBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.capaBox span {
+  color: #67170c;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.capaBox img {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border: 1px solid #e3d5ad;
+  border-radius: 0.75rem;
+}
+
+@media (max-width: 1000px) {
+  .layoutGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .topo {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .topoConteudo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .titulo::after {
+    margin-bottom: 1.25rem;
+  }
+
+  .topo p {
+    font-size: 1rem;
+  }
+
+  .acoes {
+    width: 100%;
+  }
+
+  .topo .erroAtivo {
+    text-align: left;
+  }
+
+  .btnAtivar,
+  .btnInativar {
+    width: 100%;
+  }
+
+  .cartao {
+    border-radius: 1rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .topo,
+  .container {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .cartao {
+    padding: 1.3rem;
+  }
+
+  .pdfWrapper {
+    height: 60vh;
+    min-height: 20rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .titulo {
+    font-size: 1.8rem;
+  }
+
+  .titulo::after {
+    width: 5rem;
+    height: 3px;
+    margin-top: 0.75rem;
+  }
+
+  .topo p {
+    font-size: 0.95rem;
+  }
+}

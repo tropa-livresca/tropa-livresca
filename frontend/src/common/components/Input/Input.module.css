@@ -1,0 +1,22 @@
+.form_control {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.form_control label {
+  font-weight: bold;
+}
+
+.form_control input {
+  background-color: #ede6b3;
+  width: 90%;
+  justify-self: center;
+  padding: 0.7rem;
+  border-radius: 0.7rem;
+  border: 0.2em solid beige;
+}
+
+.form_control input::placeholder {
+  color: beige;
+}

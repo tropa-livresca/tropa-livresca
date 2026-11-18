@@ -1,0 +1,369 @@
+.titulo {
+  margin: 0;
+  color: #67170c;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-family: "Jacques Francois", serif;
+}
+
+.titulo::after {
+  content: "";
+  display: block;
+  width: 4rem;
+  height: 2.5px;
+  margin-top: 1rem;
+  margin-bottom: 3%;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form {
+  background: #fffdf7 !important;
+  border-radius: 1.5rem !important;
+  padding: 2rem !important;
+  box-shadow:
+    0 8px 20px rgba(103, 23, 12, 0.08),
+    0 2px 6px rgba(103, 23, 12, 0.05) !important;
+}
+
+.form textarea {
+  width: 95%;
+  min-height: 8rem;
+  max-height: 15rem;
+  background: #fff8d7;
+  color: #67170c !important;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  padding: 0.8rem;
+  margin: 0 auto;
+  display: block;
+  margin-top: 0.3rem;
+  margin-bottom: 1.4%;
+  line-height: 1.6;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  scrollbar-width: thin;
+  scrollbar-color: #d4b46a transparent;
+}
+
+.form textarea::-webkit-scrollbar {
+  width: 0.4rem;
+}
+
+.form textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form textarea::-webkit-scrollbar-thumb {
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form textarea:focus {
+  border-color: #67170c;
+  outline: none;
+}
+
+.inputmodificado input {
+  width: 95% !important;
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 0.8rem !important;
+  justify-self: center !important;
+  font-size: 1rem !important;
+  color: #67170c !important;
+  margin-top: 0.3rem !important;
+}
+
+.inputmodificado input {
+  font-family: none;
+}
+
+.inputmodificado input::placeholder {
+  font-family: "Jacques Francois", serif;
+}
+
+.form input::placeholder {
+  color: var(--cor-texto-muted) !important;
+}
+
+.inputmodificado input:focus {
+  outline: none !important;
+  border: 2px solid #67170c !important;
+}
+
+.card {
+  background: #fffdf7;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  margin-bottom: 1.7rem;
+}
+
+.form legend {
+  color: #67170c;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.form legend::after {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 1.8px;
+  margin-top: 0.5rem;
+  background: #d4b46a;
+  border-radius: 999px;
+}
+
+.form label {
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+.labelTitulo {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #67170c;
+  margin-left: 2.5%;
+}
+
+.form h4 {
+  color: var(--cor-texto-muted);
+  margin-left: 2%;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: normal;
+}
+
+.numero {
+  font-family: none;
+  font-size: 1.1rem;
+}
+
+.btn {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-left: 2.5%;
+  margin-bottom: 2%;
+}
+
+.btn:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btn2 {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn2:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.selectContainer {
+  width: 100%;
+}
+
+.select {
+  width: 95%;
+  padding: 0.8rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  background: #fff8d7;
+  color: #67170c;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.select:hover {
+  border: 2px solid #67170c;
+}
+
+.select2 {
+  width: 95%;
+  padding: 0.8rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  background: #fff8d7;
+  color: #67170c;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.select2:hover {
+  border: 2px solid #67170c;
+}
+.opcoes {
+  top: calc(100% + 0.4rem);
+  width: 95%;
+  background: #fffdf4;
+  transform: translate(2.5%, -3%);
+  border: 1px solid #e2c77c;
+  border-radius: 1rem;
+  overflow: hidden;
+  z-index: 100;
+  max-height: 450px;
+  animation: abrir 0.2s ease;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.opcao {
+  padding: 0.8rem 1rem;
+  color: #67170c;
+  cursor: pointer;
+}
+
+.opcao:not(:last-child) {
+  border-bottom: 1px solid #e2c77c;
+}
+
+.opcao:hover {
+  background: #fff8d767;
+  color: #ffbb33;
+}
+
+.seta {
+  transition: transform 0.2s ease;
+}
+
+.setaAberta {
+  transform: rotate(180deg);
+}
+
+.radioOpcao {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  cursor: pointer;
+  width: 95%;
+  margin: 0 auto;
+}
+
+.radioOpcao input[type="radio"] {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  min-width: 0.9rem;
+  min-height: 0.9rem;
+  border: 1.5px solid #e2c77c;
+  border-radius: 50%;
+  background: #fff8d7;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+  accent-color: transparent;
+  transition: 0.2s ease;
+}
+
+.radioOpcao input[type="radio"]:hover {
+  border-color: #ffbb33;
+  background: #fff3b5;
+}
+
+.radioOpcao input[type="radio"]:checked {
+  border-color: #67170c;
+  background: #67170c;
+  box-shadow: inset 0 0 0 0.2rem #fff8d7;
+}
+
+.radioOpcao input[type="radio"]:checked:hover {
+  border-color: #b32512;
+  background: #b32512;
+}
+
+.radioOpcao label {
+  color: #67170c;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: -0.7rem;
+  margin-left: 0.7rem;
+}
+
+.avisoAdulto {
+  background: #fff8d7 !important;
+  border: 1px solid #e2c77c !important;
+  border-radius: 1rem !important;
+  padding: 1rem !important;
+  color: #67170c !important;
+  text-align: center !important;
+  margin-bottom: 2%;
+  margin-top: -1%;
+}
+
+.botao {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.btnmeu {
+  background: #67170c;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  color: #ede6b3;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.btnmeu:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+
+.btnid {
+  background: #67170c;
+  color: #ede6b3;
+  border: 0;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.btnid:hover {
+  background-color: #ffbb33;
+  transition: 0.3s;
+}
+@keyframes abrir {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+
+  to {
+    opacity: 1;
+    max-height: 300px;
+  }
+}
