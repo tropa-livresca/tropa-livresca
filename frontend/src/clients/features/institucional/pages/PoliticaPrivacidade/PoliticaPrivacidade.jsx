@@ -6,8 +6,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import VoltarHistorico from "../../../../../common/components/VoltarHistorico/VoltarHistorico";
 import politicaPrivacidadePdf from "../../utils/POLÍTICA_DE_PRIVACIDADE_TROPA_LIVRESCA_ABNT.pdf";
-import { FiDownload } from 'react-icons/fi';
-
+import { FiDownload } from "react-icons/fi";
 
 export default function PoliticaPrivacidade() {
   const faqData = {
@@ -290,7 +289,7 @@ export default function PoliticaPrivacidade() {
             download="Politica-de-Privacidade-Tropa-Livresca.pdf"
             className={stylesoutro.btn}
           >
-            <FiDownload/>
+            <FiDownload />
             Baixar Política
           </a>
         </div>

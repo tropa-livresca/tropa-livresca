@@ -89,7 +89,7 @@
 }
 
 .erroMensagem {
-padding: 0.8rem 1rem;
+  padding: 0.8rem 1rem;
   border: 1px solid red;
   border-radius: 0.7rem;
   background: transparent;
@@ -100,7 +100,7 @@ padding: 0.8rem 1rem;
 }
 
 .sucessoMensagem {
- padding: 0.8rem 1rem;
+  padding: 0.8rem 1rem;
   border: 1px solid green;
   border-radius: 0.7rem;
   background: transparent;

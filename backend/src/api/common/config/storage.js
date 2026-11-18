@@ -55,9 +55,11 @@ function marcarErro(error, statusCode = 500) {
 async function buscarArquivo(bucket, path) {
   const pb = criarClienteAdminPocketBase();
   try {
-    const record = await pb.collection(COLECAO_ARQUIVOS).getFirstListItem(
-      pb.filter("bucket = {:bucket} && path = {:path}", { bucket, path }),
-    );
+    const record = await pb
+      .collection(COLECAO_ARQUIVOS)
+      .getFirstListItem(
+        pb.filter("bucket = {:bucket} && path = {:path}", { bucket, path }),
+      );
     return { pb, record };
   } catch (error) {
     if (error.status === 404) {
@@ -190,9 +192,11 @@ export async function removerArquivos(bucket, paths) {
   const pb = criarClienteAdminPocketBase();
   for (const path of caminhos) {
     try {
-      const record = await pb.collection(COLECAO_ARQUIVOS).getFirstListItem(
-        pb.filter("bucket = {:bucket} && path = {:path}", { bucket, path }),
-      );
+      const record = await pb
+        .collection(COLECAO_ARQUIVOS)
+        .getFirstListItem(
+          pb.filter("bucket = {:bucket} && path = {:path}", { bucket, path }),
+        );
       await pb.collection(COLECAO_ARQUIVOS).delete(record.id);
     } catch (error) {
       if (error.status === 404) continue;

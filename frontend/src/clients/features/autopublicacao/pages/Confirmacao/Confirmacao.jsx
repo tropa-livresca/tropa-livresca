@@ -84,7 +84,9 @@ export default function Confirmacao({
               <div className={styles.containergrid}>
                 <div className={styles.colunaCompleta}>
                   <label>ISBN do livro:</label>
-                  <div className={styles.liinput}><span className={styles.numero}>{dados.detalhes.ISBN}</span></div>
+                  <div className={styles.liinput}>
+                    <span className={styles.numero}>{dados.detalhes.ISBN}</span>
+                  </div>
                 </div>
               </div>
             </div>

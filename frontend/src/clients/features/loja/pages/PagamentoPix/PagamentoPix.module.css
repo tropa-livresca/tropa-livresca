@@ -44,8 +44,8 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.erro{
-   width: 100%;
+.erro {
+  width: 100%;
   padding: 1rem;
   box-sizing: border-box;
   background: #fffdf7;
@@ -55,7 +55,7 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.erro p{
+.erro p {
   font-size: 1rem;
   color: var(--cor-texto-muted);
 }
@@ -216,7 +216,6 @@
   min-width: 0;
   padding: 1.5rem;
   box-sizing: border-box;
-
 }
 
 .pedidoRotulo {
@@ -229,7 +228,7 @@
 }
 
 .pedido {
- margin: 0;
+  margin: 0;
   font-size: 1.3rem;
   font-weight: 600;
   color: #67170c;

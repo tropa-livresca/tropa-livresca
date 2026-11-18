@@ -13,8 +13,6 @@ export default function EsqueceuSenha() {
       <div className={styles.corFundo}></div>
 
       <div className={styles.card}>
-        
-
         {sucesso ? (
           <div className={styles.sucessoContainer}>
             <h2>E-mail Enviado!</h2>

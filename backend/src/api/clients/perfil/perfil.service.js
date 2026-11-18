@@ -108,11 +108,7 @@ export class PerfilService {
       const filePath = `${userId}/perfil_${Date.now()}.${extensaoValida}`;
       await uploadArquivo(regra.bucket, filePath, file);
       try {
-        await validarArquivoArmazenado(
-          regra.bucket,
-          filePath,
-          "imagem_perfil",
-        );
+        await validarArquivoArmazenado(regra.bucket, filePath, "imagem_perfil");
         const perfilData = await PerfilModel.atualizarApenasImagem(
           userId,
           filePath,

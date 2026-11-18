@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
 
 .topo {
@@ -237,7 +236,7 @@
   gap: 0.4rem;
   padding: 0.45rem;
   background: #fffdf7;
-   box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   border-radius: 1rem;
@@ -288,7 +287,7 @@
   padding: 1.5rem 2rem;
   border-radius: 1rem;
   background: #fffdf7;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   box-sizing: border-box;
@@ -471,7 +470,7 @@
   justify-content: center;
   gap: 1rem;
   padding: 4rem 2rem;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
   border-radius: 1rem;

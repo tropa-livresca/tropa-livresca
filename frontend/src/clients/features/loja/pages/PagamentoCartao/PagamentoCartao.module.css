@@ -110,9 +110,8 @@
   font-variant-numeric: lining-nums;
 }
 
-
-.erro{
-   width: 100%;
+.erro {
+  width: 100%;
   padding: 1rem;
   box-sizing: border-box;
   background: #fffdf7;
@@ -122,7 +121,7 @@
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
 
-.erro p{
+.erro p {
   font-size: 1rem;
   color: var(--cor-texto-muted);
 }
@@ -291,7 +290,7 @@
 }
 
 .opcaoSelecionada:hover {
-  border:2px solid #67170c;
+  border: 2px solid #67170c;
 }
 
 .opcaoSelecionada > span {

@@ -36,10 +36,7 @@ const formatarData = (data) =>
 export default function BibliotecaPessoal() {
   const { livros, meta, buscarMeusLivros, carregando, erro } =
     useBibliotecaPessoal();
-  const {
-    reenviarEmailLivrosDigitais,
-    carregando: reenviando,
-  } = useCompra();
+  const { reenviarEmailLivrosDigitais, carregando: reenviando } = useCompra();
   const [dropdownAberto, setDropdownAberto] = useState(false);
   const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");

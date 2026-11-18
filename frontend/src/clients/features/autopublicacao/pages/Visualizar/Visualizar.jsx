@@ -181,14 +181,12 @@ export default function Visualizar() {
                 <div className={styles.capasContainer}>
                   {capa?.frente && (
                     <div className={styles.capaBox}>
-                  
                       <img src={capa.frente} alt="Capa Frente" />
                     </div>
                   )}
 
                   {capa?.verso && (
                     <div className={styles.capaBox}>
-                     
                       <img src={capa.verso} alt="Capa Verso" />
                     </div>
                   )}

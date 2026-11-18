@@ -594,11 +594,7 @@ export class AutopublicacaoService {
       mimeType: arquivo.mimetype,
       tamanho: arquivo.size ?? arquivo.buffer.length,
     });
-    const { bucket, path } = criarPathUpload(
-      userId,
-      tipo,
-      extensaoNormalizada,
-    );
+    const { bucket, path } = criarPathUpload(userId, tipo, extensaoNormalizada);
     this._validarPath(path, userId, bucket);
 
     await uploadArquivo(bucket, path, arquivo);

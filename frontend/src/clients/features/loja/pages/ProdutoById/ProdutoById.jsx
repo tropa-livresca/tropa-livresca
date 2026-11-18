@@ -360,10 +360,7 @@ export default function ProdutoById() {
               )}
 
               {livroDigitalComprado && formato === "digital" ? (
-                <Link
-                  to="/bibliotecapessoal"
-                  className={styles.btnCarrinho}
-                >
+                <Link to="/bibliotecapessoal" className={styles.btnCarrinho}>
                   Acessar biblioteca pessoal
                 </Link>
               ) : (

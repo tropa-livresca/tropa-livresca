@@ -224,7 +224,6 @@ export default function VisualizarUsuario() {
                 {executandoAcao ? "Processando..." : "Promover a Funcionário"}
               </button>
             ) : !isMaster ? (
-              
               <div className={styles.grupoBotoes}>
                 <button
                   onClick={handleInativar}
@@ -234,7 +233,9 @@ export default function VisualizarUsuario() {
                   {executandoAcao ? "Processando..." : "Inativar funcionário"}
                 </button>
               </div>
-            ): <></>}
+            ) : (
+              <></>
+            )}
           </section>
         </div>
 

@@ -74,7 +74,9 @@ export const useDadosBancarios = () => {
       } finally {
         setCarregando(false);
       }
-    }, []);
+    },
+    [],
+  );
 
   const alterarDadosConta = useCallback(
     async (
@@ -111,7 +113,9 @@ export const useDadosBancarios = () => {
       } finally {
         setCarregando(false);
       }
-    }, []);
+    },
+    [],
+  );
 
   const solicitarSaque = useCallback(async (valorSaque) => {
     setCarregando(true);

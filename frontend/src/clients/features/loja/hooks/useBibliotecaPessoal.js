@@ -40,7 +40,9 @@ export const useBibliotecaPessoal = () => {
 
         if (!response.ok) {
           throw new Error(
-            data.error || data.message || "Não foi possível carregar sua biblioteca.",
+            data.error ||
+              data.message ||
+              "Não foi possível carregar sua biblioteca.",
           );
         }
 

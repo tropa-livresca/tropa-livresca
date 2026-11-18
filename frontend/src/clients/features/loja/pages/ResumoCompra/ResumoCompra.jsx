@@ -133,11 +133,12 @@ export default function ResumoCompra() {
                 <h2>Entrega</h2>
 
                 <p className={base.aviso}>
-                  {endereco.rua}, <span className={styles.numero}>{endereco.num}</span>
+                  {endereco.rua},{" "}
+                  <span className={styles.numero}>{endereco.num}</span>
                   {endereco.complemento ? ` - ${endereco.complemento}` : ""}
                   <br />
-                  {endereco.bairro} · {endereco.cidade}/{endereco.estado} · <span className={styles.numero}>CEP{" "}
-                  {endereco.cep}</span>
+                  {endereco.bairro} · {endereco.cidade}/{endereco.estado} ·{" "}
+                  <span className={styles.numero}>CEP {endereco.cep}</span>
                 </p>
 
                 <p className={styles.status}>
@@ -153,17 +154,23 @@ export default function ResumoCompra() {
 
               <div className={base.linha}>
                 <span>Livros</span>
-                <strong className={styles.numero}>{formatarPreco(totalItens)}</strong>
+                <strong className={styles.numero}>
+                  {formatarPreco(totalItens)}
+                </strong>
               </div>
 
               <div className={base.linha}>
                 <span>Frete</span>
-                <strong className={styles.numero}>{frete > 0 ? formatarPreco(frete) : "Grátis"}</strong>
+                <strong className={styles.numero}>
+                  {frete > 0 ? formatarPreco(frete) : "Grátis"}
+                </strong>
               </div>
 
               <div className={`${base.linha} ${base.total}`}>
                 <span>Total</span>
-                <strong className={styles.numero}>{formatarPreco(pedido.total)}</strong>
+                <strong className={styles.numero}>
+                  {formatarPreco(pedido.total)}
+                </strong>
               </div>
 
               <p
@@ -187,12 +194,16 @@ export default function ResumoCompra() {
                       <strong>{item.livros?.titulo || "Livro"}</strong>
 
                       <small>
-                        {item.fisico ? "Físico" : "Digital"} · <span className={styles.numero}>{item.qtd}x{" "}
-                        {formatarPreco(item.preco_unitario)}</span>
+                        {item.fisico ? "Físico" : "Digital"} ·{" "}
+                        <span className={styles.numero}>
+                          {item.qtd}x {formatarPreco(item.preco_unitario)}
+                        </span>
                       </small>
                     </div>
 
-                    <span className={styles.numero}>{formatarPreco(item.subtotal)}</span>
+                    <span className={styles.numero}>
+                      {formatarPreco(item.subtotal)}
+                    </span>
                   </li>
                 ))}
               </ul>

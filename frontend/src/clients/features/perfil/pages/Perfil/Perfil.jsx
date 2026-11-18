@@ -1,5 +1,4 @@
-﻿
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { usePerfil } from "../../hooks/usePerfil";
 import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
@@ -354,9 +353,7 @@ export default function Perfil() {
                   </div>
                 </div>
               ) : (
-                <p className={styles.subtitulo}>
-                  Insira seus dados bancários.
-                </p>
+                <p className={styles.subtitulo}>Insira seus dados bancários.</p>
               )}
 
               <Link

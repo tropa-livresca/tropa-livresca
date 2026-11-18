@@ -182,7 +182,6 @@
   transition: 0.3s;
 }
 
-
 .especificacoes {
   width: 97%;
   box-sizing: border-box;
@@ -227,7 +226,7 @@
   line-height: 1.6;
 }
 
-.numero{
+.numero {
   font-family: none;
 }
 
@@ -249,8 +248,6 @@
 
 @import url("https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&display=swap");
 
-
-
 @media (max-width: 480px) {
   .especificacoes {
     padding: 1rem;
@@ -265,7 +262,6 @@
     font-size: 0.8rem;
   }
 }
-
 
 @media (min-width: 1920px) {
   .preview img {

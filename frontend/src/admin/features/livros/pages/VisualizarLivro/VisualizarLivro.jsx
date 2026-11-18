@@ -92,7 +92,9 @@ export default function VisualizarLivro() {
     } catch (erro) {
       setPopup({
         tipo: "erro",
-        mensagem: erro.message || "Não foi possível alterar a disponibilidade do livro.",
+        mensagem:
+          erro.message ||
+          "Não foi possível alterar a disponibilidade do livro.",
       });
     } finally {
       setSalvando(false);

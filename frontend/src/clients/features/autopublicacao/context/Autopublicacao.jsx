@@ -1,5 +1,4 @@
-﻿
-import { apiFetch } from "../../../../common/services/api";
+﻿import { apiFetch } from "../../../../common/services/api";
 import { useState, useCallback, useContext, useEffect } from "react";
 import { AutopublicacaoContext } from "./AutopublicacaoContext";
 import { AuthContext } from "../../../../common/context/auth/AuthContext";
@@ -395,7 +394,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       };
     });
   };
-  
 
   const dataURItoBlob = useCallback((dataURI) => {
     const [metadata, encoded] = dataURI.split(",");
@@ -418,7 +416,8 @@ export const AutopublicacaoProvider = ({ children }) => {
 
       const blob = dataURItoBlob(arquivo);
       const mimeType = blob.type || tipoDeArquivo;
-      const extensao = mimeType === "image/jpeg" ? "jpg" : mimeType.split("/").pop();
+      const extensao =
+        mimeType === "image/jpeg" ? "jpg" : mimeType.split("/").pop();
       const formData = new FormData();
       formData.append("tipo", tipo);
       formData.append(
@@ -459,13 +458,10 @@ export const AutopublicacaoProvider = ({ children }) => {
       setCarregando(true);
 
       try {
-
         const userId = user?.id;
 
         if (!userId || typeof userId !== "string")
           throw new Error("ID do usuário inválido");
-
-         
 
         const conteudo = dadosDoLivro.conteudo;
         const capa = conteudo.capa;
@@ -554,7 +550,7 @@ export const AutopublicacaoProvider = ({ children }) => {
         if (!res.ok) throw new Error(json.error || `Erro ${res.status}`);
 
         setErro(null);
-        return
+        return;
       } catch (error) {
         console.error("Erro em salvar livro:", error);
 
@@ -562,7 +558,6 @@ export const AutopublicacaoProvider = ({ children }) => {
       } finally {
         setCarregando(false);
       }
-      
     },
 
     [user, isEdicao, estadoAtualLivro, uploadArquivo],
@@ -572,12 +567,14 @@ export const AutopublicacaoProvider = ({ children }) => {
     estadoDesejado = LIVRO_ESTADO.RASCUNHO,
     arquivo,
   ) => {
-
     const error = await inserirLivro(dadosLivro, estadoDesejado, arquivo);
 
-    if(error != null){
-      setErro(error)
-      setDadosLivro({...dadosLivro, conteudo: {...dadosLivro.conteudo , manuscrito: null}})
+    if (error != null) {
+      setErro(error);
+      setDadosLivro({
+        ...dadosLivro,
+        conteudo: { ...dadosLivro.conteudo, manuscrito: null },
+      });
     }
 
     localStorage.removeItem(chaveRascunho("dados"));
@@ -637,23 +634,3 @@ export const AutopublicacaoProvider = ({ children }) => {
     </AutopublicacaoContext.Provider>
   );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
