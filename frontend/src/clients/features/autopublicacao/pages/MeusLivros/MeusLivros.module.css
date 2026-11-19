@@ -96,6 +96,7 @@
   min-width: 0;
   display: block;
   background: transparent;
+  margin-bottom: 0 !important;
 }
 
 .campoBusca input {
@@ -411,21 +412,21 @@
 }
 
 .btnPublicar {
-  border-color: #67170c;
-  background: #67170c;
-  color: #ede6b3;
+  border: 1px solid #d4b46a;
+  background: #fff8d7;
+  color: #67170c;
 }
 
 .btnPublicar:hover {
   border-color: #ffbb33;
   background: #ffbb33;
-  color: #67170c;
+  color: #ede6b3;
 }
 
 .btnInativar:hover {
-  border-color: #b83232;
-  background: #b83232;
-  color: #fff;
+ border-color: #ffbb33;
+  background: #ffbb33;
+  color: #ede6b3;
 }
 
 .textoPublicado {

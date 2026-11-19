@@ -440,7 +440,7 @@
 }
 
 .editorial_grid_livros {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .editorial_grid_autores {
@@ -663,7 +663,7 @@
 .cta_secao > div {
   width: 100%;
   margin: 0 auto;
-  max-width: 1200px;
+  max-width: 1400px;
 }
 
 .cta_bloco {
@@ -892,4 +892,12 @@
   .cta_botao_secundario {
     width: 100%;
   }
+}
+
+
+@media (min-width: 1550px) and (max-width: 2100px) {
+  .secao_livros,
+.secao_autores {
+   max-width: 1400px;
+}
 }

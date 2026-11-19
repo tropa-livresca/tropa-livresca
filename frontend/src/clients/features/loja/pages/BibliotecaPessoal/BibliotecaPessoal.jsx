@@ -129,7 +129,9 @@ export default function BibliotecaPessoal() {
         <div className={styles.containerLivros}>
           <aside className={styles.filtros}>
             <section>
-              <h2>Gênero</h2>
+              <div className={styles.oi2}>
+              <h1>Gênero</h1>
+            </div>
               <ul>
                 <li
                   className={categoria === "" ? styles.filtroAtivo : ""}
@@ -150,7 +152,9 @@ export default function BibliotecaPessoal() {
             </section>
 
             <section className={styles.filtroIdioma}>
-              <h2>Idioma</h2>
+               <div className={styles.oi2}>
+              <h1>Idioma</h1>
+            </div>
               <ul>
                 <li
                   className={idioma === "" ? styles.filtroAtivo : ""}
@@ -305,7 +309,7 @@ export default function BibliotecaPessoal() {
                       </Link>
                       <p className={styles.autor}>{autor}</p>
                       <small>
-                        Comprado em {formatarData(livro.dataCompra)}
+                        Comprado em <span className={styles.numero}>{formatarData(livro.dataCompra)}</span>
                       </small>
                       <button
                         type="button"

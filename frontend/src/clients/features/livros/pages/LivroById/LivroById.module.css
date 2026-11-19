@@ -238,7 +238,8 @@
 
 .conteudo {
   width: 100%;
-  max-width: none;
+  margin: 0 auto;
+  max-width: 1400px;
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
   gap: 2rem;
@@ -516,3 +517,5 @@
     font-size: 0.95rem;
   }
 }
+
+

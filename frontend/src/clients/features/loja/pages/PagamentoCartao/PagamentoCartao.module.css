@@ -51,6 +51,18 @@
   font-size: 1.4rem;
 }
 
+.parcelamento34{
+ font-family: none;
+ margin-top: 0.5rem;
+ margin-bottom: 0.5rem;
+ color:#67170c;
+ background: #fff8d7 !important;
+    border: 1px solid #e2c77c !important;
+    border-radius: 1rem !important;
+    padding: 0.8rem !important;
+ font-size: 1rem;
+}
+
 .formTitulo span {
   color: var(--cor-texto-muted);
   font-size: 1rem;

@@ -288,9 +288,8 @@ export default function Graficos() {
   return (
     <main>
       <DescricaoTela
-        titulo="Bem-vindo(a) ao painel administrativo!"
-        descricao="Gerencie livros, revisões e pedidos da Tropa Livresca. Usuários e
-          desempenho financeiro ficam para quem tem acesso master."
+        titulo="Gráficos"
+        descricao="Visão geral dos indicadores e métricas de desempenho."
       />
 
       <div className={styles.container}>

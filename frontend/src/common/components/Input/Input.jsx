@@ -41,6 +41,7 @@ export function InputTelefone({
         type={type}
         id={name}
         name={name}
+        className={styles.tel}
         placeholder={placeholder}
         onChange={handleChangeMascara}
         value={value || ""}
