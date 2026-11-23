@@ -153,12 +153,6 @@ export class AuthModel {
       .confirmPasswordReset(token, senhaNova, senhaNova);
   }
 
-  static async signinComGoogle() {
-    return await pb.collection(COLECAO_AUTH).authWithOAuth2({
-      provider: "google",
-    });
-  }
-
   static async signin(email, password) {
     return await pb.collection(COLECAO_AUTH).authWithPassword(email, password);
   }

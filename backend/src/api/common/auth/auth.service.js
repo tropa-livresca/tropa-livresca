@@ -7,10 +7,6 @@ const erroValidacao = (mensagem, statusCode = 400) => {
 };
 
 export class AuthService {
-  static async signinComGoogle() {
-    return await AuthModel.signinComGoogle();
-  }
-
   static async esqueciSenha(email) {
     if (!email) {
       throw erroValidacao("O e-mail é obrigatório.");

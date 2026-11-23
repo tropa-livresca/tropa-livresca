@@ -30,10 +30,15 @@ Para configurar o ambiente de desenvolvimento do cliente, siga os passos abaixo:
 # Integração com o Servidor Local Express
 VITE_API_URL=http://localhost:3000
 
+# Integração com o PocketBase (OAuth Google)
+VITE_POCKETBASE_URL=http://127.0.0.1:8090
+
 # Integração com os Serviços do Supabase
 VITE_SUPABASE_URL=https://supabase.co
 VITE_SUPABASE_ANON_KEY=sua_chave_publica_anonima_ficticia
 ```
+
+`VITE_POCKETBASE_URL` deve apontar para uma URL do PocketBase acessível pelo navegador. Em produção, use a URL pública do serviço.
 
 ---
 

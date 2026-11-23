@@ -2,7 +2,6 @@ import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js
 import {
   criarClienteModel,
   mapearCampoArquivo,
-  obterIdPerfil,
   primeiraUrlArquivo,
 } from "../../common/models/pocketbase.helpers.js";
 
@@ -17,7 +16,9 @@ export class AutopublicacaoService {
   static _removerArquivo(formData, campo, nomeArquivo) {
     if (!nomeArquivo) return;
 
-    for (const nome of Array.isArray(nomeArquivo) ? nomeArquivo : [nomeArquivo]) {
+    for (const nome of Array.isArray(nomeArquivo)
+      ? nomeArquivo
+      : [nomeArquivo]) {
       formData.append(`${campo}-`, nome);
     }
   }
@@ -290,9 +291,6 @@ export class AutopublicacaoService {
       throw error;
     }
 
-    const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, userId);
-
     this._validarArquivosObrigatorios(arquivos);
 
     if (
@@ -311,7 +309,7 @@ export class AutopublicacaoService {
 
     const dadosParaInserir = {
       ativo: true,
-      fk_user_profile_id: perfilId,
+      fk_user_profile_id: userId,
       estado: estadoInicial,
 
       ISBN: detalhes.ISBN || null,

@@ -38,53 +38,56 @@ export class PerfilService {
     return this._formatarPerfil(perfil);
   }
 
-  
-static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
-  if (!userId) {
-    const erro401 = new Error("Sessão expirada.");
-    erro401.statusCode = 401;
-    throw erro401;
-  }
-
-  try {
-    const { nome, telefone, descricao } = dadosPerfil || {};
-
-    // Nome pertence à collection users.
-    if (nome !== undefined) {
-      await PerfilModel.atualizarNomeUsuario(userId, {
-        nome: nome || "",
-      });
+  static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
+    if (!userId) {
+      const erro401 = new Error("Sessão expirada.");
+      erro401.statusCode = 401;
+      throw erro401;
     }
 
-    // Demais informações pertencem a users_profile.
-    const updates = {
-      telefone: telefone || "",
-      descricao: descricao || "",
-    };
+    try {
+      const { nome, sobrenome, telefone, descricao } = dadosPerfil || {};
 
-    if (redes_sociais) {
-      updates.redes_sociais =
-        typeof redes_sociais === "string"
-          ? JSON.parse(redes_sociais)
-          : redes_sociais;
+      const updates = {};
+
+      if (nome !== undefined) {
+        updates.nome = nome || "";
+      }
+
+      if (sobrenome !== undefined) {
+        updates.sobrenome = sobrenome || "";
+      }
+
+      if (telefone !== undefined) {
+        updates.telefone = telefone || "";
+      }
+
+      if (descricao !== undefined) {
+        updates.descricao = descricao || "";
+      }
+
+      if (redes_sociais !== undefined) {
+        updates.redes_sociais =
+          typeof redes_sociais === "string"
+            ? JSON.parse(redes_sociais)
+            : redes_sociais;
+      }
+
+      if (Object.keys(updates).length > 0) {
+        await PerfilModel.atualizarPerfil(userId, updates);
+      }
+
+      const perfilAtualizado = await PerfilModel.buscarPerfil(userId);
+
+      return this._formatarPerfil(perfilAtualizado);
+    } catch (error) {
+      if (error.statusCode) throw error;
+
+      const erroBanco = new Error("Erro ao atualizar os dados do perfil.");
+      erroBanco.statusCode = 500;
+      throw erroBanco;
     }
-
-    await PerfilModel.atualizarPerfil(userId, updates);
-
-    return this._formatarPerfil(
-      await PerfilModel.buscarPerfil(userId),
-    );
-  } catch (error) {
-    if (error.statusCode) throw error;
-
-    const erroBanco = new Error(
-      "Erro ao atualizar os dados do perfil.",
-    );
-    erroBanco.statusCode = 500;
-    throw erroBanco;
   }
-}
-
 
   static async AtualizarImagemPerfil({ userId, file }) {
     if (!userId) {

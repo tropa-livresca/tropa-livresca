@@ -91,7 +91,7 @@ export class EnderecoModel {
     return this.AtualizarEnderecoById(id, { ativo: false }, userId);
   }
 
-  static async CriarEndereco(dadosEndereco, userId) {
+  static async CriarEndereco(userId, dadosEndereco) {
     const pb = criarClienteModel();
 
     if (!userId) {
@@ -119,18 +119,35 @@ export class EnderecoModel {
 
   static async DefinirPrincipal(id, userId) {
     const pb = criarClienteModel();
-
-    const endereco = await buscarEndereco(userId, id);
-
-    if (!endereco) {
-      const error = new Error("Endereço não encontrado.");
-      error.statusCode = 404;
-      throw error;
-    }
+    const colecao = pb.collection(COLECAO);
 
     try {
+      const endereco = await buscarEndereco(userId, id);
+
+      if (!endereco) {
+        const error = new Error("Endereço não encontrado.");
+        error.statusCode = 404;
+        throw error;
+      }
+
+      const enderecos = await colecao.getFullList({
+        filter: pb.filter("fk_user_profile_id = {:userId}", {
+          userId,
+        }),
+      });
+
+      for (const item of enderecos) {
+        if (item.principal && item.id !== id) {
+          await colecao.update(item.id, {
+            principal: false,
+          });
+        }
+      }
+
       return {
-        data: await pb.collection(COLECAO).update(id, { principal: true }),
+        data: await colecao.update(id, {
+          principal: true,
+        }),
       };
     } catch (error) {
       marcarErro(error);

@@ -15,7 +15,7 @@ async function buscarAutores(pb, busca = "") {
       estado: LIVRO_ESTADO.PUBLICADO,
     }),
     fields:
-      "id,titulo,ativo,capa_frente,capa_verso,preco_digital,preco_fisico,idioma,fk_user_profile_id",
+      "id,collectionId,collectionName,titulo,ativo,capa_frente,capa_verso,preco_digital,preco_fisico,idioma,fk_user_profile_id",
   });
 
   const livrosPorAutor = new Map();
@@ -56,7 +56,8 @@ async function buscarAutores(pb, busca = "") {
 
   const registrosAutor = await pb.collection(COLECAO_PERFIL).getFullList({
     filter: pb.filter(filtroIds, parametros),
-    fields: "id,nome,sobrenome,descricao,redes_sociais,imagem",
+    fields:
+      "id,collectionId,collectionName,nome,sobrenome,descricao,redes_sociais,imagem",
   });
 
   const termoBusca = busca.trim().toLocaleLowerCase();

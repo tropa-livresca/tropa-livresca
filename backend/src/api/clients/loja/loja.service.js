@@ -1,9 +1,5 @@
 import { LojaModel } from "../../common/models/loja.model.js";
 import { EnderecoModel } from "../../common/models/endereco.model.js";
-import {
-  criarClienteModel,
-  obterIdPerfil,
-} from "../../common/models/pocketbase.helpers.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
 const METODO_PAGAMENTO_SIMULADO = 1;
@@ -111,10 +107,7 @@ export class LojaService {
     if (!vendaId) error(400, "Id da venda não informado.");
 
     const venda = await LojaModel.consultarVenda(vendaId);
-
-    const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, usuarioId);
-    if (venda.fk_user_profile_id !== perfilId)
+    if (venda.fk_user_profile_id !== usuarioId)
       error(404, "Venda não encontrada.");
 
     return venda;

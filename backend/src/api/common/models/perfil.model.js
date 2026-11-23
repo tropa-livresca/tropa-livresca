@@ -49,7 +49,7 @@ export class PerfilModel {
       throw error;
     }
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const formData = new FormData();
@@ -59,14 +59,6 @@ export class PerfilModel {
       });
 
       formData.append("imagem", blob, nomeArquivo);
-
-      for (const nomeAntigo of Array.isArray(perfil.imagem)
-        ? perfil.imagem
-        : [perfil.imagem]) {
-        if (nomeAntigo) {
-          formData.append("imagem-", nomeAntigo);
-        }
-      }
 
       const registro = await pb
         .collection(COLECAO_PERFIL)

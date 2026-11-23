@@ -8,6 +8,7 @@ export default function BotaoGoogle() {
   return (
     <div className={styles.googleContainer}>
       <button
+        type="button"
         onClick={iniciarLoginNativo}
         disabled={carregando}
         className={styles.btngoogle}
