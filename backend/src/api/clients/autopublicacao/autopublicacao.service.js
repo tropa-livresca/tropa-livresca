@@ -156,6 +156,7 @@ export class AutopublicacaoService {
       throw error;
     }
   }
+
   static async atualizarEstado(livroId, userId, novoEstado) {
     if (!livroId) {
       const erroDados = new Error(
@@ -165,16 +166,16 @@ export class AutopublicacaoService {
       throw erroDados;
     }
 
-    if (!userId) {
-      const erroUserId = new Error("Erro de autenticação do usuário.");
-      erroUserId.statusCode = 401;
-      throw erroUserId;
-    }
-
     if (!novoEstado) {
       const erroEstado = new Error("Novo estado não informado.");
       erroEstado.statusCode = 400;
       throw erroEstado;
+    }
+
+    if (!userId) {
+      const erroUserId = new Error("Erro de autenticação do usuário.");
+      erroUserId.statusCode = 401;
+      throw erroUserId;
     }
 
     if (!Object.values(LIVRO_ESTADO).includes(novoEstado)) {

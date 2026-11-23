@@ -43,14 +43,14 @@ export class AutopublicacaoController {
   static async atualizarEstado(req, res, next) {
     try {
       const { id } = req.params;
-      const userId = req.user.id;
+      const userId = req?.user.id;
       const { novoEstado } = req.body;
 
-      const livro = await AutopublicacaoService.atualizarEstado({
+      const livro = await AutopublicacaoService.atualizarEstado(
         id,
         userId,
         novoEstado,
-      });
+      );
 
       return res.status(200).json(livro);
     } catch (err) {
