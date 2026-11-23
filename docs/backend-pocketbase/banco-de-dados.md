@@ -14,18 +14,18 @@ Os bancos `data.db` e `auxiliary.db`, além dos arquivos WAL/SHM associados, nã
 
 ## Collections
 
-| Collection | Função |
-| --- | --- |
-| `users` | Collection autenticada nativa do PocketBase |
-| `users_profile` | Dados de perfil e privilégios da pessoa usuária |
-| `livros` | Catálogo e metadados dos livros |
-| `vendas` | Pedidos e pagamento |
-| `itens_venda` | Itens associados às vendas |
-| `avaliacoes` | Avaliações de livros |
-| `movimentacoes_financeiras` | Movimentações e dados bancários |
-| `enderecos` | Endereços das pessoas usuárias |
-| `revisoes` | Revisões e apontamentos |
-| `storage_files` | Arquivos protegidos por bucket lógico |
+| Collection                  | Função                                          |
+| --------------------------- | ----------------------------------------------- |
+| `users`                     | Collection autenticada nativa do PocketBase     |
+| `users_profile`             | Dados de perfil e privilégios da pessoa usuária |
+| `livros`                    | Catálogo e metadados dos livros                 |
+| `vendas`                    | Pedidos e pagamento                             |
+| `itens_venda`               | Itens associados às vendas                      |
+| `avaliacoes`                | Avaliações de livros                            |
+| `movimentacoes_financeiras` | Movimentações e dados bancários                 |
+| `enderecos`                 | Endereços das pessoas usuárias                  |
+| `revisoes`                  | Revisões e apontamentos                         |
+| `storage_files`             | Arquivos protegidos por bucket lógico           |
 
 ## Relações
 
@@ -38,7 +38,7 @@ As principais relações são:
 - `itens_venda.fk_livros_itens_id`
 - `itens_venda.fk_vendas_id`
 - `avaliacoes.fk_livros_id`
-- `avaliacoes.fk_users_profile_id`
+- `avaliacoes.fk_user_profile_id`
 - `enderecos.fk_user_profile_id`
 - `revisoes.fk_user_profile_id`
 - `revisoes.fk_livro_id`

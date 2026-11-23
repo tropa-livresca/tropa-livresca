@@ -268,8 +268,7 @@ export default function BibliotecaPessoal() {
             ) : (
               livros.map((livro) => {
                 const capa =
-                  livro.capa?.frente ||
-                  (typeof livro.capa === "string" ? livro.capa : null);
+                  livro.capa?.frente || null;
                 const autor = livro.users_profile
                   ? `${livro.users_profile.nome} ${livro.users_profile.sobrenome || ""}`.trim()
                   : "Autor desconhecido";

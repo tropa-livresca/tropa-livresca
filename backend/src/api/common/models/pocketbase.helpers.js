@@ -16,25 +16,6 @@ export async function buscarRegistroOpcional(colecao, id, options = {}) {
   }
 }
 
-export async function obterIdPerfil(pb, usuarioId) {
-  try {
-    const perfil = await pb
-      .collection("users_profile")
-      .getFirstListItem(pb.filter("auth_user = {:usuarioId}", { usuarioId }));
-
-    return perfil.id;
-  } catch (error) {
-    if (error.status !== 404) marcarErro(error);
-  }
-
-  const perfilExistente = await buscarRegistroOpcional(
-    pb.collection("users_profile"),
-    usuarioId,
-  );
-
-  return perfilExistente?.id || usuarioId;
-}
-
 export function paginaPocketBase({ page = 1, limit = 12 }) {
   return {
     page: Math.max(1, Number(page) || 1),
@@ -58,4 +39,25 @@ export function mapearExpansao(record, relacao, campo) {
     ...dados,
     [campo]: expand?.[relacao] || null,
   };
+}
+
+export function mapearCampoArquivo(pb, record, campo) {
+  const valor = record?.[campo];
+
+  const nomes = (Array.isArray(valor) ? valor : [valor]).filter(
+    (nome) => typeof nome === "string" && nome.length > 0,
+  );
+
+  const urls = nomes.map((nome) => pb.files.getURL(record, nome));
+  const multiplo = Array.isArray(valor);
+
+  return {
+    [`${campo}Nome`]: multiplo ? nomes : (nomes[0] ?? null),
+    [`${campo}Url`]: multiplo ? urls : (urls[0] ?? null),
+  };
+}
+
+export function primeiraUrlArquivo(urls) {
+  if (Array.isArray(urls)) return urls[0] ?? null;
+  return urls ?? null;
 }

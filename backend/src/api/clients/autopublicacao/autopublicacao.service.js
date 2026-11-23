@@ -1,7 +1,9 @@
 import { AutopublicacaoModel } from "../../common/models/autopublicacao.model.js";
 import {
   criarClienteModel,
+  mapearCampoArquivo,
   obterIdPerfil,
+  primeiraUrlArquivo,
 } from "../../common/models/pocketbase.helpers.js";
 
 import {
@@ -9,12 +11,15 @@ import {
   TRANSICOES_CLIENTE,
   transicaoPermitida,
 } from "../../common/config/livro-estados.js";
+import { validarMetadadosUpload } from "../../common/config/storage.js";
 
 export class AutopublicacaoService {
   static _removerArquivo(formData, campo, nomeArquivo) {
     if (!nomeArquivo) return;
 
-    formData.append(`${campo}-`, nomeArquivo);
+    for (const nome of Array.isArray(nomeArquivo) ? nomeArquivo : [nomeArquivo]) {
+      formData.append(`${campo}-`, nome);
+    }
   }
   static _converterPreco(valor, nomeCampo) {
     if (valor === null || valor === undefined || valor === "") return 0;
@@ -54,6 +59,13 @@ export class AutopublicacaoService {
       error.statusCode = 400;
       throw error;
     }
+
+    validarMetadadosUpload({
+      tipo: campo,
+      extensao: arquivo.originalname.split(".").pop(),
+      mimeType: arquivo.mimetype,
+      tamanho: arquivo.size ?? arquivo.buffer.length,
+    });
 
     const blob = new Blob([arquivo.buffer], {
       type: arquivo.mimetype,
@@ -95,27 +107,24 @@ export class AutopublicacaoService {
     if (!livro) return livro;
 
     const pb = criarClienteModel();
-
-    const manuscrito = livro.manuscrito || null;
-    const capaFrente = livro.capa_frente || null;
-    const capaVerso = livro.capa_verso || null;
+    const arquivos = {
+      ...mapearCampoArquivo(pb, livro, "manuscrito"),
+      ...mapearCampoArquivo(pb, livro, "capa_frente"),
+      ...mapearCampoArquivo(pb, livro, "capa_verso"),
+    };
 
     return {
       ...livro,
-
-      manuscrito: manuscrito ? pb.files.getURL(livro, manuscrito) : null,
-
-      manuscritoPath: manuscrito,
-
+      ...arquivos,
+      manuscritoUrl: primeiraUrlArquivo(arquivos.manuscritoUrl),
+      manuscritoPath: arquivos.manuscritoNome,
       capa: {
-        frente: capaFrente ? pb.files.getURL(livro, capaFrente) : null,
-
-        verso: capaVerso ? pb.files.getURL(livro, capaVerso) : null,
+        frente: primeiraUrlArquivo(arquivos.capa_frenteUrl),
+        verso: primeiraUrlArquivo(arquivos.capa_versoUrl),
       },
-
       capaPaths: {
-        frente: capaFrente,
-        verso: capaVerso,
+        frente: arquivos.capa_frenteNome,
+        verso: arquivos.capa_versoNome,
       },
     };
   }
@@ -136,6 +145,12 @@ export class AutopublicacaoService {
 
     if (!capaFrente) {
       const error = new Error("A capa do livro é obrigatória.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (!this._obterArquivo(arquivos, "capa_verso")) {
+      const error = new Error("A capa do verso do livro é obrigatória.");
       error.statusCode = 400;
       throw error;
     }
@@ -267,10 +282,6 @@ export class AutopublicacaoService {
     estadoInicial = LIVRO_ESTADO.RASCUNHO,
     arquivos = {},
   }) {
-    const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, userId);
-
-    this._validarArquivosObrigatorios(arquivos);
     if (!userId) {
       const error = new Error(
         "Sessão expirada. Autentique-se novamente para publicar.",
@@ -278,6 +289,11 @@ export class AutopublicacaoService {
       error.statusCode = 401;
       throw error;
     }
+
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, userId);
+
+    this._validarArquivosObrigatorios(arquivos);
 
     if (
       estadoInicial !== LIVRO_ESTADO.RASCUNHO &&
@@ -335,7 +351,7 @@ export class AutopublicacaoService {
 
     return {
       data: livroFormatado,
-      manuscritoUrl: livroFormatado.manuscrito,
+      manuscritoUrl: livroFormatado.manuscritoUrl,
     };
   }
 
@@ -441,6 +457,14 @@ export class AutopublicacaoService {
       const deveRemover = removerArquivos?.[campo] === true;
 
       if (deveRemover && !arquivoNovo) {
+        const error = new Error(
+          `O arquivo ${campo} é obrigatório e precisa ser substituído.`,
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (arquivoNovo) {
         this._removerArquivo(formData, campo, livroAtual[campo]);
       }
     }
@@ -456,7 +480,7 @@ export class AutopublicacaoService {
 
     return {
       data: livroFormatado,
-      manuscritoUrl: livroFormatado.manuscrito,
+      manuscritoUrl: livroFormatado.manuscritoUrl,
     };
   }
 }

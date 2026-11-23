@@ -1,24 +1,73 @@
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
+
 import {
   criarClienteModel,
   getListPocketBase,
   marcarErro,
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
 } from "./pocketbase.helpers.js";
+
 import nodemailer from "nodemailer";
 
 const COLECAO_PERFIL = "users_profile";
+const COLECAO_LIVROS = "livros";
+const COLECAO_REVISOES = "revisoes";
+
+const RELACAO_PERFIL = "fk_user_profile_id";
+
+function formatarUsuario(pb, perfil, livros = []) {
+  const imagem = mapearCampoArquivo(pb, perfil, "imagem");
+
+  const nome = perfil.nome || "";
+  const sobrenome = perfil.sobrenome || "";
+
+  return {
+    ...perfil,
+    nome,
+    sobrenome,
+    nomeCompleto: `${nome} ${sobrenome}`.trim(),
+    email: perfil.email || "",
+    imagem: primeiraUrlArquivo(imagem.imagemUrl),
+    imagemNome: imagem.imagemNome,
+    isAdmin: !!perfil.is_admin,
+    isAutor: livros.some(
+      (livro) =>
+        livro.estado === LIVRO_ESTADO.PUBLICADO && livro.ativo === true,
+    ),
+    livros,
+  };
+}
 
 async function buscarLivrosPorPerfis(pb, perfis) {
   if (!perfis.length) return [];
-  const clauses = perfis.map(
-    (_, index) => `fk_user_profile_id = {:id${index}}`,
-  );
+
+  const clauses = perfis.map((_, index) => `${RELACAO_PERFIL} = {:id${index}}`);
+
   const params = Object.fromEntries(
     perfis.map((perfil, index) => [`id${index}`, perfil.id]),
   );
-  return pb.collection("livros").getFullList({
+
+  return pb.collection(COLECAO_LIVROS).getFullList({
     filter: pb.filter(clauses.join(" || "), params),
   });
+}
+
+function agruparLivrosPorPerfil(livros) {
+  const livrosPorPerfil = new Map();
+
+  for (const livro of livros) {
+    const perfilId = livro[RELACAO_PERFIL];
+
+    if (!perfilId) continue;
+
+    const lista = livrosPorPerfil.get(perfilId) || [];
+    lista.push(livro);
+
+    livrosPorPerfil.set(perfilId, lista);
+  }
+
+  return livrosPorPerfil;
 }
 
 export class UsuariosModel {
@@ -30,13 +79,20 @@ export class UsuariosModel {
     filtro = "",
   }) {
     const pb = criarClienteModel();
+
     const filtros = [];
     const params = {};
 
-    if (filtro === "funcionario") filtros.push("is_admin = true");
-    if (filtro === "cliente") filtros.push("is_admin = false");
+    if (filtro === "funcionario") {
+      filtros.push("is_admin = true");
+    }
+
+    if (filtro === "cliente") {
+      filtros.push("is_admin = false");
+    }
+
     if (busca) {
-      filtros.push("nome ~ {:busca}");
+      filtros.push("(nome ~ {:busca} || sobrenome ~ {:busca})");
       params.busca = busca;
     }
 
@@ -46,83 +102,82 @@ export class UsuariosModel {
         limit,
         filter: filtros.length ? pb.filter(filtros.join(" && "), params) : "",
         sort: ordem === "ascendente" ? "nome" : "-nome",
+        fields:
+          "id,nome,sobrenome,email,imagem,is_admin,is_master,primeiro_acesso,redes_sociais",
       });
-      const livros = await buscarLivrosPorPerfis(pb, resultado.items);
-      const livrosPorPerfil = new Map();
-      for (const livro of livros) {
-        const lista = livrosPorPerfil.get(livro.fk_user_profile_id) || [];
-        lista.push(livro);
-        livrosPorPerfil.set(livro.fk_user_profile_id, lista);
-      }
 
-      let usuariosFormatados = resultado.items.map((usuario) => {
-        const livrosUsuario = livrosPorPerfil.get(usuario.id) || [];
-        const temLivroPublicado = livrosUsuario.some(
-          (livro) =>
-            livro.estado === LIVRO_ESTADO.PUBLICADO && livro.ativo === true,
-        );
-        const nomeCompleto = `${usuario.nome || ""} ${
-          usuario.sobrenome || ""
-        }`.trim();
-        return {
-          id: usuario.id,
-          nome: nomeCompleto,
-          nomeCompleto,
-          sobrenome: usuario.sobrenome || "",
-          imagem: usuario.imagem || null,
-          isAdmin: !!usuario.is_admin,
-          isAutor: temLivroPublicado,
-          redes_sociais: usuario.redes_sociais,
-          primeiro_acesso: usuario.primeiro_acesso,
-        };
-      });
+      const livros = await buscarLivrosPorPerfis(pb, resultado.items);
+
+      const livrosPorPerfil = agruparLivrosPorPerfil(livros);
+
+      let usuariosFormatados = resultado.items.map((perfil) =>
+        formatarUsuario(pb, perfil, livrosPorPerfil.get(perfil.id) || []),
+      );
 
       let count = resultado.totalItems;
+
       if (filtro === "autor") {
-        const todosPerfis = await pb.collection(COLECAO_PERFIL).getFullList();
+        const todosPerfis = await pb.collection(COLECAO_PERFIL).getFullList({
+          fields:
+            "id,nome,sobrenome,email,imagem,is_admin,is_master,primeiro_acesso,redes_sociais",
+        });
+
         const todosLivros = await buscarLivrosPorPerfis(pb, todosPerfis);
+
+        const todosLivrosPorPerfil = agruparLivrosPorPerfil(todosLivros);
+
         const autores = new Set(
           todosLivros
             .filter(
               (livro) => livro.ativo && livro.estado === LIVRO_ESTADO.PUBLICADO,
             )
-            .map((livro) => livro.fk_user_profile_id),
+            .map((livro) => livro[RELACAO_PERFIL]),
         );
+
         const filtrados = todosPerfis
-          .filter(
-            (perfil) =>
+          .filter((perfil) => {
+            const nomeCompleto = `${perfil.nome || ""} ${perfil.sobrenome || ""}`;
+
+            return (
               autores.has(perfil.id) &&
               (!busca ||
-                perfil.nome.toLowerCase().includes(busca.toLowerCase())),
-          )
-          .sort(
-            (a, b) =>
-              String(a.nome).localeCompare(String(b.nome)) *
-              (ordem === "ascendente" ? 1 : -1),
-          );
-        count = filtrados.length;
-        const start = (Math.max(1, Number(page) || 1) - 1) * limit;
-        usuariosFormatados = filtrados
-          .slice(start, start + limit)
-          .map((u) => {
-            const nomeCompleto = `${u.nome || ""} ${
-              u.sobrenome || ""
-            }`.trim();
-            return {
-              id: u.id,
-              nome: nomeCompleto,
-              nomeCompleto,
-              sobrenome: u.sobrenome || "",
-              imagem: u.imagem || null,
-              isAdmin: !!u.is_admin,
-              isAutor: true,
-              redes_sociais: u.redes_sociais,
-              primeiro_acesso: u.primeiro_acesso,
-            };
+                nomeCompleto.toLowerCase().includes(busca.toLowerCase()))
+            );
+          })
+          .sort((a, b) => {
+            const nomeA = `${a.nome || ""} ${a.sobrenome || ""}`;
+
+            const nomeB = `${b.nome || ""} ${b.sobrenome || ""}`;
+
+            return (
+              nomeA.localeCompare(nomeB) * (ordem === "ascendente" ? 1 : -1)
+            );
           });
+
+        count = filtrados.length;
+
+        const paginaAtual = Math.max(1, Number(page) || 1);
+
+        const limiteAtual = Math.max(1, Number(limit) || 12);
+
+        const start = (paginaAtual - 1) * limiteAtual;
+
+        usuariosFormatados = filtrados
+          .slice(start, start + limiteAtual)
+          .map((perfil) => ({
+            ...formatarUsuario(
+              pb,
+              perfil,
+              todosLivrosPorPerfil.get(perfil.id) || [],
+            ),
+            isAutor: true,
+          }));
       }
 
-      return { data: usuariosFormatados, count };
+      return {
+        data: usuariosFormatados,
+        count,
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -130,23 +185,31 @@ export class UsuariosModel {
 
   static async buscarUsuarioById(usuarioId) {
     if (!usuarioId) return null;
+
     const pb = criarClienteModel();
 
     try {
-      const usuario = await pb.collection(COLECAO_PERFIL).getOne(usuarioId);
+      const perfil = await pb.collection(COLECAO_PERFIL).getOne(usuarioId);
+
       const [livros, revisoes] = await Promise.all([
-        pb.collection("livros").getFullList({
-          filter: pb.filter("fk_user_profile_id = {:usuarioId}", {
+        pb.collection(COLECAO_LIVROS).getFullList({
+          filter: pb.filter(`${RELACAO_PERFIL} = {:usuarioId}`, {
             usuarioId,
           }),
         }),
-        pb.collection("revisoes").getFullList({
-          filter: pb.filter("fk_user_profile_id = {:usuarioId}", {
+
+        pb.collection(COLECAO_REVISOES).getFullList({
+          filter: pb.filter(`${RELACAO_PERFIL} = {:usuarioId}`, {
             usuarioId,
           }),
         }),
       ]);
-      return { ...usuario, livros, revisoes };
+
+      return {
+        ...formatarUsuario(pb, perfil, livros),
+        livros,
+        revisoes,
+      };
     } catch (error) {
       if (error.status === 404) return null;
       marcarErro(error);
@@ -177,6 +240,7 @@ export class UsuariosModel {
         },
         family: 4,
       });
+
       return await transporte.sendMail({
         ...dadosMail,
         from: `"Administração Tropa Livresca" <${process.env.SMTP_USER}>`,
@@ -189,6 +253,7 @@ export class UsuariosModel {
         responseCode: erro?.responseCode,
         response: erro?.response,
       });
+
       erro.statusCode = 500;
       throw erro;
     }
@@ -196,29 +261,40 @@ export class UsuariosModel {
 
   static async promoverUsuario(usuarioId) {
     const pb = criarClienteModel();
+
     let data;
+
     try {
-      data = await pb
-        .collection(COLECAO_PERFIL)
-        .update(usuarioId, { is_admin: true });
+      data = await pb.collection(COLECAO_PERFIL).update(usuarioId, {
+        is_admin: true,
+      });
     } catch (error) {
       marcarErro(error);
     }
 
     const titulo = "Promoção a Administrador";
+
     await this.enviarEmail({
       from: `"Tropa Livresca" <${process.env.SMTP_USER}>`,
       to: data.email,
       subject: titulo,
-      text: `Olá ${data.nome},\n\nParabéns! Você foi promovido a Administrador da Tropa Livresca.\nO usuário é: ${data.email}\nA senha é: Senh@Adm123!\n\nAtenciosamente,\nEquipe Tropa Livresca`,
-      html: `<p>Olá ${data.nome},</p><p>Parabéns! Você foi promovido a <strong>Administrador</strong> da Tropa Livresca.</p><p>O usuário é: ${data.email}</p><p>A senha de primeiro acesso é: Senh@Adm123!</p><p>Atenciosamente,<br/>Equipe Tropa Livresca</p>`,
+      text: `Olá ${data.nome || ""},\n\nParabéns! Você foi promovido a Administrador da Tropa Livresca.\nO usuário é: ${data.email}\nA senha é: Senh@Adm123!\n\nAtenciosamente,\nEquipe Tropa Livresca`,
+      html: `<p>Olá ${data.nome || ""},</p><p>Parabéns! Você foi promovido a <strong>Administrador</strong> da Tropa Livresca.</p><p>O usuário é: ${data.email}</p><p>A senha de primeiro acesso é: Senh@Adm123!</p><p>Atenciosamente,<br/>Equipe Tropa Livresca</p>`,
     });
-    return data;
+
+    return {
+      ...data,
+      nome: data.nome || "",
+      sobrenome: data.sobrenome || "",
+      email: data.email || "",
+    };
   }
 
   static async inativarFuncionario(funcionarioId) {
     const pb = criarClienteModel();
+
     let data;
+
     try {
       data = await pb.collection(COLECAO_PERFIL).update(funcionarioId, {
         is_admin: false,
@@ -232,9 +308,15 @@ export class UsuariosModel {
       from: `"Tropa Livresca" <${process.env.SMTP_USER}>`,
       to: data.email,
       subject: "Remoção de Privilégios de Administrador",
-      text: `Olá ${data.nome},\n\nLamentamos informar que seus privilégios de Administrador foram removidos da Tropa Livresca.\n\nAtenciosamente,\nEquipe Tropa Livresca`,
-      html: `<p>Olá ${data.nome},</p><p>Lamentamos informar que seus privilégios de <strong>Administrador</strong> foram removidos da Tropa Livresca.</p><p>O usuário é: ${data.email}</p><p>Atenciosamente,<br/>Equipe Tropa Livresca</p>`,
+      text: `Olá ${data.nome || ""},\n\nLamentamos informar que seus privilégios de Administrador foram removidos da Tropa Livresca.\n\nAtenciosamente,\nEquipe Tropa Livresca`,
+      html: `<p>Olá ${data.nome || ""},</p><p>Lamentamos informar que seus privilégios de <strong>Administrador</strong> foram removidos da Tropa Livresca.</p><p>O usuário é: ${data.email}</p><p>Atenciosamente,<br/>Equipe Tropa Livresca</p>`,
     });
-    return data;
+
+    return {
+      ...data,
+      nome: data.nome || "",
+      sobrenome: data.sobrenome || "",
+      email: data.email || "",
+    };
   }
 }

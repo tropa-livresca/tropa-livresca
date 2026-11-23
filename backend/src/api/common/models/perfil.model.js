@@ -1,28 +1,18 @@
-import {
-  criarClienteModel,
-  marcarErro,
-  obterIdPerfil,
-} from "./pocketbase.helpers.js";
+import { criarClienteModel, marcarErro } from "./pocketbase.helpers.js";
 
 const COLECAO_PERFIL = "users_profile";
-const COLECAO_USUARIOS = "users";
 
 export class PerfilModel {
   static async buscarPerfil(id) {
     const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, id);
 
     try {
-      const perfil = await pb.collection(COLECAO_PERFIL).getOne(perfilId);
-
-      const usuarioId = perfil.auth_user || id;
-
-      const usuario = await pb.collection(COLECAO_USUARIOS).getOne(usuarioId);
+      const perfil = await pb.collection(COLECAO_PERFIL).getOne(id);
 
       return {
         ...perfil,
-        nome: usuario.nome || "",
-        sobrenome: usuario.sobrenome || "",
+        nome: perfil.nome || "",
+        sobrenome: perfil.sobrenome || "",
       };
     } catch (error) {
       if (error.status === 404) return null;
@@ -34,7 +24,7 @@ export class PerfilModel {
     const pb = criarClienteModel();
 
     try {
-      return await pb.collection(COLECAO_USUARIOS).update(userId, dados);
+      return await pb.collection(COLECAO_PERFIL).update(userId, dados);
     } catch (error) {
       marcarErro(error);
     }
@@ -42,10 +32,9 @@ export class PerfilModel {
 
   static async atualizarPerfil(userId, dadosPerfil) {
     const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, userId);
 
     try {
-      return await pb.collection(COLECAO_PERFIL).update(perfilId, dadosPerfil);
+      return await pb.collection(COLECAO_PERFIL).update(userId, dadosPerfil);
     } catch (error) {
       marcarErro(error);
     }
@@ -71,20 +60,23 @@ export class PerfilModel {
 
       formData.append("imagem", blob, nomeArquivo);
 
-      return await pb
-        .collection(COLECAO_PERFIL)
-        .update(perfil.id, formData)
-        .then(async (registro) => {
-          const usuario = await pb
-            .collection(COLECAO_USUARIOS)
-            .getOne(registro.auth_user || userId);
+      for (const nomeAntigo of Array.isArray(perfil.imagem)
+        ? perfil.imagem
+        : [perfil.imagem]) {
+        if (nomeAntigo) {
+          formData.append("imagem-", nomeAntigo);
+        }
+      }
 
-          return {
-            ...registro,
-            nome: usuario.nome || "",
-            sobrenome: usuario.sobrenome || "",
-          };
-        });
+      const registro = await pb
+        .collection(COLECAO_PERFIL)
+        .update(userId, formData);
+
+      return {
+        ...registro,
+        nome: registro.nome || "",
+        sobrenome: registro.sobrenome || "",
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -103,16 +95,23 @@ export class PerfilModel {
 
     try {
       const formData = new FormData();
-      formData.append("imagem-", "");
+
+      for (const nomeArquivo of Array.isArray(perfil.imagem)
+        ? perfil.imagem
+        : [perfil.imagem]) {
+        if (nomeArquivo) {
+          formData.append("imagem-", nomeArquivo);
+        }
+      }
 
       const registro = await pb
         .collection(COLECAO_PERFIL)
-        .update(perfil.id, formData);
+        .update(userId, formData);
 
       return {
         ...registro,
-        nome: perfil.nome,
-        sobrenome: perfil.sobrenome,
+        nome: registro.nome || "",
+        sobrenome: registro.sobrenome || "",
       };
     } catch (error) {
       marcarErro(error);

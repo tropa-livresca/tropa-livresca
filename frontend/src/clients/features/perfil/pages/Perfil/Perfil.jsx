@@ -41,7 +41,11 @@ export default function Perfil() {
     updatePerfil,
   } = usePerfil();
 
-  const { dadosBancarios, buscarDadosBancarios } = useDadosBancarios();
+  const {
+    dadosBancarios,
+    buscarDadosBancarios,
+    erro: erroDadosBancarios,
+  } = useDadosBancarios();
   const { endereco, BuscarEnderecoPrincipal } = useEndereco();
 
   useEffect(() => {
@@ -311,6 +315,9 @@ export default function Perfil() {
               <p className={styles.subtitulo}>
                 Informações da sua conta bancária.
               </p>
+              {erroDadosBancarios && (
+                <p role="alert">{erroDadosBancarios}</p>
+              )}
 
               {dadosBancarios ? (
                 <div

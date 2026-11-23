@@ -24,6 +24,8 @@ export default function RevisaoById() {
     setNome,
     manuscrito,
     setManuscrito,
+    removerArquivo,
+    setRemoverArquivo,
     apontamento,
     setApontamento,
     atualizarRevisao,
@@ -67,6 +69,7 @@ export default function RevisaoById() {
     }
 
     setManuscrito(arquivo);
+    setRemoverArquivo(false);
   };
 
   const executarSalvar = async (e) => {
@@ -189,7 +192,7 @@ export default function RevisaoById() {
                   </label>
                 )}
 
-                {typeof manuscrito === "string" && manuscrito && (
+                {typeof manuscrito === "string" && manuscrito && !removerArquivo && (
                   <div className={styles.arquivoBox}>
                     <span>Arquivo atual anexado ao sistema</span>
 
@@ -201,6 +204,18 @@ export default function RevisaoById() {
                     >
                       Visualizar arquivo <FaExternalLinkAlt size={12} />
                     </a>
+                    {isEdicao && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setManuscrito(null);
+                          setRemoverArquivo(true);
+                        }}
+                        className={styles.botaoLimpar}
+                      >
+                        <FaTimes /> Remover anexo
+                      </button>
+                    )}
                   </div>
                 )}
 

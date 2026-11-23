@@ -4,18 +4,18 @@ O modelo foi convertido do PostgreSQL/Supabase para collections PocketBase. Os r
 
 ## Collections principais
 
-| Collection | Finalidade |
-| --- | --- |
-| `users` | Usuários autenticados nativos do PocketBase |
-| `users_profile` | Perfil, contato e privilégios |
-| `livros` | Livros e metadados editoriais |
-| `vendas` | Pedidos e pagamentos |
-| `itens_venda` | Produtos associados às vendas |
-| `avaliacoes` | Avaliações dos livros |
-| `movimentacoes_financeiras` | Movimentações financeiras |
-| `enderecos` | Endereços das pessoas usuárias |
-| `revisoes` | Revisões dos livros |
-| `storage_files` | Arquivos em armazenamento protegido |
+| Collection                  | Finalidade                                  |
+| --------------------------- | ------------------------------------------- |
+| `users`                     | Usuários autenticados nativos do PocketBase |
+| `users_profile`             | Perfil, contato e privilégios               |
+| `livros`                    | Livros e metadados editoriais               |
+| `vendas`                    | Pedidos e pagamentos                        |
+| `itens_venda`               | Produtos associados às vendas               |
+| `avaliacoes`                | Avaliações dos livros                       |
+| `movimentacoes_financeiras` | Movimentações financeiras                   |
+| `enderecos`                 | Endereços das pessoas usuárias              |
+| `revisoes`                  | Revisões dos livros                         |
+| `storage_files`             | Arquivos em armazenamento protegido         |
 
 ## Identificadores
 
@@ -32,22 +32,22 @@ Ao importar dados existentes:
 
 Campos definidos ou acrescentados pelas migrações:
 
-| Campo | Tipo | Uso |
-| --- | --- | --- |
-| `nome` | text | Nome |
-| `sobrenome` | text | Sobrenome |
-| `telefone` | text | Contato |
-| `imagem` | file/text | Imagem do perfil |
-| `descricao` | text | Descrição |
-| `redes_sociais` | json | Redes sociais |
-| `is_admin` | bool | Acesso administrativo |
-| `senha_adm` | text | Credencial administrativa legado |
-| `primeiro_acesso` | bool | Primeiro acesso |
-| `email` | email/text | E-mail |
-| `is_master` | bool | Privilégio master |
-| `dados_bancarios` | json | Dados bancários |
-| `funcao` | text | Função do usuário |
-| `auth_user` | relation | Usuário autenticado em `users` |
+| Campo             | Tipo       | Uso                              |
+| ----------------- | ---------- | -------------------------------- |
+| `nome`            | text       | Nome                             |
+| `sobrenome`       | text       | Sobrenome                        |
+| `telefone`        | text       | Contato                          |
+| `imagem`          | file/text  | Imagem do perfil                 |
+| `descricao`       | text       | Descrição                        |
+| `redes_sociais`   | json       | Redes sociais                    |
+| `is_admin`        | bool       | Acesso administrativo            |
+| `senha_adm`       | text       | Credencial administrativa legado |
+| `primeiro_acesso` | bool       | Primeiro acesso                  |
+| `email`           | email/text | E-mail                           |
+| `is_master`       | bool       | Privilégio master                |
+| `dados_bancarios` | json       | Dados bancários                  |
+| `funcao`          | text       | Função do usuário                |
+| `auth_user`       | relation   | Usuário autenticado em `users`   |
 
 ## `livros`
 
@@ -88,7 +88,7 @@ Campos definidos ou acrescentados pelas migrações:
 - `data_criacao`: date
 - `qtd_estrelas`: number
 - `fk_livros_id`: relation para `livros`
-- `fk_users_profile_id`: relation para `users_profile`
+- `fk_user_profile_id`: relation para `users_profile`
 
 ## `movimentacoes_financeiras`
 

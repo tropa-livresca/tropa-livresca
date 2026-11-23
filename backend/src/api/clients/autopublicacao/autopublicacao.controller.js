@@ -121,13 +121,38 @@ export class AutopublicacaoController {
     try {
       const userId = req.user.id;
       const { id } = req.params;
+      let removerArquivos = req.body.arquivosRemovidos || {};
+
+      if (typeof removerArquivos === "string") {
+        try {
+          removerArquivos = JSON.parse(removerArquivos);
+        } catch {
+          const error = new Error(
+            "O campo de arquivos removidos não está em um JSON válido.",
+          );
+          error.statusCode = 400;
+          throw error;
+        }
+      }
+
+      if (
+        !removerArquivos ||
+        typeof removerArquivos !== "object" ||
+        Array.isArray(removerArquivos)
+      ) {
+        const error = new Error(
+          "O campo de arquivos removidos deve ser um objeto.",
+        );
+        error.statusCode = 400;
+        throw error;
+      }
 
       const resultado = await AutopublicacaoService.atualizarLivro({
         userId,
         livroId: id,
         dadosLivro: lerDadosLivro(req.body?.dadosLivro),
         arquivos: req.files,
-        arquivosRemovidos: req.body.arquivosRemovidos,
+        removerArquivos,
       });
 
       return res.status(200).json(resultado);

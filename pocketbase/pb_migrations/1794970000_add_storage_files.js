@@ -16,7 +16,16 @@ migrate(
 
     const reviews = app.findCollectionByNameOrId("revisoes");
     if (!reviews.fields.fieldNames().includes("arquivo")) {
-      reviews.fields.add(new TextField({ name: "arquivo" }));
+      reviews.fields.add(
+        new FileField({
+          name: "arquivo",
+          maxSelect: 0,
+          maxSize: 0,
+          mimeTypes: ["application/pdf"],
+          protected: false,
+          required: false,
+        }),
+      );
     }
     app.save(reviews);
 
@@ -24,36 +33,9 @@ migrate(
     if (!movements.fields.fieldNames().includes("dados_bancarios")) {
       movements.fields.add(new JSONField({ name: "dados_bancarios" }));
     }
-    app.save(movements);
-
-    const collection = new Collection({
-      type: "base",
-      name: "storage_files",
-      fields: [
-        { type: "text", name: "owner", required: true },
-        { type: "text", name: "bucket", required: true },
-        { type: "text", name: "path", required: true },
-        {
-          type: "file",
-          name: "file",
-          required: true,
-          maxSelect: 1,
-          maxSize: 52428800,
-          mimeTypes: ["image/jpeg", "image/png", "application/pdf"],
-          protected: true,
-        },
-      ],
-      indexes: [
-        "CREATE UNIQUE INDEX idx_storage_files_bucket_path ON storage_files (bucket, path)",
-      ],
-    });
-
-    return app.save(collection);
+    return app.save(movements);
   },
   (app) => {
-    const collection = app.findCollectionByNameOrId("storage_files");
-    app.delete(collection);
-
     const profiles = app.findCollectionByNameOrId("users_profile");
     profiles.fields.removeByName("funcao");
     app.save(profiles);

@@ -19,6 +19,7 @@ jest.unstable_mockModule(
     mapearExpansao(record, relacao, campo) {
       return { ...record, [campo]: record.expand?.[relacao] || null };
     },
+    mapearCampoArquivo: () => ({}),
     obterIdPerfil: async (_pb, id) => id,
   }),
 );

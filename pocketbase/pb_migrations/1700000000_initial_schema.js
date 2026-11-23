@@ -188,7 +188,7 @@ migrate(
     );
     reviews.fields.add(
       new RelationField({
-        name: "fk_users_profile_id",
+        name: "fk_user_profile_id",
         collectionId: profileId,
         maxSelect: 1,
         cascadeDelete: false,

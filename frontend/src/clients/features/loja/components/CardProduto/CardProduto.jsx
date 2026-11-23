@@ -12,7 +12,7 @@ export default function CardProduto({ livro, aoAdicionar }) {
   const precoFisico = livro.precoFisico ?? livro.preco_fisico;
   const precoDigital = livro.precoDigital ?? livro.preco_digital;
   const urlCapa =
-    livro.capa?.frente || (typeof livro.capa === "string" ? livro.capa : null);
+    livro.capa?.frente || null;
 
   const handleAdicionarCarrinho = (e) => {
     e.preventDefault();

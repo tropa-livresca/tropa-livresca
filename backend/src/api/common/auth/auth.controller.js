@@ -9,8 +9,12 @@ import {
 
 import { criarClienteAdminPocketBase } from "../../common/config/pocketbase.js";
 
-const COLECAO_AUTH = "users";
-const COLECAO_PERFIL = "users_profile";
+import {
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
+} from "../models/pocketbase.helpers.js";
+
+const COLECAO_AUTH = "users_profile";
 
 const criarCliente = (token = null) => {
   const pb = new PocketBase(POCKETBASE_URL);
@@ -18,7 +22,7 @@ const criarCliente = (token = null) => {
   pb.autoCancellation(false);
 
   if (token) {
-    pb.authStore.save(token);
+    pb.authStore.save(token, null);
   }
 
   return pb;
@@ -38,22 +42,23 @@ export class AuthController {
     maxAge: 10 * 60 * 1000,
   };
 
+  // Buscar os dados diretamente na coleção users_profile.
   static async obterDadosUsuarioUnificado(userId) {
     const pb = criarClienteAdminPocketBase();
 
-    const filtro = pb.filter("auth_user = {:userId}", {
-      userId,
-    });
-
     try {
-      const perfil = await pb
-        .collection(COLECAO_PERFIL)
-        .getFirstListItem(filtro, {
-          fields:
-            "id,auth_user,imagem,descricao,redes_sociais,is_admin,is_master,primeiro_acesso",
-        });
+      const perfil = await pb.collection(COLECAO_AUTH).getOne(userId, {
+        fields:
+          "id,email,nome,sobrenome,telefone,imagem,descricao,redes_sociais,is_admin,funcao,is_master,primeiro_acesso,verified",
+      });
 
-      return perfil;
+      const imagem = mapearCampoArquivo(pb, perfil, "imagem");
+
+      return {
+        ...perfil,
+        ...imagem,
+        imagem: primeiraUrlArquivo(imagem.imagemUrl),
+      };
     } catch (error) {
       if (error.status === 404) {
         return {};
@@ -63,6 +68,7 @@ export class AuthController {
     }
   }
 
+  // Como os dados estão unificados, basta complementar o registro autenticado.
   static async obterUsuarioCompleto(usuario) {
     const perfil = await AuthController.obterDadosUsuarioUnificado(usuario.id);
 
@@ -74,6 +80,7 @@ export class AuthController {
     };
   }
 
+  // Iniciar autenticação com Google.
   static async signinComGoogle(_req, res, next) {
     try {
       const pb = criarCliente();
@@ -112,6 +119,7 @@ export class AuthController {
     }
   }
 
+  // Callback da autenticação com Google.
   static async callbackGoogle(req, res, _next) {
     try {
       const { code, state } = req.query;
@@ -156,6 +164,7 @@ export class AuthController {
     }
   }
 
+  // Redirecionar para a página de redefinição de senha.
   static async callbackRedefinirSenha(req, res) {
     const token = req.query?.token;
 
@@ -170,6 +179,7 @@ export class AuthController {
     );
   }
 
+  // Cadastro de usuário.
   static async signup(req, res, next) {
     try {
       const { email, password, telefone, nome, sobrenome } = req.body;
@@ -203,6 +213,7 @@ export class AuthController {
     }
   }
 
+  // Login comum.
   static async signin(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -236,6 +247,7 @@ export class AuthController {
     }
   }
 
+  // Renovar sessão.
   static async refreshSession(req, res) {
     const token = req.cookies?.["auth-token"];
 
@@ -257,6 +269,7 @@ export class AuthController {
       });
     } catch (error) {
       console.error(error);
+
       res.clearCookie("auth-token", AuthController.COOKIE_OPTIONS);
 
       return res.status(401).json({
@@ -265,6 +278,7 @@ export class AuthController {
     }
   }
 
+  // Sincronizar sessão.
   static async setSession(req, res, next) {
     try {
       const { token } = req.body;
@@ -276,7 +290,9 @@ export class AuthController {
       }
 
       const pb = criarCliente(token);
+
       const authData = await pb.collection(COLECAO_AUTH).authRefresh();
+
       const usuarioCompleto = await AuthController.obterUsuarioCompleto(
         authData.record,
       );
@@ -292,27 +308,31 @@ export class AuthController {
     }
   }
 
+  // Obter sessão do usuário autenticado.
   static async getSession(req, res, next) {
     try {
       const usuarioCompleto = await AuthController.obterUsuarioCompleto(
         req.user,
       );
 
-      return res.status(200).json({ user: usuarioCompleto });
+      return res.status(200).json({
+        user: usuarioCompleto,
+      });
     } catch (error) {
       return next(error);
     }
   }
 
+  // Obter sessão administrativa.
   static async getSessionAdm(req, res, next) {
     try {
       const perfil = req.adm;
 
       return res.status(200).json({
         user: {
+          ...perfil,
           id: req.user.id,
           email: req.user.email,
-          ...perfil,
         },
       });
     } catch (error) {
@@ -320,6 +340,7 @@ export class AuthController {
     }
   }
 
+  // Login administrativo.
   static async signinAdm(req, res, next) {
     try {
       const { email, senha } = req.body;
@@ -332,22 +353,25 @@ export class AuthController {
 
       const usuario = authData.record;
 
-      const perfil = await AuthController.obterDadosUsuarioUnificado(
-        usuario.id,
-      );
+      // O perfil e a autenticação estão no mesmo registro.
+      if (!usuario.is_admin) {
+        pb.authStore.clear();
 
-      if (!perfil.is_admin) {
         return res.status(403).json({
           error: "Acesso negado. Apenas administradores.",
         });
       }
 
+      const perfil = await AuthController.obterDadosUsuarioUnificado(
+        usuario.id,
+      );
+
       const token = jwt.sign(
         {
           id: usuario.id,
           email: usuario.email,
-          is_admin: perfil.is_admin,
-          funcao: perfil.funcao,
+          is_admin: usuario.is_admin,
+          funcao: usuario.funcao,
         },
         process.env.JWT_SECRET,
         {
@@ -362,7 +386,7 @@ export class AuthController {
           ...usuario,
           ...perfil,
         },
-        primeiroAcesso: perfil.primeiro_acesso,
+        primeiroAcesso: usuario.primeiro_acesso,
         message: "Login administrativo realizado com sucesso!",
       });
     } catch (error) {
@@ -370,6 +394,7 @@ export class AuthController {
     }
   }
 
+  // Encerrar sessão comum.
   static async signout(_req, res) {
     res.clearCookie("auth-token", AuthController.COOKIE_OPTIONS);
 
@@ -378,6 +403,7 @@ export class AuthController {
     });
   }
 
+  // Encerrar sessão administrativa.
   static async signoutAdm(_req, res) {
     res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
 
@@ -400,14 +426,10 @@ export class AuthController {
 
       const pb = criarClienteAdminPocketBase();
 
+      // A senha e o primeiro_acesso pertencem ao mesmo registro.
       await pb.collection(COLECAO_AUTH).update(userId, {
         password: novaSenha,
         passwordConfirm: novaSenha,
-      });
-
-      const perfil = await AuthController.obterDadosUsuarioUnificado(userId);
-
-      await pb.collection(COLECAO_PERFIL).update(perfil.id, {
         primeiro_acesso: false,
       });
 

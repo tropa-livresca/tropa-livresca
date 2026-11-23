@@ -1,16 +1,22 @@
 import { PerfilModel } from "../../common/models/perfil.model.js";
-import { criarClienteModel } from "../../common/models/pocketbase.helpers.js";
+import {
+  criarClienteModel,
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
+} from "../../common/models/pocketbase.helpers.js";
 import { validarMetadadosUpload } from "../../common/config/storage.js";
 
 export class PerfilService {
   static async _formatarPerfil(perfil) {
-    if (!perfil?.imagem) return perfil;
+    if (!perfil) return perfil;
 
     const pb = criarClienteModel();
+    const imagem = mapearCampoArquivo(pb, perfil, "imagem");
 
     return {
       ...perfil,
-      imagem: pb.files.getURL(perfil, perfil.imagem),
+      ...imagem,
+      imagem: primeiraUrlArquivo(imagem.imagemUrl),
     };
   }
 
@@ -24,19 +30,9 @@ export class PerfilService {
     const perfil = await PerfilModel.buscarPerfil(userId);
 
     if (!perfil) {
-      return {
-        id: userId,
-        nome: "",
-        telefone: "",
-        descricao: "",
-        imagem: "",
-        redes_sociais: {
-          instagram: "",
-          facebook: "",
-          linkedin: "",
-          email: "",
-        },
-      };
+      const erroPerfil = new Error("Perfil do usuário não encontrado.");
+      erroPerfil.statusCode = 404;
+      throw erroPerfil;
     }
 
     return this._formatarPerfil(perfil);
@@ -73,10 +69,7 @@ static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
           : redes_sociais;
     }
 
-    const perfil = await PerfilModel.atualizarPerfil(
-      userId,
-      updates,
-    );
+    await PerfilModel.atualizarPerfil(userId, updates);
 
     return this._formatarPerfil(
       await PerfilModel.buscarPerfil(userId),

@@ -1,5 +1,9 @@
 import { LojaModel } from "../../common/models/loja.model.js";
 import { EnderecoModel } from "../../common/models/endereco.model.js";
+import {
+  criarClienteModel,
+  obterIdPerfil,
+} from "../../common/models/pocketbase.helpers.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
 
 const METODO_PAGAMENTO_SIMULADO = 1;
@@ -7,25 +11,6 @@ const MAX_QTD_POR_ITEM = 99;
 
 const arredondar = (valor) => Math.round(valor * 100) / 100;
 export class LojaService {
-  static _parseCapaUrls(livro) {
-    if (!livro) return livro;
-
-    const livroClonado = { ...livro };
-
-    try {
-      if (typeof livroClonado.capa === "string") {
-        livroClonado.capa = JSON.parse(livroClonado.capa);
-      }
-    } catch (e) {
-      console.warn("Erro ao parsear capa JSON", e);
-    }
-    return livroClonado;
-  }
-
-  static _parseCapasArray(livros) {
-    return livros.map((livro) => this._parseCapaUrls(livro));
-  }
-
   static async buscarBibliotecaPessoal({
     userId,
     page = 1,
@@ -51,7 +36,7 @@ export class LojaService {
       livroId,
     });
     const livros = biblioteca.data.map((item) => ({
-      ...this._parseCapaUrls(item.livros),
+      ...item.livros,
       compraId: item.vendas.id,
       dataCompra: item.vendas.data,
     }));
@@ -90,14 +75,12 @@ export class LojaService {
       throw livrosTropa.error;
     }
 
-    const livrosComCapas = this._parseCapasArray(livrosTropa.data);
-
     const totalItems = livrosTropa.count;
 
     const totalPagesTropa = Math.ceil(livrosTropa.count / limit);
 
     return {
-      data: livrosComCapas,
+      data: livrosTropa.data,
       meta: {
         page,
         limit,
@@ -120,7 +103,7 @@ export class LojaService {
       throw livro.error;
     }
 
-    return this._parseCapaUrls(livro);
+    return livro;
   }
 
   static async consultarVenda(vendaId, usuarioId) {
@@ -129,7 +112,9 @@ export class LojaService {
 
     const venda = await LojaModel.consultarVenda(vendaId);
 
-    if (venda.fk_user_profile_id !== usuarioId)
+    const pb = criarClienteModel();
+    const perfilId = await obterIdPerfil(pb, usuarioId);
+    if (venda.fk_user_profile_id !== perfilId)
       error(404, "Venda não encontrada.");
 
     return venda;

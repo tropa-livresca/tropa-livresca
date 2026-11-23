@@ -1,13 +1,10 @@
 import pb from "../config/pocketbase.js";
 
-const COLECAO_AUTH = "users";
-const COLECAO_PERFIL = "users_profile";
+const COLECAO_AUTH = "users_profile";
 
 export class AuthModel {
   static async buscarPerfil(userId) {
-    return await pb
-      .collection(COLECAO_PERFIL)
-      .getFirstListItem(`auth_user = "${userId}"`);
+    return await pb.collection(COLECAO_AUTH).getOne(userId);
   }
 
   static async conferirPrimeiroAcesso(userId) {
@@ -22,6 +19,78 @@ export class AuthModel {
     }
   }
 
+  static async signinAdmin(email, senha) {
+    try {
+      const authData = await pb
+        .collection(COLECAO_AUTH)
+        .authWithPassword(email, senha);
+
+      const usuario = authData.record;
+
+      if (!usuario.is_admin) {
+        pb.authStore.clear();
+
+        const error = new Error("Acesso negado. Apenas administradores.");
+
+        error.statusCode = 403;
+        throw error;
+      }
+
+      return {
+        data: {
+          userId: usuario.id,
+          user: usuario,
+        },
+        error: null,
+      };
+    } catch (error) {
+      if (error.statusCode === 403) {
+        return {
+          data: null,
+          error,
+        };
+      }
+
+      return {
+        data: null,
+        error: Object.assign(
+          new Error(
+            error.status === 400 || error.status === 401
+              ? "Credenciais administrativas inválidas."
+              : "Não foi possível realizar a autenticação administrativa.",
+          ),
+          {
+            statusCode:
+              error.status === 400 || error.status === 401
+                ? 401
+                : error.status || 500,
+          },
+        ),
+      };
+    }
+  }
+
+  static async conferirAdmin(userId) {
+    try {
+      const usuario = await this.buscarPerfil(userId);
+
+      if (!usuario.is_admin) {
+        const error = new Error("Acesso negado. Apenas administradores.");
+
+        error.statusCode = 403;
+        throw error;
+      }
+
+      return usuario;
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = error.status || 500;
+      }
+
+      throw error;
+    }
+  }
+
   static async alterarSenhaAdmin(userId, novaSenha, senhaAntiga) {
     const usuarioAtual = pb.authStore.record;
 
@@ -29,6 +98,7 @@ export class AuthModel {
       const error = new Error(
         "Não é permitido alterar a senha de outro usuário.",
       );
+
       error.statusCode = 403;
       throw error;
     }
@@ -36,6 +106,7 @@ export class AuthModel {
     const dadosSenha = {
       password: novaSenha,
       passwordConfirm: novaSenha,
+      primeiro_acesso: false,
     };
 
     if (senhaAntiga) {
@@ -46,69 +117,9 @@ export class AuthModel {
       .collection(COLECAO_AUTH)
       .update(userId, dadosSenha);
 
-    const perfil = await this.buscarPerfil(userId);
-
-    await pb.collection(COLECAO_PERFIL).update(perfil.id, {
-      primeiro_acesso: false,
-    });
-
-    return { data: usuario };
-  }
-
-  static async signinAdmin(email, senha) {
-    try {
-      const authData = await pb
-        .collection(COLECAO_AUTH)
-        .authWithPassword(email, senha);
-
-      const userId = authData.record.id;
-      const perfil = await this.conferirAdmin(userId);
-
-      return {
-        data: {
-          userId,
-          user: {
-            ...authData.record,
-            ...perfil,
-          },
-        },
-        error: null,
-      };
-    } catch (error) {
-      return {
-        data: null,
-        error: Object.assign(
-          new Error(
-            error.status === 403
-              ? "Acesso negado. Apenas administradores."
-              : "Credenciais administrativas inválidas.",
-          ),
-          {
-            statusCode: error.status === 403 ? 403 : 401,
-          },
-        ),
-      };
-    }
-  }
-
-  static async conferirAdmin(userId) {
-    try {
-      const perfil = await this.buscarPerfil(userId);
-
-      if (!perfil.is_admin) {
-        const error = new Error("Acesso negado. Apenas administradores.");
-        error.statusCode = 403;
-        throw error;
-      }
-
-      return perfil;
-    } catch (error) {
-      if (!error.statusCode) {
-        error.statusCode = error.status || 500;
-      }
-
-      throw error;
-    }
+    return {
+      data: usuario,
+    };
   }
 
   static async atualizarSenha(senhaNova, senhaAntiga) {
@@ -177,6 +188,7 @@ export class AuthModel {
   static async refreshSession() {
     if (!pb.authStore.isValid) {
       const error = new Error("Sessão inválida ou expirada.");
+
       error.statusCode = 401;
       throw error;
     }

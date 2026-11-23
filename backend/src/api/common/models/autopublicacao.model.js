@@ -3,7 +3,6 @@ import {
   criarClienteModel,
   getListPocketBase,
   marcarErro,
-  obterIdPerfil,
 } from "./pocketbase.helpers.js";
 
 const COLECAO = "livros";
@@ -11,6 +10,7 @@ const RELACAO_PERFIL = "fk_user_profile_id";
 
 function erroConflito() {
   const error = new Error("Livro não encontrado ou estado desatualizado.");
+
   error.statusCode = 409;
   return error;
 }
@@ -26,11 +26,10 @@ export class AutopublicacaoModel {
     estado = "",
   } = {}) {
     const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, userId);
 
-    const filtros = ["ativo = true", `${RELACAO_PERFIL} = {:perfilId}`];
+    const filtros = ["ativo = true", `${RELACAO_PERFIL} = {:userId}`];
 
-    const params = { perfilId };
+    const params = { userId };
 
     if (busca) {
       filtros.push("titulo ~ {:busca}");
@@ -66,20 +65,21 @@ export class AutopublicacaoModel {
 
   static async buscarDetalhesPorId(idLivro, userId) {
     const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, userId);
 
     try {
       const livro = await pb.collection(COLECAO).getOne(idLivro);
 
-      return livro[RELACAO_PERFIL] === perfilId && livro.ativo ? livro : null;
+      return livro[RELACAO_PERFIL] === userId && livro.ativo ? livro : null;
     } catch (error) {
       if (error.status === 404) return null;
+
       marcarErro(error);
     }
   }
 
   static async atualizarEstado(id, novoEstado, userId, estadoAtual) {
     const pb = criarClienteModel();
+
     const livro = await this.buscarDetalhesPorId(id, userId);
 
     if (!livro || (estadoAtual && livro.estado !== estadoAtual)) {
@@ -128,6 +128,7 @@ export class AutopublicacaoModel {
 
   static async atualizarLivro(id, userId, estadoAtual, dadosAtualizados) {
     const pb = criarClienteModel();
+
     const livro = await this.buscarDetalhesPorId(id, userId);
 
     if (!livro || livro.estado !== estadoAtual) {
@@ -143,10 +144,12 @@ export class AutopublicacaoModel {
 
   static async deletarLivro(idLivro, userId) {
     const pb = criarClienteModel();
+
     const livro = await this.buscarDetalhesPorId(idLivro, userId);
 
     if (!livro) {
       const error = new Error("Livro não encontrado.");
+
       error.statusCode = 404;
       throw error;
     }
@@ -162,6 +165,7 @@ export class AutopublicacaoModel {
 
     try {
       await pb.collection(COLECAO).delete(idLivro);
+
       return livro;
     } catch (error) {
       marcarErro(error);

@@ -3,20 +3,72 @@ import {
   criarClienteModel,
   getListPocketBase,
   marcarErro,
-  mapearExpansao,
-  obterIdPerfil,
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
 } from "./pocketbase.helpers.js";
 
 const COLECAO = "livros";
 const RELACAO_PERFIL = "fk_user_profile_id";
-const COLUNAS_LIVRO =
-  "id, ISBN, data_de_publicacao, categoria, idioma, titulo, subtitulo, descricao, capa, direitos_de_publicacao";
 
-function resultadoPaginado(result) {
+const COLUNAS_LIVRO = [
+  "id",
+  "ISBN",
+  "data_de_publicacao",
+  "categoria",
+  "idioma",
+  "titulo",
+  "subtitulo",
+  "descricao",
+  "manuscrito",
+  "capa_frente",
+  "capa_verso",
+  "direitos_de_publicacao",
+  "preco_digital",
+  "preco_fisico",
+  "numero_paginas",
+  "colaboradores",
+  "ativo",
+  "estado",
+  RELACAO_PERFIL,
+].join(",");
+
+function formatarLivro(pb, livro) {
+  if (!livro) return livro;
+
+  const perfilExpandido = livro.expand?.[RELACAO_PERFIL] || null;
+
+  const imagem = perfilExpandido
+    ? mapearCampoArquivo(pb, perfilExpandido, "imagem")
+    : null;
+
+  const perfil = perfilExpandido
+    ? {
+        ...perfilExpandido,
+        ...imagem,
+        imagem: primeiraUrlArquivo(imagem.imagemUrl),
+      }
+    : null;
+
+  const arquivos = {
+    ...mapearCampoArquivo(pb, livro, "manuscrito"),
+    ...mapearCampoArquivo(pb, livro, "capa_frente"),
+    ...mapearCampoArquivo(pb, livro, "capa_verso"),
+  };
+
   return {
-    data: result.items.map((livro) =>
-      mapearExpansao(livro, RELACAO_PERFIL, "users_profile"),
-    ),
+    ...livro,
+    ...arquivos,
+    users_profile: perfil,
+    capa: {
+      frente: primeiraUrlArquivo(arquivos.capa_frenteUrl),
+      verso: primeiraUrlArquivo(arquivos.capa_versoUrl),
+    },
+  };
+}
+
+function resultadoPaginado(pb, result) {
+  return {
+    data: result.items.map((livro) => formatarLivro(pb, livro)),
     count: result.totalItems,
   };
 }
@@ -38,6 +90,7 @@ export class LivroModel {
       filtros.push("(titulo ~ {:busca} || subtitulo ~ {:busca})");
       params.busca = busca;
     }
+
     if (
       estado === LIVRO_ESTADO.PUBLICADO ||
       estado === LIVRO_ESTADO.EM_REVISAO
@@ -47,6 +100,7 @@ export class LivroModel {
     }
 
     const sortField = filtro === "data" ? "data_de_publicacao" : "titulo";
+
     const sort = ordem === "descendente" ? `-${sortField}` : sortField;
 
     try {
@@ -57,7 +111,8 @@ export class LivroModel {
         sort,
         expand: RELACAO_PERFIL,
       });
-      return resultadoPaginado(result);
+
+      return resultadoPaginado(pb, result);
     } catch (error) {
       marcarErro(error);
     }
@@ -65,13 +120,15 @@ export class LivroModel {
 
   static async buscarLivroByIdAdmin(livroId) {
     if (!livroId) return null;
+
     const pb = criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO).getOne(livroId, {
         expand: RELACAO_PERFIL,
       });
-      return mapearExpansao(livro, RELACAO_PERFIL, "users_profile");
+
+      return formatarLivro(pb, livro);
     } catch (error) {
       if (error.status === 404) return null;
       marcarErro(error);
@@ -82,8 +139,15 @@ export class LivroModel {
     const pb = criarClienteModel();
 
     try {
-      const livro = await pb.collection(COLECAO).update(livroId, { ativo });
-      return { id: livro.id, titulo: livro.titulo, ativo: livro.ativo };
+      const livro = await pb.collection(COLECAO).update(livroId, {
+        ativo,
+      });
+
+      return {
+        id: livro.id,
+        titulo: livro.titulo,
+        ativo: livro.ativo,
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -91,17 +155,18 @@ export class LivroModel {
 
   static async buscarLivroByUserId(userId) {
     if (!userId) return null;
+
     const pb = criarClienteModel();
-    const perfilId = await obterIdPerfil(pb, userId);
 
     try {
       const result = await pb.collection(COLECAO).getFullList({
-        filter: pb.filter(`${RELACAO_PERFIL} = {:perfilId}`, { perfilId }),
+        filter: pb.filter(`${RELACAO_PERFIL} = {:userId}`, {
+          userId,
+        }),
         expand: RELACAO_PERFIL,
       });
-      return result.map((livro) =>
-        mapearExpansao(livro, RELACAO_PERFIL, "users_profile"),
-      );
+
+      return result.map((livro) => formatarLivro(pb, livro));
     } catch (error) {
       marcarErro(error);
     }
@@ -115,8 +180,11 @@ export class LivroModel {
     ordem = "",
   }) {
     const pb = criarClienteModel();
+
     const filtros = ["ativo = true", "estado = {:estado}"];
-    const params = { estado: LIVRO_ESTADO.PUBLICADO };
+    const params = {
+      estado: LIVRO_ESTADO.PUBLICADO,
+    };
 
     if (busca) {
       filtros.push("(titulo ~ {:busca} || subtitulo ~ {:busca})");
@@ -124,6 +192,7 @@ export class LivroModel {
     }
 
     const sortField = filtro === "data" ? "data_de_publicacao" : "titulo";
+
     const sort =
       filtro === "data"
         ? ordem === "ascendente"
@@ -140,9 +209,16 @@ export class LivroModel {
         filter: pb.filter(filtros.join(" && "), params),
         sort,
         expand: RELACAO_PERFIL,
-        fields: `${COLUNAS_LIVRO},${RELACAO_PERFIL},expand.${RELACAO_PERFIL}.id,expand.${RELACAO_PERFIL}.nome,expand.${RELACAO_PERFIL}.sobrenome`,
+        fields: [
+          COLUNAS_LIVRO,
+          `expand.${RELACAO_PERFIL}.id`,
+          `expand.${RELACAO_PERFIL}.nome`,
+          `expand.${RELACAO_PERFIL}.sobrenome`,
+          `expand.${RELACAO_PERFIL}.imagem`,
+        ].join(","),
       });
-      return resultadoPaginado(result);
+
+      return resultadoPaginado(pb, result);
     } catch (error) {
       marcarErro(error);
     }
@@ -150,14 +226,17 @@ export class LivroModel {
 
   static async buscarDetalhesPorId(id) {
     if (!id) return null;
+
     const pb = criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO).getOne(id, {
         expand: RELACAO_PERFIL,
       });
+
       if (!livro.ativo) return null;
-      return mapearExpansao(livro, RELACAO_PERFIL, "users_profile");
+
+      return formatarLivro(pb, livro);
     } catch (error) {
       if (error.status === 404) return null;
       marcarErro(error);

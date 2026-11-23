@@ -1,23 +1,21 @@
-import {
-  criarClienteModel,
-  marcarErro,
-  obterIdPerfil,
-} from "./pocketbase.helpers.js";
+import { criarClienteModel, marcarErro } from "./pocketbase.helpers.js";
 
 const COLECAO = "enderecos";
+const RELACAO_PERFIL = "fk_user_profile_id";
 
 async function buscarEnderecos(userId, filtros = {}) {
   const pb = criarClienteModel();
-  const perfilId = await obterIdPerfil(pb, userId);
-  const partesFiltro = ["fk_user_profile_id = {:perfilId}"];
-  const params = { perfilId };
+
+  const partesFiltro = [`${RELACAO_PERFIL} = {:userId}`];
+
+  const params = { userId };
 
   for (const [campo, valor] of Object.entries(filtros)) {
     partesFiltro.push(`${campo} = {:${campo}}`);
     params[campo] = valor;
   }
 
-  return pb.collection(COLECAO).getFullList({
+  return await pb.collection(COLECAO).getFullList({
     filter: pb.filter(partesFiltro.join(" && "), params),
   });
 }
@@ -27,13 +25,18 @@ async function buscarEndereco(userId, id, ativo = null) {
     userId,
     ativo === null ? {} : { ativo },
   );
+
   return enderecos.find((endereco) => endereco.id === id) || null;
 }
 
 export class EnderecoModel {
   static async BuscarEnderecos(userId) {
     try {
-      return { data: await buscarEnderecos(userId, { ativo: true }) };
+      return {
+        data: await buscarEnderecos(userId, {
+          ativo: true,
+        }),
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -45,7 +48,10 @@ export class EnderecoModel {
         principal: true,
         ativo: true,
       });
-      return { data: enderecos[0] || null };
+
+      return {
+        data: enderecos[0] || null,
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -53,7 +59,9 @@ export class EnderecoModel {
 
   static async BuscarEnderecoById(id, userId) {
     try {
-      return { data: await buscarEndereco(userId, id) };
+      return {
+        data: await buscarEndereco(userId, id),
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -61,7 +69,9 @@ export class EnderecoModel {
 
   static async AtualizarEnderecoById(id, dadosAtualizados, userId) {
     const pb = criarClienteModel();
-    const endereco = await buscarEndereco(userId, id, undefined);
+
+    const endereco = await buscarEndereco(userId, id);
+
     if (!endereco) {
       const error = new Error("Endereço não encontrado.");
       error.statusCode = 404;
@@ -81,18 +91,26 @@ export class EnderecoModel {
     return this.AtualizarEnderecoById(id, { ativo: false }, userId);
   }
 
-  static async CriarEndereco(dadosEndereco) {
+  static async CriarEndereco(dadosEndereco, userId) {
     const pb = criarClienteModel();
-    const dados = { ...dadosEndereco };
-    if (dados.fk_user_profile_id) {
-      dados.fk_user_profile_id = await obterIdPerfil(
-        pb,
-        dados.fk_user_profile_id,
+
+    if (!userId) {
+      const error = new Error(
+        "Usuário não identificado para criar o endereço.",
       );
+
+      error.statusCode = 401;
+      throw error;
     }
+
+    const dados = {
+      ...dadosEndereco,
+      [RELACAO_PERFIL]: userId,
+    };
 
     try {
       const endereco = await pb.collection(COLECAO).create(dados);
+
       return { data: endereco };
     } catch (error) {
       marcarErro(error, 400);
@@ -101,7 +119,9 @@ export class EnderecoModel {
 
   static async DefinirPrincipal(id, userId) {
     const pb = criarClienteModel();
-    const endereco = await buscarEndereco(userId, id, undefined);
+
+    const endereco = await buscarEndereco(userId, id);
+
     if (!endereco) {
       const error = new Error("Endereço não encontrado.");
       error.statusCode = 404;

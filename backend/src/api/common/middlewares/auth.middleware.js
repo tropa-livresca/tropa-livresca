@@ -1,25 +1,20 @@
 import jwt from "jsonwebtoken";
+
 import {
   criarClientePocketBase,
   criarClienteAdminPocketBase,
 } from "../config/pocketbase.js";
 
-const COLECAO_AUTH = "users";
-const COLECAO_PERFIL = "users_profile";
+const COLECAO_AUTH = "users_profile";
 
 const buscarPerfilAdmin = async (userId) => {
   const pb = criarClienteAdminPocketBase();
 
-  const filtro = pb.filter("auth_user = {:userId}", {
-    userId,
-  });
-
-  return await pb.collection(COLECAO_PERFIL).getFirstListItem(filtro, {
-    fields: "id,auth_user,is_admin,is_master,primeiro_acesso",
+  return await pb.collection(COLECAO_AUTH).getOne(userId, {
+    fields: "id,email,nome,sobrenome,is_admin,is_master,primeiro_acesso",
   });
 };
 
-// Autenticação comum
 export const checkAuth = async (req, res, next) => {
   const token = req.cookies?.["auth-token"];
 
@@ -30,12 +25,10 @@ export const checkAuth = async (req, res, next) => {
   }
 
   try {
-    // Cada requisição utiliza uma instância independente.
     const pb = criarClientePocketBase();
 
     pb.authStore.save(token, null);
 
-    // Valida o token diretamente no PocketBase.
     const { record } = await pb.collection(COLECAO_AUTH).authRefresh();
 
     req.user = record;
@@ -56,7 +49,6 @@ export const checkAuth = async (req, res, next) => {
   }
 };
 
-// Autenticação administrativa
 export const verificarAutenticacaoAdm = async (req, res, next) => {
   const token = req.cookies?.["admin-token"];
 
@@ -84,8 +76,8 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
     }
 
     req.user = {
-      id: decoded.id,
-      email: decoded.email,
+      id: adm.id,
+      email: adm.email,
     };
 
     req.adm = adm;
@@ -112,7 +104,6 @@ export const verificarAutenticacaoAdm = async (req, res, next) => {
   }
 };
 
-// Autenticação administrativa Master
 export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
   const token = req.cookies?.["admin-token"];
 
@@ -146,8 +137,8 @@ export const verificarAutenticacaoAdmMaster = async (req, res, next) => {
     }
 
     req.user = {
-      id: decoded.id,
-      email: decoded.email,
+      id: adm.id,
+      email: adm.email,
     };
 
     req.adm = adm;
