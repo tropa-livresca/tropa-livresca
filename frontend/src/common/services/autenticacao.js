@@ -1,3 +1,4 @@
+
 import pb from "./pocketbase.js";
 import { apiFetch } from "./api.js";
 
@@ -11,7 +12,9 @@ export async function loginComGoogle() {
       );
     }
 
-    const authMethods = await pb.collection("users_profile").listAuthMethods();
+    const authMethods = await pb
+      .collection("users_profile")
+      .listAuthMethods();
 
     const providers =
       authMethods.oauth2?.providers || authMethods.authProviders || [];
@@ -32,18 +35,15 @@ export async function loginComGoogle() {
 
     authUrl.searchParams.set("prompt", "select_account");
 
+    console.log("[Google OAuth] Provedor:", googleProvider.name);
+    console.log("[Google OAuth] URL do provedor:", authUrl.origin);
+    console.log(
+      "[Google OAuth] Redirect URI:",
+      authUrl.searchParams.get("redirect_uri"),
+    );
+
     const authData = await new Promise((resolve, reject) => {
       let finalizado = false;
-
-      const timeout = setTimeout(
-        () => {
-          finalizar(
-            reject,
-            new Error("Tempo limite da autenticação Google excedido."),
-          );
-        },
-        5 * 60 * 1000,
-      );
 
       const finalizar = (callback, resultado) => {
         if (finalizado) return;
@@ -63,36 +63,53 @@ export async function loginComGoogle() {
         callback(resultado);
       };
 
-      pb.realtime.subscribe("@oauth2", async (e) => {
-        if (e.state !== googleProvider.state || finalizado) {
-          return;
-        }
+      const timeout = setTimeout(() => {
+        finalizar(
+          reject,
+          new Error("Tempo limite da autenticação Google excedido."),
+        );
+      }, 5 * 60 * 1000);
 
-        if (e.error || !e.code) {
-          finalizar(
-            reject,
-            new Error(e.error || "Erro na autenticação Google."),
-          );
-          return;
-        }
-
+      const iniciarAutenticacao = async () => {
         try {
-          const res = await pb
-            .collection("users_profile")
-            .authWithOAuth2Code(
-              googleProvider.name,
-              e.code,
-              googleProvider.codeVerifier,
-              redirectUrl,
-            );
+          await pb.realtime.subscribe("@oauth2", async (e) => {
+            if (e.state !== googleProvider.state || finalizado) {
+              return;
+            }
 
-          finalizar(resolve, res);
+            if (e.error || !e.code) {
+              finalizar(
+                reject,
+                new Error(e.error || "Erro na autenticação Google."),
+              );
+              return;
+            }
+
+            try {
+              const res = await pb
+                .collection("users_profile")
+                .authWithOAuth2Code(
+                  googleProvider.name,
+                  e.code,
+                  googleProvider.codeVerifier,
+                  redirectUrl,
+                );
+
+              finalizar(resolve, res);
+            } catch (error) {
+              finalizar(reject, error);
+            }
+          });
+
+          if (!finalizado) {
+            popup.location.href = authUrl.toString();
+          }
         } catch (error) {
           finalizar(reject, error);
         }
-      });
+      };
 
-      popup.location.href = authUrl.toString();
+      iniciarAutenticacao();
     });
 
     const response = await apiFetch("/api/v1/auth/session", {
@@ -104,7 +121,9 @@ export async function loginComGoogle() {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok) {
-      throw new Error(data.error || "Não foi possível estabelecer a sessão.");
+      throw new Error(
+        data.error || "Não foi possível estabelecer a sessão.",
+      );
     }
 
     if (!data.user) {

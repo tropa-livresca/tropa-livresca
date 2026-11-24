@@ -33,17 +33,6 @@ export class AuthService {
     };
   }
 
-  static async alterarSenhaAdm(userId, novaSenha, senhaAntiga) {
-    if (!userId || !novaSenha) {
-      const error = new Error("Usuário e nova senha são obrigatórios.");
-
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, senhaAntiga);
-  }
-
   static async esqueciSenha(email) {
     if (!email) {
       throw erroValidacao("O e-mail é obrigatório.");
@@ -136,43 +125,30 @@ export class AuthService {
       primeiroAcesso,
     };
   }
-static async alterarSenhaAdm(userId, novaSenha) {
-  if (!userId || !novaSenha) {
-    throw erroValidacao("Usuário e nova senha são obrigatórios.");
+
+  static async alterarSenhaAdm(userId, novaSenha) {
+    if (!userId || !novaSenha) {
+      throw erroValidacao("Usuário e nova senha são obrigatórios.");
+    }
+
+    if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+      throw erroValidacao("A nova senha deve possuir pelo menos 8 caracteres.");
+    }
+
+    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, null);
   }
 
-  if (typeof novaSenha !== "string" || novaSenha.length < 8) {
-    throw erroValidacao(
-      "A nova senha deve possuir pelo menos 8 caracteres.",
-    );
+  static async alterarSenhaAntiga(userId, senhaAntiga, novaSenha) {
+    if (!userId || !senhaAntiga || !novaSenha) {
+      throw erroValidacao("Usuário e senhas são obrigatórios.");
+    }
+
+    if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+      throw erroValidacao("A nova senha deve possuir pelo menos 8 caracteres.");
+    }
+
+    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, senhaAntiga);
   }
-
-  return await AuthModel.alterarSenhaAdmin(
-    userId,
-    novaSenha,
-    null,
-  );
-}
-
-static async alterarSenhaAntiga(userId, senhaAntiga, novaSenha) {
-  if (!userId || !senhaAntiga || !novaSenha) {
-    throw erroValidacao(
-      "Usuário e senhas são obrigatórios.",
-    );
-  }
-
-  if (typeof novaSenha !== "string" || novaSenha.length < 8) {
-    throw erroValidacao(
-      "A nova senha deve possuir pelo menos 8 caracteres.",
-    );
-  }
-
-  return await AuthModel.alterarSenhaAdmin(
-    userId,
-    novaSenha,
-    senhaAntiga,
-  );
-}
 
   static async atualizarSenha(novaSenha, senhaAntiga) {
     if (!novaSenha) {

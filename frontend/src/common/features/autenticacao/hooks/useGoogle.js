@@ -1,23 +1,38 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
 import useAuth from "../../../hooks/useAuth";
 import { loginComGoogle } from "../../../services/autenticacao";
 
 export function useGoogle() {
   const [carregando, setCarregando] = useState(false);
   const [error, setError] = useState(null);
+
   const { setUser } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
 
   const iniciarLoginNativo = async () => {
+    if (carregando) return null;
+
     setCarregando(true);
     setError(null);
 
     try {
       const user = await loginComGoogle();
+
+      if (!user) {
+        throw new Error(
+          "A autenticação foi concluída, mas os dados do usuário não foram retornados.",
+        );
+      }
+
       setUser(user);
-      navigate(location.state?.from?.pathname || "/", { replace: true });
+
+      navigate(location.state?.from?.pathname || "/", {
+        replace: true,
+      });
+
       return user;
     } catch (err) {
       console.error("Erro ao realizar login com Google:", err);

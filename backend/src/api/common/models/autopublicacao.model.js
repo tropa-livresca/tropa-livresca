@@ -3,6 +3,8 @@ import {
   criarClienteModel,
   getListPocketBase,
   marcarErro,
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
 } from "./pocketbase.helpers.js";
 
 const COLECAO = "livros";
@@ -13,6 +15,32 @@ function erroConflito() {
 
   error.statusCode = 409;
   return error;
+}
+
+function formatarLivro(pb, livro) {
+  if (!livro) return livro;
+
+  const arquivos = {
+    ...mapearCampoArquivo(pb, livro, "manuscrito"),
+    ...mapearCampoArquivo(pb, livro, "capa_frente"),
+    ...mapearCampoArquivo(pb, livro, "capa_verso"),
+  };
+
+  return {
+    ...livro,
+    ...arquivos,
+    capa: {
+      frente: primeiraUrlArquivo(arquivos.capa_frenteUrl),
+      verso: primeiraUrlArquivo(arquivos.capa_versoUrl),
+    },
+  };
+}
+
+function resultadoPaginado(pb, result) {
+  return {
+    data: result.items.map((livro) => formatarLivro(pb, livro)),
+    count: result.totalItems,
+  };
 }
 
 export class AutopublicacaoModel {
@@ -47,17 +75,14 @@ export class AutopublicacaoModel {
       filtro === "data" ? ordem === "ascendente" : ordem !== "descendente";
 
     try {
-      const resultado = await getListPocketBase(pb.collection(COLECAO), {
+      const result = await getListPocketBase(pb.collection(COLECAO), {
         page,
         limit,
         filter: pb.filter(filtros.join(" && "), params),
         sort: ascending ? campoOrdenacao : `-${campoOrdenacao}`,
       });
 
-      return {
-        data: resultado.items,
-        count: resultado.totalItems,
-      };
+      return resultadoPaginado(pb, result);
     } catch (error) {
       marcarErro(error);
     }
@@ -69,7 +94,11 @@ export class AutopublicacaoModel {
     try {
       const livro = await pb.collection(COLECAO).getOne(idLivro);
 
-      return livro[RELACAO_PERFIL] === userId && livro.ativo ? livro : null;
+      if (livro[RELACAO_PERFIL] !== userId || !livro.ativo) {
+        return null;
+      }
+
+      return formatarLivro(pb, livro);
     } catch (error) {
       if (error.status === 404) return null;
 
@@ -87,9 +116,11 @@ export class AutopublicacaoModel {
     }
 
     try {
-      return await pb.collection(COLECAO).update(id, {
+      const atualizado = await pb.collection(COLECAO).update(id, {
         estado: novoEstado,
       });
+
+      return formatarLivro(pb, atualizado);
     } catch (error) {
       marcarErro(error);
     }
@@ -108,18 +139,17 @@ export class AutopublicacaoModel {
     }
 
     try {
-      return await pb.collection(COLECAO).create(dadosLivro);
+      const livro = await pb.collection(COLECAO).create(dadosLivro);
+
+      return formatarLivro(pb, livro);
     } catch (error) {
       console.error("\n========== ERRO POCKETBASE ==========");
-
       console.error("Status:", error.status);
       console.error("Mensagem:", error.response?.message);
-
       console.error(
         "Detalhes dos campos:",
         JSON.stringify(error.response?.data, null, 2),
       );
-
       console.error("====================================\n");
 
       marcarErro(error);
@@ -136,7 +166,11 @@ export class AutopublicacaoModel {
     }
 
     try {
-      return await pb.collection(COLECAO).update(id, dadosAtualizados);
+      const atualizado = await pb
+        .collection(COLECAO)
+        .update(id, dadosAtualizados);
+
+      return formatarLivro(pb, atualizado);
     } catch (error) {
       marcarErro(error);
     }

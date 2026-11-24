@@ -104,10 +104,9 @@ export class AutopublicacaoService {
     return formData;
   }
 
-  static _assinarLivro(livro) {
+  static _assinarLivro(livro, pb) {
     if (!livro) return livro;
 
-    const pb = criarClienteModel();
     const arquivos = {
       ...mapearCampoArquivo(pb, livro, "manuscrito"),
       ...mapearCampoArquivo(pb, livro, "capa_frente"),
@@ -131,7 +130,9 @@ export class AutopublicacaoService {
   }
 
   static async _assinarLivros(livros) {
-    return livros.map((livro) => this._assinarLivro(livro));
+    const pb = await criarClienteModel();
+
+    return livros.map((livro) => this._assinarLivro(livro, pb));
   }
 
   static _validarArquivosObrigatorios(arquivos = {}) {
@@ -275,7 +276,9 @@ export class AutopublicacaoService {
 
     if (resultado.error) throw resultado.error;
 
-    return this._assinarLivro(resultado);
+    const pb = await criarClienteModel();
+
+    return this._assinarLivro(resultado, pb);
   }
 
   static async criarLivro({
@@ -346,8 +349,8 @@ export class AutopublicacaoService {
     const formData = this._criarFormData(dadosParaInserir, arquivos);
 
     const novoLivro = await AutopublicacaoModel.criarLivro(formData);
-    const livroFormatado = this._assinarLivro(novoLivro);
-
+    const pb = await criarClienteModel();
+    const livroFormatado = this._assinarLivro(novoLivro, pb);
     return {
       data: livroFormatado,
       manuscritoUrl: livroFormatado.manuscritoUrl,
@@ -475,7 +478,8 @@ export class AutopublicacaoService {
       formData,
     );
 
-    const livroFormatado = this._assinarLivro(atualizado);
+    const pb = await criarClienteModel();
+    const livroFormatado = this._assinarLivro(atualizado, pb);
 
     return {
       data: livroFormatado,
