@@ -58,52 +58,55 @@ export default function NavBarLateral() {
         Administração
       </div>
 
-      <div
-        className={styles.itemMenu}
-        onClick={() => setEcommerceAberto(!ecommerceAberto)}
-      >
-        E-commerce
-        <FaChevronDown
-          className={`${styles.seta} ${
-            ecommerceAberto ? styles.setaAberta : ""
-          }`}
-        />
-      </div>
-
-      {ecommerceAberto && (
-        <div className={styles.subMenu}>
-          <Link to="/admin/ecommerce/pedidos" className={styles.subItem}>
-            Pedidos e Entregas
-          </Link>
-        </div>
-      )}
-
       {isMaster && (
         <>
           <div
             className={styles.itemMenu}
-            onClick={() => setAnalisesAberto(!analisesAberto)}
+            onClick={() => setEcommerceAberto(!ecommerceAberto)}
           >
-            Desempenho
+            E-commerce
             <FaChevronDown
               className={`${styles.seta} ${
-                analisesAberto ? styles.setaAberta : ""
+                ecommerceAberto ? styles.setaAberta : ""
               }`}
             />
           </div>
 
-          {analisesAberto && (
+          {ecommerceAberto && (
             <div className={styles.subMenu}>
-              <Link to="/admin/analises/financeiro" className={styles.subItem}>
-                Financeiro
-              </Link>
-              <Link to="/admin/analises/graficos" className={styles.subItem}>
-                Gráficos
+              <Link to="/admin/ecommerce/pedidos" className={styles.subItem}>
+                Pedidos e Entregas
               </Link>
             </div>
           )}
         </>
       )}
+      <>
+        <div
+          className={styles.itemMenu}
+          onClick={() => setAnalisesAberto(!analisesAberto)}
+        >
+          Desempenho
+          <FaChevronDown
+            className={`${styles.seta} ${
+              analisesAberto ? styles.setaAberta : ""
+            }`}
+          />
+        </div>
+
+        {analisesAberto && (
+          <div className={styles.subMenu}>
+            {isMaster && (
+              <Link to="/admin/analises/financeiro" className={styles.subItem}>
+                Financeiro
+              </Link>
+            )}
+            <Link to="/admin/analises/graficos" className={styles.subItem}>
+              Gráficos
+            </Link>
+          </div>
+        )}
+      </>
     </div>
   );
 }

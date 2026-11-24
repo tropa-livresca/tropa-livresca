@@ -1,4 +1,6 @@
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
+import { randomInt } from "node:crypto";
+import { gerarSenha } from "../utils/senha.util.js";
 
 import {
   criarClienteModel,
@@ -15,6 +17,30 @@ const COLECAO_LIVROS = "livros";
 const COLECAO_REVISOES = "revisoes";
 
 const RELACAO_PERFIL = "fk_user_profile_id";
+
+function gerarSenhaTemporaria(tamanho = 20) {
+  const grupos = [
+    "ABCDEFGHJKLMNPQRSTUVWXYZ",
+    "abcdefghijkmnopqrstuvwxyz",
+    "23456789",
+    "!@#$%_-",
+  ];
+
+  const todosCaracteres = grupos.join("");
+
+  const senha = grupos.map((grupo) => grupo[randomInt(grupo.length)]);
+
+  while (senha.length < tamanho) {
+    senha.push(todosCaracteres[randomInt(todosCaracteres.length)]);
+  }
+
+  for (let i = senha.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [senha[i], senha[j]] = [senha[j], senha[i]];
+  }
+
+  return senha.join("");
+}
 
 function formatarUsuario(pb, perfil, livros = []) {
   const imagem = mapearCampoArquivo(pb, perfil, "imagem");
@@ -261,29 +287,97 @@ export class UsuariosModel {
 
   static async promoverUsuario(usuarioId) {
     const pb = await criarClienteModel();
+    const colecao = pb.collection(COLECAO_PERFIL);
+
+    let perfilAnterior;
+
+    try {
+      perfilAnterior = await colecao.getOne(usuarioId);
+    } catch (error) {
+      marcarErro(error);
+    }
+
+    const senhaTemporaria = gerarSenhaTemporaria();
+    const senhaAdminHash = await gerarSenha(senhaTemporaria);
 
     let data;
 
     try {
-      data = await pb.collection(COLECAO_PERFIL).update(usuarioId, {
+      data = await colecao.update(usuarioId, {
         is_admin: true,
+        senha_admin: senhaAdminHash,
+        primeiro_acesso: true,
       });
     } catch (error) {
       marcarErro(error);
     }
 
-    const titulo = "Promoção a Administrador";
+    try {
+      await this.enviarEmail({
+        to: data.email,
+        subject: "Promoção a Administrador",
+        text: `Olá ${data.nome || ""},
 
-    await this.enviarEmail({
-      from: `"Tropa Livresca" <${process.env.SMTP_USER}>`,
-      to: data.email,
-      subject: titulo,
-      text: `Olá ${data.nome || ""},\n\nParabéns! Você foi promovido a Administrador da Tropa Livresca.\nO usuário é: ${data.email}\nA senha é: Senh@Adm123!\n\nAtenciosamente,\nEquipe Tropa Livresca`,
-      html: `<p>Olá ${data.nome || ""},</p><p>Parabéns! Você foi promovido a <strong>Administrador</strong> da Tropa Livresca.</p><p>O usuário é: ${data.email}</p><p>A senha de primeiro acesso é: Senh@Adm123!</p><p>Atenciosamente,<br/>Equipe Tropa Livresca</p>`,
-    });
+Parabéns! Você foi promovido a Administrador da Tropa Livresca.
+
+Seu usuário é: ${data.email}
+Sua senha temporária é: ${senhaTemporaria}
+
+No primeiro acesso, será necessário cadastrar uma nova senha administrativa.
+
+Atenciosamente,
+Equipe Tropa Livresca`,
+
+        html: `
+        <p>Olá ${data.nome || ""},</p>
+
+        <p>
+          Parabéns! Você foi promovido a
+          <strong>Administrador</strong> da Tropa Livresca.
+        </p>
+
+        <p>Seu usuário é: <strong>${data.email}</strong></p>
+
+        <p>Sua senha temporária é:</p>
+
+        <p>
+          <strong>${senhaTemporaria}</strong>
+        </p>
+
+        <p>
+          No primeiro acesso, será necessário cadastrar
+          uma nova senha administrativa.
+        </p>
+
+        <p>
+          Atenciosamente,<br />
+          Equipe Tropa Livresca
+        </p>
+      `,
+      });
+    } catch (error) {
+      try {
+        await colecao.update(usuarioId, {
+          is_admin: perfilAnterior.is_admin,
+          is_master: perfilAnterior.is_master,
+          senha_admin: perfilAnterior.senha_admin || "",
+          primeiro_acesso: perfilAnterior.primeiro_acesso ?? false,
+        });
+      } catch (erroRollback) {
+        console.error(
+          "[UsuariosModel:promoverUsuario] Erro ao restaurar usuário:",
+          erroRollback,
+        );
+      }
+
+      error.statusCode = error.statusCode || 500;
+      throw error;
+    }
+
+    const { senha_admin, ...usuarioSemSenha } = data;
 
     return {
-      ...data,
+      ...usuarioSemSenha,
       nome: data.nome || "",
       sobrenome: data.sobrenome || "",
       email: data.email || "",
@@ -292,28 +386,68 @@ export class UsuariosModel {
 
   static async inativarFuncionario(funcionarioId) {
     const pb = await criarClienteModel();
+    const colecao = pb.collection(COLECAO_PERFIL);
+
+    let funcionario;
+
+    try {
+      funcionario = await colecao.getOne(funcionarioId);
+    } catch (error) {
+      marcarErro(error);
+    }
+
+    if (funcionario.is_master === true) {
+      const erro = new Error("O usuário Master não pode ser despromovido.");
+
+      erro.statusCode = 403;
+      throw erro;
+    }
 
     let data;
 
     try {
-      data = await pb.collection(COLECAO_PERFIL).update(funcionarioId, {
+      data = await colecao.update(funcionarioId, {
         is_admin: false,
         is_master: false,
+        senha_admin: "",
+        primeiro_acesso: false,
       });
     } catch (error) {
       marcarErro(error);
     }
 
     await this.enviarEmail({
-      from: `"Tropa Livresca" <${process.env.SMTP_USER}>`,
       to: data.email,
       subject: "Remoção de Privilégios de Administrador",
-      text: `Olá ${data.nome || ""},\n\nLamentamos informar que seus privilégios de Administrador foram removidos da Tropa Livresca.\n\nAtenciosamente,\nEquipe Tropa Livresca`,
-      html: `<p>Olá ${data.nome || ""},</p><p>Lamentamos informar que seus privilégios de <strong>Administrador</strong> foram removidos da Tropa Livresca.</p><p>O usuário é: ${data.email}</p><p>Atenciosamente,<br/>Equipe Tropa Livresca</p>`,
+
+      text: `Olá ${data.nome || ""},
+
+Lamentamos informar que seus privilégios de Administrador foram removidos da Tropa Livresca.
+
+Sua senha administrativa foi invalidada.
+
+Atenciosamente,
+Equipe Tropa Livresca`,
+
+      html: `
+      <p>Olá ${data.nome || ""},</p>
+      <p>
+        Lamentamos informar que seus privilégios de
+        <strong>Administrador</strong> foram removidos
+        da Tropa Livresca.
+      </p>
+      <p>Sua senha administrativa foi invalidada.</p>
+      <p>
+        Atenciosamente,<br />
+        Equipe Tropa Livresca
+      </p>
+    `,
     });
 
+    const { senha_admin, ...usuarioSemSenha } = data;
+
     return {
-      ...data,
+      ...usuarioSemSenha,
       nome: data.nome || "",
       sobrenome: data.sobrenome || "",
       email: data.email || "",

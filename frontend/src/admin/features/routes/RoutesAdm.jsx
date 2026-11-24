@@ -145,18 +145,18 @@ const RoutesAdm = () => {
           <Route
             path="analises/financeiro"
             element={
-              <MasterRoute>
+              <PrivateRoute>
                 <Financeiro />
-              </MasterRoute>
+              </PrivateRoute>
             }
           />
 
           <Route
             path="analises/graficos"
             element={
-              <MasterRoute>
+              <PrivateRoute>
                 <Graficos />
-              </MasterRoute>
+              </PrivateRoute>
             }
           />
 
