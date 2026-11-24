@@ -20,11 +20,11 @@
 }
 
 .codigo {
-  margin: 1rem 0 0;
+  margin: 0;
   color: #67170c;
-  font-family: "Jacques Francois", serif;
-  font-size: clamp(4rem, 12vw, 7rem);
+    font-size: clamp(4rem, 12vw, 7rem);
   line-height: 1;
+  font-family: none;
 }
 
 .titulo {
@@ -69,32 +69,30 @@
   border: 2px solid #67170c;
   border-radius: 999px;
   font-size: 1rem;
-  font-weight: 700;
   text-decoration: none;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    border-color 0.2s;
+
 }
 
 .botaoPrincipal {
-  background: #67170c;
-  color: #ede6b3;
+      background-color: #67170c;
+    color: #ede6b3;
+    transition:0.3s;
 }
 
 .botaoPrincipal:hover {
   border-color: #ffbb33;
   background: #ffbb33;
-  color: #67170c;
 }
 
 .botaoSecundario {
-  background: transparent;
-  color: #67170c;
-  font-family: inherit;
+  background: #fff8d7;
+    border: 1px solid #e2c77c;
+    color: #67170c;
+    transition: 0.3s;
 }
 
 .botaoSecundario:hover {
-  background: #f7f0cf;
+  background: #ffbb33;
+  color: #ede6b3;
 }

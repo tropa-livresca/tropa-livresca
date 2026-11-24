@@ -27,7 +27,7 @@ export default function NaoAutorizado({
   return (
     <main className={styles.pagina}>
       <img
-        src="/logo404.jpeg"
+        src="/logo404.webp"
         alt="Mula da Tropa Livresca com livros caídos no chão"
         className={styles.logo}
       />
