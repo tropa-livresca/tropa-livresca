@@ -31,7 +31,7 @@
   justify-content: center;
   padding: 2.5rem;
   box-sizing: border-box;
-  background: #f7f0cfb1;
+  border-right: 1px solid #e3d5ad;
 }
 
 .foto,

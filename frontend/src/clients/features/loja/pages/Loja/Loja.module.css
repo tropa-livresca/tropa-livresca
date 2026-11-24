@@ -71,7 +71,7 @@
   justify-content: space-between;
   gap: 10px;
   padding: 0.7rem 0.8rem;
-  margin: 0px -20px;
+  margin: 0px -10px;
   box-sizing: border-box;
   background-color: #fffdf7;
   border: 1px solid #67170c;
@@ -122,8 +122,8 @@
 }
 
 .selectContainer:nth-of-type(1) .options {
-  left: -20px;
-  width: calc(100% + 0px);
+  left: -20px !important;
+  width: calc(100% + 0px) !important;
 }
 
 .btnbuscar {

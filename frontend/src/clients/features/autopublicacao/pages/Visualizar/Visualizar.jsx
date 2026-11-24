@@ -176,7 +176,7 @@ export default function Visualizar() {
 
             {(capa?.frente || capa?.verso) && (
               <div className={styles.card}>
-                <h2>Capas do Livro</h2>
+                <h2 className={styles.dvd}>Capas do Livro</h2>
 
                 <div className={styles.capasContainer}>
                   {capa?.frente && (

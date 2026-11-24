@@ -225,7 +225,8 @@
 
 .conteudo {
   width: 100%;
-  max-width: none;
+  margin: 0 auto;
+  max-width: 1400px;
   display: grid;
   grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
   gap: 2rem;
@@ -267,7 +268,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
   gap: 0.8rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
 }
 
 .formato {
@@ -361,6 +362,7 @@
   background: #67170c;
   color: #ede6b3;
   transition: 0.3s;
+  margin:0;
 }
 
 .btnCarrinho:hover {
@@ -372,6 +374,7 @@
   cursor: wait;
 }
 
+
 .avisoLivroComprado {
   margin-bottom: 1rem;
   padding: 1rem;
@@ -379,10 +382,11 @@
   border-radius: 10px;
   background: #fff8d7;
   color: #67170c;
+  text-align:center;
 }
 
 .avisoLivroComprado p {
-  margin: 0 0 0.5rem;
+  margin: 0;
   font-weight: 600;
 }
 

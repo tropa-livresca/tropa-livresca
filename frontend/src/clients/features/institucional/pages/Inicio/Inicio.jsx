@@ -28,7 +28,7 @@ const slidesCarrossel = [
     texto:
       "Histórias de autores independentes em formato físico e digital, prontas para chegar até você.",
     botao: "Ver livros publicados",
-    link: "/loja",
+    link: "/livros",
   },
   {
     tag: "Comunidade",
@@ -36,7 +36,7 @@ const slidesCarrossel = [
     texto:
       "Descubra quem está por trás das histórias e acompanhe o trabalho de cada escritor parceiro.",
     botao: "Explorar o catálogo",
-    link: "/livros",
+    link: "/loja",
   },
 ];
 
@@ -67,7 +67,7 @@ const intervaloCarrossel = 4000;
 
 const calcularLimites = () => {
   const largura = window.innerWidth;
-  if (largura >= 1600) return { livros: 5, autores: 4 };
+  if (largura >= 1600) return { livros: 4, autores: 4 };
   if (largura >= 1200) return { livros: 4, autores: 4 };
   if (largura >= 900) return { livros: 3, autores: 3 };
   if (largura >= 600) return { livros: 2, autores: 2 };

@@ -153,17 +153,19 @@ export default function Cadastro() {
               </label>
             </div>
 
-            <div className={styles.erro}>
-              {Array.isArray(error) ? (
-                <ul className={styles.listaErros}>
-                  {error.map((err, index) => (
-                    <li key={index}>{err}</li>
-                  ))}
-                </ul>
-              ) : (
-                <span className={styles.span}>{error}</span>
-              )}
-            </div>
+            {error && (
+  <div className={styles.erro}>
+    {Array.isArray(error) ? (
+      <ul className={styles.listaErros}>
+        {error.map((err, index) => (
+          <li key={index}>{err}</li>
+        ))}
+      </ul>
+    ) : (
+      <span className={styles.span}>{error}</span>
+    )}
+  </div>
+)}
 
             <span className={styles.span}>
               Já tem cadastro?{" "}
