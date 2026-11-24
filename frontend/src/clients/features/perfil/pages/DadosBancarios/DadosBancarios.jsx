@@ -21,6 +21,7 @@ export default function DadosBancarios() {
     carregando,
     buscarDadosBancarios,
     dadosBancarios,
+    erro: erroConsulta,
   } = useDadosBancarios();
 
   const navigate = useNavigate();
@@ -155,6 +156,11 @@ export default function DadosBancarios() {
       </div>
 
       <div className={styles.container}>
+        {erroConsulta && !erro && (
+          <p role="alert" className={`${styles.mensagem} ${styles.erro}`}>
+            {erroConsulta}
+          </p>
+        )}
         <form onSubmit={handleSubmit} className={styles.form}>
           <legend className={styles.legend}>Preencha os campos abaixo</legend>
 

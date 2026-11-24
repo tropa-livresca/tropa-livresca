@@ -1,12 +1,23 @@
-import { supabaseAdmin } from "../../common/config/supabase.js";
 import { PerfilModel } from "../../common/models/perfil.model.js";
+import {
+  criarClienteModel,
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
+} from "../../common/models/pocketbase.helpers.js";
+import { validarMetadadosUpload } from "../../common/config/storage.js";
 
 export class PerfilService {
-  static _extrairPathDaUrl(url) {
-    if (!url) return null;
-    const urlSemQuery = url.split("?")[0];
-    const partes = urlSemQuery.split("/storage/v1/object/public/public_box/");
-    return partes.length > 1 ? partes[1] : null;
+  static async _formatarPerfil(perfil) {
+    if (!perfil) return perfil;
+
+    const pb = await criarClienteModel();
+    const imagem = mapearCampoArquivo(pb, perfil, "imagem");
+
+    return {
+      ...perfil,
+      ...imagem,
+      imagem: primeiraUrlArquivo(imagem.imagemUrl),
+    };
   }
 
   static async buscarPerfil(userId) {
@@ -19,17 +30,12 @@ export class PerfilService {
     const perfil = await PerfilModel.buscarPerfil(userId);
 
     if (!perfil) {
-      return {
-        id: userId,
-        nome: "",
-        telefone: "",
-        descricao: "",
-        imagem: "",
-        redes_sociais: { instagram: "", facebook: "", linkedin: "", email: "" },
-      };
+      const erroPerfil = new Error("Perfil do usuário não encontrado.");
+      erroPerfil.statusCode = 404;
+      throw erroPerfil;
     }
 
-    return perfil;
+    return this._formatarPerfil(perfil);
   }
 
   static async atualizarPerfil({ userId, dadosPerfil, redes_sociais }) {
@@ -40,23 +46,43 @@ export class PerfilService {
     }
 
     try {
-      const { nome, telefone, descricao } = dadosPerfil || {};
-      const updates = {
-        nome: nome || null,
-        telefone: telefone || null,
-        descricao: descricao || null,
-      };
+      const { nome, sobrenome, telefone, descricao } = dadosPerfil || {};
 
-      if (redes_sociais) {
+      const updates = {};
+
+      if (nome !== undefined) {
+        updates.nome = nome || "";
+      }
+
+      if (sobrenome !== undefined) {
+        updates.sobrenome = sobrenome || "";
+      }
+
+      if (telefone !== undefined) {
+        updates.telefone = telefone || "";
+      }
+
+      if (descricao !== undefined) {
+        updates.descricao = descricao || "";
+      }
+
+      if (redes_sociais !== undefined) {
         updates.redes_sociais =
           typeof redes_sociais === "string"
             ? JSON.parse(redes_sociais)
             : redes_sociais;
       }
 
-      return await PerfilModel.atualizarPerfil(userId, updates);
+      if (Object.keys(updates).length > 0) {
+        await PerfilModel.atualizarPerfil(userId, updates);
+      }
+
+      const perfilAtualizado = await PerfilModel.buscarPerfil(userId);
+
+      return this._formatarPerfil(perfilAtualizado);
     } catch (error) {
       if (error.statusCode) throw error;
+
       const erroBanco = new Error("Erro ao atualizar os dados do perfil.");
       erroBanco.statusCode = 500;
       throw erroBanco;
@@ -79,58 +105,27 @@ export class PerfilService {
     }
 
     try {
-      const perfilAtual = await PerfilModel.buscarPerfil(userId);
-      const urlImagemAntiga = perfilAtual?.imagem;
-
-      const timestamp = Date.now();
       const extensao = file.originalname.split(".").pop();
-      const filePath = `images/${userId}/perfil_${timestamp}.${extensao}`;
 
-      const { error: uploadError } = await supabaseAdmin.storage
-        .from("public_box")
-        .upload(filePath, file.buffer, {
-          contentType: file.mimetype,
-          upsert: true,
-        });
+      const { extensao: extensaoValida } = validarMetadadosUpload({
+        tipo: "imagem_perfil",
+        extensao,
+        mimeType: file.mimetype,
+        tamanho: file.size ?? file.buffer.length,
+      });
 
-      if (uploadError) {
-        uploadError.statusCode = 500;
-        throw uploadError;
-      }
+      const nomeArquivo = `perfil_${Date.now()}.${extensaoValida}`;
 
-      const responseUrl = supabaseAdmin.storage
-        .from("public_box")
-        .getPublicUrl(filePath);
-
-      const novaPublicUrl =
-        responseUrl?.data?.publicUrl || responseUrl?.publicUrl;
-
-      if (!novaPublicUrl) {
-        const erroUrl = new Error(
-          "Não foi possível gerar a URL pública da imagem.",
-        );
-        erroUrl.statusCode = 500;
-        throw erroUrl;
-      }
-
-      const perfilData = await PerfilModel.atualizarApenasImagem(
+      const perfil = await PerfilModel.atualizarApenasImagem(
         userId,
-        novaPublicUrl,
+        file,
+        nomeArquivo,
       );
 
-      if (urlImagemAntiga) {
-        const antigoPath = this._extrairPathDaUrl(urlImagemAntiga);
-        if (antigoPath) {
-          supabaseAdmin.storage
-            .from("public_box")
-            .remove([antigoPath])
-            .catch(() => {});
-        }
-      }
-
-      return perfilData;
+      return this._formatarPerfil(perfil);
     } catch (error) {
       if (error.statusCode) throw error;
+
       const erroBanco = new Error("Erro ao salvar a nova imagem de perfil.");
       erroBanco.statusCode = 500;
       throw erroBanco;
@@ -145,24 +140,12 @@ export class PerfilService {
     }
 
     try {
-      const perfilAtual = await PerfilModel.buscarPerfil(userId);
-      const urlImagemAntiga = perfilAtual?.imagem;
+      const perfil = await PerfilModel.removerImagem(userId);
 
-      const perfilData = await PerfilModel.atualizarApenasImagem(userId, null);
-
-      if (urlImagemAntiga) {
-        const antigoPath = this._extrairPathDaUrl(urlImagemAntiga);
-        if (antigoPath) {
-          supabaseAdmin.storage
-            .from("public_box")
-            .remove([antigoPath])
-            .catch(() => {});
-        }
-      }
-
-      return perfilData;
+      return this._formatarPerfil(perfil);
     } catch (error) {
       if (error.statusCode) throw error;
+
       const erroBanco = new Error("Erro ao remover a foto de perfil.");
       erroBanco.statusCode = 500;
       throw erroBanco;

@@ -97,7 +97,7 @@
 }
 
 .form input:not([type="checkbox"]):focus {
-  border:2px solid #67170c;
+  border: 2px solid #67170c;
 }
 
 .form input:not([type="checkbox"])::placeholder {
@@ -150,8 +150,7 @@
 .checkboxPrivacidade a {
   color: #67170c;
   font-weight: 600;
- text-decoration: underline;
-
+  text-decoration: underline;
 }
 
 .checkboxPrivacidade a:hover {
@@ -174,7 +173,7 @@
   color: #67170c;
 }
 
-.span a{
+.span a {
   text-decoration: underline !important;
 }
 .inputSenha {

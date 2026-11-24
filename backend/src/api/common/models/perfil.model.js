@@ -1,54 +1,129 @@
-import { supabaseAdmin } from "../config/supabase.js";
+import {
+  criarClienteModel,
+  marcarErro,
+  mapearCampoArquivo,
+} from "./pocketbase.helpers.js";
+
+const COLECAO_PERFIL = "users_profile";
+
 export class PerfilModel {
   static async buscarPerfil(id) {
-    const response = await supabaseAdmin
-      .from("users_profile")
-      .select("*")
-      .eq("id", id)
-      .maybeSingle();
+    const pb = await criarClienteModel();
 
-    if (!response) return null;
-    if (response.error) throw response.error;
+    try {
+      const perfil = await pb.collection(COLECAO_PERFIL).getOne(id);
 
-    return response.data;
+      return {
+        ...perfil,
+        ...mapearCampoArquivo(pb, perfil, "imagem"),
+        nome: perfil.nome || "",
+        sobrenome: perfil.sobrenome || "",
+      };
+    } catch (error) {
+      if (error.status === 404) return null;
+      marcarErro(error);
+    }
+  }
+
+  static async atualizarNomeUsuario(userId, dados) {
+    const pb = await criarClienteModel();
+
+    try {
+      return await pb.collection(COLECAO_PERFIL).update(userId, dados);
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 
   static async atualizarPerfil(userId, dadosPerfil) {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .update(dadosPerfil)
-      .eq("id", userId)
-      .select()
-      .maybeSingle();
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const registro = await pb
+        .collection(COLECAO_PERFIL)
+        .update(userId, dadosPerfil);
+
+      return {
+        ...registro,
+        ...mapearCampoArquivo(pb, registro, "imagem"),
+        nome: registro.nome || "",
+        sobrenome: registro.sobrenome || "",
+      };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 
-  static async atualizarApenasImagem(userId, urlImagem) {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .update({ imagem: urlImagem })
-      .eq("id", userId)
-      .select()
-      .maybeSingle();
+  static async atualizarApenasImagem(userId, arquivo, nomeArquivo) {
+    const perfil = await this.buscarPerfil(userId);
 
-    if (error) {
+    if (!perfil) {
+      const error = new Error("Nenhum perfil foi encontrado para atualização.");
+      error.statusCode = 404;
       throw error;
     }
 
-    if (!data) {
-      const erroRegistro = new Error(
-        "Nenhum perfil foi encontrado para atualização.",
-      );
-      erroRegistro.statusCode = 404;
-      throw erroRegistro;
+    const pb = await criarClienteModel();
+
+    try {
+      const formData = new FormData();
+
+      const blob = new Blob([arquivo.buffer], {
+        type: arquivo.mimetype,
+      });
+
+      formData.append("imagem", blob, nomeArquivo);
+
+      const registro = await pb
+        .collection(COLECAO_PERFIL)
+        .update(userId, formData);
+
+      return {
+        ...registro,
+        ...mapearCampoArquivo(pb, registro, "imagem"),
+        nome: registro.nome || "",
+        sobrenome: registro.sobrenome || "",
+      };
+    } catch (error) {
+      marcarErro(error);
+    }
+  }
+
+  static async removerImagem(userId) {
+    const perfil = await this.buscarPerfil(userId);
+
+    if (!perfil) {
+      const error = new Error("Nenhum perfil foi encontrado para atualização.");
+      error.statusCode = 404;
+      throw error;
     }
 
-    return data;
+    const pb = await criarClienteModel();
+
+    try {
+      const formData = new FormData();
+
+      for (const nomeArquivo of Array.isArray(perfil.imagem)
+        ? perfil.imagem
+        : [perfil.imagem]) {
+        if (nomeArquivo) {
+          formData.append("imagem-", nomeArquivo);
+        }
+      }
+
+      const registro = await pb
+        .collection(COLECAO_PERFIL)
+        .update(userId, formData);
+
+      return {
+        ...registro,
+        ...mapearCampoArquivo(pb, registro, "imagem"),
+        nome: registro.nome || "",
+        sobrenome: registro.sobrenome || "",
+      };
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 }
+ 

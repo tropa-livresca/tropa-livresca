@@ -1,8 +1,79 @@
-import supabase, { supabaseAdmin } from "../config/supabase.js";
 import { LIVRO_ESTADO } from "../config/livro-estados.js";
+import {
+  criarClienteModel,
+  getListPocketBase,
+  marcarErro,
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
+} from "./pocketbase.helpers.js";
 
-const COLUNAS_LIVRO =
-  "id, ISBN, data_de_publicacao, categoria, idioma, titulo, subtitulo, descricao, capa, direitos_de_publicacao";
+const COLECAO = "livros";
+const RELACAO_PERFIL = "fk_user_profile_id";
+
+const COLUNAS_LIVRO = [
+  "id",
+  "collectionId",
+  "collectionName",
+  "ISBN",
+  "data_de_publicacao",
+  "categoria",
+  "idioma",
+  "titulo",
+  "subtitulo",
+  "descricao",
+  "manuscrito",
+  "capa_frente",
+  "capa_verso",
+  "direitos_de_publicacao",
+  "preco_digital",
+  "preco_fisico",
+  "numero_paginas",
+  "colaboradores",
+  "ativo",
+  "estado",
+  RELACAO_PERFIL,
+].join(",");
+
+function formatarLivro(pb, livro) {
+  if (!livro) return livro;
+
+  const perfilExpandido = livro.expand?.[RELACAO_PERFIL] || null;
+
+  const imagem = perfilExpandido
+    ? mapearCampoArquivo(pb, perfilExpandido, "imagem")
+    : null;
+
+  const perfil = perfilExpandido
+    ? {
+        ...perfilExpandido,
+        ...imagem,
+        imagem: primeiraUrlArquivo(imagem.imagemUrl),
+      }
+    : null;
+
+  const arquivos = {
+    ...mapearCampoArquivo(pb, livro, "manuscrito"),
+    ...mapearCampoArquivo(pb, livro, "capa_frente"),
+    ...mapearCampoArquivo(pb, livro, "capa_verso"),
+  };
+
+  return {
+    ...livro,
+    ...arquivos,
+    users_profile: perfil,
+    capa: {
+      frente: primeiraUrlArquivo(arquivos.capa_frenteUrl),
+      verso: primeiraUrlArquivo(arquivos.capa_versoUrl),
+    },
+  };
+}
+
+function resultadoPaginado(pb, result) {
+  return {
+    data: result.items.map((livro) => formatarLivro(pb, livro)),
+    count: result.totalItems,
+  };
+}
 
 export class LivroModel {
   static async buscarLivrosAdmin({
@@ -13,92 +84,94 @@ export class LivroModel {
     ordem = "",
     estado = "",
   }) {
-    const start = (page - 1) * limit;
-    const end = start + limit - 1;
-
-    let query = supabaseAdmin
-      .from("livros")
-      .select("*, users_profile(nome, sobrenome)", { count: "exact" })
-      .neq("estado", LIVRO_ESTADO.RASCUNHO);
+    const pb = await criarClienteModel();
+    const filtros = [`estado != {:rascunho}`];
+    const params = { rascunho: LIVRO_ESTADO.RASCUNHO };
 
     if (busca) {
-      query = query.or(`titulo.ilike.%${busca}%,subtitulo.ilike.%${busca}%`);
+      filtros.push("(titulo ~ {:busca} || subtitulo ~ {:busca})");
+      params.busca = busca;
     }
 
-    if (filtro === "data") {
-      const isAsc = ordem !== "descendente";
-      query = query.order("data_de_publicacao", { ascending: isAsc });
-    } else {
-      const isAsc = ordem !== "descendente";
-      query = query.order("titulo", { ascending: isAsc });
+    if (
+      estado === LIVRO_ESTADO.PUBLICADO ||
+      estado === LIVRO_ESTADO.EM_REVISAO
+    ) {
+      filtros.push("estado = {:estado}");
+      params.estado = estado;
     }
 
-    if (estado === LIVRO_ESTADO.PUBLICADO) {
-      query = query.eq("estado", LIVRO_ESTADO.PUBLICADO);
-    } else if (estado === LIVRO_ESTADO.EM_REVISAO) {
-      query = query.eq("estado", LIVRO_ESTADO.EM_REVISAO);
+    const sortField = filtro === "data" ? "data_de_publicacao" : "titulo";
+
+    const sort = ordem === "descendente" ? `-${sortField}` : sortField;
+
+    try {
+      const result = await getListPocketBase(pb.collection(COLECAO), {
+        page,
+        limit,
+        filter: pb.filter(filtros.join(" && "), params),
+        sort,
+        expand: RELACAO_PERFIL,
+      });
+
+      return resultadoPaginado(pb, result);
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const { data, error, count } = await query.range(start, end);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return {
-      data: data || [],
-      count: count || 0,
-    };
   }
 
   static async buscarLivroByIdAdmin(livroId) {
     if (!livroId) return null;
 
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .select(`*, users_profile(*)`)
-      .eq("id", livroId)
-      .maybeSingle();
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const livro = await pb.collection(COLECAO).getOne(livroId, {
+        expand: RELACAO_PERFIL,
+      });
+
+      return formatarLivro(pb, livro);
+    } catch (error) {
+      if (error.status === 404) return null;
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async alterarAtivoLivro(livroId, ativo) {
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .update({ ativo })
-      .eq("id", livroId)
-      .select("id, titulo, ativo")
-      .maybeSingle();
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const livro = await pb.collection(COLECAO).update(livroId, {
+        ativo,
+      });
+
+      return {
+        id: livro.id,
+        titulo: livro.titulo,
+        ativo: livro.ativo,
+      };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async buscarLivroByUserId(userId) {
     if (!userId) return null;
 
-    const { data, error } = await supabaseAdmin
-      .from("livros")
-      .select(`*, users_profile(*)`)
-      .eq("fk_user_profile_id", userId);
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const result = await pb.collection(COLECAO).getFullList({
+        filter: pb.filter(`${RELACAO_PERFIL} = {:userId}`, {
+          userId,
+        }),
+        expand: RELACAO_PERFIL,
+      });
+
+      return result.map((livro) => formatarLivro(pb, livro));
+    } catch (error) {
+      marcarErro(error);
     }
-
-    return data;
   }
 
   static async buscarComFiltros({
@@ -108,57 +181,69 @@ export class LivroModel {
     filtro = "",
     ordem = "",
   }) {
-    const start = (page - 1) * limit;
-    const end = start + limit - 1;
+    const pb = await criarClienteModel();
 
-    let query = supabase
-      .from("livros")
-      .select(`${COLUNAS_LIVRO}, users_profile(nome, sobrenome)`, {
-        count: "exact",
-      })
-      .eq("ativo", true)
-      .eq("estado", LIVRO_ESTADO.PUBLICADO);
+    const filtros = ["ativo = true", "estado = {:estado}"];
+    const params = {
+      estado: LIVRO_ESTADO.PUBLICADO,
+    };
 
     if (busca) {
-      query = query.or(`titulo.ilike.%${busca}%,subtitulo.ilike.%${busca}%`);
+      filtros.push("(titulo ~ {:busca} || subtitulo ~ {:busca})");
+      params.busca = busca;
     }
 
-    if (filtro === "data") {
-      const isAsc = ordem === "ascendente";
-      query = query.order("data_de_publicacao", { ascending: isAsc });
-    } else {
-      const isAsc = ordem !== "descendente";
-      query = query.order("titulo", { ascending: isAsc });
+    const sortField = filtro === "data" ? "data_de_publicacao" : "titulo";
+
+    const sort =
+      filtro === "data"
+        ? ordem === "ascendente"
+          ? sortField
+          : `-${sortField}`
+        : ordem === "descendente"
+          ? `-${sortField}`
+          : sortField;
+
+    try {
+      const result = await getListPocketBase(pb.collection(COLECAO), {
+        page,
+        limit,
+        filter: pb.filter(filtros.join(" && "), params),
+        sort,
+        expand: RELACAO_PERFIL,
+        fields: [
+          COLUNAS_LIVRO,
+          `expand.${RELACAO_PERFIL}.id`,
+          `expand.${RELACAO_PERFIL}.collectionId`,
+          `expand.${RELACAO_PERFIL}.collectionName`,
+          `expand.${RELACAO_PERFIL}.nome`,
+          `expand.${RELACAO_PERFIL}.sobrenome`,
+          `expand.${RELACAO_PERFIL}.imagem`,
+        ].join(","),
+      });
+
+      return resultadoPaginado(pb, result);
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const { data, error, count } = await query.range(start, end);
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return {
-      data: data || [],
-      count: count || 0,
-    };
   }
 
   static async buscarDetalhesPorId(id) {
     if (!id) return null;
 
-    const { data, error } = await supabase
-      .from("livros")
-      .select(`${COLUNAS_LIVRO}, users_profile(id, nome, sobrenome, imagem)`)
-      .eq("id", id)
-      .eq("ativo", true)
-      .maybeSingle();
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const livro = await pb.collection(COLECAO).getOne(id, {
+        expand: RELACAO_PERFIL,
+      });
+
+      if (!livro.ativo) return null;
+
+      return formatarLivro(pb, livro);
+    } catch (error) {
+      if (error.status === 404) return null;
+      marcarErro(error);
     }
-
-    return data;
   }
 }

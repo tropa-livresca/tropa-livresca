@@ -12,7 +12,7 @@
   width: min(100%, 28rem);
   padding: 2rem;
   border-radius: 0.75rem;
-  background:#fff8c9;
+  background: #fff8c9;
   box-shadow: 0 1rem 3rem rgb(0 0 0 / 25%);
   color: var(--cor-texto, #432c28);
   text-align: center;
@@ -26,7 +26,7 @@
 .modal p {
   margin: 0 0 1.5rem;
   line-height: 1.5;
-   color: var(--cor-texto-muted) ;
+  color: var(--cor-texto-muted);
 }
 
 .acoes {
@@ -55,8 +55,8 @@
 
 .botaoSecundario {
   border: 1px solid #e2c77c;
-    color: #67170c;
-    background: #fff8d7;
+  color: #67170c;
+  background: #fff8d7;
 }
 
 .botaoSecundario:hover {

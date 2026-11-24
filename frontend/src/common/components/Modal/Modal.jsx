@@ -1,12 +1,7 @@
 import { useEffect } from "react";
 import styles from "./Modal.module.css";
 
-export default function Modal({
-  title,
-  description,
-  onClose,
-  children,
-}) {
+export default function Modal({ title, description, onClose, children }) {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") onClose();

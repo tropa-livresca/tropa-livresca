@@ -1,5 +1,26 @@
 import { MovimentacoesModel } from "../../common/models/movimentacoes.model.js";
 import { error, errorUsuarioId } from "../../common/utils/error.js";
+
+function validarDadosBancarios(
+  CPF,
+  nomeCompleto,
+  numeroBanco,
+  numeroAgencia,
+  numeroConta,
+  tipoConta,
+) {
+  if (
+    !CPF ||
+    !nomeCompleto ||
+    !numeroBanco ||
+    !numeroAgencia ||
+    !numeroConta ||
+    !tipoConta
+  ) {
+    error(400, "Preencha todos os dados bancários.");
+  }
+}
+
 export class MovimentacoesService {
   static async criarConta(
     usuarioId,
@@ -12,8 +33,14 @@ export class MovimentacoesService {
   ) {
     if (!usuarioId) errorUsuarioId();
 
-    if (!CPF || !nomeCompleto || !numeroBanco || !numeroAgencia || !tipoConta)
-      error(400, "Dados para cdriação da conta não informados.");
+    validarDadosBancarios(
+      CPF,
+      nomeCompleto,
+      numeroBanco,
+      numeroAgencia,
+      numeroConta,
+      tipoConta,
+    );
 
     const dadosBancarios = {
       CPF,
@@ -44,6 +71,14 @@ export class MovimentacoesService {
     tipoConta,
   ) {
     if (!usuarioId) errorUsuarioId();
+    validarDadosBancarios(
+      CPF,
+      nomeCompleto,
+      numeroBanco,
+      numeroAgencia,
+      numeroConta,
+      tipoConta,
+    );
 
     const dadosBancarios = {
       CPF,

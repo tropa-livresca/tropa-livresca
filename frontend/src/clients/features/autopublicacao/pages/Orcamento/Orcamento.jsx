@@ -1,5 +1,4 @@
-﻿
-import Input from "../../../../../common/components/Input/Input";
+﻿import Input from "../../../../../common/components/Input/Input";
 import styles from "./Orcamento.module.css";
 import { Link } from "react-router-dom";
 
@@ -110,13 +109,14 @@ export default function Orcamento({
       </p>
 
       <p>
-        Valor recebido pela plataforma <span className={styles.numero}>(70%)</span>: R${" "}
+        Valor recebido pela plataforma{" "}
+        <span className={styles.numero}>(70%)</span>: R${" "}
         <span className={styles.numero}>{valores.valorPlataforma}</span>
       </p>
 
       <p>
-        Valor destinado ao autor <span className={styles.numero}>(30%)</span>: R${" "}
-        <span className={styles.numero}>{valores.valorAutor}</span>
+        Valor destinado ao autor <span className={styles.numero}>(30%)</span>:
+        R$ <span className={styles.numero}>{valores.valorAutor}</span>
       </p>
 
       <small className={styles.strong}>
@@ -131,7 +131,7 @@ export default function Orcamento({
       <form onSubmit={(e) => e.preventDefault()} className={styles.form}>
         <h1 className={styles.titulo}>Orçamento</h1>
 
-         <p className={styles.descricao}>
+        <p className={styles.descricao}>
           Defina os valores de venda dos seus livros e acompanhe como será
           distribuído o valor de cada venda.
         </p>
@@ -141,7 +141,8 @@ export default function Orcamento({
 
           <div className={styles.informacoesPreco}>
             <p>
-              Custo mínimo de fabricação <span className={styles.numero}>(R$ 0,08 por página): R${" "}</span>
+              Custo mínimo de fabricação{" "}
+              <span className={styles.numero}>(R$ 0,08 por página): R$ </span>
               <span className={styles.numero}>
                 {formatarMoeda(custoMinimoFisico)}
               </span>

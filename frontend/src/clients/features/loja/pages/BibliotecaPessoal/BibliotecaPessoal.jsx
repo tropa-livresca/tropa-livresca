@@ -36,10 +36,7 @@ const formatarData = (data) =>
 export default function BibliotecaPessoal() {
   const { livros, meta, buscarMeusLivros, carregando, erro } =
     useBibliotecaPessoal();
-  const {
-    reenviarEmailLivrosDigitais,
-    carregando: reenviando,
-  } = useCompra();
+  const { reenviarEmailLivrosDigitais, carregando: reenviando } = useCompra();
   const [dropdownAberto, setDropdownAberto] = useState(false);
   const [filtro, setFiltro] = useState("");
   const [ordem, setOrdem] = useState("");
@@ -271,8 +268,7 @@ export default function BibliotecaPessoal() {
             ) : (
               livros.map((livro) => {
                 const capa =
-                  livro.capa?.frente ||
-                  (typeof livro.capa === "string" ? livro.capa : null);
+                  livro.capa?.frente || null;
                 const autor = livro.users_profile
                   ? `${livro.users_profile.nome} ${livro.users_profile.sobrenome || ""}`.trim()
                   : "Autor desconhecido";

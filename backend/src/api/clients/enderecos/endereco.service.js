@@ -183,10 +183,12 @@ export class EnderecoService {
         cidade: dadosEndereco.cidade || null,
         complemento: dadosEndereco.complemento || null,
         pais: dadosEndereco.pais || null,
-        fk_user_profile_id: userId,
       };
 
-      const { data } = await EnderecoModel.CriarEndereco(dadosParaInserir);
+      const { data } = await EnderecoModel.CriarEndereco(
+        userId,
+        dadosParaInserir,
+      );
 
       if (!data) {
         const erroCriar = new Error("Erro ao registrar o endereço.");

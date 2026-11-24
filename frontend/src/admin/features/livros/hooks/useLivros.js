@@ -134,6 +134,14 @@ export const useLivros = () => {
   }, []);
 
   const alterarAtivo = useCallback(async (id, ativo) => {
+    if (!id) {
+      throw new Error("Identificador do livro não informado.");
+    }
+
+    if (typeof ativo !== "boolean") {
+      throw new Error("O campo ativo deve ser booleano.");
+    }
+
     const res = await apiFetch(`/api/v1/admin/livros/${id}/ativo`, {
       method: "PATCH",
       body: JSON.stringify({ ativo }),
@@ -142,10 +150,12 @@ export const useLivros = () => {
     const json = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      throw new Error(json.error || "Não foi possível alterar o livro.");
+      throw new Error(
+        json.error || json.message || "Não foi possível alterar o livro.",
+      );
     }
 
-    return null;
+    return json;
   }, []);
 
   return {

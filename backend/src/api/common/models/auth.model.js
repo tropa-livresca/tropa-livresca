@@ -1,259 +1,296 @@
-import supabase from "../config/supabase.js";
+import bcrypt from "bcryptjs";
 
-import {
-  SUPABASE_AUTH_REDIRECT_URL,
-  SUPABASE_RESET_PASSWORD_URL,
-  SUPABASE_EMAIL_CONFIRMATION_URL,
-} from "../config/environment.js";
+import pb, { criarClienteAdminPocketBase } from "../config/pocketbase.js";
+
+import { gerarSenha } from "../utils/senha.util.js";
+
+const COLECAO_AUTH = "users_profile";
+const SALT_ROUNDS = 12;
+
 export class AuthModel {
+  static async buscarPerfil(userId) {
+    return await pb.collection(COLECAO_AUTH).getOne(userId);
+  }
+
   static async conferirPrimeiroAcesso(userId) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .select("primeiro_acesso")
-      .eq("id", userId)
-      .maybeSingle();
+    try {
+      const perfil = await this.buscarPerfil(userId);
 
-    if (error) {
-      error.statusCode = 500;
+      return perfil.primeiro_acesso ?? false;
+    } catch (error) {
+      if (error.status === 404) return false;
+
+      error.statusCode = error.status || 500;
       throw error;
     }
-
-    return data?.primeiro_acesso ?? false;
-  }
-
-  static async alterarSenhaAdmin(userId, novaSenha) {
-    const { data, error } = await supabase.rpc("alterar_senha_adm", {
-      p_user_id: userId,
-      p_nova_senha: novaSenha,
-    });
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return {
-      data: data?.[0] ?? null,
-    };
-  }
-
-  static async signinAdmin(email, senha) {
-    const { data: busca, error: buscaError } = await supabase
-      .from("users_profile")
-      .select("*")
-      .eq("email", email)
-      .maybeSingle();
-
-    if (buscaError || !busca) {
-      return { data: null, error: new Error("E-mail não cadastrado.") };
-    }
-
-    const { data: rpcResult, error: rpcError } = await supabase.rpc(
-      "verificar_senha_adm",
-      {
-        user_id: busca.id,
-        senha_digitada: senha,
-      },
-    );
-
-    if (rpcError || !rpcResult) {
-      return { data: null, error: new Error("Senha incorreta.") };
-    }
-
-    return {
-      data: {
-        userId: busca.id,
-        user: busca,
-      },
-      error: null,
-    };
   }
 
   static async conferirAdmin(userId) {
-    const { data, error } = await supabase
-      .from("users_profile")
-      .select("is_admin")
-      .eq("id", userId)
-      .single();
-
-    if (error) {
-      const erroBanco = new Error(error.message || "Erro no banco de dados.");
-      erroBanco.statusCode = 500;
-      throw erroBanco;
-    }
-
-    if (!data || data.is_admin == false) {
-      const erroAdmin = new Error("Acesso negado. Apenas administradores.");
-      erroAdmin.statusCode = 403;
-      throw erroAdmin;
-    }
-
-    return data;
-  }
-
-  static async atualizarSenha(senhaNova) {
-    const { data, error } = await supabase.auth.updateUser({
-      password: senhaNova,
-    });
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return data;
-  }
-
-  static async enviarEmailRecuperacao(email, redirectUrl) {
-    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl || SUPABASE_RESET_PASSWORD_URL,
-    });
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
-  }
-
-  static async signinComGoogle(redirectTo) {
-    const callbackUrl = redirectTo || SUPABASE_AUTH_REDIRECT_URL;
-
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: callbackUrl,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
+      const pbAdmin = await criarClienteAdminPocketBase();
 
-      if (error) {
-        const oauthError = new Error(
-          error.message || "Falha ao iniciar autenticação do Google.",
-        );
-        oauthError.statusCode = 502;
-        throw oauthError;
+      const usuario = await pbAdmin.collection(COLECAO_AUTH).getOne(userId);
+
+      if (!usuario.is_admin) {
+        const error = new Error("Acesso negado. Apenas administradores.");
+
+        error.statusCode = 403;
+        throw error;
       }
 
+      const { senha_admin, ...usuarioSeguro } = usuario;
+
+      return usuarioSeguro;
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = error.status || 500;
+      }
+
+      throw error;
+    }
+  }
+
+  static async gerarCredenciaisAdmin() {
+    const senha = gerarSenha(16);
+
+    const hash = await bcrypt.hash(senha, SALT_ROUNDS);
+
+    return {
+      senha,
+      hash,
+    };
+  }
+
+  static async promoverAdmin(userId, isMaster = false) {
+    const pbAdmin = await criarClienteAdminPocketBase();
+
+    try {
+      const usuario = await pbAdmin.collection(COLECAO_AUTH).getOne(userId);
+
+      if (usuario.is_admin) {
+        const error = new Error("Este usuário já é administrador.");
+
+        error.statusCode = 409;
+        throw error;
+      }
+
+      const { senha, hash } = await this.gerarCredenciaisAdmin();
+
+      const atualizado = await pbAdmin.collection(COLECAO_AUTH).update(userId, {
+        is_admin: true,
+        is_master: isMaster,
+        senha_admin: hash,
+        primeiro_acesso: true,
+      });
+
       return {
-        ...data,
-        url: data?.url || callbackUrl,
+        data: {
+          userId: atualizado.id,
+          email: atualizado.email,
+          nome: atualizado.nome,
+          senhaTemporaria: senha,
+        },
+        error: null,
       };
     } catch (error) {
       if (!error.statusCode) {
-        error.statusCode = 502;
+        error.statusCode = error.status || 500;
       }
+
       throw error;
     }
   }
 
-  static async setSession(accessToken, refreshToken) {
-    const { data, error } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken,
-    });
+  static async signinAdmin(email, senha) {
+    const pbAdmin = await criarClienteAdminPocketBase();
 
-    if (error) {
-      error.statusCode = 400;
-      throw error;
+    try {
+      const filtro = pbAdmin.filter("email = {:email}", { email });
+
+      const usuario = await pbAdmin
+        .collection(COLECAO_AUTH)
+        .getFirstListItem(filtro);
+
+      if (!usuario.is_admin || !usuario.senha_admin) {
+        throw new Error("Credenciais administrativas inválidas.");
+      }
+
+      const senhaValida = await bcrypt.compare(senha, usuario.senha_admin);
+
+      if (!senhaValida) {
+        throw new Error("Credenciais administrativas inválidas.");
+      }
+
+      const { senha_admin, ...usuarioSeguro } = usuario;
+
+      return {
+        data: {
+          userId: usuario.id,
+          user: usuarioSeguro,
+        },
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: Object.assign(
+          new Error("Credenciais administrativas inválidas.", error),
+          {
+            statusCode: 401,
+          },
+        ),
+      };
     }
-    return data;
   }
 
-  static async setSessionWithCode(code) {
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  static async alterarSenhaAdmin(userId, novaSenha, senhaAntiga) {
+    const pbAdmin = await criarClienteAdminPocketBase();
 
-    if (error) {
-      error.statusCode = 400;
+    try {
+      const usuario = await pbAdmin.collection(COLECAO_AUTH).getOne(userId);
+
+      if (!usuario.is_admin) {
+        const error = new Error("Acesso negado. Apenas administradores.");
+        error.statusCode = 403;
+        throw error;
+      }
+
+      if (!usuario.senha_admin) {
+        const error = new Error("Credencial administrativa não cadastrada.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (!usuario.primeiro_acesso) {
+        if (!senhaAntiga) {
+          const error = new Error("Informe sua senha administrativa atual.");
+          error.statusCode = 400;
+          throw error;
+        }
+
+        const senhaValida = await bcrypt.compare(
+          senhaAntiga,
+          usuario.senha_admin,
+        );
+
+        if (!senhaValida) {
+          const error = new Error(
+            "A senha administrativa atual está incorreta.",
+          );
+          error.statusCode = 401;
+          throw error;
+        }
+      }
+
+      if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+        const error = new Error(
+          "A nova senha deve possuir pelo menos 8 caracteres.",
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const hash = await gerarSenha(novaSenha);
+
+      const atualizado = await pbAdmin.collection(COLECAO_AUTH).update(userId, {
+        senha_admin: hash,
+        primeiro_acesso: false,
+      });
+
+      return {
+        data: {
+          userId: atualizado.id,
+          primeiro_acesso: atualizado.primeiro_acesso,
+        },
+        error: null,
+      };
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = error.status || 500;
+      }
+
       throw error;
     }
-    return data;
+  }
+  static async atualizarSenha(senhaNova, senhaAntiga) {
+    const usuario = pb.authStore.record;
+
+    if (!usuario) {
+      const error = new Error("Nenhum usuário autenticado.");
+
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const dados = {
+      password: senhaNova,
+      passwordConfirm: senhaNova,
+    };
+
+    if (senhaAntiga) {
+      dados.oldPassword = senhaAntiga;
+    }
+
+    return await pb.collection(COLECAO_AUTH).update(usuario.id, dados);
   }
 
-  static async refreshSession(refreshToken) {
-    if (!refreshToken) {
-      const erroToken = new Error("Token de atualização não fornecido.");
-      erroToken.statusCode = 401;
-      throw erroToken;
-    }
+  static async enviarEmailRecuperacao(email) {
+    return await pb.collection(COLECAO_AUTH).requestPasswordReset(email);
+  }
 
-    const { data, error } = await supabase.auth.refreshSession({
-      refresh_token: refreshToken,
-    });
+  static async confirmarNovaSenha(token, senhaNova) {
+    return await pb
+      .collection(COLECAO_AUTH)
+      .confirmPasswordReset(token, senhaNova, senhaNova);
+  }
 
-    if (error || !data.session) {
-      const erroValidacao = new Error(
-        "Token de atualização inválido ou expirado.",
-      );
-      erroValidacao.statusCode = 401;
-      throw erroValidacao;
-    }
-    return data;
+  static async signin(email, password) {
+    return await pb.collection(COLECAO_AUTH).authWithPassword(email, password);
   }
 
   static async signup(email, password, nome, sobrenome, telefone) {
-    if (!email || !password || !nome || !telefone) {
-      const erroCampos = new Error(
-        "Todos os campos são obrigatórios para o cadastro.",
-      );
-      erroCampos.statusCode = 400;
-      throw erroCampos;
-    }
-
-    const redirectUrl = SUPABASE_EMAIL_CONFIRMATION_URL;
-
-    const { data, error } = await supabase.auth.signUp({
+    const dados = {
       email,
       password,
-      options: {
-        emailRedirectTo: redirectUrl,
-        data: { nome, sobrenome, telefone },
-      },
-    });
+      passwordConfirm: password,
+      nome,
+      sobrenome,
+      telefone,
+    };
 
-    if (error) {
-      if (
-        error.message?.includes("already registered") ||
-        error.status === 422
-      ) {
-        const erroDuplicado = new Error(
-          "O e-mail informado já está cadastrado no sistema.",
-        );
-        erroDuplicado.statusCode = 400;
-        throw erroDuplicado;
-      }
-      error.statusCode = 400;
-      throw error;
-    }
-    return data;
+    const usuario = await pb.collection(COLECAO_AUTH).create(dados);
+
+    await pb.collection(COLECAO_AUTH).requestVerification(email);
+
+    return usuario;
   }
 
   static async signout() {
-    const { error } = await supabase.auth.signOut();
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
+    pb.authStore.clear();
 
     return true;
   }
 
-  static async signin(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+  static async refreshSession() {
+    if (!pb.authStore.isValid) {
+      const error = new Error("Sessão inválida ou expirada.");
 
-    if (error) {
-      error.statusCode = 400;
+      error.statusCode = 401;
       throw error;
     }
-    return data;
+
+    return await pb.collection(COLECAO_AUTH).authRefresh();
+  }
+
+  static getUsuarioAtual() {
+    return pb.authStore.record;
+  }
+
+  static getToken() {
+    return pb.authStore.token;
+  }
+
+  static isAuthenticated() {
+    return pb.authStore.isValid;
   }
 }

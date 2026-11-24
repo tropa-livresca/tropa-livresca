@@ -541,7 +541,6 @@ label {
   transition: 0.3s;
 }
 
-
 @media (max-width: 1200px) {
   .containergrid {
     gap: 0.8rem;

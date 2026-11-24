@@ -1,41 +1,49 @@
-import { apiFetch } from "../../../services/api";
 import { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import useAuth from "../../../hooks/useAuth";
+import { loginComGoogle } from "../../../services/autenticacao";
 
 export function useGoogle() {
   const [carregando, setCarregando] = useState(false);
   const [error, setError] = useState(null);
 
+  const { setUser } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const iniciarLoginNativo = async () => {
+    if (carregando) return null;
+
     setCarregando(true);
     setError(null);
 
     try {
-      const redirectTo = `${window.location.origin}/auth/callback`;
-      const response = await apiFetch("/api/v1/auth/signin/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ redirectTo }),
+      const user = await loginComGoogle();
+
+      if (!user) {
+        throw new Error(
+          "A autenticação foi concluída, mas os dados do usuário não foram retornados.",
+        );
+      }
+
+      setUser(user);
+
+      navigate(location.state?.from?.pathname || "/", {
+        replace: true,
       });
-      const resultado = await response.json().catch(() => ({}));
 
-      if (!response.ok) {
-        throw new Error(
-          resultado?.error || "Não foi possível iniciar o login com Google.",
-        );
-      }
-
-      const urlRedirecionamento = resultado?.data?.url || resultado?.url;
-
-      if (urlRedirecionamento) {
-        window.location.assign(urlRedirecionamento);
-      } else {
-        throw new Error(
-          "URL de redirecionamento não foi encontrada na resposta.",
-        );
-      }
+      return user;
     } catch (err) {
-      console.error("Erro ao iniciar o login com Google:", err.message);
-      setError(err.message);
+      console.error("Erro ao realizar login com Google:", err);
+
+      setError(
+        err?.response?.message ||
+          err?.message ||
+          "Não foi possível realizar o login com Google.",
+      );
+
+      return null;
     } finally {
       setCarregando(false);
     }

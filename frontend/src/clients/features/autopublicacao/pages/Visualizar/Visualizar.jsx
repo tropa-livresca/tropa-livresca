@@ -28,7 +28,7 @@ export default function Visualizar() {
     estado,
     subtitulo,
     capa,
-    manuscrito,
+    manuscritoUrl,
     descricao,
     idioma,
     categoria,
@@ -77,13 +77,13 @@ export default function Visualizar() {
               </p>
             </div>
 
-            {manuscrito && (
+            {manuscritoUrl && (
               <div className={styles.card}>
                 <h2>Visualização do Manuscrito</h2>
 
                 <div className={styles.pdfWrapper}>
                   <object
-                    data={manuscrito}
+                    data={manuscritoUrl}
                     type="application/pdf"
                     width="100%"
                     height="650px"
@@ -91,7 +91,7 @@ export default function Visualizar() {
                     <p className={styles.vazio}>
                       Seu navegador não suporta a exibição de PDFs.{" "}
                       <a
-                        href={manuscrito}
+                        href={manuscritoUrl}
                         download
                         target="_blank"
                         rel="noreferrer"
@@ -181,14 +181,12 @@ export default function Visualizar() {
                 <div className={styles.capasContainer}>
                   {capa?.frente && (
                     <div className={styles.capaBox}>
-                  
                       <img src={capa.frente} alt="Capa Frente" />
                     </div>
                   )}
 
                   {capa?.verso && (
                     <div className={styles.capaBox}>
-                     
                       <img src={capa.verso} alt="Capa Verso" />
                     </div>
                   )}

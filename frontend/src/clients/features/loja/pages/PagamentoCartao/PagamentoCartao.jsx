@@ -99,9 +99,8 @@ export default function PagamentoCartao() {
         </Link>
 
         <div className={styles.erro}>
-        <p>Não foi possível localizar seu pedido.</p>
+          <p>Não foi possível localizar seu pedido.</p>
         </div>
-
       </main>
     );
   }

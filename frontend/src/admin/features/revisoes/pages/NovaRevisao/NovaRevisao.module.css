@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Jacques+Francois&display=swap");
 
 .mainContainer {
@@ -21,7 +20,7 @@
   background: #f7f0cfb1;
   border-bottom: 2px solid #d4b46a;
   padding: 3rem 6%;
-  margin-top:5rem;
+  margin-top: 5rem;
 }
 
 .titulo {
@@ -49,7 +48,6 @@
   margin-bottom: 0.5rem !important;
 }
 
-
 .manuscrito {
   display: flex;
   flex-direction: column;
@@ -57,7 +55,7 @@
   padding: 1.5rem;
   background: #fffdf7;
   border-radius: 1.5rem;
- box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
@@ -141,7 +139,6 @@
   font-size: 1rem !important;
   color: #67170c !important;
   outline: none;
-
 }
 
 .input {

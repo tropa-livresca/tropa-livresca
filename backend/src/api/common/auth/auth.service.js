@@ -1,184 +1,109 @@
-import { AuthModel } from "../../common/models/auth.model.js";
+import jwt from "jsonwebtoken";
+import { AuthModel } from "../models/auth.model.js";
 
-import { SUPABASE_RESET_PASSWORD_CALLBACK_URL } from "../../common/config/environment.js";
+const erroValidacao = (mensagem, statusCode = 400) => {
+  const error = new Error(mensagem);
+  error.statusCode = statusCode;
+  return error;
+};
+
 export class AuthService {
-  static async signinComGoogle(redirectTo) {
-    try {
-      const result = await AuthModel.signinComGoogle(redirectTo);
+  static async signinAdm(email, senha) {
+    const resultado = await AuthModel.signinAdmin(email, senha);
 
-      if (!result) {
-        const error = new Error("Resposta vazia ao iniciar login com Google.");
-        error.statusCode = 502;
-        throw error;
-      }
+    const { userId, user } = resultado.data;
 
-      return result;
-    } catch (error) {
-      error.statusCode = error.statusCode || 500;
-      throw error;
-    }
+    const token = jwt.sign(
+      {
+        id: userId,
+        email: user.email,
+        is_admin: user.is_admin,
+        is_master: user.is_master,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    return {
+      token,
+      user,
+      primeiroAcesso: user.primeiro_acesso,
+    };
   }
 
   static async esqueciSenha(email) {
     if (!email) {
-      const erroEmail = new Error("O e-mail é obrigatório.");
-      erroEmail.statusCode = 400;
-      throw erroEmail;
+      throw erroValidacao("O e-mail é obrigatório.");
     }
 
-    const redirectUrl = SUPABASE_RESET_PASSWORD_CALLBACK_URL;
-
-    const { data, error } = await AuthModel.enviarEmailRecuperacao(
-      email,
-      redirectUrl,
-    );
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-
-    return data;
+    return await AuthModel.enviarEmailRecuperacao(email);
   }
 
-  static async confirmarNovaSenha(accessToken, refreshToken, novaSenha) {
-    if (!accessToken || !novaSenha) {
-      const erroDados = new Error("Dados de validação ou nova senha ausentes.");
-      erroDados.statusCode = 400;
-      throw erroDados;
+  static async confirmarNovaSenha(token, novaSenha) {
+    if (!token || !novaSenha) {
+      throw erroValidacao("Token e nova senha são obrigatórios.");
     }
 
-    await AuthModel.setSession(accessToken, refreshToken);
-
-    return await AuthModel.atualizarSenha(novaSenha);
+    return await AuthModel.confirmarNovaSenha(token, novaSenha);
   }
 
   static async atualizarSenhaAntiga(email, senhaAntiga, senhaNova) {
     if (!email || !senhaAntiga || !senhaNova) {
-      const erroDados = new Error(
-        "Dados para atualização de senha não informados",
-      );
-      erroDados.statusCode = 400;
-      throw erroDados;
+      throw erroValidacao("E-mail e senhas são obrigatórios.");
     }
 
     try {
-      const dataLogin = await AuthModel.signin(email, senhaAntiga);
-
-      await AuthModel.setSession(
-        dataLogin.session.access_token,
-        dataLogin.session.refresh_token,
-      );
-
-      const dataUpdate = await AuthModel.atualizarSenha(senhaNova);
-
-      return dataUpdate;
+      await AuthModel.signin(email, senhaAntiga);
+      return await AuthModel.atualizarSenha(senhaNova, senhaAntiga);
     } catch (error) {
-      if (!error.statusCode) {
-        error.statusCode = 500;
-      }
+      error.statusCode = error.statusCode || error.status || 400;
       throw error;
     }
   }
 
-  static async setSession(accessToken, refreshToken) {
-    const { data, error } = await AuthModel.setSession(
-      accessToken,
-      refreshToken,
-    );
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-    return data;
-  }
-
-  static async setSessionWithCode(code) {
-    const { data, error } = await AuthModel.setSessionWithCode(code);
-
-    if (error) {
-      error.statusCode = 400;
-      throw error;
-    }
-    return data;
-  }
-
-  static async refreshSession(refreshToken) {
-    if (!refreshToken) {
-      const erroToken = new Error("Token de atualização não fornecido.");
-      erroToken.statusCode = 401;
-      throw erroToken;
-    }
-
-    const { data, error } = await AuthModel.refreshSession(refreshToken);
-
-    if (error || !data.session) {
-      const erroValidacao = new Error(
-        "Token de atualização inválido ou expirado.",
-      );
-      erroValidacao.statusCode = 401;
-      throw erroValidacao;
-    }
-    return data;
+  static async refreshSession() {
+    return await AuthModel.refreshSession();
   }
 
   static async signup(email, password, nome, sobrenome, telefone) {
     if (!email || !password || !nome || !telefone || !sobrenome) {
-      const erroCampos = new Error(
-        "Todos os campos são obrigatórios para o cadastro.",
-      );
-      erroCampos.statusCode = 400;
-      throw erroCampos;
+      throw erroValidacao("Todos os campos são obrigatórios para o cadastro.");
     }
 
-    const { data, error } = await AuthModel.signup(
-      email,
-      password,
-      nome,
-      sobrenome,
-      telefone,
-    );
-
-    if (error) {
-      if (
-        error.message?.includes("already registered") ||
-        error.status === 422
-      ) {
-        const erroDuplicado = new Error(
-          "O e-mail informado já está cadastrado no sistema.",
-        );
-        erroDuplicado.statusCode = 400;
-        throw erroDuplicado;
+    try {
+      return await AuthModel.signup(email, password, nome, sobrenome, telefone);
+    } catch (error) {
+      if (error.status === 422) {
+        throw erroValidacao("O e-mail informado já está cadastrado.");
       }
-      error.statusCode = 400;
+
+      error.statusCode = error.statusCode || error.status || 400;
       throw error;
     }
-    return data;
   }
 
   static async signout() {
-    await AuthModel.signout();
+    return await AuthModel.signout();
   }
 
   static async signin(email, password) {
-    try {
-      const resultado = await AuthModel.signin(email, password);
+    if (!email || !password) {
+      throw erroValidacao("E-mail e senha são obrigatórios.");
+    }
 
-      return resultado;
+    try {
+      return await AuthModel.signin(email, password);
     } catch (error) {
-      error.statusCode = error.status || 400;
+      error.statusCode = error.statusCode || error.status || 400;
       throw error;
     }
   }
 
   static async signinAdmin(email, senhaAdmin) {
     if (!email || !senhaAdmin) {
-      const erroCredenciais = new Error(
-        "Email e/ou senha não informados para o login!",
-      );
-      erroCredenciais.statusCode = 400;
-      throw erroCredenciais;
+      throw erroValidacao("E-mail e senha são obrigatórios.");
     }
 
     const { data: authData, error } = await AuthModel.signinAdmin(
@@ -190,17 +115,9 @@ export class AuthService {
       throw error;
     }
 
-    const userId = authData?.userId;
-
-    if (!userId) {
-      const erroId = new Error(
-        "Usuário não encontrado ou credenciais inválidas.",
-      );
-      erroId.statusCode = 401;
-      throw erroId;
-    }
-
-    const primeiroAcesso = await AuthModel.conferirPrimeiroAcesso(userId);
+    const primeiroAcesso = await AuthModel.conferirPrimeiroAcesso(
+      authData.userId,
+    );
 
     return {
       data: authData,
@@ -211,52 +128,33 @@ export class AuthService {
 
   static async alterarSenhaAdm(userId, novaSenha) {
     if (!userId || !novaSenha) {
-      const erroCampos = new Error(
-        "ID do usuário e nova senha são obrigatórios para a alteração de senha.",
-      );
-      erroCampos.statusCode = 400;
-      throw erroCampos;
+      throw erroValidacao("Usuário e nova senha são obrigatórios.");
     }
 
-    const resultado = await AuthModel.alterarSenhaAdmin(userId, novaSenha);
+    if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+      throw erroValidacao("A nova senha deve possuir pelo menos 8 caracteres.");
+    }
 
-    return resultado;
+    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, null);
   }
 
-  static async alterarSenhaAntigaAdm(email, senhaAntiga, novaSenha) {
-    if (!email || !novaSenha || !senhaAntiga) {
-      const erroCampos = new Error(
-        "Erro ao informar as credenciais para alteração de senha.",
-      );
-      erroCampos.statusCode = 400;
-      throw erroCampos;
+  static async alterarSenhaAntiga(userId, senhaAntiga, novaSenha) {
+    if (!userId || !senhaAntiga || !novaSenha) {
+      throw erroValidacao("Usuário e senhas são obrigatórios.");
     }
 
-    const login = await AuthModel.signinAdmin(email, senhaAntiga);
-
-    if (login.error || !login.data?.userId) {
-      const erroLogin = new Error("Credenciais administrativas inválidas!");
-      erroLogin.statusCode = 401;
-      throw erroLogin;
+    if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+      throw erroValidacao("A nova senha deve possuir pelo menos 8 caracteres.");
     }
 
-    return await AuthModel.alterarSenhaAdmin(login.data.userId, novaSenha);
+    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, senhaAntiga);
   }
 
-  static async atualizarSenha(novaSenha) {
+  static async atualizarSenha(novaSenha, senhaAntiga) {
     if (!novaSenha) {
-      const erroSenha = new Error("Nenhuma nova senha informada.");
-      erroSenha.statusCode = 400;
-      throw erroSenha;
+      throw erroValidacao("Nenhuma nova senha informada.");
     }
 
-    try {
-      const resultado = await AuthModel.atualizarSenha(novaSenha);
-
-      return resultado;
-    } catch (error) {
-      error.statusCode = 500;
-      throw error;
-    }
+    return await AuthModel.atualizarSenha(novaSenha, senhaAntiga);
   }
 }

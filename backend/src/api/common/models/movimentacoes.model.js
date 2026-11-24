@@ -1,203 +1,201 @@
-import { supabaseAdmin } from "../config/supabase.js";
+import { criarClienteModel, marcarErro } from "./pocketbase.helpers.js";
 
-// Parte do valor de cada venda repassada ao autor do livro.
+const COLECAO_MOVIMENTACOES = "movimentacoes_financeiras";
+const COLECAO_PERFIL = "users_profile";
+const RELACAO_PERFIL = "fk_user_profile_id";
+const RELACAO_VENDA = "fk_vendas_id";
 const PERCENTUAL_AUTOR = 0.3;
+
+async function buscarPerfil(pb, usuarioId) {
+  try {
+    return await pb.collection(COLECAO_PERFIL).getOne(usuarioId);
+  } catch (error) {
+    if (error.status === 404) return null;
+    marcarErro(error);
+  }
+}
 
 export class MovimentacoesModel {
   static async criarConta(usuarioId, dadosBancarios) {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .update({
-        dados_bancarios: dadosBancarios,
-      })
-      .eq("id", usuarioId)
-      .select()
-      .maybeSingle();
-
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data;
+    return this.alterarDadosConta(usuarioId, dadosBancarios);
   }
 
   static async alterarDadosConta(usuarioId, novosDadosBancarios) {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .update({
-        dados_bancarios: novosDadosBancarios,
-      })
-      .eq("id", usuarioId)
-      .select()
-      .maybeSingle();
+    const pb = await criarClienteModel();
+    const perfil = await buscarPerfil(pb, usuarioId);
 
-    if (error) {
-      error.statusCode = 500;
+    if (!perfil) {
+      const error = new Error("Perfil não encontrado para atualizar os dados.");
+      error.statusCode = 404;
       throw error;
     }
 
-    return data;
+    try {
+      return await pb.collection(COLECAO_PERFIL).update(usuarioId, {
+        dados_bancarios: novosDadosBancarios,
+      });
+    } catch (error) {
+      marcarErro(error);
+    }
   }
 
   static async buscarDadosMovimentacoesAutor(autorId) {
-    const { data, error } = await supabaseAdmin
-      .from("movimentacoes_financeiras")
-      .select("*")
-      .eq("fk_user_profile_id", autorId)
-      .eq("status", "concluido")
-      .order("data", { ascending: false });
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const data = await pb.collection(COLECAO_MOVIMENTACOES).getFullList({
+        filter: pb.filter(
+          `${RELACAO_PERFIL} = {:perfilId} && status = 'concluido'`,
+          { perfilId: autorId },
+        ),
+        sort: "-data",
+      });
+
+      const saldo = data.reduce((acc, mov) => {
+        const valor = Number(mov.valor);
+        return mov.tipo === "entrada" ? acc + valor : acc - valor;
+      }, 0);
+
+      return {
+        extrato: data,
+        saldo: Math.round(saldo * 100) / 100,
+      };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const saldo = (data || []).reduce((acc, mov) => {
-      const valor = Number(mov.valor);
-      return mov.tipo === "entrada" ? acc + valor : acc - valor;
-    }, 0);
-
-    return {
-      extrato: data || [],
-      saldo: Math.round(saldo * 100) / 100,
-    };
   }
 
   static async buscarDadosMovimentacoesEditora() {
-    const { data, error } = await supabaseAdmin
-      .from("movimentacoes_financeiras")
-      .select("*")
-      .is("fk_user_profile_id", null)
-      .eq("status", "concluido")
-      .order("data", { ascending: false });
+    const pb = await criarClienteModel();
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+    try {
+      const data = await pb.collection(COLECAO_MOVIMENTACOES).getFullList({
+        filter: pb.filter(`${RELACAO_PERFIL} = '' && status = 'concluido'`),
+        sort: "-data",
+      });
+
+      const somar = (tipo) =>
+        data
+          .filter((mov) => mov.tipo === tipo)
+          .reduce((acc, mov) => acc + Number(mov.valor), 0);
+
+      const arredondar = (valor) => Math.round(valor * 100) / 100;
+
+      const totalVendas = somar("entrada");
+      const totalRepassado = somar("saida");
+
+      return {
+        extrato: data,
+        totalVendas: arredondar(totalVendas),
+        totalRepassado: arredondar(totalRepassado),
+        saldoTotalCaixa: arredondar(totalVendas - totalRepassado),
+      };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const somar = (tipo) =>
-      (data || [])
-        .filter((mov) => mov.tipo === tipo)
-        .reduce((acc, mov) => acc + Number(mov.valor), 0);
-
-    const totalVendas = somar("entrada");
-    const totalRepassado = somar("saida");
-    const arredondar = (valor) => Math.round(valor * 100) / 100;
-
-    return {
-      extrato: data || [],
-      totalVendas: arredondar(totalVendas),
-      totalRepassado: arredondar(totalRepassado),
-      saldoTotalCaixa: arredondar(totalVendas - totalRepassado),
-    };
   }
 
   static async autorizarDepositoContaAutor(vendaId) {
+    const pb = await criarClienteModel();
+
     try {
-      const { data: venda, error: erroVenda } = await supabaseAdmin
-        .from("vendas")
-        .select("id, status_pagamento")
-        .eq("id", vendaId)
-        .maybeSingle();
-
-      if (erroVenda) throw erroVenda;
-
-      if (!venda) {
-        const erro = new Error("Venda não encontrada.");
-        erro.statusCode = 404;
-        throw erro;
-      }
+      const venda = await pb.collection("vendas").getOne(vendaId);
 
       if (venda.status_pagamento !== "pago") {
-        const erro = new Error(
+        const error = new Error(
           "O repasse só pode ser autorizado para vendas pagas.",
         );
-        erro.statusCode = 400;
-        throw erro;
+        error.statusCode = 400;
+        throw error;
       }
 
-      const { data: repasseExistente, error: erroRepasse } = await supabaseAdmin
-        .from("movimentacoes_financeiras")
-        .select("id")
-        .eq("fk_vendas_id", vendaId)
-        .limit(1);
+      const existentes = await pb
+        .collection(COLECAO_MOVIMENTACOES)
+        .getList(1, 1, {
+          filter: pb.filter(`${RELACAO_VENDA} = {:vendaId}`, {
+            vendaId,
+          }),
+          fields: "id",
+        });
 
-      if (erroRepasse) throw erroRepasse;
-
-      if (repasseExistente.length > 0) {
-        const erro = new Error("O repasse desta venda já foi autorizado.");
-        erro.statusCode = 409;
-        throw erro;
+      if (existentes.items.length) {
+        const error = new Error("O repasse desta venda já foi autorizado.");
+        error.statusCode = 409;
+        throw error;
       }
 
-      const { data: itens, error: erroItens } = await supabaseAdmin
-        .from("itens_venda")
-        .select(
-          `
-          subtotal,
-          livros (
-            fk_user_profile_id
-          )
-        `,
-        )
-        .eq("fk_vendas_id", vendaId);
+      const itens = await pb.collection("itens_venda").getFullList({
+        filter: pb.filter(`${RELACAO_VENDA} = {:vendaId}`, {
+          vendaId,
+        }),
+        expand: "fk_livros_itens_id",
+      });
 
-      if (erroItens || !itens || itens.length === 0) {
-        const erro = new Error(
+      if (!itens.length) {
+        const error = new Error(
           "Itens da venda não encontrados para realizar o depósito.",
         );
-        erro.statusCode = 404;
-        throw erro;
+        error.statusCode = 404;
+        throw error;
       }
 
       const data = new Date().toISOString();
-      const movimentacoes = [];
 
-      for (const item of itens) {
+      const movimentacoes = itens.flatMap((item) => {
         const valorTotalItem = Number(item.subtotal);
-        const autorId = item.livros.fk_user_profile_id;
+        const autorId = item.expand?.fk_livros_itens_id?.fk_user_profile_id;
 
         const comissaoAutor =
           Math.round(valorTotalItem * PERCENTUAL_AUTOR * 100) / 100;
 
-        movimentacoes.push(
+        const base = {
+          data,
+          status: "concluido",
+          [RELACAO_VENDA]: vendaId,
+        };
+
+        return [
           {
-            data,
-            status: "concluido",
-            fk_user_profile_id: null,
-            fk_vendas_id: vendaId,
+            ...base,
+            [RELACAO_PERFIL]: "",
             tipo: "entrada",
             valor: valorTotalItem,
             descricao: `Venda bruta registrada no sistema para o pedido #${vendaId}`,
           },
           {
-            data,
-            status: "concluido",
-            fk_user_profile_id: null,
-            fk_vendas_id: vendaId,
+            ...base,
+            [RELACAO_PERFIL]: "",
             tipo: "saida",
             valor: comissaoAutor,
             descricao: `Split de repasse de direitos autorais enviado ao autor da venda #${vendaId}`,
           },
           {
-            data,
-            status: "concluido",
-            fk_user_profile_id: autorId,
-            fk_vendas_id: vendaId,
+            ...base,
+            [RELACAO_PERFIL]: autorId,
             tipo: "entrada",
             valor: comissaoAutor,
             descricao: `Crédito de direitos autorais recebidos pelo pedido #${vendaId}`,
           },
+        ];
+      });
+
+      const criadas = [];
+
+      try {
+        for (const movimentacao of movimentacoes) {
+          criadas.push(
+            await pb.collection(COLECAO_MOVIMENTACOES).create(movimentacao),
+          );
+        }
+      } catch (error) {
+        await Promise.all(
+          criadas.map((movimentacao) =>
+            pb.collection(COLECAO_MOVIMENTACOES).delete(movimentacao.id),
+          ),
         );
+
+        throw error;
       }
-
-      const { error: erroInsert } = await supabaseAdmin
-        .from("movimentacoes_financeiras")
-        .insert(movimentacoes);
-
-      if (erroInsert) throw erroInsert;
 
       return { sucesso: true };
     } catch (error) {
@@ -208,17 +206,20 @@ export class MovimentacoesModel {
 
   static async solicitarSaque(autorId, valorSaque) {
     const valorSolicitado = Number(valorSaque);
+    const valorEmCentavos = valorSolicitado * 100;
 
     if (
       !Number.isFinite(valorSolicitado) ||
       valorSolicitado <= 0 ||
-      Math.round(valorSolicitado * 100) !== valorSolicitado * 100
+      !Number.isSafeInteger(Math.round(valorEmCentavos)) ||
+      Math.abs(valorEmCentavos - Math.round(valorEmCentavos)) >
+        Number.EPSILON * Math.max(1, Math.abs(valorEmCentavos)) * 4
     ) {
-      const erro = new Error(
+      const error = new Error(
         "Informe um valor de saque válido, com até duas casas decimais.",
       );
-      erro.statusCode = 400;
-      throw erro;
+      error.statusCode = 400;
+      throw error;
     }
 
     const dadosBancarios = await this.buscarDadosBancarios(autorId);
@@ -233,65 +234,52 @@ export class MovimentacoesModel {
       !dadosBancarios.numero_conta ||
       !dadosBancarios.tipo_conta
     ) {
-      const erro = new Error(
+      const error = new Error(
         "Cadastre todos os dados bancários antes de solicitar um saque.",
       );
-      erro.statusCode = 400;
-      throw erro;
+      error.statusCode = 400;
+      throw error;
     }
 
     const infoFinanceira = await this.buscarDadosMovimentacoesAutor(autorId);
 
     if (infoFinanceira.saldo < valorSolicitado) {
-      const erro = new Error(
+      const error = new Error(
         `Saldo insuficiente. Saldo disponível: R$ ${infoFinanceira.saldo.toFixed(2).replace(".", ",")}.`,
       );
-      erro.statusCode = 400;
-      throw erro;
+      error.statusCode = 400;
+      throw error;
     }
 
-    const { data, error } = await supabaseAdmin
-      .from("movimentacoes_financeiras")
-      .insert({
+    const pb = await criarClienteModel();
+
+    try {
+      const transacao = await pb.collection(COLECAO_MOVIMENTACOES).create({
         data: new Date().toISOString(),
-        fk_user_profile_id: autorId,
-        fk_vendas_id: null,
+        [RELACAO_PERFIL]: autorId,
+        [RELACAO_VENDA]: "",
         tipo: "saida",
         valor: valorSolicitado,
         descricao: "Saque de saldo de direitos autorais para conta bancária.",
         status: "concluido",
         dados_bancarios: dadosBancarios,
-      })
-      .select()
-      .single();
+      });
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
+      return {
+        mensagem: "Saque realizado com sucesso!",
+        transacao,
+        novoSaldo:
+          Math.round((infoFinanceira.saldo - valorSolicitado) * 100) / 100,
+      };
+    } catch (error) {
+      marcarErro(error);
     }
-
-    const novoSaldo =
-      Math.round((infoFinanceira.saldo - valorSolicitado) * 100) / 100;
-
-    return {
-      mensagem: "Saque realizado com sucesso!",
-      transacao: data,
-      novoSaldo,
-    };
   }
 
   static async buscarDadosBancarios(userId) {
-    const { data, error } = await supabaseAdmin
-      .from("users_profile")
-      .select("dados_bancarios")
-      .eq("id", userId)
-      .maybeSingle();
+    const pb = await criarClienteModel();
+    const perfil = await buscarPerfil(pb, userId);
 
-    if (error) {
-      error.statusCode = 500;
-      throw error;
-    }
-
-    return data?.dados_bancarios || null;
+    return perfil?.dados_bancarios || null;
   }
 }

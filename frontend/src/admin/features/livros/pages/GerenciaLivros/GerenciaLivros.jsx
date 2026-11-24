@@ -316,26 +316,16 @@ export default function GerenciaLivros() {
 
               <tbody>
                 {livros.map((livro) => {
-                  let capaObjeto = null;
-
-                  try {
-                    capaObjeto =
-                      typeof livro.capa === "string"
-                        ? JSON.parse(livro.capa)
-                        : livro.capa;
-                  } catch (e) {
-                    console.error("Erro ao converter capa JSONB:", e);
-                  }
-
                   return (
                     <tr key={livro.id}>
                       <td>
                         <div className={styles.capaContainer}>
-                          {capaObjeto ? (
+                          {livro.capa_frenteUrl ? (
                             <img
-                              src={capaObjeto.frente}
-                              alt={livro.titulo}
+                              src={livro.capa_frenteUrl}
+                              alt={`Capa de ${livro.titulo || "livro"}`}
                               className={styles.capaMini}
+                              loading="lazy"
                             />
                           ) : (
                             <div className={styles.semCapaMini}>
@@ -344,7 +334,6 @@ export default function GerenciaLivros() {
                           )}
                         </div>
                       </td>
-
                       <td>
                         <div className={styles.detalhesTexto}>
                           <h3 className={styles.livroTitulo}>
@@ -357,11 +346,9 @@ export default function GerenciaLivros() {
                           </span>
                         </div>
                       </td>
-
                       <td className={styles.numero}>
                         {livro.data_de_publicacao}
                       </td>
-
                       <td>
                         <span
                           className={`${styles.badge} ${livro.estado === "publicado" ? styles.badgeOn : styles.badgeOff}`}
@@ -371,7 +358,6 @@ export default function GerenciaLivros() {
                             : "Não publicado"}
                         </span>
                       </td>
-
                       <td>
                         <span
                           className={`${styles.badge} ${livro.estado === "em_revisao" ? styles.badgeOn : styles.badgeOff}`}
@@ -381,7 +367,6 @@ export default function GerenciaLivros() {
                             : "Revisto"}
                         </span>
                       </td>
-
                       <td>
                         <span
                           className={`${styles.badge} ${livro.ativo == true ? styles.badgeOn : styles.badgeOff}`}
@@ -389,7 +374,6 @@ export default function GerenciaLivros() {
                           {livro.ativo == true ? "Sim" : "Não"}
                         </span>
                       </td>
-
                       <td>
                         <div className={styles.acoesColuna}>
                           <Link

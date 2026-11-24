@@ -11,7 +11,9 @@ import { useCarrinho } from "../../hooks/useCarrinho";
 const CHAVE_PIX = "davidballsdocumentacao@gmail.com";
 
 const formatarPreco = (valor) =>
-  `R$ ${Number(valor || 0).toFixed(2).replace(".", ",")}`;
+  `R$ ${Number(valor || 0)
+    .toFixed(2)
+    .replace(".", ",")}`;
 
 export default function PagamentoPix() {
   const { state } = useLocation();
@@ -106,11 +108,7 @@ export default function PagamentoPix() {
 
         <div className={styles.formulario}>
           {copiado && (
-            <p
-              className={styles.copiado}
-              role="status"
-              aria-live="polite"
-            >
+            <p className={styles.copiado} role="status" aria-live="polite">
               Chave Pix copiada com sucesso!
             </p>
           )}
@@ -122,24 +120,18 @@ export default function PagamentoPix() {
                 alt="QR Code contendo a chave Pix"
               />
 
-              <span>
-                Escaneie o QR Code pelo aplicativo do seu banco.
-              </span>
+              <span>Escaneie o QR Code pelo aplicativo do seu banco.</span>
             </div>
 
             <div className={styles.resumoPedido}>
-              <span className={styles.pedidoRotulo}>
-                Resumo do pedido
-              </span>
+              <span className={styles.pedidoRotulo}>Resumo do pedido</span>
 
               <p className={styles.pedido}>
                 Pedido <span className={styles.numero}>#{pedido.id}</span>
               </p>
 
               <p className={styles.pedido1}>
-                <span className={styles.numero}>
-                  {formatarPreco(total)}
-                </span>
+                <span className={styles.numero}>{formatarPreco(total)}</span>
               </p>
 
               {frete > 0 && (
@@ -151,7 +143,6 @@ export default function PagamentoPix() {
 
               <label>
                 Chave Pix
-
                 <div className={styles.chavePix}>
                   <input
                     type="text"

@@ -1,6 +1,32 @@
+import PocketBase from "pocketbase";
 import { AuthService } from "./auth.service.js";
-import supabase from "../../common/config/supabase.js";
-import jwt from "jsonwebtoken";
+
+import {
+  POCKETBASE_URL,
+  FRONTEND_URL,
+} from "../../common/config/environment.js";
+
+import { criarClienteAdminPocketBase } from "../../common/config/pocketbase.js";
+
+import {
+  mapearCampoArquivo,
+  primeiraUrlArquivo,
+} from "../models/pocketbase.helpers.js";
+
+const COLECAO_AUTH = "users_profile";
+
+const criarCliente = (token = null) => {
+  const pb = new PocketBase(POCKETBASE_URL);
+
+  pb.autoCancellation(false);
+
+  if (token) {
+    pb.authStore.save(token, null);
+  }
+
+  return pb;
+};
+
 export class AuthController {
   static COOKIE_OPTIONS = {
     httpOnly: true,
@@ -11,172 +37,85 @@ export class AuthController {
   };
 
   static async obterDadosUsuarioUnificado(userId) {
-    const { data } = await supabase
-      .from("users_profile")
-      .select(
-        "nome, telefone, imagem, descricao, redes_sociais, is_admin, funcao",
-      )
-      .eq("id", userId)
-      .single();
-    return data || {};
-  }
-
-  static async setSession(req, res, next) {
-    const code = req.body.code;
-    const accessToken = req.body.accessToken || req.body.access_token;
-    const refreshToken = req.body.refreshToken || req.body.refresh_token;
-
-    if (!code && (!accessToken || !refreshToken)) {
-      return res.status(400).json({
-        error: "Código ou tokens não fornecidos para configuração de sessão.",
-      });
-    }
+    const pb = await criarClienteAdminPocketBase();
 
     try {
-      const data = code
-        ? await AuthService.setSessionWithCode(code)
-        : await AuthService.setSession(accessToken, refreshToken);
-
-      const finalAccessToken = data?.session?.access_token || accessToken;
-      const finalRefreshToken = data?.session?.refresh_token || refreshToken;
-
-      let finalUser = data?.user || data?.session?.user;
-
-      if (!finalUser && finalAccessToken) {
-        const { data: userData } =
-          await supabase.auth.getUser(finalAccessToken);
-        finalUser = userData?.user;
-      }
-
-      if (!finalAccessToken || !finalRefreshToken || !finalUser) {
-        return res.status(502).json({
-          error:
-            "Não foi possível finalizar a sessão do Google. Dados insuficientes retornados pelo provedor.",
-        });
-      }
-
-      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(
-        finalUser.id,
-      );
-      const usuarioCompleto = { ...finalUser, ...dadosPerfil };
-
-      res.cookie("auth-token", finalAccessToken, AuthController.COOKIE_OPTIONS);
-      res.cookie(
-        "refresh-token",
-        finalRefreshToken,
-        AuthController.COOKIE_OPTIONS,
-      );
-
-      return res.json({
-        user: usuarioCompleto,
-        session: {
-          access_token: finalAccessToken,
-          refresh_token: finalRefreshToken,
-        },
-        message: "Sessão definida com sucesso e cookies configurados.",
+      const perfil = await pb.collection(COLECAO_AUTH).getOne(userId, {
+        fields:
+          "id,email,nome,sobrenome,telefone,imagem,descricao,redes_sociais,is_admin,funcao,is_master,primeiro_acesso,verified",
       });
-    } catch (err) {
-      if (
-        err?.code === "invalid_jwt" ||
-        err?.message?.includes("Invalid JWT") ||
-        err?.statusCode === 401
-      ) {
-        return res.status(401).json({
-          error: "Os tokens recebidos não são válidos para finalizar a sessão.",
-        });
+
+      const imagem = mapearCampoArquivo(pb, perfil, "imagem");
+
+      return {
+        ...perfil,
+        ...imagem,
+        imagem: primeiraUrlArquivo(imagem.imagemUrl),
+      };
+    } catch (error) {
+      if (error.status === 404) {
+        return {};
       }
 
-      return next(err);
+      throw error;
     }
   }
 
-  static async refreshSession(req, res) {
-    const refreshToken = req.cookies["refresh-token"];
+  static async obterUsuarioCompleto(usuario) {
+    const perfil = await AuthController.obterDadosUsuarioUnificado(usuario.id);
 
-    if (!refreshToken) {
-      return res.status(401).json({
-        error: "Token de atualização não fornecido.",
-      });
-    }
-
-    try {
-      const data = await AuthService.refreshSession(refreshToken);
-
-      res.cookie(
-        "auth-token",
-        data.session.access_token,
-        AuthController.COOKIE_OPTIONS,
-      );
-      res.cookie(
-        "refresh-token",
-        data.session.refresh_token,
-        AuthController.COOKIE_OPTIONS,
-      );
-
-      return res.status(200).json({ message: "Sessão renovada com sucesso." });
-    } catch (err) {
-      return res.status(err?.statusCode || 401).json({
-        error: err?.message || "Não foi possível renovar a sessão.",
-      });
-    }
+    return {
+      ...usuario,
+      ...perfil,
+      id: usuario.id,
+      email: usuario.email,
+    };
   }
 
-  static async signinComGoogle(req, res, next) {
-    try {
-      const redirectTo =
-        req.body?.redirectTo ||
-        req.query?.redirectTo ||
-        process.env.SUPABASE_AUTH_REDIRECT_URL ||
-        `${req.protocol}://${req.get("host")}/auth/callback`;
+  static async callbackRedefinirSenha(req, res) {
+    const token = req.query?.token;
 
-      const data = await AuthService.signinComGoogle(redirectTo);
-
-      if (!data?.url) {
-        return res.status(502).json({
-          error:
-            "Não foi possível gerar a URL de autenticação com Google no momento.",
-        });
-      }
-
-      return res.status(200).json({
-        data: { url: data.url },
-        message: "Login com Google efetuado com sucesso!",
-      });
-    } catch (err) {
-      return next(err);
+    if (!token) {
+      return res.redirect(
+        `${FRONTEND_URL}/auth/redefinir-senha?erro=token_ausente`,
+      );
     }
+
+    return res.redirect(
+      `${FRONTEND_URL}/auth/redefinir-senha?token=${encodeURIComponent(token)}`,
+    );
   }
 
   static async signup(req, res, next) {
     try {
       const { email, password, telefone, nome, sobrenome } = req.body;
 
-      const data = await AuthService.signup(
+      const pb = criarCliente();
+
+      const usuario = await pb.collection(COLECAO_AUTH).create({
         email,
         password,
+        passwordConfirm: password,
+        emailVisibility: false,
+        telefone,
         nome,
         sobrenome,
-        telefone,
-      );
+      });
+
+      await pb.collection(COLECAO_AUTH).requestVerification(email);
 
       return res.status(201).json({
-        data: data,
+        data: {
+          id: usuario.id,
+          email: usuario.email,
+          nome: usuario.nome,
+          sobrenome: usuario.sobrenome,
+        },
         message:
-          "Cadastro realizado com sucesso! Verifique sua caixa de entrada para confirmar o e-mail.",
+          "Cadastro realizado com sucesso! Verifique seu e-mail para confirmar a conta.",
       });
-    } catch (err) {
-      return next(err);
-    }
-  }
-
-  static async signout(res, next) {
-    try {
-      await AuthService.signout();
-      res.clearCookie("auth-token", AuthController.COOKIE_OPTIONS);
-      res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
-      return res.json({ message: "Desconectado com sucesso." });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
   }
 
@@ -184,34 +123,141 @@ export class AuthController {
     try {
       const { email, password } = req.body;
 
-      const data = await AuthService.signin(email, password);
+      const pb = criarCliente();
 
-      if (!data || !data.session) {
-        return res.status(401).json({ error: "E-mail ou senha incorretos." });
+      const authData = await pb
+        .collection(COLECAO_AUTH)
+        .authWithPassword(email, password);
+
+      if (!authData.record.verified) {
+        pb.authStore.clear();
+
+        return res.status(403).json({
+          error: "Confirme seu e-mail antes de entrar.",
+        });
       }
 
-      const dadosPerfil = await AuthController.obterDadosUsuarioUnificado(
-        data.user.id,
+      const usuarioCompleto = await AuthController.obterUsuarioCompleto(
+        authData.record,
       );
-      const usuarioCompleto = { ...data.user, ...dadosPerfil };
 
-      res.cookie(
-        "auth-token",
-        data.session.access_token,
-        AuthController.COOKIE_OPTIONS,
-      );
-      res.cookie(
-        "refresh-token",
-        data.session.refresh_token,
-        AuthController.COOKIE_OPTIONS,
-      );
+      res.cookie("auth-token", authData.token, AuthController.COOKIE_OPTIONS);
 
       return res.status(200).json({
         user: usuarioCompleto,
         message: "Login realizado com sucesso!",
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  static async setSession(req, res, next) {
+    try {
+      const { token } = req.body;
+
+      if (!token || typeof token !== "string") {
+        return res.status(400).json({
+          error: "Token de autenticação não fornecido.",
+        });
+      }
+
+      const pb = criarCliente(token);
+
+      const authData = await pb.collection(COLECAO_AUTH).authRefresh();
+
+      if (!authData.record.verified) {
+        pb.authStore.clear();
+
+        return res.status(403).json({
+          error: "Confirme seu e-mail antes de entrar.",
+        });
+      }
+
+      const usuarioCompleto = await AuthController.obterUsuarioCompleto(
+        authData.record,
+      );
+
+      res.cookie("auth-token", authData.token, AuthController.COOKIE_OPTIONS);
+
+      return res.status(200).json({
+        user: usuarioCompleto,
+        message: "Sessão sincronizada com sucesso.",
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  static async refreshSession(req, res) {
+    const token = req.cookies?.["auth-token"];
+
+    if (!token) {
+      return res.status(401).json({
+        error: "Token de autenticação não fornecido.",
+      });
+    }
+
+    try {
+      const pb = criarCliente(token);
+
+      const authData = await pb.collection(COLECAO_AUTH).authRefresh();
+
+      res.cookie("auth-token", authData.token, AuthController.COOKIE_OPTIONS);
+
+      return res.status(200).json({
+        message: "Sessão renovada com sucesso.",
+      });
+    } catch (error) {
+      console.error(error);
+
+      res.clearCookie("auth-token", AuthController.COOKIE_OPTIONS);
+
+      return res.status(401).json({
+        error: "Sessão inválida ou expirada.",
+      });
+    }
+  }
+
+  static async getSession(req, res, next) {
+    try {
+      const usuarioCompleto = await AuthController.obterUsuarioCompleto(
+        req.user,
+      );
+
+      return res.status(200).json({
+        user: usuarioCompleto,
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  static async getSessionAdm(req, res) {
+    const perfil = req.adm;
+
+    return res.status(200).json({
+      user: {
+        ...perfil,
+        id: req.user.id,
+        email: req.user.email,
+      },
+    });
+  }
+
+  static async alterarSenhaAdm(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { novaSenha } = req.body;
+
+      const resultado = await AuthService.alterarSenhaAdm(userId, novaSenha);
+
+      return res.status(200).json({
+        data: resultado.data,
+        message: "Senha administrativa cadastrada com sucesso!",
+      });
+    } catch (error) {
+      return next(error);
     }
   }
 
@@ -219,127 +265,119 @@ export class AuthController {
     try {
       const { email, senha } = req.body;
 
-      const resultado = await AuthService.signinAdmin(email, senha);
+      const resultado = await AuthService.signinAdm(email, senha);
 
-      const usuario = resultado.user;
-
-      if (!usuario || !usuario.is_admin) {
-        return res.status(403).json({
-          error: "Acesso negado.",
-        });
-      }
-
-      const token = jwt.sign(
-        {
-          id: usuario.id,
-          email: usuario.email,
-          is_admin: usuario.is_admin,
-          funcao: usuario.funcao,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "7d",
-        },
-      );
-
-      res.cookie("admin-token", token, AuthController.COOKIE_OPTIONS);
+      res.cookie("admin-token", resultado.token, AuthController.COOKIE_OPTIONS);
 
       return res.status(200).json({
-        user: usuario,
+        user: resultado.user,
         primeiroAcesso: resultado.primeiroAcesso,
-        message: "Login realizado com sucesso!",
+        message: "Login administrativo realizado com sucesso!",
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
   }
 
-  static async getSessionAdm(req, res, next) {
-    try {
-      return res.status(200).json({
-        user: {
-          id: req.user.id,
-          email: req.user.email,
-          ...req.adm,
-        },
-      });
-    } catch (err) {
-      next(err);
-    }
+  static async signout(_req, res) {
+    res.clearCookie("auth-token", AuthController.COOKIE_OPTIONS);
+
+    return res.status(200).json({
+      message: "Desconectado com sucesso.",
+    });
   }
 
-  static async signoutAdm(_req, res, next) {
-    try {
-      res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
-      res.clearCookie("refresh-token", AuthController.COOKIE_OPTIONS);
+  static async signoutAdm(_req, res) {
+    res.clearCookie("admin-token", AuthController.COOKIE_OPTIONS);
 
-      return res.status(200).json({ message: "Desconectado com sucesso." });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  static async alterarSenhaAdm(req, res, next) {
-    try {
-      const userId = req.user?.id;
-      const novaSenha = req.body.novaSenha;
-
-      const resultado = await AuthService.alterarSenhaAdm(userId, novaSenha);
-
-      return res.status(200).json({
-        resultado,
-      });
-    } catch (err) {
-      next(err);
-    }
+    return res.status(200).json({
+      message: "Desconectado com sucesso.",
+    });
   }
 
   static async alterarSenhaAntiga(req, res, next) {
     try {
-      const email = req.body.email;
-      const senhaAntiga = req.body.senhaAntiga;
-      const novaSenha = req.body.novaSenha;
+      const userId = req.user?.id;
+      const { senhaAntiga, novaSenha } = req.body;
 
-      const resultado = await AuthService.alterarSenhaAntigaAdm(
-        email,
+      const resultado = await AuthService.alterarSenhaAntiga(
+        userId,
         senhaAntiga,
         novaSenha,
       );
 
-      return res
-        .status(200)
-        .json({ resultado, message: "Senha alterada com sucesso!" });
-    } catch (err) {
-      next(err);
+      return res.status(200).json({
+        data: resultado.data,
+        message: "Senha administrativa alterada com sucesso!",
+      });
+    } catch (error) {
+      return next(error);
     }
   }
+
   static async atualizarSenha(req, res, next) {
     try {
       const novaSenha = req.body.novaSenha || req.body.senha;
+      const token = req.cookies?.["auth-token"];
 
-      const resultado = await AuthService.atualizarSenha(novaSenha);
+      if (!token) {
+        return res.status(401).json({
+          error: "Sessão não encontrada.",
+        });
+      }
+
+      if (!novaSenha) {
+        return res.status(400).json({
+          error: "Nova senha não fornecida.",
+        });
+      }
+
+      const pb = criarCliente(token);
+
+      const authData = await pb.collection(COLECAO_AUTH).authRefresh();
+
+      const usuario = await pb
+        .collection(COLECAO_AUTH)
+        .update(authData.record.id, {
+          password: novaSenha,
+          passwordConfirm: novaSenha,
+        });
 
       return res.status(200).json({
-        user: resultado.user,
+        user: usuario,
         message: "Alteração na senha realizada!",
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
   }
 
   static async atualizarSenhaAntiga(req, res, next) {
     try {
       const { senhaAntiga, senhaNova } = req.body;
-      const email = req.user?.email;
+      const token = req.cookies?.["auth-token"];
 
-      await AuthService.atualizarSenhaAntiga(email, senhaAntiga, senhaNova);
+      if (!token) {
+        return res.status(401).json({
+          error: "Sessão não encontrada.",
+        });
+      }
+
+      const pb = criarCliente(token);
+
+      const authData = await pb.collection(COLECAO_AUTH).authRefresh();
+
+      await pb.collection(COLECAO_AUTH).update(authData.record.id, {
+        oldPassword: senhaAntiga,
+        password: senhaNova,
+        passwordConfirm: senhaNova,
+      });
 
       return res.status(200).json({
         message: "Senha alterada com sucesso!",
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
   }
 
@@ -347,43 +385,62 @@ export class AuthController {
     try {
       const { email } = req.body;
 
-      await AuthService.esqueciSenha(email);
+      const pb = criarCliente();
+
+      await pb.collection(COLECAO_AUTH).requestPasswordReset(email);
 
       return res.status(200).json({
         message:
-          "E-mail de recuperação enviado com sucesso! Verifique sua caixa de e-mail.",
+          "Se o endereço estiver cadastrado, você receberá um e-mail para redefinir a senha.",
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
     }
-  }
-
-  static async callbackRedefinirSenha(res) {
-    return res.redirect(process.env.SUPABASE_RESET_PASSWORD_URL);
   }
 
   static async redefinirSenha(req, res, next) {
     try {
-      const { novaSenha, accessToken, refreshToken } = req.body;
+      const { token, novaSenha } = req.body;
 
-      if (!accessToken || !refreshToken) {
-        return res.status(401).json({
-          error: "Tokens de autenticação ausentes no corpo da requisição.",
+      if (!token || !novaSenha) {
+        return res.status(400).json({
+          error: "Token e nova senha são obrigatórios.",
         });
       }
 
-      if (!novaSenha) {
-        return res.status(400).json({ error: "A nova senha é obrigatória." });
-      }
+      const pb = criarCliente();
 
-      await AuthService.setSession(accessToken, refreshToken);
-      await AuthService.atualizarSenha(novaSenha);
+      await pb
+        .collection(COLECAO_AUTH)
+        .confirmPasswordReset(token, novaSenha, novaSenha);
 
       return res.status(200).json({
-        message: "Senha atualizada com sucesso! Voce ja pode fazer login.",
+        message: "Senha atualizada com sucesso! Você já pode fazer login.",
       });
-    } catch (err) {
-      return next(err);
+    } catch (error) {
+      return next(error);
+    }
+  }
+
+  static async confirmarEmail(req, res, next) {
+    try {
+      const { token } = req.body;
+
+      if (!token) {
+        return res.status(400).json({
+          error: "Token de confirmação não fornecido.",
+        });
+      }
+
+      const pb = criarCliente();
+
+      await pb.collection(COLECAO_AUTH).confirmVerification(token);
+
+      return res.status(200).json({
+        message: "E-mail confirmado com sucesso!",
+      });
+    } catch (error) {
+      return next(error);
     }
   }
 }

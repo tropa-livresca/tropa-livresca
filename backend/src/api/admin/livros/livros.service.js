@@ -60,15 +60,21 @@ export class LivrosService {
       throw erroAtivo;
     }
 
-    const livro = await LivroModel.alterarAtivoLivro(livroId, ativo);
+    try {
+      const livro = await LivroModel.alterarAtivoLivro(livroId, ativo);
 
-    if (!livro) {
-      const erroLivro = new Error("Livro não encontrado.");
-      erroLivro.statusCode = 404;
-      throw erroLivro;
+      if (!livro) {
+        const erroLivro = new Error("Livro não encontrado.");
+        erroLivro.statusCode = 404;
+        throw erroLivro;
+      }
+      return livro;
+    } catch (error) {
+      console.error(
+        "Erro detalhado do PocketBase:",
+        JSON.stringify(error.response?.data, null, 2),
+      );
     }
-
-    return livro;
   }
 
   static async BuscarLivroByUserId(userId) {

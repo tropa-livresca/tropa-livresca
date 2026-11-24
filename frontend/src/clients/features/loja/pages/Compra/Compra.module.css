@@ -73,7 +73,7 @@
   font-size: 1.2rem;
 }
 
-.cartao h2{
+.cartao h2 {
   margin: 0 0 1rem;
   padding-bottom: 0.9rem;
   border-bottom: 1px solid #e3d5ad;
@@ -206,18 +206,16 @@
   gap: 1rem;
   padding: 0.75rem 0;
   padding-bottom: 1.2rem;
-   padding-top: 1.2rem;
+  padding-top: 1.2rem;
   border-bottom: 1px solid #e3d5ad;
-      color: var(--cor-texto-muted);
-    font-size: 1.1rem;
+  color: var(--cor-texto-muted);
+  font-size: 1.1rem;
 }
 
 .linha strong {
   color: #67170c;
   font-variant-numeric: lining-nums;
 }
-
-
 
 .botao {
   width: 100%;

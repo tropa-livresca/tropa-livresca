@@ -1,8 +1,8 @@
 ﻿import { useState } from "react";
 import Input, { InputTelefone } from "../../../../components/Input/Input";
 import SubmitButton from "../../../../components/Submit/SubmitButton";
-import logo from "../../images/cadastro.png";
-import logo2 from "../../../../images/logo.png";
+import logo from "../../images/cadastro.webp";
+import logo2 from "../../../../images/logo.webp";
 
 import styles from "./Cadastro.module.css";
 

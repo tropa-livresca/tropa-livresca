@@ -135,9 +135,9 @@ export default function NovaRevisao() {
       <div className={styles.container}>
         {livro && (
           <div className={styles.manuscrito}>
-            {livro.manuscrito ? (
+            {livro.manuscritoUrl ? (
               <object
-                data={livro.manuscrito}
+                data={livro.manuscritoUrl}
                 type="application/pdf"
                 width="100%"
                 height="650px"
@@ -145,7 +145,7 @@ export default function NovaRevisao() {
                 <p>
                   Seu navegador não suporta a exibição de PDFs.{" "}
                   <a
-                    href={livro.manuscrito}
+                    href={livro.manuscritoUrl}
                     download
                     target="_blank"
                     rel="noreferrer"

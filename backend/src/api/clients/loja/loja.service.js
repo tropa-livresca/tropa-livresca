@@ -7,25 +7,6 @@ const MAX_QTD_POR_ITEM = 99;
 
 const arredondar = (valor) => Math.round(valor * 100) / 100;
 export class LojaService {
-  static _parseCapaUrls(livro) {
-    if (!livro) return livro;
-
-    const livroClonado = { ...livro };
-
-    try {
-      if (typeof livroClonado.capa === "string") {
-        livroClonado.capa = JSON.parse(livroClonado.capa);
-      }
-    } catch (e) {
-      console.warn("Erro ao parsear capa JSON", e);
-    }
-    return livroClonado;
-  }
-
-  static _parseCapasArray(livros) {
-    return livros.map((livro) => this._parseCapaUrls(livro));
-  }
-
   static async buscarBibliotecaPessoal({
     userId,
     page = 1,
@@ -51,7 +32,7 @@ export class LojaService {
       livroId,
     });
     const livros = biblioteca.data.map((item) => ({
-      ...this._parseCapaUrls(item.livros),
+      ...item.livros,
       compraId: item.vendas.id,
       dataCompra: item.vendas.data,
     }));
@@ -90,14 +71,12 @@ export class LojaService {
       throw livrosTropa.error;
     }
 
-    const livrosComCapas = this._parseCapasArray(livrosTropa.data);
-
     const totalItems = livrosTropa.count;
 
     const totalPagesTropa = Math.ceil(livrosTropa.count / limit);
 
     return {
-      data: livrosComCapas,
+      data: livrosTropa.data,
       meta: {
         page,
         limit,
@@ -120,7 +99,7 @@ export class LojaService {
       throw livro.error;
     }
 
-    return this._parseCapaUrls(livro);
+    return livro;
   }
 
   static async consultarVenda(vendaId, usuarioId) {
@@ -128,7 +107,6 @@ export class LojaService {
     if (!vendaId) error(400, "Id da venda não informado.");
 
     const venda = await LojaModel.consultarVenda(vendaId);
-
     if (venda.fk_user_profile_id !== usuarioId)
       error(404, "Venda não encontrada.");
 
@@ -142,24 +120,29 @@ export class LojaService {
       error(400, "Não há como realizar compra sem itens da venda.");
 
     const itensNormalizados = itens.map((item) => {
-      const livroId = Number(item.livroId);
+      const livroId = String(item.livroId ?? "").trim();
       const fisico = item.fisico === true;
       const qtd = fisico ? Number(item.qtd) : 1;
 
-      if (!Number.isInteger(livroId) || livroId <= 0)
+      if (!livroId) {
         error(400, "Livro inválido no carrinho.");
-      if (!Number.isInteger(qtd) || qtd < 1 || qtd > MAX_QTD_POR_ITEM)
+      }
+
+      if (!Number.isInteger(qtd) || qtd < 1 || qtd > MAX_QTD_POR_ITEM) {
         error(400, "Quantidade inválida no carrinho.");
+      }
 
       return { livroId, fisico, qtd };
     });
 
     const livroIds = [...new Set(itensNormalizados.map((i) => i.livroId))];
     const livros = await LojaModel.buscarLivrosParaVenda(livroIds);
-    const livrosPorId = new Map(livros.map((livro) => [livro.id, livro]));
+    const livrosPorId = new Map(
+      livros.map((livro) => [String(livro.id), livro]),
+    );
 
     const itensVenda = itensNormalizados.map(({ livroId, fisico, qtd }) => {
-      const livro = livrosPorId.get(livroId);
+      const livro = livrosPorId.get(String(livroId));
       if (!livro) error(400, "Um dos livros do carrinho não está disponível.");
 
       const precoUnitario = Number(

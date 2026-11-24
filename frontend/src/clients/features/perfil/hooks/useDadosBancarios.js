@@ -9,12 +9,22 @@ const extrairDadosBancarios = (resposta) =>
   resposta ??
   null;
 
+const lerResposta = async (resposta, mensagemErro) => {
+  const dados = await resposta.json().catch(() => ({}));
+  if (!resposta.ok) {
+    throw new Error(dados?.error || dados?.message || mensagemErro);
+  }
+  return dados;
+};
+
 export const useDadosBancarios = () => {
   const [dadosBancarios, setDadosBancarios] = useState(null);
   const [carregando, setCarregando] = useState(false);
+  const [erro, setErro] = useState("");
 
   const buscarDadosBancarios = useCallback(async () => {
     setCarregando(true);
+    setErro("");
 
     try {
       const res = await apiFetch(
@@ -24,15 +34,14 @@ export const useDadosBancarios = () => {
         },
       );
 
-      const json = await res.json();
-
-      if (!res.ok) {
-        throw new Error("Erro ao buscar os dados bancários");
-      }
+      const json = await lerResposta(
+        res,
+        "Erro ao buscar os dados bancários",
+      );
       setDadosBancarios(extrairDadosBancarios(json));
     } catch (err) {
       console.error("Problema ao buscar os dados bancários:", err);
-      setDadosBancarios(null);
+      setErro(err?.message || "Erro ao buscar os dados bancários");
     } finally {
       setCarregando(false);
     }
@@ -48,6 +57,7 @@ export const useDadosBancarios = () => {
       tipoConta = "",
     ) => {
       setCarregando(true);
+      setErro("");
       try {
         const res = await apiFetch("/api/v1/clients/movimentacoes", {
           method: "POST",
@@ -61,20 +71,19 @@ export const useDadosBancarios = () => {
           }),
         });
 
-        const json = await res.json();
-
-        if (!res.ok) {
-          throw new Error("Erro ao criar a conta");
-        }
+        const json = await lerResposta(res, "Erro ao criar a conta");
 
         setDadosBancarios(extrairDadosBancarios(json));
       } catch (err) {
         console.error("Problema ao criar a conta:", err);
-        setDadosBancarios(null);
+        setErro(err?.message || "Erro ao criar a conta");
+        throw err;
       } finally {
         setCarregando(false);
       }
-    }, []);
+    },
+    [],
+  );
 
   const alterarDadosConta = useCallback(
     async (
@@ -86,6 +95,7 @@ export const useDadosBancarios = () => {
       tipoConta = "",
     ) => {
       setCarregando(true);
+      setErro("");
       try {
         const res = await apiFetch("/api/v1/clients/movimentacoes", {
           method: "PUT",
@@ -98,33 +108,36 @@ export const useDadosBancarios = () => {
             tipoConta,
           }),
         });
-        const json = await res.json();
-
-        if (!res.ok) {
-          throw new Error("Erro ao alterar os dados da conta");
-        }
+        const json = await lerResposta(
+          res,
+          "Erro ao alterar os dados da conta",
+        );
 
         setDadosBancarios(extrairDadosBancarios(json));
       } catch (err) {
         console.error("Problema ao alterar os dados da conta:", err);
-        setDadosBancarios(null);
+        setErro(err?.message || "Erro ao alterar os dados da conta");
+        throw err;
       } finally {
         setCarregando(false);
       }
-    }, []);
+    },
+    [],
+  );
 
   const solicitarSaque = useCallback(async (valorSaque) => {
     setCarregando(true);
+    setErro("");
     try {
       const res = await apiFetch("/api/v1/clients/movimentacoes", {
         method: "PATCH",
         body: JSON.stringify({ valorSaque }),
       });
-      if (!res.ok) {
-        throw new Error("Erro ao solicitar saque");
-      }
+      return await lerResposta(res, "Erro ao solicitar saque");
     } catch (err) {
       console.error("Problema ao solicitar saque:", err);
+      setErro(err?.message || "Erro ao solicitar saque");
+      throw err;
     } finally {
       setCarregando(false);
     }
@@ -137,5 +150,6 @@ export const useDadosBancarios = () => {
     solicitarSaque,
     carregando,
     dadosBancarios,
+    erro,
   };
 };

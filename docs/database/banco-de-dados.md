@@ -1,25 +1,45 @@
-# Banco de dados
+# Banco de dados PocketBase
 
-O projeto utiliza o Supabase como camada principal para armazenamento de dados, autenticação e arquivos.
+O projeto utiliza PocketBase como alternativa de banco de dados, autenticação e armazenamento. O PocketBase usa SQLite embutido e organiza os dados em collections.
 
-## Localização dos arquivos
+## Arquivos relacionados
 
-A configuração de conexão e os arquivos relacionados ao banco estão localizados em:
+- [Modelo de dados](./database.md)
+- [Hooks e funções](./funcoes.md)
+- [Gatilhos de aplicação](./trigger.md)
+- [Migrações PocketBase](../../pocketbase/pb_migrations/README.md)
+- [Hook de criação de perfil](../../pocketbase/pb_hooks/main.pb.js)
 
-- [backend/src/common/config/supabase.js](../../backend/src/api/common/config/supabase.js)
-- [docs/database/database.md](./database.md)
-- [docs/database/funcoes.md](./funcoes.md)
+## Estrutura local
 
-## Variáveis de ambiente relacionadas
+```text
+pocketbase/
+├── pocketbase.exe
+├── pb_data/
+├── pb_hooks/
+└── pb_migrations/
+```
 
-- SUPABASE_URL
-- SUPABASE_ANON_KEY
-- SUPABASE_SERVICE_ROLE_KEY
-- JW_SECRET
+- `pb_data`: arquivos SQLite e dados persistidos.
+- `pb_migrations`: criação e alteração de collections.
+- `pb_hooks`: scripts executados em eventos do PocketBase.
 
-## Configuração
+Os arquivos `data.db`, `auxiliary.db` e seus arquivos WAL/SHM não devem ser editados diretamente.
 
-1. Criar um projeto no Supabase.
-2. Configurar as tabelas e políticas necessárias.
-3. Preencher as variáveis de ambiente com as chaves corretas.
-4. Garantir que a aplicação backend esteja apontando para o projeto correto.
+## Inicialização
+
+No Windows:
+
+```powershell
+cd pocketbase
+.\pocketbase.exe serve
+.\pocketbase.exe migrate up
+```
+
+As migrações pendentes também são aplicadas na inicialização do servidor.
+
+## Acesso
+
+Acesse o painel administrativo em `http://127.0.0.1:8090/_/` em ambiente local.
+
+Defina no painel as regras `listRule`, `viewRule`, `createRule`, `updateRule` e `deleteRule` de todas as collections antes de publicar a aplicação.

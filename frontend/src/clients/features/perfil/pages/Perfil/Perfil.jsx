@@ -1,5 +1,4 @@
-﻿
-import { useEffect } from "react";
+﻿import { useEffect } from "react";
 import { usePerfil } from "../../hooks/usePerfil";
 import styles from "./Perfil.module.css";
 import Input from "../../../../../common/components/Input/Input";
@@ -42,7 +41,11 @@ export default function Perfil() {
     updatePerfil,
   } = usePerfil();
 
-  const { dadosBancarios, buscarDadosBancarios } = useDadosBancarios();
+  const {
+    dadosBancarios,
+    buscarDadosBancarios,
+    erro: erroDadosBancarios,
+  } = useDadosBancarios();
   const { endereco, BuscarEnderecoPrincipal } = useEndereco();
 
   useEffect(() => {
@@ -312,6 +315,9 @@ export default function Perfil() {
               <p className={styles.subtitulo}>
                 Informações da sua conta bancária.
               </p>
+              {erroDadosBancarios && (
+                <p role="alert">{erroDadosBancarios}</p>
+              )}
 
               {dadosBancarios ? (
                 <div
@@ -354,9 +360,7 @@ export default function Perfil() {
                   </div>
                 </div>
               ) : (
-                <p className={styles.subtitulo}>
-                  Insira seus dados bancários.
-                </p>
+                <p className={styles.subtitulo}>Insira seus dados bancários.</p>
               )}
 
               <Link

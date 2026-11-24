@@ -44,3 +44,6 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
+
+pocketbase/pb_data
+pocketbase/pb_data/

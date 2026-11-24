@@ -1,3 +1,2 @@
-process.env.SUPABASE_URL = "https://supabase.co";
-process.env.SUPABASE_SERVICE_ROLE_KEY = "fake-service-role-key";
-process.env.SUPABASE_ANON_KEY = "fake-anon-key";
+process.env.POCKETBASE_URL ||= "http://127.0.0.1:8090";
+process.env.POCKETBASE_SUPERUSER_TOKEN ||= "test-superuser-token";

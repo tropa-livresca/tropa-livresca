@@ -1,16 +1,26 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import RoutesAdm from "../../admin/features/routes/RoutesAdm";
-import RoutesClients from "../../clients/features/routes/RoutesClients";
-import RoutesAutenticacao from "../../common/features/routes/RoutesAutenticacao";
+import Carregando from "../../clients/components/Carregando/Carregando";
+const RoutesAdm = lazy(() => import("../../admin/features/routes/RoutesAdm"));
+
+const RoutesClients = lazy(
+  () => import("../../clients/features/routes/RoutesClients"),
+);
+
+const RoutesAutenticacao = lazy(
+  () => import("../../common/features/routes/RoutesAutenticacao"),
+);
 
 const RoutesApp = () => {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/admin/*" element={<RoutesAdm />} />
-        <Route path="/auth/*" element={<RoutesAutenticacao />} />
-        <Route path="/*" element={<RoutesClients />} />
-      </Routes>
+      <Suspense fallback={<Carregando />}>
+        <Routes>
+          <Route path="/admin/*" element={<RoutesAdm />} />
+          <Route path="/auth/*" element={<RoutesAutenticacao />} />
+          <Route path="/*" element={<RoutesClients />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };

@@ -98,6 +98,9 @@ export class RevisaoController {
       const idLivro =
         req.body.idLivro !== undefined ? req.body.idLivro : undefined;
       const manuscritoRevisto = req.file || req.body.manuscritoRevisto || null;
+      const removerArquivo =
+        req.body.removerArquivo === true ||
+        req.body.removerArquivo === "true";
 
       const revisaoAtualizada = await RevisaoService.AtualizarRevisao(
         id,
@@ -106,6 +109,7 @@ export class RevisaoController {
         idLivro,
         manuscritoRevisto,
         funcionarioId,
+        removerArquivo,
       );
 
       return res.status(200).json(revisaoAtualizada);

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useMeusLivros } from "../../hooks/useMeusLivros";
@@ -140,20 +139,14 @@ export default function MeusLivros() {
                 type="button"
                 className={styles.botaoOrdenar}
                 onClick={() =>
-                  setDropdownAberto(
-                    dropdownAberto ? null : "ordenacao"
-                  )
+                  setDropdownAberto(dropdownAberto ? null : "ordenacao")
                 }
                 aria-expanded={!!dropdownAberto}
               >
-                <span className={styles.rotuloOrdenar}>
-                  Ordenar:
-                </span>
+                <span className={styles.rotuloOrdenar}>Ordenar:</span>
                 {ordenacaoAtual.rotulo}
                 <FiChevronDown
-                  className={
-                    dropdownAberto ? styles.setaAberta : ""
-                  }
+                  className={dropdownAberto ? styles.setaAberta : ""}
                 />
               </button>
 
@@ -185,9 +178,7 @@ export default function MeusLivros() {
         </form>
 
         <div className={styles.filtroSituacao}>
-          <span className={styles.filtroRotulo}>
-            Filtrar por situação
-          </span>
+          <span className={styles.filtroRotulo}>Filtrar por situação</span>
 
           <div
             className={styles.estados}
@@ -237,9 +228,7 @@ export default function MeusLivros() {
                       {livro.titulo}
                     </strong>
 
-                    <span
-                      className={`${styles.badge} ${styles[livro.estado]}`}
-                    >
+                    <span className={`${styles.badge} ${styles[livro.estado]}`}>
                       {livro.estado}
                     </span>
                   </div>
@@ -262,9 +251,7 @@ export default function MeusLivros() {
                         Editar
                       </Link>
 
-                      {ESTADOS_ENVIAVEIS_REVISAO.includes(
-                        livro.estado
-                      ) && (
+                      {ESTADOS_ENVIAVEIS_REVISAO.includes(livro.estado) && (
                         <button
                           type="button"
                           onClick={() => enviarParaRevisao(livro.id)}
@@ -277,9 +264,7 @@ export default function MeusLivros() {
                   )}
 
                   {livro.estado === LIVRO_ESTADO.PUBLICADO && (
-                    <span className={styles.textoPublicado}>
-                      Publicado
-                    </span>
+                    <span className={styles.textoPublicado}>Publicado</span>
                   )}
 
                   {livro.estado === LIVRO_ESTADO.RASCUNHO && (
@@ -300,10 +285,7 @@ export default function MeusLivros() {
             ))}
 
             <div className={styles.adicionardiv}>
-              <Link
-                to="/novo-livro"
-                className={styles.btnAdicionar}
-              >
+              <Link to="/novo-livro" className={styles.btnAdicionar}>
                 +
               </Link>
             </div>
@@ -317,9 +299,8 @@ export default function MeusLivros() {
             </h1>
 
             <span className={styles.sub}>
-              Dê o primeiro passo na sua carreira de escritor.
-              Autopublique seu livro e compartilhe sua obra com novos
-              leitores.
+              Dê o primeiro passo na sua carreira de escritor. Autopublique seu
+              livro e compartilhe sua obra com novos leitores.
             </span>
           </div>
         )}

@@ -36,7 +36,9 @@ const mapearIdioma = (idioma) => {
 
 export default function VisualizarLivro() {
   const { id } = useParams();
+
   const { buscarLivroById, carregando, livro, alterarAtivo } = useLivros();
+
   const [salvando, setSalvando] = useState(false);
   const [popup, setPopup] = useState(null);
 
@@ -55,6 +57,7 @@ export default function VisualizarLivro() {
       <main className={styles.mainContainer}>
         <div className={styles.container}>
           <p className={styles.semDados}>Livro não encontrado.</p>
+
           <Link to="/admin/livros/painel" className={styles.btnVoltar}>
             <FiArrowLeft /> Voltar ao painel
           </Link>
@@ -67,8 +70,9 @@ export default function VisualizarLivro() {
     titulo,
     estado,
     subtitulo,
-    capa,
-    manuscrito,
+    capa_frenteUrl,
+    capa_versoUrl,
+    manuscritoUrl,
     users_profile,
     descricao,
     idioma,
@@ -80,11 +84,15 @@ export default function VisualizarLivro() {
     ativo,
   } = livro;
 
+  const temCapa = Boolean(capa_frenteUrl || capa_versoUrl);
+
   const executarAlteracaoAtivo = async () => {
     setSalvando(true);
+
     try {
       await alterarAtivo(id, !ativo);
       await buscarLivroById(id);
+
       setPopup({
         tipo: "sucesso",
         mensagem: `O livro "${titulo}" foi ${ativo ? "removido da" : "colocado de volta na"} loja com sucesso.`,
@@ -92,7 +100,9 @@ export default function VisualizarLivro() {
     } catch (erro) {
       setPopup({
         tipo: "erro",
-        mensagem: erro.message || "Não foi possível alterar a disponibilidade do livro.",
+        mensagem:
+          erro.message ||
+          "Não foi possível alterar a disponibilidade do livro.",
       });
     } finally {
       setSalvando(false);
@@ -110,21 +120,13 @@ export default function VisualizarLivro() {
     });
   };
 
-  let capaObjeto = null;
-  try {
-    capaObjeto = typeof capa === "string" ? JSON.parse(capa) : capa;
-  } catch (e) {
-    console.error("Erro ao converter capa JSONB:", e);
-  }
-
-  const temCapa = Boolean(capaObjeto?.frente || capaObjeto?.verso);
-
   return (
     <main className={styles.mainContainer}>
       <header className={styles.topo}>
         <div className={styles.topoConteudo}>
           <div className={styles.topoTexto}>
             <h1 className={styles.titulo}>{titulo}</h1>
+
             {subtitulo && <p className={styles.subtitulo}>{subtitulo}</p>}
           </div>
 
@@ -153,9 +155,11 @@ export default function VisualizarLivro() {
         <div className={styles.mainContent}>
           <div className={styles.cartao}>
             <h2 className={styles.secaoTitulo}>Sinopse / Descrição</h2>
+
             <p className={styles.desc1}>
               Conheça a história e o universo da obra.
             </p>
+
             <p className={styles.descricao}>
               {descricao || "Nenhuma descrição informada."}
             </p>
@@ -163,19 +167,30 @@ export default function VisualizarLivro() {
 
           <div className={styles.cartao}>
             <h2 className={styles.secaoTitulo}>Capas</h2>
+
             <p className={styles.desc}>
               Confira as capas do livro, incluindo a frente e o verso.
             </p>
+
             {temCapa ? (
               <div className={styles.capasContainer}>
-                {capaObjeto.frente && (
+                {capa_frenteUrl && (
                   <div className={styles.capaBox}>
-                    <img src={capaObjeto.frente} alt="Capa Frente" />
+                    <img
+                      src={capa_frenteUrl}
+                      alt={`Capa frontal de ${titulo || "livro"}`}
+                      loading="lazy"
+                    />
                   </div>
                 )}
-                {capaObjeto.verso && (
+
+                {capa_versoUrl && (
                   <div className={styles.capaBox}>
-                    <img src={capaObjeto.verso} alt="Capa Verso" />
+                    <img
+                      src={capa_versoUrl}
+                      alt={`Capa traseira de ${titulo || "livro"}`}
+                      loading="lazy"
+                    />
                   </div>
                 )}
               </div>
@@ -184,18 +199,19 @@ export default function VisualizarLivro() {
             )}
           </div>
 
-          {manuscrito && (
+          {manuscritoUrl && (
             <div className={styles.cartao}>
               <div className={styles.cabecalhoSecao}>
                 <div className={styles.manusInfo}>
                   <h2 className={styles.manus}>Manuscrito</h2>
+
                   <p className={styles.manup}>
                     Visualize o arquivo enviado pelo autor.
                   </p>
                 </div>
 
                 <a
-                  href={manuscrito}
+                  href={manuscritoUrl}
                   target="_blank"
                   rel="noreferrer"
                   className={styles.linkExterno}
@@ -203,9 +219,10 @@ export default function VisualizarLivro() {
                   Abrir em nova aba <FiExternalLink />
                 </a>
               </div>
+
               <div className={styles.pdfWrapper}>
                 <object
-                  data={manuscrito}
+                  data={manuscritoUrl}
                   type="application/pdf"
                   width="100%"
                   height="100%"
@@ -213,7 +230,7 @@ export default function VisualizarLivro() {
                   <p className={styles.vazio}>
                     Seu navegador não suporta a exibição de PDFs.{" "}
                     <a
-                      href={manuscrito}
+                      href={manuscritoUrl}
                       download
                       target="_blank"
                       rel="noreferrer"
@@ -231,36 +248,49 @@ export default function VisualizarLivro() {
         <aside className={styles.sidebar}>
           <div className={styles.cartao}>
             <h2 className={styles.inf}>Informações</h2>
+
             <p className={styles.infp}>Analise as informações do livro.</p>
+
             <ul className={styles.metaList}>
               <li>
                 <span>Autor</span>
+
                 <strong>
                   {users_profile?.nome} {users_profile?.sobrenome}
                 </strong>
               </li>
+
               <li>
                 <span>Status</span>
+
                 <div>
                   <strong>{ROTULO_ESTADO[estado] || estado}</strong>
+
                   {!ativo && <strong>Fora da loja</strong>}
                 </div>
               </li>
+
               <li>
-                <span>Idioma</span>{" "}
-                <strong>{mapearIdioma(idioma) || "Não informado"}</strong>
+                <span>Idioma</span>
+
+                <strong>{mapearIdioma(idioma)}</strong>
               </li>
 
               <li>
-                <span>Categoria</span>{" "}
+                <span>Categoria</span>
+
                 <strong>{categoria || "Não informado"}</strong>
               </li>
+
               <li>
-                <span>Direitos de autopublicação</span>{" "}
+                <span>Direitos de autopublicação</span>
+
                 <strong>{direitos_de_publicacao ? "Sim" : "Não"}</strong>
               </li>
+
               <li>
                 <span>Colaboradores</span>
+
                 <div>
                   {Array.isArray(colaboradores) && colaboradores.length > 0 ? (
                     colaboradores.map((colab, index) => (
@@ -278,18 +308,23 @@ export default function VisualizarLivro() {
 
           <div className={styles.cartao}>
             <h2 className={styles.secaoTitulo}>Preços de venda</h2>
+
             <p className={styles.desc}>
               Consulte os preços de venda dos livros.
             </p>
+
             <div className={styles.precosGrid}>
               <div className={styles.precoItem}>
                 <span>Físico</span>
+
                 <strong className={styles.numero}>
                   {formatarPreco(preco_fisico)}
                 </strong>
               </div>
+
               <div className={styles.precoItem}>
                 <span>E-book</span>
+
                 <strong className={styles.numero}>
                   {formatarPreco(preco_digital)}
                 </strong>
@@ -298,6 +333,7 @@ export default function VisualizarLivro() {
           </div>
         </aside>
       </section>
+
       {popup && (
         <Popup
           tipo={popup.tipo}

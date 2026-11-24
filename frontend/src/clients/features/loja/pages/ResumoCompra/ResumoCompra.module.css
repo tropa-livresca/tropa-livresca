@@ -34,8 +34,8 @@
   align-items: center;
   padding: 0.3rem 0.9rem;
   border: 1px solid #e2c77c;
-    border-radius: 0.5rem;
-    background: #fff8d7 !important;
+  border-radius: 0.5rem;
+  background: #fff8d7 !important;
   color: #67170c;
   font-size: 0.9rem;
   font-weight: 600;
@@ -49,7 +49,6 @@
 .main p.status.pendente strong {
   color: gray;
 }
-
 
 .main p.status2 {
   display: flex;
@@ -68,8 +67,8 @@
   align-items: center;
   padding: 0.3rem 0.9rem;
   border: 1px solid #e2c77c;
-    border-radius: 0.5rem;
-    background: #fff8d7 !important;
+  border-radius: 0.5rem;
+  background: #fff8d7 !important;
   color: #67170c;
   font-size: 0.9rem;
   font-weight: 600;
@@ -83,8 +82,6 @@
 .main p.status2.pendente strong {
   color: gray;
 }
-
-
 
 .confirmacao {
   display: flex;
@@ -161,8 +158,8 @@
 
 .botaoSecundario {
   background: #fff8d7;
-    border: 1px solid #e2c77c;
-    color: #67170c;
+  border: 1px solid #e2c77c;
+  color: #67170c;
 }
 
 .botaoSecundario:hover {

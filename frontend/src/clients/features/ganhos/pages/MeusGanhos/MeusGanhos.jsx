@@ -15,8 +15,12 @@ const formatarData = (data) =>
   data ? new Date(data).toLocaleDateString("pt-BR") : "";
 
 export default function MeusGanhos() {
-  const { dadosBancarios, buscarDadosBancarios, solicitarSaque } =
-    useDadosBancarios();
+  const {
+    dadosBancarios,
+    buscarDadosBancarios,
+    solicitarSaque,
+    erro: erroDadosBancarios,
+  } = useDadosBancarios();
 
   const { ganhos, carregando, erro, buscarGanhos } = useGanhos();
 
@@ -180,6 +184,11 @@ export default function MeusGanhos() {
                   <Link to="/perfil/dadosbancarios">
                     Cadastrar dados bancários
                   </Link>
+                </p>
+              )}
+              {erroDadosBancarios && !erroSaque && (
+                <p role="alert" className={styles.erro}>
+                  {erroDadosBancarios}
                 </p>
               )}
 

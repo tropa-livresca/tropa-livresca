@@ -1,63 +1,23 @@
-import { supabaseAdmin } from "../../common/config/supabase.js";
 import { RevisaoModel } from "../../common/models/revisao.model.js";
 import { LIVRO_ESTADO } from "../../common/config/livro-estados.js";
-import {
-  STORAGE_BUCKET,
-  criarUrlAssinada,
-  normalizarCaminhoPersistido,
-  removerArquivos,
-  validarArquivoArmazenado,
-  validarMetadadosUpload,
-} from "../../common/config/storage.js";
+import { validarMetadadosUpload } from "../../common/config/storage.js";
 
 export class RevisaoService {
-  static _parseCapaUrls(livro) {
-    if (!livro) return livro;
+  static _formatarRevisao(revisao) {
+    return revisao;
+  }
 
-    const livroClonado = { ...livro };
+  static _formatarRevisoes(revisoes) {
+    return revisoes || [];
+  }
 
-    try {
-      if (typeof livroClonado.capa === "string") {
-        livroClonado.capa = JSON.parse(livroClonado.capa);
-      }
-    } catch (e) {
-      console.warn("Erro ao parsear capa JSON", e);
+  static _validarArquivo(arquivo) {
+    if (!arquivo?.buffer || !arquivo.originalname) {
+      const error = new Error("O arquivo da revisão é obrigatório.");
+      error.statusCode = 400;
+      throw error;
     }
-    return livroClonado;
-  }
 
-  static _parseCapasArray(livros) {
-    return livros.map((livro) => this._parseCapaUrls(livro));
-  }
-
-  static async _formatarRevisao(revisao) {
-    if (!revisao) return revisao;
-
-    const arquivoPath = normalizarCaminhoPersistido(
-      revisao.arquivo,
-      STORAGE_BUCKET.MANUSCRITOS,
-    );
-
-    return {
-      ...revisao,
-      arquivo: arquivoPath
-        ? await criarUrlAssinada(STORAGE_BUCKET.MANUSCRITOS, arquivoPath)
-        : null,
-      arquivoPath,
-    };
-  }
-
-  static async _formatarRevisoes(revisoes) {
-    return Promise.all(
-      (revisoes || []).map((revisao) => this._formatarRevisao(revisao)),
-    );
-  }
-
-  static _novoPathRevisao(userId) {
-    return `${userId}/revisoes/${globalThis.crypto.randomUUID()}.pdf`;
-  }
-
-  static async _uploadRevisao(arquivo, userId) {
     const extensao = arquivo.originalname?.split(".").pop();
     const tamanho = arquivo.size ?? arquivo.buffer?.length;
 
@@ -68,42 +28,37 @@ export class RevisaoService {
       tamanho,
     });
 
-    const path = this._novoPathRevisao(userId);
-    const { error: uploadError } = await supabaseAdmin.storage
-      .from(STORAGE_BUCKET.MANUSCRITOS)
-      .upload(path, arquivo.buffer, {
-        cacheControl: "3600",
-        upsert: false,
-        contentType: arquivo.mimetype,
-      });
-
-    if (uploadError) {
-      uploadError.statusCode = 500;
-      throw uploadError;
-    }
-
-    try {
-      await validarArquivoArmazenado(
-        STORAGE_BUCKET.MANUSCRITOS,
-        path,
-        "manuscrito",
-      );
-    } catch (error) {
-      await this._removerRevisaoUpload(path);
-      throw error;
-    }
-
-    return path;
+    return arquivo;
   }
 
-  static async _removerRevisaoUpload(path) {
-    if (!path) return;
+  static _criarFormData(dados, arquivo = null, removerArquivo = false) {
+    const formData = new FormData();
 
-    try {
-      await removerArquivos(STORAGE_BUCKET.MANUSCRITOS, [path]);
-    } catch (error) {
-      console.error("Não foi possível remover manuscrito de revisão:", error);
+    for (const [campo, valor] of Object.entries(dados)) {
+      if (valor !== undefined && valor !== null) {
+        formData.append(campo, String(valor));
+      }
     }
+
+    if (arquivo) {
+      const blob = new Blob([arquivo.buffer], { type: arquivo.mimetype });
+      formData.append("arquivo", blob, arquivo.originalname);
+    }
+
+    if (removerArquivo === true) {
+      formData.append("arquivo-", "");
+    } else {
+      for (const nomeArquivo of Array.isArray(removerArquivo)
+        ? removerArquivo
+        : [removerArquivo]
+      ) {
+        if (typeof nomeArquivo === "string" && nomeArquivo) {
+          formData.append("arquivo-", nomeArquivo);
+        }
+      }
+    }
+
+    return formData;
   }
 
   static async BuscarLivroRevisao(busca) {
@@ -133,16 +88,11 @@ export class RevisaoService {
 
     if (revisoes.error) throw revisoes.error;
 
-    const dadosFormatados = await this._formatarRevisoes(revisoes.data);
-
-    const dadosComCapas = dadosFormatados.map((revisao) => ({
-      ...revisao,
-      livros: this._parseCapaUrls(revisao.livros),
-    }));
+    const dadosComCapas = this._formatarRevisoes(revisoes.data);
 
     return {
       data: dadosComCapas,
-      livros: this._parseCapasArray(revisoes.livros ?? []),
+      livros: revisoes.livros ?? [],
       meta: {
         page,
         limit,
@@ -165,7 +115,7 @@ export class RevisaoService {
 
     return {
       ...revisao,
-      data: await this._formatarRevisao(revisao.data),
+      data: this._formatarRevisao(revisao.data),
     };
   }
 
@@ -182,7 +132,7 @@ export class RevisaoService {
 
     return {
       ...revisao,
-      data: await this._formatarRevisoes(revisao.data),
+      data: this._formatarRevisoes(revisao.data),
     };
   }
 
@@ -199,7 +149,7 @@ export class RevisaoService {
 
     return {
       ...revisao,
-      data: await this._formatarRevisoes(revisao.data),
+      data: this._formatarRevisoes(revisao.data),
     };
   }
 
@@ -224,6 +174,7 @@ export class RevisaoService {
     idLivro,
     manuscritoRevisto = null,
     funcionarioId,
+    removerArquivo = false,
   ) {
     if (!id) {
       const erroId = new Error("Id da revisão é obrigatório.");
@@ -269,40 +220,27 @@ export class RevisaoService {
       throw erroLivro;
     }
 
-    let manuscritoPath = await this._uploadRevisao(
-      manuscritoRevisto,
-      funcionarioId,
-    );
+    const arquivo = manuscritoRevisto
+      ? this._validarArquivo(manuscritoRevisto)
+      : null;
 
     const dadosRevisao = {};
     if (nome !== undefined) dadosRevisao.nome = nome;
     if (apontamento !== undefined) dadosRevisao.apontamento = apontamento;
     if (idLivro !== undefined) dadosRevisao.fk_livro_id = idLivro;
-    if (manuscritoPath !== undefined) dadosRevisao.arquivo = manuscritoPath;
-
-    let revisaoAtualizada;
-    try {
-      revisaoAtualizada = await RevisaoModel.AtualizarRevisao(
-        id,
-        funcionarioId,
-        dadosRevisao,
-      );
-    } catch (error) {
-      await this._removerRevisaoUpload(manuscritoPath);
-      throw error;
-    }
-
-    const arquivoAnterior = normalizarCaminhoPersistido(
-      revisaoAtual.arquivo,
-      STORAGE_BUCKET.MANUSCRITOS,
+    const formData = this._criarFormData(
+      dadosRevisao,
+      arquivo,
+      arquivo || removerArquivo
+        ? (revisaoAtual.arquivo || removerArquivo)
+        : false,
     );
-    if (
-      manuscritoPath &&
-      arquivoAnterior &&
-      manuscritoPath !== arquivoAnterior
-    ) {
-      await this._removerRevisaoUpload(arquivoAnterior);
-    }
+
+    const revisaoAtualizada = await RevisaoModel.AtualizarRevisao(
+      id,
+      funcionarioId,
+      formData,
+    );
 
     return this._formatarRevisao(revisaoAtualizada);
   }
@@ -345,23 +283,17 @@ export class RevisaoService {
       throw erroRevisao;
     }
 
-    let manuscritoPath = await this._uploadRevisao(manuscritoRevisto, userId);
-
-    const dadosRevisao = {
-      nome,
-      apontamento,
-      fk_livro_id: idLivro,
-      arquivo: manuscritoPath,
-      fk_user_profile_id: userId,
-    };
-
-    let revisaoCriada;
-    try {
-      revisaoCriada = await RevisaoModel.CriarRevisao(dadosRevisao);
-    } catch (error) {
-      await this._removerRevisaoUpload(manuscritoPath);
-      throw error;
-    }
+    const arquivo = this._validarArquivo(manuscritoRevisto);
+    const dadosRevisao = this._criarFormData(
+      {
+        nome,
+        apontamento,
+        fk_livro_id: idLivro,
+        fk_user_profile_id: userId,
+      },
+      arquivo,
+    );
+    const revisaoCriada = await RevisaoModel.CriarRevisao(dadosRevisao);
 
     return this._formatarRevisao(revisaoCriada);
   }

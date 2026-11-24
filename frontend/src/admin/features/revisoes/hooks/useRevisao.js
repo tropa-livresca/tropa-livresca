@@ -44,6 +44,7 @@ export const useRevisao = () => {
   const [revisor, setRevisor] = useState(false);
   const [nome, setNome] = useState("");
   const [manuscrito, setManuscrito] = useState(null);
+  const [removerArquivo, setRemoverArquivo] = useState(false);
   const [apontamento, setApontamento] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [error, setError] = useState(null);
@@ -61,6 +62,7 @@ export const useRevisao = () => {
     setNome("");
     setApontamento("");
     setManuscrito(null);
+    setRemoverArquivo(false);
     setRevisaoAtual(null);
     setError(null);
   }, []);
@@ -149,7 +151,8 @@ export const useRevisao = () => {
       setLivroRevisado(resultado?.livro ?? null);
       setNome(revisao?.nome ?? "");
       setApontamento(revisao?.apontamento ?? "");
-      setManuscrito(revisao?.arquivo ?? null);
+      setManuscrito(revisao?.arquivoUrl ?? null);
+      setRemoverArquivo(false);
 
       return resultado;
     } catch (err) {
@@ -246,7 +249,8 @@ export const useRevisao = () => {
         setRevisaoAtual(data);
         setApontamento(data.apontamento ?? "");
         setNome(data.nome ?? "");
-        setManuscrito(data.arquivo ?? null);
+        setManuscrito(data.arquivoUrl ?? null);
+        setRemoverArquivo(false);
       } else {
         // Mantém a regra anterior: ausência de revisão significa
         // que o usuário pode prosseguir com a operação.
@@ -378,6 +382,9 @@ export const useRevisao = () => {
         if (manuscrito && typeof manuscrito !== "string") {
           formData.append("manuscritoRevisto", manuscrito);
         }
+        if (removerArquivo) {
+          formData.append("removerArquivo", "true");
+        }
 
         const response = await apiFetch(
           `/api/v1/admin/revisao/${encodeURIComponent(id)}`,
@@ -420,7 +427,14 @@ export const useRevisao = () => {
         setCarregando(false);
       }
     },
-    [nome, apontamento, manuscrito, validarCamposTexto, alterarEstadoLivro],
+    [
+      nome,
+      apontamento,
+      manuscrito,
+      removerArquivo,
+      validarCamposTexto,
+      alterarEstadoLivro,
+    ],
   );
 
   const negarPublicacaoLivro = useCallback(async (idLivro) => {
@@ -492,6 +506,8 @@ export const useRevisao = () => {
     setNome,
     manuscrito,
     setManuscrito,
+    removerArquivo,
+    setRemoverArquivo,
     apontamento,
     setApontamento,
     carregando,

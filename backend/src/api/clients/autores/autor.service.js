@@ -1,24 +1,6 @@
 import { AutorModel } from "../../common/models/autor.model.js";
 
 export class AutorService {
-  static _parseCapaUrls(livro) {
-    if (!livro) return livro;
-    const livroClonado = { ...livro };
-    try {
-      if (typeof livroClonado.capa === "string") {
-        livroClonado.capa = JSON.parse(livroClonado.capa);
-      }
-    } catch (e) {
-      console.warn("Erro ao parsear capa JSON", e);
-    }
-    return livroClonado;
-  }
-
-  static _parseCapasArray(livros) {
-    if (!livros) return [];
-    return livros.map((livro) => this._parseCapaUrls(livro));
-  }
-
   static async getAutoresService({ page, limit, busca }) {
     try {
       const { data, count } = await AutorModel.buscarComFiltros({
@@ -33,13 +15,8 @@ export class AutorService {
         throw erro404;
       }
 
-      const autoresComCapas = data.map((autor) => ({
-        ...autor,
-        livros: this._parseCapasArray(autor.livros),
-      }));
-
       return {
-        data: autoresComCapas,
+        data,
         meta: {
           page,
           limit,
@@ -72,14 +49,12 @@ export class AutorService {
       const end = start + limit;
       const livrosPaginados = livrosOriginais.slice(start, end);
 
-      const livrosComCapas = this._parseCapasArray(livrosPaginados);
-
       delete autor.livros;
 
       return {
         data: {
           ...autor,
-          livros: livrosComCapas,
+          livros: livrosPaginados,
         },
         meta: {
           page: Number(page),

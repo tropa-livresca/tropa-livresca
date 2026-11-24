@@ -3,7 +3,7 @@ import useAuth from "../../../common/hooks/useAuth";
 import { usePerfil } from "../../features/perfil/hooks/usePerfil";
 import { useState, useEffect } from "react";
 import styles from "./NavBar.module.css";
-import logo from "../../../common/images/logo.png";
+import logo from "../../../common/images/logo.webp";
 
 import { FaUserCircle } from "react-icons/fa";
 import { FiDollarSign, FiLogOut, FiPackage } from "react-icons/fi";
@@ -120,7 +120,8 @@ export default function NavBar() {
               </button>
 
               <span className={styles.nomeUsuario}>
-                {perfil?.nome || "Perfil"}
+                {`${perfil?.nome || ""} ${perfil?.sobrenome || ""}`.trim() ||
+                  "Perfil"}
               </span>
 
               {menuUsuario && (

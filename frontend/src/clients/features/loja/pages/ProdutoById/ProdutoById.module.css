@@ -75,7 +75,7 @@
   gap: 0.8rem;
   margin-top: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom:1px solid #e3d5ad;
+  border-bottom: 1px solid #e3d5ad;
 }
 
 .genero {
@@ -126,7 +126,7 @@
   box-sizing: border-box;
   border-radius: 10px;
   background: #fffdf7;
-    box-shadow:
+  box-shadow:
     0 8px 20px rgba(103, 23, 12, 0.08),
     0 2px 6px rgba(103, 23, 12, 0.05);
 }
@@ -139,7 +139,7 @@
 .informacao:hover,
 .informacaoAutor:hover {
   transform: translateY(-2px);
-   transition: 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .iconeInformacao {
@@ -180,7 +180,6 @@
   min-width: 0;
 }
 
-
 .fotoAutor,
 .semFotoAutor {
   width: 42px;
@@ -210,7 +209,6 @@
   transform: translateY(-2px);
   transition: 0.2s ease;
 }
-
 
 .autorDados {
   min-width: 0;

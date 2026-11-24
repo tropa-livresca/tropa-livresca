@@ -2,8 +2,8 @@
 import SubmitButton from "../../../../components/Submit/SubmitButton";
 import styles from "./LoginAdmin.module.css";
 
-import logo from "../../images/login.jpg";
-import logo2 from "../../../../images/logo.png";
+import logo from "../../images/login.webp";
+import logo2 from "../../../../images/logo.webp";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";

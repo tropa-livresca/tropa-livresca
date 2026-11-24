@@ -20,29 +20,39 @@ export const CarrinhoProvider = ({ children }) => {
   }, [itens]);
 
   const adicionarItem = (produto) => {
+    const produtoNormalizado = {
+      ...produto,
+      id: String(produto.id ?? "").trim(),
+      quantidade: Number(produto.quantidade) || 1,
+    };
+
+    if (!produtoNormalizado.id) {
+      console.error("Produto sem identificador:", produto);
+      return;
+    }
+
     setItens((itensAtuais) => {
       const itemExistente = itensAtuais.find(
-        (item) => item.id === produto.id && item.tipo === produto.tipo,
+        (item) =>
+          item.id === produtoNormalizado.id &&
+          item.tipo === produtoNormalizado.tipo,
       );
 
       if (itemExistente) {
         return itensAtuais.map((item) =>
-          item.id === produto.id &&
-          item.tipo === produto.tipo &&
-          item.tipo == "fisico"
+          item.id === produtoNormalizado.id &&
+          item.tipo === produtoNormalizado.tipo &&
+          item.tipo === "Físico"
             ? {
                 ...item,
                 quantidade:
-                  Number(item.quantidade) + (Number(produto.quantidade) || 1),
+                  Number(item.quantidade) + produtoNormalizado.quantidade,
               }
             : item,
         );
       }
 
-      return [
-        ...itensAtuais,
-        { ...produto, quantidade: produto.quantidade || 1 },
-      ];
+      return [...itensAtuais, produtoNormalizado];
     });
   };
 

@@ -1,17 +1,33 @@
-﻿
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import styles from "./Conteudo.module.css";
 import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Popup from "../../../../components/PopUp/Popup";
 
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
+let pdfjsPromise;
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+const carregarPdfJs = () => {
+  if (!pdfjsPromise) {
+    pdfjsPromise = Promise.all([
+      import("pdfjs-dist/legacy/build/pdf.mjs"),
+      import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url"),
+    ])
+      .then(([pdfjsLib, pdfWorker]) => {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker.default;
+        return pdfjsLib;
+      })
+      .catch((erro) => {
+        pdfjsPromise = null;
+        throw erro;
+      });
+  }
+
+  return pdfjsPromise;
+};
 
 const TAMANHO_MAXIMO_CAPA = 10 * 1024 * 1024;
 const TAMANHO_MAXIMO_MANUSCRITO = 50 * 1024 * 1024;
+
 const FORMATOS_CAPA = ["image/jpeg", "image/png"];
 
 const LARGURA_MINIMA_A5_PX = 0;
@@ -35,14 +51,24 @@ const validarCapa = (arquivo) => {
   return null;
 };
 
-const fileToDataUri = (file) =>
-  new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      resolve(event.target.result);
-    };
-    reader.readAsDataURL(file);
-  });
+const validarManuscrito = (arquivo) => {
+  if (
+    arquivo.type !== "application/pdf" &&
+    !arquivo.name.toLowerCase().endsWith(".pdf")
+  ) {
+    return "Formato inválido. Envie o manuscrito em PDF.";
+  }
+
+  if (arquivo.size <= 0) {
+    return "O arquivo está vazio.";
+  }
+
+  if (arquivo.size > TAMANHO_MAXIMO_MANUSCRITO) {
+    return "O manuscrito deve ter no máximo 50 MB.";
+  }
+
+  return null;
+};
 
 const obterDimensoesImagem = (arquivo) =>
   new Promise((resolve, reject) => {
@@ -82,69 +108,89 @@ export default function Conteudo({
   onChange,
   irParaProximaEtapa,
   voltarEtapa,
-  uploadManuscrito
 }) {
   const [popup, setPopup] = useState(null);
+
+  const [previews, setPreviews] = useState({
+    manuscrito: null,
+    frente: null,
+    verso: null,
+  });
+
+  useEffect(() => {
+    const novasPreviews = {
+      manuscrito: null,
+      frente: null,
+      verso: null,
+    };
+
+    const arquivos = [
+      ["manuscrito", dados?.manuscrito],
+      ["frente", dados?.capa?.frente],
+      ["verso", dados?.capa?.verso],
+    ];
+
+    const urlsCriadas = [];
+
+    arquivos.forEach(([campo, arquivo]) => {
+      if (arquivo instanceof Blob) {
+        const url = URL.createObjectURL(arquivo);
+
+        novasPreviews[campo] = url;
+        urlsCriadas.push(url);
+      } else if (typeof arquivo === "string") {
+        novasPreviews[campo] = arquivo;
+      }
+    });
+
+    setPreviews(novasPreviews);
+
+    return () => {
+      urlsCriadas.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [dados?.manuscrito, dados?.capa?.frente, dados?.capa?.verso]);
 
   const atualizarCampo = async (chave, e) => {
     const input = e.target;
     const arquivo = input.files?.[0];
+
     if (!arquivo) return;
-    const blob = await fileToDataUri(arquivo);
 
     if (chave === "manuscrito") {
-      if (
-        arquivo.type !== "application/pdf" &&
-        !arquivo.name.toLowerCase().endsWith(".pdf")
-      ) {
-        setPopup({
-          tipo: "erro",
-          mensagem: "Formato inválido. Envie o manuscrito em PDF.",
-        });
+      const erro = validarManuscrito(arquivo);
+
+      if (erro) {
+        setPopup({ tipo: "erro", mensagem: erro });
         input.value = "";
         return;
       }
 
-      if (arquivo.size <= 0 || arquivo.size > TAMANHO_MAXIMO_MANUSCRITO) {
-        setPopup({
-          tipo: "erro",
-          mensagem:
-            arquivo.size <= 0
-              ? "O arquivo está vazio."
-              : "O manuscrito deve ter no máximo 50 MB.",
-        });
-        input.value = "";
-        return;
-      }
+      let pdfDocument;
 
       try {
+        const pdfjsLib = await carregarPdfJs();
+
         const buffer = await arquivo.arrayBuffer();
 
         const loadingTask = pdfjsLib.getDocument({
           data: new Uint8Array(buffer),
         });
 
-        const pdfDocument = await loadingTask.promise;
+        pdfDocument = await loadingTask.promise;
+
         const numeroPaginas = pdfDocument.numPages;
 
         if (!numeroPaginas || numeroPaginas < 1) {
           throw new Error("O PDF não possui páginas válidas.");
         }
 
-        const path = await uploadManuscrito(blob);
-
-        console.log(numeroPaginas);
-        console.log(path);
-
         onChange({
           ...dados,
-          manuscrito: path,
-          numeroPaginas:numeroPaginas,
+          manuscrito: arquivo,
+          numeroPaginas,
         });
-
-        await pdfDocument.destroy();
       } catch (erro) {
-        console.error("Erro ao calcular páginas do PDF:", erro);
+        console.error("Erro ao validar PDF:", erro);
 
         setPopup({
           tipo: "erro",
@@ -153,22 +199,19 @@ export default function Conteudo({
         });
 
         input.value = "";
+      } finally {
+        if (pdfDocument) {
+          await pdfDocument.destroy();
+        }
       }
-
-      return;
     }
-
-    onChange({
-      ...dados,
-      [chave]: blob,
-    });
   };
 
   const atualizarCapa = async (parte, e) => {
     const input = e.target;
     const arquivo = input.files?.[0];
+
     if (!arquivo) return;
-    const blob = await fileToDataUri(arquivo);
 
     const erro = validarCapa(arquivo);
 
@@ -189,7 +232,7 @@ export default function Conteudo({
           tipo: "erro",
           mensagem:
             `A imagem da ${parte} da capa tem ${dimensoes.largura} × ${dimensoes.altura} px. ` +
-            `Para o padrão A5, recomendamos no mínimo ${LARGURA_MINIMA_A5_PX} × ${ALTURA_MINIMA_A5_PX} px (300 DPI, sem sangria).`,
+            `Para o padrão A5, recomendamos no mínimo ${LARGURA_MINIMA_A5_PX} × ${ALTURA_MINIMA_A5_PX} px.`,
         });
 
         input.value = "";
@@ -200,7 +243,7 @@ export default function Conteudo({
         ...dados,
         capa: {
           ...dados.capa,
-          [parte]: blob,
+          [parte]: arquivo,
         },
         dimensoesCapa: {
           ...dados.dimensoesCapa,
@@ -208,7 +251,11 @@ export default function Conteudo({
         },
       });
     } catch (erroLeitura) {
-      setPopup({ tipo: "erro", mensagem: erroLeitura.message });
+      setPopup({
+        tipo: "erro",
+        mensagem: erroLeitura.message,
+      });
+
       input.value = "";
     }
   };
@@ -239,16 +286,15 @@ export default function Conteudo({
             />
           </label>
 
-          {dados?.manuscrito && (
+          {previews.manuscrito && (
             <div className={styles.manuscrito}>
               <p className={styles.pmanuscrito}>
                 ✓ Manuscrito carregado{" "}
-                {dados.orcamento?.numeroPaginas &&
-                  `(${dados.orcamento.numeroPaginas} páginas)`}
+                {dados.numeroPaginas && `(${dados.numeroPaginas} páginas)`}
               </p>
 
               <a
-                href={dados.manuscrito}
+                href={previews.manuscrito}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.btnmanus}
@@ -257,7 +303,7 @@ export default function Conteudo({
               </a>
 
               <div className={styles.embed}>
-                <embed src={dados.manuscrito} type="application/pdf" />
+                <embed src={previews.manuscrito} type="application/pdf" />
               </div>
             </div>
           )}
@@ -267,23 +313,36 @@ export default function Conteudo({
           <legend>Capa do Livro</legend>
 
           <div className={styles.especificacoes}>
-            <h2>Especificações das capas — formato <span className={styles.numero}>A5</span></h2>
+            <h2>
+              Especificações das capas — formato{" "}
+              <span className={styles.numero}>A5</span>
+            </h2>
 
             <ul>
-              <li>Formato final do livro: <span className={styles.numero}>14,8</span> × <span className={styles.numero}>21</span> cm <span className={styles.numero}>(A5)</span>.</li>
               <li>
-                Frente e verso: recomendamos no mínimo <span className={styles.numero}>1748</span> × <span className={styles.numero}>2480</span> px,
-                equivalente a <span className={styles.numero}>300</span> DPI para o formato <span className={styles.numero}>A5</span>, sem incluir sangria.
+                Formato final do livro:{" "}
+                <span className={styles.numero}>14,8</span> ×{" "}
+                <span className={styles.numero}>21</span> cm (A5).
               </li>
+
+              <li>
+                Frente e verso: recomendamos no mínimo{" "}
+                <span className={styles.numero}>1748</span> ×{" "}
+                <span className={styles.numero}>2480</span> px, equivalente a
+                300 DPI, sem sangria.
+              </li>
+
               <li>Formatos aceitos: JPG, JPEG e PNG.</li>
-              <li>Tamanho máximo: <span className={styles.numero}>10</span> MB por imagem.</li>
+
+              <li>Tamanho máximo: 10 MB por imagem.</li>
+
               <li>As dimensões reais serão exibidas após o carregamento.</li>
             </ul>
 
             <p>
-              A medida de <span className={styles.numero}>14,8</span> × <span className={styles.numero}>21</span> cm corresponde ao tamanho final após o
+              A medida de 14,8 × 21 cm corresponde ao tamanho final após o
               corte. A gráfica pode exigir sangria adicional; confirme essa
-              especificação antes de preparar os arquivos finais para impressão.
+              especificação antes de preparar os arquivos finais.
             </p>
           </div>
 
@@ -306,10 +365,10 @@ export default function Conteudo({
               />
             </label>
 
-            {dados?.capa?.frente && (
+            {previews.frente && (
               <div className={styles.preview}>
                 <img
-                  src={dados?.capa?.frente}
+                  src={previews.frente}
                   alt="Prévia da frente da capa"
                   width="150"
                 />
@@ -338,10 +397,10 @@ export default function Conteudo({
               />
             </label>
 
-            {dados?.capa?.verso && (
+            {previews.verso && (
               <div className={styles.preview}>
                 <img
-                  src={dados?.capa?.verso}
+                  src={previews.verso}
                   alt="Prévia do verso da capa"
                   width="150"
                 />
@@ -376,6 +435,7 @@ export default function Conteudo({
           </div>
         </div>
       </form>
+
       {popup && (
         <Popup
           tipo={popup.tipo}
