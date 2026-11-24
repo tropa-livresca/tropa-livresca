@@ -1,16 +1,21 @@
-import { criarClienteModel, marcarErro } from "./pocketbase.helpers.js";
+import {
+  criarClienteModel,
+  marcarErro,
+  mapearCampoArquivo,
+} from "./pocketbase.helpers.js";
 
 const COLECAO_PERFIL = "users_profile";
 
 export class PerfilModel {
   static async buscarPerfil(id) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const perfil = await pb.collection(COLECAO_PERFIL).getOne(id);
 
       return {
         ...perfil,
+        ...mapearCampoArquivo(pb, perfil, "imagem"),
         nome: perfil.nome || "",
         sobrenome: perfil.sobrenome || "",
       };
@@ -21,7 +26,7 @@ export class PerfilModel {
   }
 
   static async atualizarNomeUsuario(userId, dados) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       return await pb.collection(COLECAO_PERFIL).update(userId, dados);
@@ -31,10 +36,19 @@ export class PerfilModel {
   }
 
   static async atualizarPerfil(userId, dadosPerfil) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
-      return await pb.collection(COLECAO_PERFIL).update(userId, dadosPerfil);
+      const registro = await pb
+        .collection(COLECAO_PERFIL)
+        .update(userId, dadosPerfil);
+
+      return {
+        ...registro,
+        ...mapearCampoArquivo(pb, registro, "imagem"),
+        nome: registro.nome || "",
+        sobrenome: registro.sobrenome || "",
+      };
     } catch (error) {
       marcarErro(error);
     }
@@ -66,6 +80,7 @@ export class PerfilModel {
 
       return {
         ...registro,
+        ...mapearCampoArquivo(pb, registro, "imagem"),
         nome: registro.nome || "",
         sobrenome: registro.sobrenome || "",
       };
@@ -83,7 +98,7 @@ export class PerfilModel {
       throw error;
     }
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const formData = new FormData();
@@ -102,6 +117,7 @@ export class PerfilModel {
 
       return {
         ...registro,
+        ...mapearCampoArquivo(pb, registro, "imagem"),
         nome: registro.nome || "",
         sobrenome: registro.sobrenome || "",
       };
@@ -110,3 +126,4 @@ export class PerfilModel {
     }
   }
 }
+ 

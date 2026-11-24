@@ -1,10 +1,10 @@
-import { criarClienteModel, marcarErro } from "./pocketbase.helpers.js";
+import {  criarClienteModel, marcarErro } from "./pocketbase.helpers.js";
 
 const COLECAO = "enderecos";
 const RELACAO_PERFIL = "fk_user_profile_id";
 
 async function buscarEnderecos(userId, filtros = {}) {
-  const pb = criarClienteModel();
+  const pb = await criarClienteModel();
 
   const partesFiltro = [`${RELACAO_PERFIL} = {:userId}`];
 
@@ -68,7 +68,7 @@ export class EnderecoModel {
   }
 
   static async AtualizarEnderecoById(id, dadosAtualizados, userId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const endereco = await buscarEndereco(userId, id);
 
@@ -92,7 +92,7 @@ export class EnderecoModel {
   }
 
   static async CriarEndereco(userId, dadosEndereco) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     if (!userId) {
       const error = new Error(
@@ -118,7 +118,7 @@ export class EnderecoModel {
   }
 
   static async DefinirPrincipal(id, userId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const colecao = pb.collection(COLECAO);
 
     try {

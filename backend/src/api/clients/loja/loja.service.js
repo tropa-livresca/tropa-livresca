@@ -120,21 +120,17 @@ export class LojaService {
       error(400, "Não há como realizar compra sem itens da venda.");
 
     const itensNormalizados = itens.map((item) => {
-      const livroIdTexto = String(item.livroId ?? "").trim();
-      const livroId = /^\d+$/.test(livroIdTexto)
-        ? Number(livroIdTexto)
-        : livroIdTexto;
+      const livroId = String(item.livroId ?? "").trim();
       const fisico = item.fisico === true;
       const qtd = fisico ? Number(item.qtd) : 1;
 
-      if (
-        !livroIdTexto ||
-        (typeof livroId === "number" &&
-          (!Number.isSafeInteger(livroId) || livroId <= 0))
-      )
+      if (!livroId) {
         error(400, "Livro inválido no carrinho.");
-      if (!Number.isInteger(qtd) || qtd < 1 || qtd > MAX_QTD_POR_ITEM)
+      }
+
+      if (!Number.isInteger(qtd) || qtd < 1 || qtd > MAX_QTD_POR_ITEM) {
         error(400, "Quantidade inválida no carrinho.");
+      }
 
       return { livroId, fisico, qtd };
     });

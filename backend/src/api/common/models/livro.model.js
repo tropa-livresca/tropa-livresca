@@ -12,6 +12,8 @@ const RELACAO_PERFIL = "fk_user_profile_id";
 
 const COLUNAS_LIVRO = [
   "id",
+  "collectionId",
+  "collectionName",
   "ISBN",
   "data_de_publicacao",
   "categoria",
@@ -82,7 +84,7 @@ export class LivroModel {
     ordem = "",
     estado = "",
   }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const filtros = [`estado != {:rascunho}`];
     const params = { rascunho: LIVRO_ESTADO.RASCUNHO };
 
@@ -121,7 +123,7 @@ export class LivroModel {
   static async buscarLivroByIdAdmin(livroId) {
     if (!livroId) return null;
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO).getOne(livroId, {
@@ -136,7 +138,7 @@ export class LivroModel {
   }
 
   static async alterarAtivoLivro(livroId, ativo) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO).update(livroId, {
@@ -156,7 +158,7 @@ export class LivroModel {
   static async buscarLivroByUserId(userId) {
     if (!userId) return null;
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const result = await pb.collection(COLECAO).getFullList({
@@ -179,7 +181,7 @@ export class LivroModel {
     filtro = "",
     ordem = "",
   }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const filtros = ["ativo = true", "estado = {:estado}"];
     const params = {
@@ -212,6 +214,8 @@ export class LivroModel {
         fields: [
           COLUNAS_LIVRO,
           `expand.${RELACAO_PERFIL}.id`,
+          `expand.${RELACAO_PERFIL}.collectionId`,
+          `expand.${RELACAO_PERFIL}.collectionName`,
           `expand.${RELACAO_PERFIL}.nome`,
           `expand.${RELACAO_PERFIL}.sobrenome`,
           `expand.${RELACAO_PERFIL}.imagem`,
@@ -227,7 +231,7 @@ export class LivroModel {
   static async buscarDetalhesPorId(id) {
     if (!id) return null;
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO).getOne(id, {

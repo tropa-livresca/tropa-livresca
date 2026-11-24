@@ -92,7 +92,7 @@ async function buscarAutores(pb, busca = "") {
 
 export class AutorModel {
   static async buscarComFiltros({ page = 1, limit = 12, busca = "" }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const { autores, count } = await buscarAutores(pb, busca);
@@ -111,7 +111,7 @@ export class AutorModel {
   static async buscarPorId(id) {
     if (!id) return null;
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const { autores } = await buscarAutores(pb);

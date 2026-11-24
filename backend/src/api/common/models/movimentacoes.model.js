@@ -21,7 +21,7 @@ export class MovimentacoesModel {
   }
 
   static async alterarDadosConta(usuarioId, novosDadosBancarios) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const perfil = await buscarPerfil(pb, usuarioId);
 
     if (!perfil) {
@@ -40,7 +40,7 @@ export class MovimentacoesModel {
   }
 
   static async buscarDadosMovimentacoesAutor(autorId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const data = await pb.collection(COLECAO_MOVIMENTACOES).getFullList({
@@ -66,7 +66,7 @@ export class MovimentacoesModel {
   }
 
   static async buscarDadosMovimentacoesEditora() {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const data = await pb.collection(COLECAO_MOVIMENTACOES).getFullList({
@@ -96,7 +96,7 @@ export class MovimentacoesModel {
   }
 
   static async autorizarDepositoContaAutor(vendaId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const venda = await pb.collection("vendas").getOne(vendaId);
@@ -251,7 +251,7 @@ export class MovimentacoesModel {
       throw error;
     }
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const transacao = await pb.collection(COLECAO_MOVIMENTACOES).create({
@@ -277,7 +277,7 @@ export class MovimentacoesModel {
   }
 
   static async buscarDadosBancarios(userId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const perfil = await buscarPerfil(pb, userId);
 
     return perfil?.dados_bancarios || null;

@@ -8,7 +8,7 @@ import {
 const COLECAO_AUTH = "users_profile";
 
 const buscarPerfilAdmin = async (userId) => {
-  const pb = criarClienteAdminPocketBase();
+  const pb = await criarClienteAdminPocketBase();
 
   return await pb.collection(COLECAO_AUTH).getOne(userId, {
     fields: "id,email,nome,sobrenome,is_admin,is_master,primeiro_acesso",

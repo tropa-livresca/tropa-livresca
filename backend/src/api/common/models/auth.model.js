@@ -1,6 +1,11 @@
-import pb from "../config/pocketbase.js";
+import bcrypt from "bcryptjs";
+
+import pb, { criarClienteAdminPocketBase } from "../config/pocketbase.js";
+
+import { gerarSenha } from "../utils/senha.util.js";
 
 const COLECAO_AUTH = "users_profile";
+const SALT_ROUNDS = 12;
 
 export class AuthModel {
   static async buscarPerfil(userId) {
@@ -10,6 +15,7 @@ export class AuthModel {
   static async conferirPrimeiroAcesso(userId) {
     try {
       const perfil = await this.buscarPerfil(userId);
+
       return perfil.primeiro_acesso ?? false;
     } catch (error) {
       if (error.status === 404) return false;
@@ -19,60 +25,11 @@ export class AuthModel {
     }
   }
 
-  static async signinAdmin(email, senha) {
-    try {
-      const authData = await pb
-        .collection(COLECAO_AUTH)
-        .authWithPassword(email, senha);
-
-      const usuario = authData.record;
-
-      if (!usuario.is_admin) {
-        pb.authStore.clear();
-
-        const error = new Error("Acesso negado. Apenas administradores.");
-
-        error.statusCode = 403;
-        throw error;
-      }
-
-      return {
-        data: {
-          userId: usuario.id,
-          user: usuario,
-        },
-        error: null,
-      };
-    } catch (error) {
-      if (error.statusCode === 403) {
-        return {
-          data: null,
-          error,
-        };
-      }
-
-      return {
-        data: null,
-        error: Object.assign(
-          new Error(
-            error.status === 400 || error.status === 401
-              ? "Credenciais administrativas inválidas."
-              : "Não foi possível realizar a autenticação administrativa.",
-          ),
-          {
-            statusCode:
-              error.status === 400 || error.status === 401
-                ? 401
-                : error.status || 500,
-          },
-        ),
-      };
-    }
-  }
-
   static async conferirAdmin(userId) {
     try {
-      const usuario = await this.buscarPerfil(userId);
+      const pbAdmin = await criarClienteAdminPocketBase();
+
+      const usuario = await pbAdmin.collection(COLECAO_AUTH).getOne(userId);
 
       if (!usuario.is_admin) {
         const error = new Error("Acesso negado. Apenas administradores.");
@@ -81,7 +38,9 @@ export class AuthModel {
         throw error;
       }
 
-      return usuario;
+      const { senha_admin, ...usuarioSeguro } = usuario;
+
+      return usuarioSeguro;
     } catch (error) {
       if (!error.statusCode) {
         error.statusCode = error.status || 500;
@@ -91,42 +50,174 @@ export class AuthModel {
     }
   }
 
-  static async alterarSenhaAdmin(userId, novaSenha, senhaAntiga) {
-    const usuarioAtual = pb.authStore.record;
+  static async gerarCredenciaisAdmin() {
+    const senha = gerarSenha(16);
 
-    if (!usuarioAtual || usuarioAtual.id !== userId) {
-      const error = new Error(
-        "Não é permitido alterar a senha de outro usuário.",
-      );
-
-      error.statusCode = 403;
-      throw error;
-    }
-
-    const dadosSenha = {
-      password: novaSenha,
-      passwordConfirm: novaSenha,
-      primeiro_acesso: false,
-    };
-
-    if (senhaAntiga) {
-      dadosSenha.oldPassword = senhaAntiga;
-    }
-
-    const usuario = await pb
-      .collection(COLECAO_AUTH)
-      .update(userId, dadosSenha);
+    const hash = await bcrypt.hash(senha, SALT_ROUNDS);
 
     return {
-      data: usuario,
+      senha,
+      hash,
     };
   }
 
+  static async promoverAdmin(userId, isMaster = false) {
+    const pbAdmin = await criarClienteAdminPocketBase();
+
+    try {
+      const usuario = await pbAdmin.collection(COLECAO_AUTH).getOne(userId);
+
+      if (usuario.is_admin) {
+        const error = new Error("Este usuário já é administrador.");
+
+        error.statusCode = 409;
+        throw error;
+      }
+
+      const { senha, hash } = await this.gerarCredenciaisAdmin();
+
+      const atualizado = await pbAdmin.collection(COLECAO_AUTH).update(userId, {
+        is_admin: true,
+        is_master: isMaster,
+        senha_admin: hash,
+        primeiro_acesso: true,
+      });
+
+      return {
+        data: {
+          userId: atualizado.id,
+          email: atualizado.email,
+          nome: atualizado.nome,
+          senhaTemporaria: senha,
+        },
+        error: null,
+      };
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = error.status || 500;
+      }
+
+      throw error;
+    }
+  }
+
+  static async signinAdmin(email, senha) {
+    const pbAdmin = await criarClienteAdminPocketBase();
+
+    try {
+      const filtro = pbAdmin.filter("email = {:email}", { email });
+
+      const usuario = await pbAdmin
+        .collection(COLECAO_AUTH)
+        .getFirstListItem(filtro);
+
+      if (!usuario.is_admin || !usuario.senha_admin) {
+        throw new Error("Credenciais administrativas inválidas.");
+      }
+
+      const senhaValida = await bcrypt.compare(senha, usuario.senha_admin);
+
+      if (!senhaValida) {
+        throw new Error("Credenciais administrativas inválidas.");
+      }
+
+      const { senha_admin, ...usuarioSeguro } = usuario;
+
+      return {
+        data: {
+          userId: usuario.id,
+          user: usuarioSeguro,
+        },
+        error: null,
+      };
+    } catch (error) {
+      return {
+        data: null,
+        error: Object.assign(
+          new Error("Credenciais administrativas inválidas.", error),
+          {
+            statusCode: 401,
+          },
+        ),
+      };
+    }
+  }
+
+  static async alterarSenhaAdmin(userId, novaSenha, senhaAntiga) {
+    const pbAdmin = await criarClienteAdminPocketBase();
+
+    try {
+      const usuario = await pbAdmin.collection(COLECAO_AUTH).getOne(userId);
+
+      if (!usuario.is_admin) {
+        const error = new Error("Acesso negado. Apenas administradores.");
+        error.statusCode = 403;
+        throw error;
+      }
+
+      if (!usuario.senha_admin) {
+        const error = new Error("Credencial administrativa não cadastrada.");
+        error.statusCode = 400;
+        throw error;
+      }
+
+      if (!usuario.primeiro_acesso) {
+        if (!senhaAntiga) {
+          const error = new Error("Informe sua senha administrativa atual.");
+          error.statusCode = 400;
+          throw error;
+        }
+
+        const senhaValida = await bcrypt.compare(
+          senhaAntiga,
+          usuario.senha_admin,
+        );
+
+        if (!senhaValida) {
+          const error = new Error(
+            "A senha administrativa atual está incorreta.",
+          );
+          error.statusCode = 401;
+          throw error;
+        }
+      }
+
+      if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+        const error = new Error(
+          "A nova senha deve possuir pelo menos 8 caracteres.",
+        );
+        error.statusCode = 400;
+        throw error;
+      }
+
+      const hash = await gerarSenha(novaSenha);
+
+      const atualizado = await pbAdmin.collection(COLECAO_AUTH).update(userId, {
+        senha_admin: hash,
+        primeiro_acesso: false,
+      });
+
+      return {
+        data: {
+          userId: atualizado.id,
+          primeiro_acesso: atualizado.primeiro_acesso,
+        },
+        error: null,
+      };
+    } catch (error) {
+      if (!error.statusCode) {
+        error.statusCode = error.status || 500;
+      }
+
+      throw error;
+    }
+  }
   static async atualizarSenha(senhaNova, senhaAntiga) {
     const usuario = pb.authStore.record;
 
     if (!usuario) {
       const error = new Error("Nenhum usuário autenticado.");
+
       error.statusCode = 401;
       throw error;
     }
@@ -176,6 +267,7 @@ export class AuthModel {
 
   static async signout() {
     pb.authStore.clear();
+
     return true;
   }
 

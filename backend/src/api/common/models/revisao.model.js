@@ -82,7 +82,7 @@ async function buscarRevisaoOpcional(pb, filtro, parametros = {}) {
 
 export class RevisaoModel {
   static async BuscarLivroRevisao(busca) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const filtros = [];
@@ -119,7 +119,7 @@ export class RevisaoModel {
     ordem = "",
     livro = "",
   ) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const filtros = [];
     const params = {};
@@ -167,7 +167,7 @@ export class RevisaoModel {
   }
 
   static async BuscarRevisaoById(id) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const revisao = await pb.collection(COLECAO_REVISOES).getOne(id, {
@@ -186,7 +186,7 @@ export class RevisaoModel {
   }
 
   static async BuscarRevisaoByUserId(userId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const data = await pb.collection(COLECAO_REVISOES).getFullList({
@@ -205,7 +205,7 @@ export class RevisaoModel {
   }
 
   static async BuscarRevisaoByLivroId(livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const data = await pb.collection(COLECAO_REVISOES).getFullList({
@@ -224,7 +224,7 @@ export class RevisaoModel {
   }
 
   static async AtualizarRevisao(id, funcionarioId, dadosAtualizados) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const revisao = await buscarRevisaoOpcional(
       pb,
@@ -257,7 +257,7 @@ export class RevisaoModel {
   }
 
   static async VerificarRevisor(livroId, funcionarioId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const revisao = await buscarRevisaoOpcional(
       pb,
@@ -286,7 +286,7 @@ export class RevisaoModel {
       throw error;
     }
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const revisao = await buscarRevisaoOpcional(
       pb,
@@ -350,7 +350,7 @@ export class RevisaoModel {
   }
 
   static async buscarLivroParaRevisao(livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO_LIVROS).getOne(livroId, {
@@ -369,7 +369,7 @@ export class RevisaoModel {
   }
 
   static async buscarRevisaoPendentePorLivro(livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     return buscarRevisaoOpcional(
       pb,
@@ -379,7 +379,7 @@ export class RevisaoModel {
   }
 
   static async buscarRevisaoParaAtualizacao(id, funcionarioId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     return buscarRevisaoOpcional(
       pb,
@@ -392,7 +392,7 @@ export class RevisaoModel {
   }
 
   static async CriarRevisao(dadosRevisao) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const dados =
       dadosRevisao instanceof FormData ? dadosRevisao : { ...dadosRevisao };
@@ -409,7 +409,7 @@ export class RevisaoModel {
   }
 
   static async CompletarRevisao(id, funcionarioId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const revisao = await this.buscarRevisaoParaAtualizacao(id, funcionarioId);
 

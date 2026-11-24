@@ -1,4 +1,5 @@
-import { AuthModel } from "../../common/models/auth.model.js";
+import jwt from "jsonwebtoken";
+import { AuthModel } from "../models/auth.model.js";
 
 const erroValidacao = (mensagem, statusCode = 400) => {
   const error = new Error(mensagem);
@@ -7,6 +8,42 @@ const erroValidacao = (mensagem, statusCode = 400) => {
 };
 
 export class AuthService {
+  static async signinAdm(email, senha) {
+    const resultado = await AuthModel.signinAdmin(email, senha);
+
+    const { userId, user } = resultado.data;
+
+    const token = jwt.sign(
+      {
+        id: userId,
+        email: user.email,
+        is_admin: user.is_admin,
+        is_master: user.is_master,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      },
+    );
+
+    return {
+      token,
+      user,
+      primeiroAcesso: user.primeiro_acesso,
+    };
+  }
+
+  static async alterarSenhaAdm(userId, novaSenha, senhaAntiga) {
+    if (!userId || !novaSenha) {
+      const error = new Error("Usuário e nova senha são obrigatórios.");
+
+      error.statusCode = 400;
+      throw error;
+    }
+
+    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, senhaAntiga);
+  }
+
   static async esqueciSenha(email) {
     if (!email) {
       throw erroValidacao("O e-mail é obrigatório.");
@@ -99,34 +136,43 @@ export class AuthService {
       primeiroAcesso,
     };
   }
-
-  static async alterarSenhaAdm(userId, novaSenha, senhaAntiga) {
-    if (!userId || !novaSenha) {
-      throw erroValidacao(
-        "ID do usuário e nova senha são obrigatórios para a alteração.",
-      );
-    }
-
-    return await AuthModel.alterarSenhaAdmin(userId, novaSenha, senhaAntiga);
+static async alterarSenhaAdm(userId, novaSenha) {
+  if (!userId || !novaSenha) {
+    throw erroValidacao("Usuário e nova senha são obrigatórios.");
   }
 
-  static async alterarSenhaAntigaAdm(email, senhaAntiga, novaSenha) {
-    if (!email || !senhaAntiga || !novaSenha) {
-      throw erroValidacao("E-mail e senhas são obrigatórios.");
-    }
-
-    const login = await AuthModel.signinAdmin(email, senhaAntiga);
-
-    if (login.error || !login.data?.userId) {
-      throw erroValidacao("Credenciais administrativas inválidas.", 401);
-    }
-
-    return await AuthModel.alterarSenhaAdmin(
-      login.data.userId,
-      novaSenha,
-      senhaAntiga,
+  if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+    throw erroValidacao(
+      "A nova senha deve possuir pelo menos 8 caracteres.",
     );
   }
+
+  return await AuthModel.alterarSenhaAdmin(
+    userId,
+    novaSenha,
+    null,
+  );
+}
+
+static async alterarSenhaAntiga(userId, senhaAntiga, novaSenha) {
+  if (!userId || !senhaAntiga || !novaSenha) {
+    throw erroValidacao(
+      "Usuário e senhas são obrigatórios.",
+    );
+  }
+
+  if (typeof novaSenha !== "string" || novaSenha.length < 8) {
+    throw erroValidacao(
+      "A nova senha deve possuir pelo menos 8 caracteres.",
+    );
+  }
+
+  return await AuthModel.alterarSenhaAdmin(
+    userId,
+    novaSenha,
+    senhaAntiga,
+  );
+}
 
   static async atualizarSenha(novaSenha, senhaAntiga) {
     if (!novaSenha) {

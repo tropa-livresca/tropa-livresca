@@ -25,7 +25,7 @@ export class AutopublicacaoModel {
     ordem = "",
     estado = "",
   } = {}) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const filtros = ["ativo = true", `${RELACAO_PERFIL} = {:userId}`];
 
@@ -64,7 +64,7 @@ export class AutopublicacaoModel {
   }
 
   static async buscarDetalhesPorId(idLivro, userId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO).getOne(idLivro);
@@ -78,7 +78,7 @@ export class AutopublicacaoModel {
   }
 
   static async atualizarEstado(id, novoEstado, userId, estadoAtual) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const livro = await this.buscarDetalhesPorId(id, userId);
 
@@ -96,7 +96,7 @@ export class AutopublicacaoModel {
   }
 
   static async criarLivro(dadosLivro) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     if (!(dadosLivro instanceof FormData)) {
       const error = new Error(
@@ -127,7 +127,7 @@ export class AutopublicacaoModel {
   }
 
   static async atualizarLivro(id, userId, estadoAtual, dadosAtualizados) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const livro = await this.buscarDetalhesPorId(id, userId);
 
@@ -143,7 +143,7 @@ export class AutopublicacaoModel {
   }
 
   static async deletarLivro(idLivro, userId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const livro = await this.buscarDetalhesPorId(idLivro, userId);
 

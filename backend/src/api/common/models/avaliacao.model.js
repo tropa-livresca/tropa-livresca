@@ -24,7 +24,7 @@ async function buscarAvaliacao(pb, usuarioId, livroId) {
 
 export class AvaliacaoModel {
   static async buscarResumoLivro(livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const avaliacoes = await pb.collection(COLECAO).getFullList({
@@ -53,7 +53,7 @@ export class AvaliacaoModel {
   }
 
   static async buscarAvaliacaoUsuario(usuarioId, livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const avaliacao = await buscarAvaliacao(pb, usuarioId, livroId);
 
@@ -66,7 +66,7 @@ export class AvaliacaoModel {
   }
 
   static async usuarioComprouLivro(usuarioId, livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const vendas = await pb.collection("vendas").getFullList({
@@ -104,7 +104,7 @@ export class AvaliacaoModel {
   }
 
   static async salvarAvaliacao(usuarioId, livroId, qtdEstrelas) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const existente = await buscarAvaliacao(pb, usuarioId, livroId);
 

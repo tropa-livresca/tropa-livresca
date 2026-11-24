@@ -10,7 +10,7 @@ export class PerfilService {
   static async _formatarPerfil(perfil) {
     if (!perfil) return perfil;
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const imagem = mapearCampoArquivo(pb, perfil, "imagem");
 
     return {

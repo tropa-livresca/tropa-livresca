@@ -20,6 +20,8 @@ const RELACAO_LIVRO_ITEM = "fk_livros_itens_id";
 
 const COLUNAS_LIVRO = [
   "id",
+  "collectionId",
+  "collectionName",
   "data_de_publicacao",
   "preco_digital",
   "preco_fisico",
@@ -155,7 +157,7 @@ export class LojaModel {
     categoria = "",
     idioma = "",
   }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const filtros = ["ativo = true", "estado = {:estado}"];
     const params = { estado: LIVRO_ESTADO.PUBLICADO };
 
@@ -185,7 +187,15 @@ export class LojaModel {
         filter: pb.filter(filtros.join(" && "), params),
         sort: ascending ? campo : `-${campo}`,
         expand: RELACAO_PERFIL,
-        fields: `${COLUNAS_LIVRO},${RELACAO_PERFIL},expand.${RELACAO_PERFIL}.id,expand.${RELACAO_PERFIL}.nome,expand.${RELACAO_PERFIL}.sobrenome,expand.${RELACAO_PERFIL}.imagem`,
+        fields: [
+          COLUNAS_LIVRO,
+          `expand.${RELACAO_PERFIL}.id`,
+          `expand.${RELACAO_PERFIL}.collectionId`,
+          `expand.${RELACAO_PERFIL}.collectionName`,
+          `expand.${RELACAO_PERFIL}.nome`,
+          `expand.${RELACAO_PERFIL}.sobrenome`,
+          `expand.${RELACAO_PERFIL}.imagem`,
+        ].join(","),
       });
 
       return {
@@ -198,7 +208,7 @@ export class LojaModel {
   }
 
   static async buscarLivroById(id) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livro = await pb.collection(COLECAO_LIVROS).getOne(id, {
@@ -218,7 +228,7 @@ export class LojaModel {
   }
 
   static async consultarVendas({ page = 1, limit = 12, ordem = "" }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const resultado = await getListPocketBase(pb.collection(COLECAO_VENDAS), {
@@ -254,7 +264,7 @@ export class LojaModel {
   }
 
   static async consultarVenda(vendaId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     let venda;
 
     try {
@@ -286,7 +296,7 @@ export class LojaModel {
 
     if (!ids.length) return [];
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       return await pb.collection(COLECAO_LIVROS).getFullList({
@@ -305,7 +315,7 @@ export class LojaModel {
   }
 
   static async realizarVenda(dadosVenda, itensVenda) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     const dados = { ...dadosVenda };
 
     let venda;
@@ -343,7 +353,7 @@ export class LojaModel {
   }
 
   static async mudarStatusPagamento(vendaId, usuarioEmail) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     let venda;
 
     try {
@@ -375,7 +385,7 @@ export class LojaModel {
       throw error;
     }
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     let venda;
 
     try {
@@ -465,7 +475,7 @@ export class LojaModel {
   }
 
   static async reenviarEmailLivrosDigitais(vendaId, usuarioId, usuarioEmail) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
     let venda;
 
     try {
@@ -508,7 +518,7 @@ export class LojaModel {
   }
 
   static async buscarHistoricoVendasUsuario(usuarioId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const vendas = await pb.collection(COLECAO_VENDAS).getFullList({
@@ -534,7 +544,7 @@ export class LojaModel {
   }
 
   static async buscarNumeroVendasLivro(livroId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const itens = await pb.collection(COLECAO_ITENS).getFullList({
@@ -568,7 +578,7 @@ export class LojaModel {
   }
 
   static async buscarRelatorioFinanceiroAutor(autorId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const livros = await pb.collection(COLECAO_LIVROS).getFullList({
@@ -620,7 +630,7 @@ export class LojaModel {
   }
 
   static async calcularFretePrazo(userId, produtos) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const enderecos = await pb.collection("enderecos").getFullList({
       filter: pb.filter("fk_user_profile_id = {:userId} && principal = true", {
@@ -753,7 +763,7 @@ export class LojaModel {
     idioma = "",
     livroId = "",
   }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const vendas = await pb.collection(COLECAO_VENDAS).getFullList({
@@ -832,7 +842,7 @@ export class LojaModel {
   }
 
   static async autorizarEntrega(vendaId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       return await pb
@@ -844,7 +854,7 @@ export class LojaModel {
   }
 
   static async alterarStatusEntrega(vendaId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       return await pb
@@ -857,7 +867,7 @@ export class LojaModel {
 
   static async obterEstatisticasVendas(periodo = "30d") {
     const { inicio, fim } = calcularPeriodo(periodo);
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const vendas = await pb.collection(COLECAO_VENDAS).getFullList({

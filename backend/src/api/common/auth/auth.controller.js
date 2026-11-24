@@ -1,5 +1,5 @@
 import PocketBase from "pocketbase";
-import jwt from "jsonwebtoken";
+import { AuthService } from "./auth.service.js";
 
 import {
   POCKETBASE_URL,
@@ -37,7 +37,7 @@ export class AuthController {
   };
 
   static async obterDadosUsuarioUnificado(userId) {
-    const pb = criarClienteAdminPocketBase();
+    const pb = await criarClienteAdminPocketBase();
 
     try {
       const perfil = await pb.collection(COLECAO_AUTH).getOne(userId, {
@@ -245,51 +245,33 @@ export class AuthController {
     });
   }
 
+  static async alterarSenhaAdm(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      const { novaSenha } = req.body;
+
+      const resultado = await AuthService.alterarSenhaAdm(userId, novaSenha);
+
+      return res.status(200).json({
+        data: resultado.data,
+        message: "Senha administrativa cadastrada com sucesso!",
+      });
+    } catch (error) {
+      return next(error);
+    }
+  }
+
   static async signinAdm(req, res, next) {
     try {
       const { email, senha } = req.body;
 
-      const pb = criarCliente();
+      const resultado = await AuthService.signinAdm(email, senha);
 
-      const authData = await pb
-        .collection(COLECAO_AUTH)
-        .authWithPassword(email, senha);
-
-      const usuario = authData.record;
-
-      if (!usuario.is_admin) {
-        pb.authStore.clear();
-
-        return res.status(403).json({
-          error: "Acesso negado. Apenas administradores.",
-        });
-      }
-
-      const perfil = await AuthController.obterDadosUsuarioUnificado(
-        usuario.id,
-      );
-
-      const token = jwt.sign(
-        {
-          id: usuario.id,
-          email: usuario.email,
-          is_admin: usuario.is_admin,
-          funcao: usuario.funcao,
-        },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: "7d",
-        },
-      );
-
-      res.cookie("admin-token", token, AuthController.COOKIE_OPTIONS);
+      res.cookie("admin-token", resultado.token, AuthController.COOKIE_OPTIONS);
 
       return res.status(200).json({
-        user: {
-          ...usuario,
-          ...perfil,
-        },
-        primeiroAcesso: usuario.primeiro_acesso,
+        user: resultado.user,
+        primeiroAcesso: resultado.primeiroAcesso,
         message: "Login administrativo realizado com sucesso!",
       });
     } catch (error) {
@@ -313,51 +295,20 @@ export class AuthController {
     });
   }
 
-  static async alterarSenhaAdm(req, res, next) {
-    try {
-      const userId = req.user?.id;
-      const novaSenha = req.body.novaSenha;
-
-      if (!userId || !novaSenha) {
-        return res.status(400).json({
-          error: "Usuário e nova senha são obrigatórios.",
-        });
-      }
-
-      const pb = criarClienteAdminPocketBase();
-
-      await pb.collection(COLECAO_AUTH).update(userId, {
-        password: novaSenha,
-        passwordConfirm: novaSenha,
-        primeiro_acesso: false,
-      });
-
-      return res.status(200).json({
-        message: "Senha administrativa alterada com sucesso.",
-      });
-    } catch (error) {
-      return next(error);
-    }
-  }
-
   static async alterarSenhaAntiga(req, res, next) {
     try {
-      const { email, senhaAntiga, novaSenha } = req.body;
+      const userId = req.user?.id;
+      const { senhaAntiga, novaSenha } = req.body;
 
-      const pb = criarCliente();
-
-      await pb.collection(COLECAO_AUTH).authWithPassword(email, senhaAntiga);
-
-      const userId = pb.authStore.record.id;
-
-      await pb.collection(COLECAO_AUTH).update(userId, {
-        oldPassword: senhaAntiga,
-        password: novaSenha,
-        passwordConfirm: novaSenha,
-      });
+      const resultado = await AuthService.alterarSenhaAntiga(
+        userId,
+        senhaAntiga,
+        novaSenha,
+      );
 
       return res.status(200).json({
-        message: "Senha alterada com sucesso!",
+        data: resultado.data,
+        message: "Senha administrativa alterada com sucesso!",
       });
     } catch (error) {
       return next(error);

@@ -7,7 +7,7 @@ export function ehHashBcrypt(hash) {
   return typeof hash === "string" && HASH_BCRYPT.test(hash);
 }
 
-export async function gerarHashSenha(senha) {
+export async function gerarSenha(senha) {
   if (typeof senha !== "string" || !senha) {
     throw new Error("A senha deve ser uma string não vazia.");
   }

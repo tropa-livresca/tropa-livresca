@@ -21,7 +21,7 @@ export const useCompra = () => {
     setErro(null);
     try {
       const itens = itensCarrinho.map((item) => ({
-        livroId: Number(item.id),
+        livroId: String(item.id ?? "").trim(),
         fisico: item.tipo === "fisico",
         qtd: Number(item.quantidade) || 1,
       }));

@@ -78,7 +78,7 @@ export class UsuariosModel {
     ordem = "",
     filtro = "",
   }) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     const filtros = [];
     const params = {};
@@ -186,7 +186,7 @@ export class UsuariosModel {
   static async buscarUsuarioById(usuarioId) {
     if (!usuarioId) return null;
 
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     try {
       const perfil = await pb.collection(COLECAO_PERFIL).getOne(usuarioId);
@@ -260,7 +260,7 @@ export class UsuariosModel {
   }
 
   static async promoverUsuario(usuarioId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     let data;
 
@@ -291,7 +291,7 @@ export class UsuariosModel {
   }
 
   static async inativarFuncionario(funcionarioId) {
-    const pb = criarClienteModel();
+    const pb = await criarClienteModel();
 
     let data;
 

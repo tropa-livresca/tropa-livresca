@@ -7,16 +7,19 @@ export function criarClientePocketBase() {
   return new PocketBase(POCKETBASE_URL);
 }
 
-export function criarClienteAdminPocketBase() {
-  const token = process.env.POCKETBASE_SUPERUSER_TOKEN;
+export async function criarClienteAdminPocketBase() {
+  const email = process.env.POCKETBASE_SUPERUSER_EMAIL;
+  const senha = process.env.POCKETBASE_SUPERUSER_PASSWORD;
 
-  if (!token) {
-    throw new Error("POCKETBASE_SUPERUSER_TOKEN não configurado.");
+  if (!email || !senha) {
+    throw new Error(
+      "Credenciais do superusuário do PocketBase não configuradas.",
+    );
   }
 
   const cliente = criarClientePocketBase();
 
-  cliente.authStore.save(token);
+  await cliente.collection("_superusers").authWithPassword(email, senha);
 
   return cliente;
 }

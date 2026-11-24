@@ -1,6 +1,7 @@
 import { criarClienteAdminPocketBase } from "../config/pocketbase.js";
 
-export const criarClienteModel = () => criarClienteAdminPocketBase();
+export const criarClienteModel = async () =>
+  await criarClienteAdminPocketBase();
 
 export function marcarErro(error, statusCode = 500) {
   error.statusCode = error.statusCode || error.status || statusCode;
