@@ -5,8 +5,8 @@ import styles from "./Login.module.css";
 
 import { useLogin } from "../../hooks/useLogin";
 
-import logo from "../../images/login.jpg";
-import logo2 from "../../../../images/logo.png";
+import logo from "../../images/login.webp";
+import logo2 from "../../../../images/logo.webp";
 
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";

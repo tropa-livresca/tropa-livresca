@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FiArrowLeft, FiDownload, FiFileText } from "react-icons/fi";
-import { jsPDF } from "jspdf";
 
 import BotaoComprar from "../../components/BotaoComprar/BotaoComprar";
 import { useCompra } from "../../hooks/useCompra";
@@ -85,6 +84,8 @@ export default function PagamentoBoleto() {
     setGerandoPdf(true);
 
     try {
+      const { jsPDF } = await import("jspdf");
+
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",

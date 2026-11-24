@@ -4,10 +4,26 @@ import { FaFilePdf, FaImage } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Popup from "../../../../components/PopUp/Popup";
 
-import * as pdfjsLib from "pdfjs-dist/legacy/build/pdf.mjs";
-import pdfWorker from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
+let pdfjsPromise;
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+const carregarPdfJs = () => {
+  if (!pdfjsPromise) {
+    pdfjsPromise = Promise.all([
+      import("pdfjs-dist/legacy/build/pdf.mjs"),
+      import("pdfjs-dist/legacy/build/pdf.worker.min.mjs?url"),
+    ])
+      .then(([pdfjsLib, pdfWorker]) => {
+        pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker.default;
+        return pdfjsLib;
+      })
+      .catch((erro) => {
+        pdfjsPromise = null;
+        throw erro;
+      });
+  }
+
+  return pdfjsPromise;
+};
 
 const TAMANHO_MAXIMO_CAPA = 10 * 1024 * 1024;
 const TAMANHO_MAXIMO_MANUSCRITO = 50 * 1024 * 1024;
@@ -152,6 +168,8 @@ export default function Conteudo({
       let pdfDocument;
 
       try {
+        const pdfjsLib = await carregarPdfJs();
+
         const buffer = await arquivo.arrayBuffer();
 
         const loadingTask = pdfjsLib.getDocument({

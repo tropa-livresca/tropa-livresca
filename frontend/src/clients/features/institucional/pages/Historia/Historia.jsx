@@ -1,9 +1,9 @@
 ﻿import styles from "./Historia.module.css";
 
-import his1 from "../../images/historia1.png";
-import his2 from "../../images/historia2.png";
-import his3 from "../../images/historia3.png";
-import his4 from "../../images/historia4.png";
+import his1 from "../../images/historia1.webp";
+import his2 from "../../images/historia2.webp";
+import his3 from "../../images/historia3.webp";
+import his4 from "../../images/historia4.webp";
 import DescricaoTela from "../../../../components/DescricaoTela/DescricaoTela";
 
 export default function Historia() {

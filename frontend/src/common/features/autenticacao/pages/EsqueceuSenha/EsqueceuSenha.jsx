@@ -1,10 +1,8 @@
 import styles from "./EsqueceuSenha.module.css";
-import { useNavigate, Link } from "react-router-dom";
-import { IoChevronBack } from "react-icons/io5";
+import { Link } from "react-router-dom";
 import { useEsqueceuSenha } from "../../hooks/useEsqueceuSenha";
 
 export default function EsqueceuSenha() {
-  const navigate = useNavigate();
   const { email, setEmail, error, sucesso, carregando, enviarRecuperarSenha } =
     useEsqueceuSenha();
 

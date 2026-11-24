@@ -6,7 +6,7 @@
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import styles from "./Footer.module.css";
-import logo from "../../../common/images/logo.png";
+import logo from "../../../common/images/logo.webp";
 
 export default function Footer() {
   return (
