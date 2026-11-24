@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import Carregando from "../../clients/components/Carregando/Carregando";
 const RoutesAdm = lazy(() => import("../../admin/features/routes/RoutesAdm"));
 
 const RoutesClients = lazy(
@@ -14,7 +14,7 @@ const RoutesAutenticacao = lazy(
 const RoutesApp = () => {
   return (
     <BrowserRouter>
-      <Suspense fallback={<div>Carregando...</div>}>
+      <Suspense fallback={<Carregando />}>
         <Routes>
           <Route path="/admin/*" element={<RoutesAdm />} />
           <Route path="/auth/*" element={<RoutesAutenticacao />} />

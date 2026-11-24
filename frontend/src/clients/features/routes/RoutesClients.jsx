@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
+import Carregando from "../../components/Carregando/Carregando";
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAuth from "../../../common/hooks/useAuth";
 import Modal from "../../../common/components/Modal/Modal";
@@ -143,7 +144,7 @@ const RoutesClients = () => {
   return (
     <CarrinhoProvider>
       <PerfilProvider>
-        <Suspense fallback={<div>Carregando...</div>}>
+        <Suspense fallback={<Carregando />}>
           <Routes>
             <Route element={<MainLayout />}>
               <Route path="/" element={<Inicio />} />

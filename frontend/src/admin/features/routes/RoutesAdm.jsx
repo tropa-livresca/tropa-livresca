@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
-
+import Carregando from "../../components/Carregando/Carregando";
 import MainLayout from "../../components/MainLayout/MainLayout";
 import useAdmin from "../../../common/hooks/useAdmin";
 
@@ -85,7 +85,7 @@ const MasterRoute = ({ children }) => {
 
 const RoutesAdm = () => {
   return (
-    <Suspense fallback={<div>Carregando...</div>}>
+    <Suspense fallback={<Carregando />}>
       <Routes>
         <Route element={<MainLayout />}>
           <Route

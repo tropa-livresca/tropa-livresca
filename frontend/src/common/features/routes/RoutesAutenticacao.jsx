@@ -1,6 +1,7 @@
 import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 
+import Carregando from "../../../clients/components/Carregando/Carregando";
 const NotFound = lazy(() => import("../paginasErro/pages/NotFound/NotFound"));
 
 const Login = lazy(() => import("../autenticacao/pages/Login/Login"));
@@ -23,7 +24,7 @@ const Callback = lazy(() => import("../autenticacao/pages/Callback/Callback"));
 
 export default function RoutesAutenticacao() {
   return (
-    <Suspense fallback={<div>Carregando...</div>}>
+    <Suspense fallback={<Carregando/>}>
       <Routes>
         <Route path="login" element={<Login />} />
         <Route path="admin" element={<LoginAdmin />} />
