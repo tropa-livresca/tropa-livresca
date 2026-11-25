@@ -1,3 +1,4 @@
+
 export const apiFetch = async (endpoint, options = {}) => {
   const { skipAuthRedirect = false, ...fetchOptions } = options;
 
@@ -31,7 +32,8 @@ export const apiFetch = async (endpoint, options = {}) => {
       const URL_ATUAL = window.location.pathname;
 
       const ehAdmin =
-        URL_ATUAL.startsWith("/admin") || URL_ATUAL.includes("/auth/admin");
+        URL_ATUAL.startsWith("/admin") ||
+        URL_ATUAL.includes("/auth/admin");
 
       const urlRefresh = "/api/v1/auth/refresh";
 
