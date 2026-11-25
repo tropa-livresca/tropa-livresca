@@ -1,0 +1,5 @@
+{
+  "main": "build/backend.cjs",
+  "output": "build/backend.blob",
+  "disableExperimentalSEAWarning": true
+}

@@ -1,0 +1,5 @@
+{
+  "main": "launcher.cjs",
+  "output": "launcher.blob",
+  "disableExperimentalSEAWarning": true
+}
